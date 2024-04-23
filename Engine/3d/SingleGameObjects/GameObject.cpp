@@ -1,11 +1,15 @@
 #include "GameObject.h"
 #include<imgui.h>
+
+
 GameObject::~GameObject() {
 	delete model_;
 }
 
 void GameObject::Initialize(const std::string& filepath) {
-	model_ = Model::CreateFromOBJ(filepath);
+	if (model_ == nullptr) {
+		model_ = Model::CreateFromOBJ(filepath);
+	}
 }
 
 void GameObject::Update() {

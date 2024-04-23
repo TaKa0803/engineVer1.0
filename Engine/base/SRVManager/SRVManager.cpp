@@ -36,9 +36,6 @@ void SRVManager::Initialize(DirectXFunc* DXF) {
 void SRVManager::PostInitialize() {
 	//画像読み込み数がゼロでない場合
 	if (intermediaResources_.size() != 0) {
-		//GPUに送る
-		DXF_->KickCommand();
-
 		//開放する
 		for (auto& inter : intermediaResources_) {
 			if (inter != nullptr) {
@@ -46,6 +43,16 @@ void SRVManager::PostInitialize() {
 				inter = nullptr;
 			}
 		}
+
+		intermediaResources_.remove_if([](auto& data) {
+			if (data == nullptr) {
+				return true;
+			}
+			else {
+				return false;
+			}
+			});
+
 	}
 }
 

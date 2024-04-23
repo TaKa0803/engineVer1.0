@@ -51,7 +51,6 @@ void MainSystem::Initializes() {
 	textureManager_= TextureManager::GetInstance();
 	textureManager_->Initialize(DXF_);
 
-	
 	//imgui
 	imguiManager_ = ImGuiManager::GetInstance();
 	imguiManager_->Initialize(winApp_, DXF_);
@@ -96,9 +95,7 @@ void MainSystem::MainRoop() {
 
 
 
-	//読み込んだ画像をGPUに送信
-	SRVM_->PostInitialize();
-
+	
 
 	while (winApp_->ProcessMessage()) {
 		
@@ -146,6 +143,9 @@ void MainSystem::MainRoop() {
 		imguiManager_->PostDraw();
 		//DirectX
 		DXF_->PostDraw();
+
+		//読み込んだ画像をGPUに送信して削除
+		SRVM_->PostInitialize();
 #pragma endregion
 		
 		//シーン終了フラグがtrueの時
