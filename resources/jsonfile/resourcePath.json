@@ -1,15 +1,14 @@
 {
 	"audios": {
-		"audio1": [ "se_soa03.wav" ],
-		"BGM": [ "c46nt-ifwwl.wav" ],
-		"maou": [ "s2ylj-qqrf5.wav" ],
-		"title": [ "title.wav" ],
-		"game": [ "Trick_style.wav" ],
-		"clear": [ "clear.wav" ],
-		"com1": [ "1.wav" ],
-		"com2": [ "2.wav" ],
-		"com3": [ "3.wav" ],
-		"break": [ "break.wav" ],
-		"maoump3": [ "maou_19_12345.mp3" ]
+		"audio1": [ "se_soa03.mp3" ],
+		"BGM": [ "c46nt-ifwwl.mp3" ],
+		"maou": [ "s2ylj-qqrf5.mp3" ],
+		"title": [ "title.mp3" ],
+		"game": [ "Trick_style.mp3" ],
+		"clear": [ "clear.mp3" ],
+		"com1": [ "1.mp3" ],
+		"com2": [ "2.mp3" ],
+		"com3": [ "3.mp3" ],
+		"break": [ "break.mp3" ]
 	}
 }
