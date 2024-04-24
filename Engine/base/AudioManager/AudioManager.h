@@ -3,6 +3,7 @@
 #include<map>
 #include<wrl.h>
 #include<xaudio2.h>
+#include<vector>
 #include"AudioManager/SoundData.h"
 
 
@@ -68,6 +69,8 @@ public:
 private:
 	//データ読み込み
 	SoundData LoadSoundData(const char* name);
+
+	SoundData LoadSoundData(const std::string& path);
 
 	//タグの音データのnum取得
 	int LoadSoundNumFromTag(const std::string tag);

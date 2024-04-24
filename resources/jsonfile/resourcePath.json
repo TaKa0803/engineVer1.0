@@ -9,6 +9,7 @@
 		"com1": [ "1.wav" ],
 		"com2": [ "2.wav" ],
 		"com3": [ "3.wav" ],
-		"break": [ "break.wav" ]
+		"break": [ "break.wav" ],
+		"maoump3": [ "maou_19_12345.mp3" ]
 	}
 }
