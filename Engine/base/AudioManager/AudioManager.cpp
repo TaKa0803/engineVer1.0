@@ -18,20 +18,6 @@
 #include<json.hpp>
 #include<cassert>
 
-
-struct ChunkHeader {
-	char id[4];		//チャンク用のID
-	int32_t size;	//チャンクサイズ
-};
-struct RiffHeader {
-	ChunkHeader chunk;//RIFF
-	char type[4];//WAVE
-};
-struct FormatChunk {
-	ChunkHeader chunk;//ｆｍｔ
-	WAVEFORMATEX fmt;//波形フォーマット
-};
-
 AudioManager* AudioManager::GetInstance()
 {
 	static AudioManager instance;
@@ -156,91 +142,6 @@ void AudioManager::StopAllSounds()
 	playAudioDatas_.clear();
 }
 
- SoundData AudioManager::LoadSoundData(const char* name)
-{
-
-#pragma region ファイルオープン
-	std::ifstream fs;
-	fs.open(name, std::ios_base::binary);
-	assert(fs.is_open());
-#pragma endregion
-
-#pragma region wavデータ読み込み
-	RiffHeader riff;
-	fs.read((char*)&riff, sizeof(riff));
-	if (strncmp(riff.chunk.id, "RIFF", 4) != 0) {
-		//RIFFではない
-		assert(0);
-	}
-	if (strncmp((char*)&riff.type, "WAVE", 4) != 0) {
-		//waveじゃない
-		assert(0);
-	}
-
-	//フォーマットチャンクの読み込み
-	FormatChunk format = {};
-
-	//チャンクヘッダーの確認
-	while (true)
-	{
-		fs.read((char*)&format, sizeof(ChunkHeader));
-		if (strncmp(format.chunk.id, "fmt ", 4) != 0) {
-			if (strncmp(format.chunk.id, "JUNK", 4) == 0) {
-				fs.seekg(format.chunk.size, std::ios_base::cur);
-			}
-			//assert(0);
-		}
-		else {
-			break;
-		}
-	}
-	//チャンク本体の読み込み
-	assert(format.chunk.size <= sizeof(format.fmt));
-	fs.read((char*)&format.fmt, format.chunk.size);
-
-	//データチャンクの読み込み
-	ChunkHeader data;
-	fs.read((char*)&data, sizeof(data));
-	//JUNKチャンクを検出した場合
-	if (strncmp(data.id, "JUNK", 4) == 0) {
-		fs.seekg(data.size, std::ios_base::cur);
-		//再読み込み
-		fs.read((char*)&data, sizeof(data));
-	}
-
-
-	//
-	//if (strncmp(data.id, "data", 4) != 0) {
-	//	//データなし
-	//	assert(0);
-	//}
-
-	while (true) {
-		if (strncmp(data.id, "data", 4) != 0) {
-			fs.seekg(data.size, std::ios_base::cur);
-			//再読み込み
-			fs.read((char*)&data, sizeof(data));
-		}
-		else {
-			break;
-		}
-	}
-
-	//データチャンクのデータ部の読み込み
-	char* pBuffer = new char[data.size];
-	fs.read(pBuffer, data.size);
-
-	fs.close();
-#pragma endregion
-#pragma region 読み込んだデータを返す
-	SoundData soundData = {};
-	//soundData.wfex = format.fmt;
-	//soundData.pBuffer = reinterpret_cast<BYTE*>(pBuffer);
-	//soundData.bufferSize = data.size;
-#pragma endregion
-
-	return soundData;
-}
 
 	SoundData AudioManager::LoadSoundData(const std::string& path)
  {

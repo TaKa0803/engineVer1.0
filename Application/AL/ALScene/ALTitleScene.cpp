@@ -7,15 +7,15 @@
 ALTitleScene::ALTitleScene() {
 	input_ = Input::GetInstance();
 
-	int texture = TextureManager::LoadTex("resources/AppResource/AL/Title.png");
+	int texture = TextureManager::LoadTex("resources/Texture/AL/Title.png");
 	sprite_.reset(Sprite::Create(texture, { 320,180 }, { 320,180 }, { 1280,720 }));
 
-	texture = TextureManager::LoadTex("resources/AppResource/AL/Press.png");
+	texture = TextureManager::LoadTex("resources/Texture/AL/Press.png");
 	pressSp_.reset(Sprite::Create(texture, { 160,90 }, { 160,90 }, { 100,70 }));
 	pressSp_->SetPosition({ 570,500 });
 	pressSp_->SetScale({ 170,100 });
 
-	texture = TextureManager::LoadTex("resources/AppResource/AL/B.png");
+	texture = TextureManager::LoadTex("resources/Texture/AL/B.png");
 	BButtonSp_.reset(Sprite::Create(texture, { 180,90 }, { 90,90 }, { 70,70 }));
 	BButtonSp_->SetPosition({ 750,500 });
 

@@ -8,7 +8,11 @@
 #include"struct.h"
 
 MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
+
+ModelData LoadModelFile(const std::string& directoryPath, const std::string& modelName);
+
 ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
+
 
 
 IDxcBlob* CompileShader(

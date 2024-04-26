@@ -68,8 +68,6 @@ public:
 
 private:
 	//データ読み込み
-	SoundData LoadSoundData(const char* name);
-
 	SoundData LoadSoundData(const std::string& path);
 
 	//タグの音データのnum取得

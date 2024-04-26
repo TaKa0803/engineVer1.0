@@ -129,7 +129,7 @@ private:
 	BrokenBody* brokenBody_;
 
 	//シーンチェンジ用
-	std::string white = "resources/SystemResources/white.png";
+	std::string white = "resources/Texture/SystemResources/white.png";
 	std::unique_ptr<Sprite>sceneC_;
 
 	//シーン転換後の処置

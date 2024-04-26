@@ -10,7 +10,7 @@ CGScnene::CGScnene()
 	object = std::make_unique<GameObject>();
 	terrain = new GameObject();
 
-	ball = TextureManager::LoadTex("resources/SystemResources/monsterBall.png");
+	ball = TextureManager::LoadTex("resources/Texture/SystemResources/monsterBall.png");
 }
 
 CGScnene::~CGScnene() { delete terrain; }

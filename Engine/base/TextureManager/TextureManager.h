@@ -92,7 +92,7 @@ private://メンバ変数
 
 	std::map<int, Texturedata*>texDatas_;
 
-	std::string uvCheckerTex = "resources/SystemResources/uvChecker.png";
+	std::string uvCheckerTex = "resources/Texture/SystemResources/uvChecker.png";
 
 	//const size_t maxTexNum_ = 256;
 };

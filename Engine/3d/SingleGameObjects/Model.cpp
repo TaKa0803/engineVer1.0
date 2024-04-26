@@ -15,9 +15,6 @@
 #include<cassert>
 #include<fstream>
 
-#include<assimp/Importer.hpp>
-#include<assimp/scene.h>
-#include<assimp/postprocess.h>
 
 #pragma region モデル
 
@@ -135,7 +132,9 @@ Model* Model::CreateFromOBJ(const std::string& filePath)
 
 	ModelData modeltea =mManager->GetModelData(filePath); 
 
-	
+
+
+
 	ID3D12Resource* vertexRtea = CreateBufferResource(DXF->GetDevice(), sizeof(VertexData) * modeltea.vertices.size());
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewtea{};
 	vertexBufferViewtea.BufferLocation = vertexRtea->GetGPUVirtualAddress();

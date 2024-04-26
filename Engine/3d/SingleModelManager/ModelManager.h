@@ -47,10 +47,15 @@ private:
 	ObjectPSO* grarphics_;
 
 	//モデルデータのパスが記入されたファイルへのパス
-	const std::string& modelPathFile = "resources/jsonfile/modelPathFile.json";
+	const std::string modelPathFile = "resources/jsonfile/modelPathFile.json";
 	
+	//モデルデータを入れるフォルダ
+	const std::string modeldirectoryPath = "resources/Models/";
+
 	//モデルデータのパス群
-	const std::string& groupName = "modelPathFile";
+	const std::string groupName = "modelPathFile";
+
+
 
 	//データ保存の構造体
 	struct NameAndPath {
@@ -66,5 +71,7 @@ private:
 
 	//GetModelDataでモデルが見つからない場合エラーをはくか否か
 	bool isError = true;
+
+
 };
 

@@ -60,21 +60,21 @@ void ModelManager::LoadAllModels() {
 	//各アイテムについて
 	for (nlohmann::json::iterator itItem = itGroup->begin(); itItem != itGroup->end(); ++itItem) {
 		//アイテムの名前を取得
-		const std::string& itemName = itItem.key();
+		const std::string& itemTag = itItem.key();
 
 		if (itItem->is_array() && itItem->size() == 2) {
 			//モデル群の八田フォルダまでのパス
 			std::string foldaPath = itItem->at(0);
 
 			//パスを取得
-			std::string modelPath = itItem->at(1);
+			std::string modelfullPath = itItem->at(1);
 
 
-			//名前とパスを合わせた構造体
-			NameAndPath nameAndPath = { itemName,modelPath };
+			//名前と古パスパスを合わせた構造体
+			NameAndPath nameAndPath = { itemTag,modeldirectoryPath + foldaPath+modelfullPath };
 
 			//モデルデータを作成して設定
-			ModelData newmodelData = LoadObjFile(foldaPath, modelPath);
+			ModelData newmodelData = LoadModelFile(modeldirectoryPath+foldaPath, modelfullPath);
 			std::pair<NameAndPath, ModelData>newData(nameAndPath, newmodelData);
 			modelDatas.emplace_back(newData);
 
@@ -90,13 +90,12 @@ void ModelManager::Finalize()
 }
 
 ModelData ModelManager::GetModelData(const std::string& filename) {
-	//フルパスを作成
-	std::string name = filename;
+
 
 	//データ型に該当するものを追加
 	for (auto& modeldata : modelDatas) {
-		//名前が同じorパスが同じ場合
-		if (modeldata.first.name == name || modeldata.first.path == name) {
+		//名前タグが同じorフルパスが同じパスが同じ場合
+		if (modeldata.first.name == filename || modeldata.first.path == filename) {
 			return modeldata.second;
 		}
 	}
@@ -108,7 +107,7 @@ ModelData ModelManager::GetModelData(const std::string& filename) {
 	else {
 		//モデルデータを作成して設定
 		ModelData newmodelData = LoadObjFile("resources", filename);
-		std::pair<std::string, ModelData>newData(name, newmodelData);
+		std::pair<std::string, ModelData>newData(filename, newmodelData);
 		modelDatas.emplace_back(newData);
 		return modelDatas.back().second;
 	}

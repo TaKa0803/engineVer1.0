@@ -95,7 +95,7 @@ ALPlayer::ALPlayer() {
 		Index++;
 	}
 
-	textureData = TextureManager::LoadTex("resources/AppResource/Object/player.png");
+	textureData = TextureManager::LoadTex("resources/Models/Object/player.png");
 
 	impactE_ = std::make_unique<EffectImpact>();
 

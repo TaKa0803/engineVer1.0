@@ -11,6 +11,37 @@
 #include"SingleModelManager/ModelManager.h"
 #include"Camera/Camera.h"
 
+
+//キーフレーム
+template<typename tValue>
+struct Keyframe {
+	float time;
+	tValue value;
+};
+using KayframeVector3 = Keyframe<Vector3>;
+using KayframeQuaternion = Keyframe<Quaternion>;
+
+//ノードanimation
+template<typename tValue>
+struct AnimationCurve {
+	std::vector<Keyframe<tValue>>keyframes;
+};
+
+struct NodeAnimation {
+	AnimationCurve<Vector3>translate;
+	AnimationCurve<Quaternion>rotate;
+	AnimationCurve<Vector3>scale;
+
+};
+
+//animation全体
+struct Animation {
+	float duration;//animation全体の尺
+	//NodeAnimationの集合
+	std::map<std::string, NodeAnimation>NodeAnimation;
+};
+
+
 class Model {
 public:
 
