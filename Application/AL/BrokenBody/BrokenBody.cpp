@@ -1,5 +1,6 @@
 #include"BrokenBody.h"
 #include"RandomNum/RandomNum.h"
+#include"TextureManager/TextureManager.h"
 
 BrokenBody* BrokenBody::GetInstance() {
 	static BrokenBody instance;
@@ -7,8 +8,13 @@ BrokenBody* BrokenBody::GetInstance() {
 }
 
 void BrokenBody::Initialize() {
-	InstancingGameObject::Initialize("EBox");
+	InstancingGameObject::Initialize("AnimeCube");
+	world_.scale_ = { 0.5f,0.5f,0.5f };
 	effectDatas_.clear();
+
+	int tex = TextureManager::LoadTex("resources/Models/Object/enemy.png");
+
+	IMM_->SetTexture(tag_, tex);
 }
 
 void BrokenBody::Update() {

@@ -120,6 +120,8 @@ private:
 
 	//初期化
 	void Initialize(
+		ModelAllData modelData_,
+		Animation animation_,
 		std::string name,
 		int point,
 		int instancingNum,
@@ -138,7 +140,9 @@ public:
 
 private:
 
-	
+	ModelAllData modelData_;
+
+	Animation animation_;
 
 	DirectXFunc* DXF_;
 
@@ -181,4 +185,8 @@ private:
 	};
 	//ワールド軍
 	std::vector<std::unique_ptr<InstancingData>>worlds_;
+
+	float animationTime = 0.0f;
+
+	Matrix4x4 localM_;
 };

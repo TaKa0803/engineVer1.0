@@ -296,39 +296,9 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 	DXF_->GetCMDList()->DrawInstanced(point_, 1, 0, 0);
 }
 
-Vector3 CalculateValue(const std::vector<KayframeVector3>& keyframes, float time) {
-	assert(!keyframes.empty());
-	if (keyframes.size() == 1 || time <= keyframes[0].time) {
-		return keyframes[0].value;
-	}
-	for (size_t index = 0; index < keyframes.size() - 1; ++index) {
-		size_t nextIndex = index + 1;
 
-		if (keyframes[index].time <=time && time <= keyframes[nextIndex].time) {
-			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
-			return Esing(keyframes[index].value, keyframes[nextIndex].value, t);
-		}
-	}
 
-	return (*keyframes.rbegin()).value;
-}
 
-Quaternion CalculateValue(const std::vector<KayframeQuaternion>& keyframes, float time) {
-	assert(!keyframes.empty());
-	if (keyframes.size() == 1 || time <= keyframes[0].time) {
-		return keyframes[0].value;
-	}
-	for (size_t index = 0; index < keyframes.size() - 1; ++index) {
-		size_t nextIndex = index + 1;
-
-		if (keyframes[index].time <= time && time <= keyframes[nextIndex].time) {
-			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
-			return Slerp(keyframes[index].value, keyframes[nextIndex].value, t);
-		}
-	}
-
-	return (*keyframes.rbegin()).value;
-}
 
 void Model::PlayAnimation(int animeNum)
 {

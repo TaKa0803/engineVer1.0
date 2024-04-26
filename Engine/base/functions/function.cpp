@@ -12,6 +12,39 @@
 #include<assimp/scene.h>
 #include<assimp/postprocess.h>
 
+Vector3 CalculateValue(const std::vector<KayframeVector3>& keyframes, float time) {
+	assert(!keyframes.empty());
+	if (keyframes.size() == 1 || time <= keyframes[0].time) {
+		return keyframes[0].value;
+	}
+	for (size_t index = 0; index < keyframes.size() - 1; ++index) {
+		size_t nextIndex = index + 1;
+
+		if (keyframes[index].time <= time && time <= keyframes[nextIndex].time) {
+			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
+			return Esing(keyframes[index].value, keyframes[nextIndex].value, t);
+		}
+	}
+
+	return (*keyframes.rbegin()).value;
+}
+
+Quaternion CalculateValue(const std::vector<KayframeQuaternion>& keyframes, float time) {
+	assert(!keyframes.empty());
+	if (keyframes.size() == 1 || time <= keyframes[0].time) {
+		return keyframes[0].value;
+	}
+	for (size_t index = 0; index < keyframes.size() - 1; ++index) {
+		size_t nextIndex = index + 1;
+
+		if (keyframes[index].time <= time && time <= keyframes[nextIndex].time) {
+			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
+			return Slerp(keyframes[index].value, keyframes[nextIndex].value, t);
+		}
+	}
+
+	return (*keyframes.rbegin()).value;
+}
 
 MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename) {
 	//1中で必要になる変数の宣言
@@ -47,7 +80,9 @@ Animation LoadAnimationFile(const std::string& directoryPath, const std::string&
 	std::string filePath = directoryPath + "/" + filename;
 
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
-	assert(scene->mNumAnimations != 0);
+	if (scene->mNumAnimations == 0) {
+		return result;
+	}
 	aiAnimation* animationAssimp = scene->mAnimations[0];//最初のアニメーションのみ読み込み
 	result.duration = float(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);//時間の単位を秒に変換
 

@@ -37,18 +37,20 @@ InstancingModel* InstancingModel::CreateFromOBJ(const std::string& directory,con
 	std::string fileFullPath = directory + "/" + filePath+"/"+filePath+".obj";
 	
 
-	ModelData modeltea = LoadObjFile(directory,filePath);
+	ModelAllData modeltea = LoadModelFile(directory,filePath);
+
+	Animation animation = LoadAnimationFile(directory, filePath);
 
 	//頂点データ
-	ID3D12Resource* vertexRtea = CreateBufferResource(DXF->GetDevice(), sizeof(VertexData) * modeltea.vertices.size());
+	ID3D12Resource* vertexRtea = CreateBufferResource(DXF->GetDevice(), sizeof(VertexData) * modeltea.model.vertices.size());
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewtea{};
 	vertexBufferViewtea.BufferLocation = vertexRtea->GetGPUVirtualAddress();
-	vertexBufferViewtea.SizeInBytes = UINT(sizeof(VertexData) * modeltea.vertices.size());
+	vertexBufferViewtea.SizeInBytes = UINT(sizeof(VertexData) * modeltea.model.vertices.size());
 	vertexBufferViewtea.StrideInBytes = sizeof(VertexData);
 
 	VertexData* vertexDatatea = nullptr;
 	vertexRtea->Map(0, nullptr, reinterpret_cast<void**>(&vertexDatatea));
-	std::memcpy(vertexDatatea, modeltea.vertices.data(), sizeof(VertexData) * modeltea.vertices.size());
+	std::memcpy(vertexDatatea, modeltea.model.vertices.data(), sizeof(VertexData) * modeltea.model.vertices.size());
 
 
 	
@@ -57,7 +59,7 @@ InstancingModel* InstancingModel::CreateFromOBJ(const std::string& directory,con
 
 
 	InstancingModel* model = new InstancingModel();
-	model->Initialize(modeltea.material.textureFilePath, UINT(modeltea.vertices.size()),instancingNum, vertexRtea, vertexBufferViewtea);
+	model->Initialize(modeltea,animation,modeltea.model.material.textureFilePath, UINT(modeltea.model.vertices.size()),instancingNum, vertexRtea, vertexBufferViewtea);
 
 
 
@@ -82,11 +84,39 @@ void InstancingModel::AddWorld(const WorldTransform& world, const Vector4& color
 
 void InstancingModel::Draw(const Matrix4x4& viewProjection, int texture) {
 
+	if (modelData_.animation.nodeAnimations.size() != 0) {
+		animationTime += 1.0f / 60.0f;
+		animationTime = std::fmod(animationTime, modelData_.animation.duration);
+
+		NodeAnimation& rootNodeAnimation = modelData_.animation.nodeAnimations[modelData_.model.rootNode.name];
+		Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
+		Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
+		Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
+
+
+
+		localM_ = MakeAffineMatrix(scale, rotate, translate);
+
+	}
+
 	int index = 0;
 	for (auto& world : worlds_) {
-		Matrix4x4 worldM = world->world.matWorld_;
+		Matrix4x4 worldM;
 
-		Matrix4x4 WVP = worldM * viewProjection;
+		Matrix4x4 WVP;
+
+		if (modelData_.animation.nodeAnimations.size() == 0) {
+
+			worldM = world->world.matWorld_;
+
+			WVP = worldM * viewProjection;
+
+		}
+		else {
+			worldM =localM_* world->world.matWorld_;
+
+			WVP =localM_* worldM * viewProjection;
+		}
 
 		wvpData_[index].WVP = WVP;
 		wvpData_[index].World = worldM;
@@ -163,6 +193,8 @@ void InstancingModel::Debug(const char* name)
 }
 
 void InstancingModel::Initialize(
+	ModelAllData modelData,
+	Animation animation,
 	std::string name,
 	int point,
 	int instancingNum,
@@ -170,6 +202,9 @@ void InstancingModel::Initialize(
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView) {
 
 	DXF_ = DirectXFunc::GetInstance();
+
+	modelData_ = modelData;
+	animation_ = animation;
 
 	//各データ受け渡し
 	point_ = point;
