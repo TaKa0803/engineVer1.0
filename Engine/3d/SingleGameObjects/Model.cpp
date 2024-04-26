@@ -112,10 +112,10 @@ Model* Model::CreateSphere(float kSubdivision,bool enableLighting, const std::st
 #pragma endregion	
 
 
-
+	ModelAllData modeldata;
 
 	Model* model = new Model();
-	model->Initialize(filePath, point,vertexResourceSphere, vertexBufferViewSphere, wvpResourceS, wvpDataS);
+	model->Initialize(modeldata,filePath, point,vertexResourceSphere, vertexBufferViewSphere, wvpResourceS, wvpDataS);
 	
 	
 	
@@ -130,20 +130,19 @@ Model* Model::CreateFromOBJ(const std::string& filePath)
 #pragma region モデル
 	ModelManager*mManager= ModelManager::GetInstance();
 
-	ModelData modeltea =mManager->GetModelData(filePath); 
+	ModelAllData modeltea =mManager->GetModelData(filePath); 
 
+	
 
-
-
-	ID3D12Resource* vertexRtea = CreateBufferResource(DXF->GetDevice(), sizeof(VertexData) * modeltea.vertices.size());
+	ID3D12Resource* vertexRtea = CreateBufferResource(DXF->GetDevice(), sizeof(VertexData) * modeltea.model.vertices.size());
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewtea{};
 	vertexBufferViewtea.BufferLocation = vertexRtea->GetGPUVirtualAddress();
-	vertexBufferViewtea.SizeInBytes = UINT(sizeof(VertexData) * modeltea.vertices.size());
+	vertexBufferViewtea.SizeInBytes = UINT(sizeof(VertexData) * modeltea.model.vertices.size());
 	vertexBufferViewtea.StrideInBytes = sizeof(VertexData);
 
 	VertexData* vertexDatatea = nullptr;
 	vertexRtea->Map(0, nullptr, reinterpret_cast<void**>(&vertexDatatea));
-	std::memcpy(vertexDatatea, modeltea.vertices.data(), sizeof(VertexData) * modeltea.vertices.size());
+	std::memcpy(vertexDatatea, modeltea.model.vertices.data(), sizeof(VertexData) * modeltea.model.vertices.size());
 
 	//WVP用のリソースを作る。Matrix４ｘ４1つ分のサイズを用意する
 	ID3D12Resource* wvpResourceTea = CreateBufferResource(DXF->GetDevice(), sizeof(WorldTransformation));
@@ -157,12 +156,13 @@ Model* Model::CreateFromOBJ(const std::string& filePath)
 #pragma endregion
 
 	Model* model =new Model();
-	model->Initialize(modeltea.material.textureFilePath,UINT(modeltea.vertices.size()),vertexRtea, vertexBufferViewtea, wvpResourceTea, wvpDataTea);
+	model->Initialize(modeltea,modeltea.model.material.textureFilePath,UINT(modeltea.model.vertices.size()),vertexRtea, vertexBufferViewtea, wvpResourceTea, wvpDataTea);
 	
 	return model;
 }
 
 void Model::Initialize(
+	ModelAllData data,
 	std::string name_,
 	int point,
 	ID3D12Resource* vertexRtea,
@@ -175,7 +175,9 @@ void Model::Initialize(
 
 	modelM_ = ModelManager::GetInstance();
 
-	name = name_;
+	modelData_ = data;
+
+	name =name_;
 
 
 	SRVManager* SRVM = SRVManager::GetInstance();
@@ -236,6 +238,7 @@ void Model::Initialize(
 	pointLightData_->intensity = 1.0f;
 #pragma endregion
 
+	localM_ = MakeIdentity4x4();
 
 	Log("Model " +name_ +" is Created!\n");
 }
@@ -247,10 +250,21 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 
 	materialData_->uvTransform = MakeAffineMatrix(uvscale, uvrotate, uvpos);
 
-	Matrix4x4 WVP = worldMatrix* camera.GetViewProjectionMatrix();
+	if (modelData_.animation.nodeAnimations.size() != 0) {
 
-	wvpData_->WVP = WVP;
-	wvpData_->World = worldMatrix;
+		Matrix4x4 WVP = localM_ * worldMatrix * camera.GetViewProjectionMatrix();
+
+		wvpData_->WVP = WVP;
+		wvpData_->World = localM_ * worldMatrix;
+	}
+	else {
+		Matrix4x4 WVP = worldMatrix * camera.GetViewProjectionMatrix();
+
+		wvpData_->WVP = WVP;
+		wvpData_->World =worldMatrix;
+	}
+
+
 	wvpData_->WorldInverseTranspose = Inverse(Transpose(worldMatrix));
 
 	cameraData_->worldPosition = camera.GetMainCamera().GetMatWorldTranslate();
@@ -280,6 +294,59 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 	}
 	//描画！		
 	DXF_->GetCMDList()->DrawInstanced(point_, 1, 0, 0);
+}
+
+Vector3 CalculateValue(const std::vector<KayframeVector3>& keyframes, float time) {
+	assert(!keyframes.empty());
+	if (keyframes.size() == 1 || time <= keyframes[0].time) {
+		return keyframes[0].value;
+	}
+	for (size_t index = 0; index < keyframes.size() - 1; ++index) {
+		size_t nextIndex = index + 1;
+
+		if (keyframes[index].time <=time && time <= keyframes[nextIndex].time) {
+			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
+			return Esing(keyframes[index].value, keyframes[nextIndex].value, t);
+		}
+	}
+
+	return (*keyframes.rbegin()).value;
+}
+
+Quaternion CalculateValue(const std::vector<KayframeQuaternion>& keyframes, float time) {
+	assert(!keyframes.empty());
+	if (keyframes.size() == 1 || time <= keyframes[0].time) {
+		return keyframes[0].value;
+	}
+	for (size_t index = 0; index < keyframes.size() - 1; ++index) {
+		size_t nextIndex = index + 1;
+
+		if (keyframes[index].time <= time && time <= keyframes[nextIndex].time) {
+			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
+			return Slerp(keyframes[index].value, keyframes[nextIndex].value, t);
+		}
+	}
+
+	return (*keyframes.rbegin()).value;
+}
+
+void Model::PlayAnimation(int animeNum)
+{
+	if (modelData_.animation.nodeAnimations.size() != 0) {
+		animationTime += 1.0f / 60.0f;
+		animationTime = std::fmod(animationTime, modelData_.animation.duration);
+
+		NodeAnimation& rootNodeAnimation = modelData_.animation.nodeAnimations[modelData_.model.rootNode.name];
+		Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
+		Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
+		Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
+
+
+
+		localM_ = MakeAffineMatrix(scale, rotate, translate);
+
+	}
+
 }
 
 void Model::DebugParameter(const char* name)

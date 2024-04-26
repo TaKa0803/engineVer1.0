@@ -2,12 +2,13 @@
 #include<stdint.h>
 #include<vector>
 #include<string>
+#include<map>
 
 #include"Math/Vector2.h"
 #include"Math/Vector3.h"
 #include"Math/Vector4.h"
 #include"Math/Matrix.h"
-
+#include"Quaternion.h"
 
 #pragma region 構造体
 
@@ -55,18 +56,54 @@ struct MaterialData {
 	std::string textureFilePath;
 };
 
-struct ModelData {
-	std::vector<VertexData> vertices;
-	MaterialData material;
+struct Node {
+	Matrix4x4 localMatrix;
+	std::string name;
+	std::vector<Node>children;
 };
 
 
 
 
+template<typename tValue>
+struct Keyframe {
+	float time;
+	tValue value;
+};
+using KayframeVector3 = Keyframe<Vector3>;
+using KayframeQuaternion = Keyframe<Quaternion>;
 
+template<typename tValue>
+struct AnimationCurve {
+	std::vector<Keyframe<tValue>>keyframes;
+};
 
+struct NodeAnimation
+{
+	AnimationCurve<Vector3>translate;
+	AnimationCurve<Quaternion>rotate;
+	AnimationCurve<Vector3>scale;
+};
 
+struct Animation
+{
+	//animation全体の尺
+	float duration;
+	//ノードanimation集合、Node名で引ける
+	std::map<std::string, NodeAnimation>nodeAnimations;
+};
 
+struct ModelData {
+	std::vector<VertexData> vertices;
+	MaterialData material;
+	Node rootNode;
+};
+
+struct ModelAllData
+{
+	ModelData model;
+	Animation animation;
+};
 
 struct Material {
 	//色

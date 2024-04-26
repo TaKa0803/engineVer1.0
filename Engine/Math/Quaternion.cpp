@@ -50,6 +50,9 @@ Quaternion Inverse(const Quaternion& que) {
 }
 
 
+
+
+
 float Dot(const Quaternion& q0, const Quaternion& q1)
 {
 	return { q0.x * q1.x + q0.y * q1.y + q0.z * q1.z + q0.w * q1.w };
@@ -127,4 +130,26 @@ Matrix4x4 MakeRotateMatrix(const Quaternion& q) {
 		0,0,0,1
 
 	};
+}
+
+// ３次元アフィン変換行列
+Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Quaternion& rotate, const Vector3& translate) {
+	// Scale
+	Matrix4x4 S = {
+		scale.x, 0, 0, 0,
+		0, scale.y, 0, 0,
+		0, 0, scale.z, 0,
+		0, 0, 0, 1 };
+	// Rotate
+
+	Matrix4x4 R = MakeRotateMatrix(rotate);
+	// translate
+	Matrix4x4 T = {
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		translate.x, translate.y, translate.z, 1,
+	};
+	Matrix4x4 NEW = S * (R * T);
+	return NEW;
 }

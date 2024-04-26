@@ -10,7 +10,8 @@
     "LFoot": [ "Object/LFoot", "LFoot.obj" ],
     "RFoot": [ "Object/RFoot", "RFoot.obj" ],
     "sphere": [ "SystemResources/sphere", "sphere.obj" ],
-    "terrain": [ "terrain", "terrain.obj" ]
+    "terrain": [ "terrain", "terrain.obj" ],
+    "AnimeCube": [ "AnimatedCube", "AnimatedCube.gltf" ]
   },
   "InstancingmodelPathFile": {
     "weapon": [ "resources/Models", "Weapon", 64 ],

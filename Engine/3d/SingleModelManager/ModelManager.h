@@ -36,7 +36,7 @@ public:
 	/// </summary>
 	/// <param name="filename">modelの名前またはresources以降のパス</param>
 	/// <returns>モデルデータ</returns>
-	ModelData GetModelData( const std::string& filename);
+	ModelAllData GetModelData( const std::string& filename);
 
 	//描画前処理
 	static void PreDraw(FillMode fillMode = FillMode::kSolid, BlendMode blendMode = BlendMode::kNormal);
@@ -63,14 +63,17 @@ private:
 		std::string path;
 	};
 
+
+	
+
 	//保存データ構造
-	std::vector<std::pair<NameAndPath, ModelData>> modelDatas;
+	std::vector<std::pair<NameAndPath, ModelAllData>> modelDatas;
 
 	//最大量設定
 	const size_t maxModelData = 256;
 
 	//GetModelDataでモデルが見つからない場合エラーをはくか否か
-	bool isError = true;
+	bool isError = false;
 
 
 };

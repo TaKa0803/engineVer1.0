@@ -12,35 +12,6 @@
 #include"Camera/Camera.h"
 
 
-//キーフレーム
-template<typename tValue>
-struct Keyframe {
-	float time;
-	tValue value;
-};
-using KayframeVector3 = Keyframe<Vector3>;
-using KayframeQuaternion = Keyframe<Quaternion>;
-
-//ノードanimation
-template<typename tValue>
-struct AnimationCurve {
-	std::vector<Keyframe<tValue>>keyframes;
-};
-
-struct NodeAnimation {
-	AnimationCurve<Vector3>translate;
-	AnimationCurve<Quaternion>rotate;
-	AnimationCurve<Vector3>scale;
-
-};
-
-//animation全体
-struct Animation {
-	float duration;//animation全体の尺
-	//NodeAnimationの集合
-	std::map<std::string, NodeAnimation>NodeAnimation;
-};
-
 
 class Model {
 public:
@@ -77,6 +48,8 @@ public:
 	/// <param name="viewProjection"></param>
 	/// <param name="texture"></param>
 	void Draw(const Matrix4x4& WVP, const Camera& camera, Vector3 pointlight = { 0,0,0 }, int texture = -1);
+
+	void PlayAnimation(int animeNum = 0);
 
 	/// <summary>
 	/// Debug用ImGui表示
@@ -136,6 +109,7 @@ private:
 
 	//初期化
 	void Initialize(
+		ModelAllData data,
 		std::string name,
 		int point,
 		ID3D12Resource* vertexRtea,
@@ -149,6 +123,8 @@ private:
 	DirectXFunc* DXF_;
 
 	ModelManager* modelM_;
+
+	ModelAllData modelData_;
 
 	//埋めるか否か
 	FillMode fillMode_ = FillMode::kSolid;
@@ -191,6 +167,8 @@ private:
 	Vector3 uvscale{ 1.0f,1.0f,1.0f };
 	Vector3 uvrotate{};
 
+	float animationTime = 0.0f;
+	Matrix4x4 localM_;
 };
 
 

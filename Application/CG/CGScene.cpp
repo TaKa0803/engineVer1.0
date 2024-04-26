@@ -17,7 +17,7 @@ CGScnene::~CGScnene() { delete terrain; }
 
 void CGScnene::Initialize()
 {
-	object->Initialize("sphere");
+	object->Initialize("AnimeCube");
 	terrain->Initialize("terrain");
 
 	camera_->Initialize();

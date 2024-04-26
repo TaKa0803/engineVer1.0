@@ -74,8 +74,8 @@ void ModelManager::LoadAllModels() {
 			NameAndPath nameAndPath = { itemTag,modeldirectoryPath + foldaPath+modelfullPath };
 
 			//モデルデータを作成して設定
-			ModelData newmodelData = LoadModelFile(modeldirectoryPath+foldaPath, modelfullPath);
-			std::pair<NameAndPath, ModelData>newData(nameAndPath, newmodelData);
+			ModelAllData newmodelData = LoadModelFile(modeldirectoryPath+foldaPath, modelfullPath);
+			std::pair<NameAndPath, ModelAllData>newData(nameAndPath, newmodelData);
 			modelDatas.emplace_back(newData);
 
 		}
@@ -89,7 +89,7 @@ void ModelManager::Finalize()
 	grarphics_ = nullptr;
 }
 
-ModelData ModelManager::GetModelData(const std::string& filename) {
+ModelAllData ModelManager::GetModelData(const std::string& filename) {
 
 
 	//データ型に該当するものを追加
@@ -106,14 +106,14 @@ ModelData ModelManager::GetModelData(const std::string& filename) {
 	}
 	else {
 		//モデルデータを作成して設定
-		ModelData newmodelData = LoadObjFile("resources", filename);
-		std::pair<std::string, ModelData>newData(filename, newmodelData);
+		ModelAllData newmodelData = LoadModelFile("resources", filename);
+		std::pair<std::string, ModelAllData>newData(filename, newmodelData);
 		modelDatas.emplace_back(newData);
 		return modelDatas.back().second;
 	}
 
 
-	return ModelData();
+	return ModelAllData();
 }
 void ModelManager::PreDraw(FillMode fillMode, BlendMode blendMode)
 {

@@ -39,13 +39,13 @@ public:
 		ans.w = q.w * r.w - qv * rv;
 
 		return ans;
-	}
+	};
 	friend Quaternion operator+(const Quaternion& q1, const Quaternion& q2) {
 		return { .x{q1.x + q2.x},.y{q1.y + q2.y},.z{q1.z + q2.z},.w{q1.w + q2.w} };
 	}
 
 	
-	Quaternion& operator*=(float s) { x *= s; y *= s; z *= s; w *= s; return *this; }
+	Quaternion& operator*=(float s) { x *= s; y *= s; z *= s; w *= s; return *this; };
 #pragma endregion
 
 
@@ -73,3 +73,6 @@ float Norm(const Quaternion& que);
 Quaternion Normalize(const Quaternion& que);
 
 Quaternion Inverse(const Quaternion& que);
+
+// ３次元アフィン変換行列
+Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Quaternion& rotate, const Vector3& translate);

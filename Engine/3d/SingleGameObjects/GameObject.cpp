@@ -13,6 +13,7 @@ void GameObject::Initialize(const std::string& filepath) {
 }
 
 void GameObject::Update() {
+	model_->PlayAnimation();
 	world_.UpdateMatrix();
 }
 

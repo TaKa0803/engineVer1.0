@@ -40,14 +40,96 @@ MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const st
 
 }
 
+Animation LoadAnimationFile(const std::string& directoryPath, const std::string& filename) {
+	Animation result;
 
-ModelData LoadModelFile(const std::string& directoryPath, const std::string& modelName) {
-	ModelData modeldata;//構築するModelData
+	Assimp::Importer importer;
+	std::string filePath = directoryPath + "/" + filename;
+
+	const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
+	assert(scene->mNumAnimations != 0);
+	aiAnimation* animationAssimp = scene->mAnimations[0];//最初のアニメーションのみ読み込み
+	result.duration = float(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);//時間の単位を秒に変換
+
+	//assimpでは個々のNodeのAnimationをchannelと読んでいるのでchannelを回してNodeAnimationの情報を取る
+	for (uint32_t channelIndex = 0; channelIndex < animationAssimp->mNumChannels; ++channelIndex) {
+			aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
+			//参照渡し
+			NodeAnimation& nodeAnimation = result.nodeAnimations[nodeAnimationAssimp->mNodeName.C_Str()];
+
+			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex) {
+				aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
+				KayframeVector3 keyframe;
+				keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
+				keyframe.value = { -keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };//右手ー＞左手
+				nodeAnimation.translate.keyframes.push_back(keyframe);
+			}
+
+			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex) {
+				aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
+				KayframeQuaternion keyframe;
+				keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
+				keyframe.value = { keyAssimp.mValue.x,-keyAssimp.mValue.y,-keyAssimp.mValue.z,keyAssimp.mValue.w };//右手ー＞左手
+				nodeAnimation.rotate.keyframes.push_back(keyframe);
+			}
+			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex) {
+				aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
+				KayframeVector3 keyframe;
+				keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
+				keyframe.value = { keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };//右手ー＞左手
+				nodeAnimation.scale.keyframes.push_back(keyframe);
+			}
+		}
+
+
+
+	return result;
+}
+
+Node ReadNode(aiNode* node) {
+	Node result;
+	aiMatrix4x4 aiLocalMatrix = node->mTransformation;
+	aiLocalMatrix.Transpose();
+	result.localMatrix.m[0][0] = aiLocalMatrix[0][0];
+	result.localMatrix.m[1][0] = aiLocalMatrix[1][0];
+	result.localMatrix.m[2][0] = aiLocalMatrix[2][0];
+	result.localMatrix.m[3][0] = aiLocalMatrix[3][0];
+
+	result.localMatrix.m[0][1] = aiLocalMatrix[0][1];
+	result.localMatrix.m[1][1] = aiLocalMatrix[1][1];
+	result.localMatrix.m[2][1] = aiLocalMatrix[2][1];
+	result.localMatrix.m[3][1] = aiLocalMatrix[3][1];
+
+	result.localMatrix.m[0][2] = aiLocalMatrix[0][2];
+	result.localMatrix.m[1][2] = aiLocalMatrix[1][2];
+	result.localMatrix.m[2][2] = aiLocalMatrix[2][2];
+	result.localMatrix.m[3][2] = aiLocalMatrix[3][2];
+
+	result.localMatrix.m[0][3] = aiLocalMatrix[0][3];
+	result.localMatrix.m[1][3] = aiLocalMatrix[1][3];
+	result.localMatrix.m[2][3] = aiLocalMatrix[2][3];
+	result.localMatrix.m[3][3] = aiLocalMatrix[3][3];
+
+	result.name = node->mName.C_Str();
+	result.children.resize(node->mNumChildren);
+	for (uint32_t childIndex = 0; childIndex < node->mNumChildren; ++childIndex) {
+		result.children[childIndex] = ReadNode(node->mChildren[childIndex]);
+	}
+
+	return result;
+}
+
+ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& modelName) {
+	ModelAllData modeldata;//構築するModelData
 
 	//読み込み
 	Assimp::Importer imp;
 	std::string filePath = directoryPath + "/" + modelName ;
 	const aiScene* scene = imp.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
+
+	if (scene->mNumAnimations != 0) {
+		modeldata.animation = LoadAnimationFile(directoryPath, modelName);
+	}
 
 	assert(scene->HasMeshes());//メッシュがないのは非対応
 	//メッシュ解析
@@ -72,7 +154,7 @@ ModelData LoadModelFile(const std::string& directoryPath, const std::string& mod
 
 				vertex.position.x *= -1.0f;
 				vertex.normal.x *= -1.0f;
-				modeldata.vertices.push_back(vertex);
+				modeldata.model.vertices.push_back(vertex);
 			}
 		}
 	}
@@ -82,9 +164,14 @@ ModelData LoadModelFile(const std::string& directoryPath, const std::string& mod
 		if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
 			aiString textureFilePath;
 			material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
-			modeldata.material.textureFilePath = directoryPath + "/" + textureFilePath.C_Str();
+			modeldata.model.material.textureFilePath = directoryPath + "/" + textureFilePath.C_Str();
 		}
 	}
+
+#pragma region ノード解析
+	modeldata.model.rootNode = ReadNode(scene->mRootNode);
+#pragma endregion
+
 
 	return modeldata;
 
