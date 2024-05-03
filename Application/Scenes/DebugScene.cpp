@@ -13,6 +13,8 @@ DebugScene::DebugScene()
 
 	obb = std::make_unique<OBBCollider>();
 
+	int tex = TextureManager::LoadTex("resources/Texture/AL/skill.png");
+	splite_.reset(Sprite::Create(tex, { 64,64 }, { 64,64 },{64,64}));
 
 	//エフェクト
 	EffectExp_ = EffectExplosion::GetInstance();
@@ -29,11 +31,11 @@ void DebugScene::Initialize()
 	camera_->SetTarget(&cWorld_);
 
 
-	sp1->Initialize("sp",sw1);
-	sp2->Initialize("sp",sw2);
-	obb->Initialize("sp",obbw);
+	sp1->Initialize("sp", sw1);
+	sp2->Initialize("sp", sw2);
+	obb->Initialize("sp", obbw);
 
-	
+
 	sw1.Initialize();
 	sw2.Initialize();
 	obbw.Initialize();
@@ -116,11 +118,26 @@ void DebugScene::Update()
 		sw1.UpdateMatrix();
 		sp1->Update();
 	}
+
+
+#pragma region スプライト
+	float kdistance = 50;
+	//オフセット
+	Vector3 pos = obbw.translate_;
+
+	Matrix4x4 vpv = camera_->GetViewProjectionMatrix() * camera_->GetViewportMatrix();
+
+	//変換
+	pos = Transform(pos, vpv);
+	splite_->SetPosition(pos);
+#pragma endregion
+
+
 }
 
 void DebugScene::Draw()
 {
-	
+
 	sp1->Draw();
 	sp2->Draw();
 	obb->Draw();
@@ -129,6 +146,8 @@ void DebugScene::Draw()
 	EffectExp_->Draw();
 
 	InstancingModelManager::GetInstance()->DrawAllModel(camera_->GetViewProjectionMatrix());
+
+	splite_->Draw();
 }
 
 void DebugScene::Debug()

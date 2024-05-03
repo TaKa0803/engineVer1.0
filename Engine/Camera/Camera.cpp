@@ -76,6 +76,8 @@ void Camera::Update() {
 	projection_ = MakePerspectiveFovMatrix(0.45f, (float)WindowApp::kClientWidth / (float)WindowApp::kClientHeight, 0.1f, FarZ);
 	viewProjection_ = view_ * projection_;
 
+	viewPort_ = MakeViewPortMatrix(0, 0, (float)WindowApp::kClientWidth, (float)WindowApp::kClientHeight, 0, 1);
+
 #pragma region Segment設定
 	//カメラ位置計算
 	segment_.origin = mainCamera_.GetMatWorldTranslate();

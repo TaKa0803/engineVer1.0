@@ -135,7 +135,7 @@ Sprite* Sprite::Create(int texture, const Vector2 size, const Vector2 Rect, cons
 	Sprite* sprite = new Sprite();
 	sprite->Initialize(texture,newWorld, vertexResource, indexResourceSprite, indexBufferViewSprite);
 
-
+	
 	Log("Sprite is Created!\n");
 
 	return sprite;

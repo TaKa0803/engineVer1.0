@@ -57,6 +57,8 @@ public:
 	/// <returns>ViewProjectionの4x4行列を返却</returns>
 	const Matrix4x4& GetViewProjectionMatrix() const { return viewProjection_; }
 
+	const Matrix4x4& GetViewportMatrix()const { return viewPort_; }
+
 	/// <summary>
 	/// 
 	/// </summary>
@@ -120,6 +122,8 @@ private:
 
 	//VP
 	Matrix4x4 viewProjection_ = MakeIdentity4x4();
+
+	Matrix4x4 viewPort_ = MakeIdentity4x4();
 
 	//注目点都の値
 	float farFeaturedPos_ = -50;

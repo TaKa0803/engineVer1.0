@@ -9,6 +9,8 @@
 #include"ColliderOBB/OBBCollider.h"
 
 #include"Effect/EffectExplosion.h"
+#include"2d/Sprite/Sprite.h"
+#include"TextureManager/TextureManager.h"
 
 class DebugScene : public IScene {
 
@@ -46,7 +48,7 @@ private:
 
 	std::unique_ptr<OBBCollider> obb;
 
-
+	std::unique_ptr<Sprite>splite_;
 
 	//エフェクト
 	EffectExplosion* EffectExp_;
