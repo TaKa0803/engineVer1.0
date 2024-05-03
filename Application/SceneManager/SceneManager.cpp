@@ -39,7 +39,7 @@ void SceneManager::Initialize()
 	sceneName_.push_back("CG");
 
 	//初期シーン設定
-	IScene::SetSceneNo(CG);
+	IScene::SetSceneNo(ALTITLE);
 
 }
 
