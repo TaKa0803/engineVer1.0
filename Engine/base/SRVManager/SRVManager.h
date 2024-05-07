@@ -29,11 +29,13 @@ public:
 	/// <returns>データ型のイテレータ返却</returns>
 	int CreateSRV(ID3D12Resource* textureResource, ID3D12Resource* intermediateResource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvdesc);
 
+	D3D12_CPU_DESCRIPTOR_HANDLE CreateSRVHandle();
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <param name="DXF"></param>
-	void Initialize(DirectXFunc*DXF);
+	void Initialize(ID3D12Device*DXF);
 
 	/// <summary>
 	/// Texture読み込みがすべて終わった後GPUに送る処理
@@ -68,7 +70,7 @@ public:
 private:
 
 	
-	DirectXFunc* DXF_=nullptr;
+	ID3D12Device* DXF_=nullptr;
 
 	//SRV用のヒープでディスクリプタの数は１２８。SRVはSHADER内で触るものなので、ShaderVisibleはtrue
 	ID3D12DescriptorHeap* srvDescriptorHeap=nullptr;
@@ -83,7 +85,7 @@ private:
 	std::map<int, D3D12_GPU_DESCRIPTOR_HANDLE>hDatas_;
 	
 	//SRV値初期値
-	int SRVsize_ = 3;
+	int SRVsize_ = 0;
 
 	const size_t maxSRVSize_ = 256;
 };

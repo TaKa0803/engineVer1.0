@@ -1,6 +1,6 @@
 #pragma once
 #include"WinApp/WinApp.h"
-
+#include"Vector4.h"
 #include<d3d12.h>
 #include<dxgi1_6.h>
 #include<stdint.h>
@@ -32,6 +32,9 @@ public:
 	/// </summary>
 	/// <param name="winApp"></param>
 	void Initialize(WindowApp* winApp);
+
+
+	void PrePreDraw();
 
 	/// <summary>
 	/// 描画前処理
@@ -88,8 +91,9 @@ private://メンバ関数
 
 	void DSVInitialize();
 
-	
 	void FenceInitialize();
+
+	void RenderTextureInitialize();
 #pragma endregion
 
 private://メンバ変数
@@ -99,6 +103,8 @@ private://メンバ変数
 
 	//ポインタ
 	WindowApp* winApp_ = nullptr;
+
+
 
 	ComPtr<IDXGIAdapter4> useAdapter = nullptr;
 
@@ -126,15 +132,18 @@ private://メンバ変数
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
 
 	ID3D12DescriptorHeap* rtvDescriptorHeap;
-
-
-	
-
+	uint32_t descriptorSizeRTV;
 
 	ID3D12Resource* depthStencilResource;
 	ID3D12DescriptorHeap* dsvDescriptorHeap;
 	uint32_t descriptorSizeDSV;
 
+
+
+	const Vector4 kRenderTargetClearValue={ 1.0f,0.0f,0.0f,1.0f };
+	ID3D12Resource* renderTextureResource;
+	D3D12_SHADER_RESOURCE_VIEW_DESC renderTextureSrvDesc{};
+	D3D12_CPU_DESCRIPTOR_HANDLE handle_;
 
 	//フェンス
 	ComPtr<ID3D12Fence> fence = nullptr;

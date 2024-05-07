@@ -10,13 +10,51 @@
 #pragma comment(lib,"winmm.lib")
 
 DirectXFunc* DirectXFunc::GetInstance()
-{	
+{
 	static DirectXFunc Instance;
 	return &Instance;
 }
 
 
+ID3D12Resource* CreateRenderTextureResource(ID3D12Device* device, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor) {
 
+
+	D3D12_RESOURCE_DESC resourceDesc{};
+	resourceDesc.Width = width;											//Textureの幅
+	resourceDesc.Height = height;										//Textureの高さ
+	resourceDesc.MipLevels = 1;											//mipmapの数
+	resourceDesc.DepthOrArraySize = 1;									//奥行き　or 配列Textureの配列数
+	resourceDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;				//DepthStencilとして利用可能なフォーマット
+	resourceDesc.SampleDesc.Count = 1;									//サンプリングカウント、１固定
+	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;		//２次元
+	resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;		//RenderTargetとして使う通知
+
+
+	//Heap生成
+	D3D12_HEAP_PROPERTIES heapProperties{};
+	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+
+	D3D12_CLEAR_VALUE clearValue;
+	clearValue.Format = format;
+	clearValue.Color[0] = clearColor.x;
+	clearValue.Color[1] = clearColor.y;
+	clearValue.Color[2] = clearColor.z;
+	clearValue.Color[3] = clearColor.w;
+
+	ID3D12Resource* resource = nullptr;
+	HRESULT hr = device->CreateCommittedResource(
+		&heapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&resourceDesc,
+		D3D12_RESOURCE_STATE_RENDER_TARGET,	//これから描画することを前提としたTextureなのでRenderTargetとして使うことから始める
+		&clearValue,						//clear最適値、ClearRenderTargetをこの色でClearするようにする。最適化されているので最速
+		IID_PPV_ARGS(&resource)
+	);
+
+	assert(SUCCEEDED(hr));
+
+	return resource;
+}
 
 
 
@@ -46,15 +84,25 @@ void DirectXFunc::Initialize(WindowApp* winApp)
 	CommandInitialize();
 	SwapChainInitialize();
 	RTVInitialize();
+
+	//SRV
+	SRVManager* SRVM_ = SRVManager::GetInstance();
+	SRVM_->Initialize(device.Get());
+
+
 	DSVInitialize();
 	FenceInitialize();
 
 	FixFPSInitialize();
 
-	
+
+
+	RenderTextureInitialize();
 
 	Log("Complete DirectXFunc Initialize\n");
 }
+
+
 
 void DirectXFunc::FixFPSInitialize() {
 	reference_ = std::chrono::steady_clock::now();
@@ -72,11 +120,11 @@ void DirectXFunc::UpdateFixFPS() {
 	std::chrono::microseconds elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
 
 	if (elapsed < kMinCheckTime) {
-		while (std::chrono::steady_clock::now()-reference_<kMinTime) {
+		while (std::chrono::steady_clock::now() - reference_ < kMinTime) {
 			std::this_thread::sleep_for(std::chrono::microseconds(1));
 		}
 	}
-	
+
 	reference_ = std::chrono::steady_clock::now();
 
 }
@@ -91,7 +139,7 @@ void DirectXFunc::D3D12Devicenitialize()
 #pragma endregion
 #pragma region 使用するアダプタを決定する
 	//使用するアダプタ用の変数。最初にnullptrを入れておく
-	
+
 	//いい順にアダプタを積む
 	for (UINT i = 0; dxgiFactory->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&useAdapter)) != DXGI_ERROR_NOT_FOUND; ++i) {
 		//アダプターの情報取得
@@ -128,7 +176,7 @@ void DirectXFunc::D3D12Devicenitialize()
 	Log("Complete create D3D12Device!!\n");
 #pragma region エラー・警告で停止
 #ifdef _DEBUG
-	
+
 	if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
 		//やばいエラー時に止まる
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
@@ -154,7 +202,7 @@ void DirectXFunc::D3D12Devicenitialize()
 		//指定したメッセージの表示を抑制する
 		infoQueue->PushStorageFilter(&filter);
 #pragma endregion
-		
+
 	}
 #endif
 #pragma endregion
@@ -192,6 +240,7 @@ void DirectXFunc::SwapChainInitialize()
 	swapChainDesc.BufferCount = 2;
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 
+
 	HRESULT hr = dxgiFactory->CreateSwapChainForHwnd(commandQueue.Get(), winApp_->GetHwnd(), &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain.GetAddressOf()));
 	assert(SUCCEEDED(hr));
 #pragma endregion
@@ -206,17 +255,16 @@ void DirectXFunc::SwapChainInitialize()
 void DirectXFunc::RTVInitialize()
 {
 	//RTVようのヒープでディスクリプタの数は２。RTVはSHADER内で触るものではないのでShaderVisibleはfalse
-	rtvDescriptorHeap = CreateDescriptorHeap(device.Get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
-	const uint32_t descriptorSizeRTV = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	rtvDescriptorHeap = CreateDescriptorHeap(device.Get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 3, false);
+	descriptorSizeRTV = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 #pragma region RTV
 	//RTV
-	
 	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 	//ディスクリプタの先頭を取得する
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle = GetCPUDescriptorHandle(rtvDescriptorHeap, descriptorSizeRTV, 0);
 	//
-	
+
 	//
 	rtvHandles[0] = rtvStartHandle;
 	device->CreateRenderTargetView(swapChainResources[0].Get(), &rtvDesc, rtvHandles[0]);
@@ -226,11 +274,9 @@ void DirectXFunc::RTVInitialize()
 #pragma endregion
 }
 
-
-
 void DirectXFunc::DSVInitialize()
 {
-	
+
 	//DSV用のヒープでディスクリプタの数は１。DSVはShader内で触るものではないので、ShaderVisibleはfalse
 	dsvDescriptorHeap = CreateDescriptorHeap(device.Get(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 	descriptorSizeDSV = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
@@ -247,8 +293,6 @@ void DirectXFunc::DSVInitialize()
 #pragma endregion
 }
 
-
-
 void DirectXFunc::FenceInitialize()
 {
 #pragma region FenceとEventの生成と処理
@@ -261,28 +305,119 @@ void DirectXFunc::FenceInitialize()
 #pragma endregion
 }
 
+void DirectXFunc::RenderTextureInitialize()
+{
+
+
+	handle_ = GetCPUDescriptorHandle(rtvDescriptorHeap, descriptorSizeRTV, 2);
+	
+
+	renderTextureResource = CreateRenderTextureResource(device.Get(),
+		WindowApp::kClientWidth, WindowApp::kClientHeight,
+		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
+
+	D3D12_RENDER_TARGET_VIEW_DESC rtDesc;
+	rtDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	rtDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+
+	device->CreateRenderTargetView(renderTextureResource, &rtvDesc, handle_);
+
+
+
+
+	//SRVの設定
+	renderTextureSrvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	renderTextureSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	renderTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	renderTextureSrvDesc.Texture2D.MipLevels = 1;
+
+	//SRVの生成
+	//device->CreateShaderResourceView(renderTextureResource, &renderTextureSrvDesc, handle_);
+	SRVManager::GetInstance()->CreateSRV(renderTextureResource, nullptr, renderTextureSrvDesc);
+
+}
+
 
 #pragma endregion
+
+
+
+void DirectXFunc::PrePreDraw()
+{
+	//これから書き込むバックバッファのインデックスを取得
+	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
+#pragma region TransitionBarrierを張る
+	//Transitionbarrierの設定
+	////今回のバリアはTransition
+	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	////Noneにしておく
+	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	////バリアを張る対象のリソース、現在のバックバッファに対して行う
+	barrier_.Transition.pResource = swapChainResources[backBufferIndex].Get();
+	////遷移前（現在）のResourceState
+	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+	////遷移後のResourceState
+	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	////TransitionBarrierを張る
+	commandList->ResourceBarrier(1, &barrier_);
+#pragma endregion
+
+#pragma region RTVとDSVの設定
+	//描画先のRTVとDSVを設定する
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = GetCPUDescriptorHandle(dsvDescriptorHeap, descriptorSizeDSV, 0);
+	commandList->OMSetRenderTargets(1, &handle_, false, &dsvHandle);
+#pragma endregion
+	//指定した色で画面全体をクリアする
+	float clearColor[] = { kRenderTargetClearValue.x,kRenderTargetClearValue.y,kRenderTargetClearValue.z,kRenderTargetClearValue.w };
+	//指定した深度で画面全体をクリアする
+	commandList->ClearRenderTargetView(handle_, clearColor, 0, nullptr);
+	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+#pragma region ViewportとScissor(シザー)
+	//ビューポート
+	D3D12_VIEWPORT viewport{};
+	//クライアント領域のサイズと一緒にして画面全体に表示
+	viewport.Width = (FLOAT)WindowApp::kClientWidth;
+	viewport.Height = (FLOAT)WindowApp::kClientHeight;
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
+
+	//シザー短形
+	D3D12_RECT scissorRect{};
+	//基本的にビューポートと同じ短形が構成されるようにする
+	scissorRect.left = 0;
+	scissorRect.right = WindowApp::kClientWidth;
+	scissorRect.top = 0;
+	scissorRect.bottom = WindowApp::kClientHeight;
+
+	commandList->RSSetViewports(1, &viewport);
+	commandList->RSSetScissorRects(1, &scissorRect);
+#pragma endregion
+	
+}
+
 
 void DirectXFunc::PreDraw()
 {
 	//これから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
 #pragma region TransitionBarrierを張る
-	//Transitionbarrierの設定
-	//今回のバリアはTransition
-	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	//Noneにしておく
-	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	//バリアを張る対象のリソース、現在のバックバッファに対して行う
-	barrier_.Transition.pResource = swapChainResources[backBufferIndex].Get();
-	//遷移前（現在）のResourceState
-	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-	//遷移後のResourceState
-	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	//TransitionBarrierを張る
-	commandList->ResourceBarrier(1, &barrier_);
+	////Transitionbarrierの設定
+	//////今回のバリアはTransition
+	//barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//////Noneにしておく
+	//barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//////バリアを張る対象のリソース、現在のバックバッファに対して行う
+	//barrier_.Transition.pResource = swapChainResources[backBufferIndex].Get();
+	//////遷移前（現在）のResourceState
+	//barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+	//////遷移後のResourceState
+	//barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	//////TransitionBarrierを張る
+	//commandList->ResourceBarrier(1, &barrier_);
 #pragma endregion
+
 #pragma region RTVとDSVの設定
 	//描画先のRTVとDSVを設定する
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = GetCPUDescriptorHandle(dsvDescriptorHeap, descriptorSizeDSV, 0);
@@ -340,11 +475,11 @@ void DirectXFunc::KickCommand()
 	HRESULT hr = commandList->Close();
 	assert(SUCCEEDED(hr));
 	//GPUにコマンドリストの実行を行わせる
-	ID3D12CommandList* commandLists[] = { commandList.Get()};
+	ID3D12CommandList* commandLists[] = { commandList.Get() };
 	commandQueue->ExecuteCommandLists(1, commandLists);
 	//GPUとOSに画面の交換を行うよう通知する
 	swapChain->Present(1, 0);
-	
+
 #pragma region GPUにSignalをおくる
 	//Fenceの値を更新
 	fenceValue++;
@@ -361,7 +496,7 @@ void DirectXFunc::KickCommand()
 	//GPUにシグナルを送るおわり
 	UpdateFixFPS();
 #pragma endregion 
-	
+
 	//次フレーム用のコマンドリストを取得
 	hr = commandAllocator->Reset();
 	assert(SUCCEEDED(hr));
@@ -374,7 +509,7 @@ void DirectXFunc::KickCommand()
 void DirectXFunc::Finalize()
 {
 	CloseHandle(fenceEvent);
-
+	//renderTextureResource->Release();
 	depthStencilResource->Release();
 	dsvDescriptorHeap->Release();
 	rtvDescriptorHeap->Release();

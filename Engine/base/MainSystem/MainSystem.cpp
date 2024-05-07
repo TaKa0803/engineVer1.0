@@ -43,10 +43,8 @@ void MainSystem::Initializes() {
 	DXCManager*DXC= DXCManager::GetInstance();
 	DXC->Initialize();
 
-	//SRV
 	SRVM_ = SRVManager::GetInstance();
-	SRVM_->Initialize(DXF_);
-	
+
 	//画像関係
 	textureManager_= TextureManager::GetInstance();
 	textureManager_->Initialize(DXF_);
@@ -130,14 +128,22 @@ void MainSystem::MainRoop() {
 #pragma region 描画		
 		///描画前処理
 		//DirectX
-		DXF_->PreDraw();
+
+		DXF_->PrePreDraw();
+
+		
 		//ImGui
 		imguiManager_->PreDraw();
-		
+
+
+
 		//==以下描画==//
 		gameScene_->Draw();
 		//==描画終わり==//
 
+		DXF_->PreDraw();
+
+		
 		///描画あと処理
 		//imGui
 		imguiManager_->PostDraw();

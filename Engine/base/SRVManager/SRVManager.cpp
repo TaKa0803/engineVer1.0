@@ -12,7 +12,7 @@ int SRVManager::CreateSRV(ID3D12Resource* textureResource, ID3D12Resource* inter
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = GetGPU_DES_HANDLE();
 
 	//srvの生成
-	DXF_->GetDevice()->CreateShaderResourceView(PushTextureResource(textureResource), &srvdesc, textureSrvHandleCPU);
+	DXF_->CreateShaderResourceView(PushTextureResource(textureResource), &srvdesc, textureSrvHandleCPU);
 
 
 	
@@ -22,13 +22,25 @@ int SRVManager::CreateSRV(ID3D12Resource* textureResource, ID3D12Resource* inter
 	return AddtextureNum(textureSrvHandleGPU);
 }
 
-void SRVManager::Initialize(DirectXFunc* DXF) {
+D3D12_CPU_DESCRIPTOR_HANDLE SRVManager::CreateSRVHandle()
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = GetCPU_DES_HANDLE();
+	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = GetGPU_DES_HANDLE();
+	
+	AddtextureNum(textureSrvHandleGPU);
+
+	return textureSrvHandleCPU;
+}
+
+
+
+void SRVManager::Initialize(ID3D12Device* DXF) {
 
 	DXF_ = DXF;
 
 	//SRV用のヒープでディスクリプタの数は１２８。SRVはSHADER内で触るものなので、ShaderVisibleはtrue
-	srvDescriptorHeap = CreateDescriptorHeap(DXF_->GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
-	descriptorSizeSRV = DXF_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	srvDescriptorHeap = CreateDescriptorHeap(DXF_, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
+	descriptorSizeSRV = DXF_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	//datas_.resize(maxSRVSize_);
 }
