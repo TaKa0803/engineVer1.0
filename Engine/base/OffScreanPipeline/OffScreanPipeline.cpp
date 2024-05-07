@@ -6,6 +6,8 @@
 
 #include<cassert>
 
+FullScreenData* OffScreenRendering::materialData_ = nullptr;
+
 OffScreenRendering::OffScreenRendering()
 {
 }
@@ -14,6 +16,8 @@ OffScreenRendering::~OffScreenRendering()
 {
 	rootSignature_->Release();
 	psoState_->Release();
+
+	materialResource_->Release();
 }
 
 void OffScreenRendering::Initialize()
@@ -29,7 +33,12 @@ void OffScreenRendering::Initialize()
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 #pragma region RootParameter 
 	//RootParameter作成。PixelShaderのMAterialとVertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameters[1] = {};
+	D3D12_ROOT_PARAMETER rootParameters[2] = {};
+
+	//マテリアル
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;		//PixelShaderで使う
+	rootParameters[1].Descriptor.ShaderRegister = 0;						//レジスタ番号０とバインド
 
 #pragma region ディスクリプタレンジ
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
@@ -93,7 +102,7 @@ void OffScreenRendering::Initialize()
 	inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
-	
+
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = nullptr;
 	inputLayoutDesc.NumElements = 0;// _countof(inputElementDescs);
@@ -103,10 +112,10 @@ void OffScreenRendering::Initialize()
 	DXCManager* DXC = DXCManager::GetInstance();
 
 	//Shaderをコンパイルする
-	IDxcBlob* vertexShaderBlob = CompileShader(L"resources/shaders/CopyImage.VS.hlsl", L"vs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
+	IDxcBlob* vertexShaderBlob = CompileShader(L"resources/shaders/Fullscreen.VS.hlsl", L"vs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
 	assert(vertexShaderBlob != nullptr);
 
-	IDxcBlob* pixelShaderBlob = CompileShader(L"resources/shaders/CopyImage.PS.hlsl", L"ps_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
+	IDxcBlob* pixelShaderBlob = CompileShader(L"resources/shaders/Fullscreen.PS.hlsl", L"ps_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
 	assert(pixelShaderBlob != nullptr);
 #pragma endregion
 #pragma region DepthStencilStateの設定を行う
@@ -129,47 +138,54 @@ void OffScreenRendering::Initialize()
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 #pragma endregion
 
-	
+
 #pragma region PSO群
 #pragma region BlendStateの設定を行う
-		//BlendStateの設定
-		D3D12_BLEND_DESC blendDesc{};	
-		//ブレンドなし
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;	
+	//BlendStateの設定
+	D3D12_BLEND_DESC blendDesc{};
+	//ブレンドなし
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
 #pragma endregion
 #pragma region PSOを生成
-		//psoDesc
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-		graphicsPipelineStateDesc.pRootSignature = rootSignature_;	//RootSignature
-		graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;	//InputLayout
-		graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),
-			vertexShaderBlob->GetBufferSize() };
-		graphicsPipelineStateDesc.PS = { pixelShaderBlob->GetBufferPointer(),
-			pixelShaderBlob->GetBufferSize() };
-		graphicsPipelineStateDesc.BlendState = blendDesc;
-		graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;
-		//書き込むRTVの情報
-		graphicsPipelineStateDesc.NumRenderTargets = 1;
-		graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-		//利用するトポロジのタイプ。三角形
-		graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		//どのように画面に色を打ち込むかの設定
-		graphicsPipelineStateDesc.SampleDesc.Count = 1;
-		graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-		//DepthStencilの設定
-		graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
-		graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		//実際に生成
+	//psoDesc
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
+	graphicsPipelineStateDesc.pRootSignature = rootSignature_;	//RootSignature
+	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;	//InputLayout
+	graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),
+		vertexShaderBlob->GetBufferSize() };
+	graphicsPipelineStateDesc.PS = { pixelShaderBlob->GetBufferPointer(),
+		pixelShaderBlob->GetBufferSize() };
+	graphicsPipelineStateDesc.BlendState = blendDesc;
+	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;
+	//書き込むRTVの情報
+	graphicsPipelineStateDesc.NumRenderTargets = 1;
+	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	//利用するトポロジのタイプ。三角形
+	graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	//どのように画面に色を打ち込むかの設定
+	graphicsPipelineStateDesc.SampleDesc.Count = 1;
+	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+	//DepthStencilの設定
+	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
+	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	//実際に生成
 
-		hr = DXF_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc,
-			IID_PPV_ARGS(&psoState_));
-		assert(SUCCEEDED(hr));
+	hr = DXF_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc,
+		IID_PPV_ARGS(&psoState_));
+	assert(SUCCEEDED(hr));
 #pragma endregion
 #pragma endregion
-	
 
-	Log("Complete SpritePSO Initialized!\n");
+	//マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
+	materialResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(FullScreenData));
+	//マテリアルにデータを書き込む
+	//書き込むためのアドレスを取得
+	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
+	materialData_->type = 0;
+	materialData_->sepiaValue = 0.5f;
+
+	Log("Complete FullScreenPSO Initialized!\n");
 }
 
 void OffScreenRendering::PreDraw()
@@ -177,4 +193,7 @@ void OffScreenRendering::PreDraw()
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	DXF_->GetCMDList()->SetGraphicsRootSignature(rootSignature_);
 	DXF_->GetCMDList()->SetPipelineState(psoState_);
+	//マテリアルCBufferの場所を設定
+	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, materialResource_->GetGPUVirtualAddress());
+
 }

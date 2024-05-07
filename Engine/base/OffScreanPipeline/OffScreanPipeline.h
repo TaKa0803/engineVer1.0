@@ -5,6 +5,12 @@
 
 #include"DirectXFunc/DirectXFunc.h"
 
+struct FullScreenData
+{
+	int32_t type;
+	float sepiaValue;
+};
+
 class OffScreenRendering {
 
 public:
@@ -22,11 +28,14 @@ public:
 	/// </summary>
 	void PreDraw();
 
+	static FullScreenData* materialData_;
 
 private:
 
-	DirectXFunc* DXF_;
+	DirectXFunc* DXF_=nullptr;
 
+	ID3D12Resource* materialResource_;
+	
 	//ルートシグネチャ
 	ID3D12RootSignature* rootSignature_ = nullptr;
 

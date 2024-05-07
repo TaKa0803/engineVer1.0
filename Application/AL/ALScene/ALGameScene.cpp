@@ -6,6 +6,7 @@
 #include"TextureManager/TextureManager.h"
 #include"AudioManager/AudioManager.h"
 #include"RandomNum/RandomNum.h"
+#include"OffScreanPipeline/OffScreanPipeline.h"
 
 ALGameScene::ALGameScene() {
 	input_ = Input::GetInstance();
@@ -234,6 +235,8 @@ void ALGameScene::Draw() {
 	case ALGameScene::Clear:
 
 		ClearUIUpdate();
+
+		OffScreenRendering::materialData_->type = 1;
 		break;
 	default:
 		break;
@@ -303,6 +306,7 @@ void ALGameScene::SceneChange() {
 			scene_ = Clear;
 			AudioManager::GetInstance()->StopAllSounds();
 			AudioManager::PlaySoundData(bgmClear_, 0.08f);
+			
 		}
 
 		
@@ -310,6 +314,7 @@ void ALGameScene::SceneChange() {
 #ifdef _DEBUG
 		if (input_->TriggerKey(DIK_P)) {
 			scene_ = Clear;
+			
 		}
 #endif // _DEBUG
 
@@ -339,6 +344,8 @@ void ALGameScene::SceneChange() {
 		if (sceneXhangeCount_++ >= maxSceneChangeCount_) {
 			sceneC_->SetColorAlpha(1);
 			sceneNo = ALTITLE;
+			OffScreenRendering::materialData_->type = 0;
+
 		}
 	}
 	else {

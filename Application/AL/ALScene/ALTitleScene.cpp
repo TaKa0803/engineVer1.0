@@ -1,7 +1,7 @@
 #include"ALTitleScene.h"
 #include"TextureManager/TextureManager.h"
 #include"AudioManager/AudioManager.h"
-
+#include"OffScreanPipeline/OffScreanPipeline.h"
 #include<imgui.h>
 
 ALTitleScene::ALTitleScene() {
@@ -40,6 +40,9 @@ void ALTitleScene::Initialize() {
 
 	AudioManager::GetInstance()->StopAllSounds();
 	AudioManager::PlaySoundData(titleSound_,0.08f);
+
+
+	OffScreenRendering::materialData_->type = 0;
 }
 
 void ALTitleScene::Update() {
