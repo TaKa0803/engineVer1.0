@@ -5,6 +5,11 @@
 #include<d3d12.h>
 #include"DirectXFunc/DirectXFunc.h"
 
+struct Handles {
+	D3D12_CPU_DESCRIPTOR_HANDLE cpu;
+	D3D12_GPU_DESCRIPTOR_HANDLE gpu;
+};
+
 class SRVManager {
 
 public://シングルトンパターン
@@ -29,7 +34,13 @@ public:
 	/// <returns>データ型のイテレータ返却</returns>
 	int CreateSRV(ID3D12Resource* textureResource, ID3D12Resource* intermediateResource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvdesc);
 
-	D3D12_CPU_DESCRIPTOR_HANDLE CreateSRVHandle();
+	/// <summary>
+	/// SRVの作成
+	/// </summary>
+	/// <param name="textureResource"></param>
+	/// <param name="srvdesc"></param>
+	/// <returns>GPUHandleの返却</returns>
+	Handles CreateSRV(ID3D12Resource* textureResource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvdesc);
 
 	/// <summary>
 	/// 初期化

@@ -2,6 +2,7 @@
 #include"Log/Log.h"
 #include"functions/function.h"
 #include"SRVManager/SRVManager.h"
+#include"OffScreanPipeline/OffScreanPipeline.h"
 #include<thread>
 #include<cassert>
 
@@ -99,7 +100,15 @@ void DirectXFunc::Initialize(WindowApp* winApp)
 
 	RenderTextureInitialize();
 
+
+
 	Log("Complete DirectXFunc Initialize\n");
+}
+
+void DirectXFunc::InitializeOthher()
+{
+	offScreen_ = new OffScreenRendering();
+	offScreen_->Initialize();
 }
 
 
@@ -308,22 +317,22 @@ void DirectXFunc::FenceInitialize()
 void DirectXFunc::RenderTextureInitialize()
 {
 
+	D3D12_RENDER_TARGET_VIEW_DESC rtDesc{};
+	rtDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	rtDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
-	handle_ = GetCPUDescriptorHandle(rtvDescriptorHeap, descriptorSizeRTV, 2);
-	
 
 	renderTextureResource = CreateRenderTextureResource(device.Get(),
 		WindowApp::kClientWidth, WindowApp::kClientHeight,
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
 
-	D3D12_RENDER_TARGET_VIEW_DESC rtDesc;
-	rtDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-	rtDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-
-	device->CreateRenderTargetView(renderTextureResource, &rtvDesc, handle_);
 
 
 
+	cHandle_ = GetCPUDescriptorHandle(rtvDescriptorHeap, descriptorSizeRTV, 2);
+	//gHandle_ = GetGPUDescriptorHandle(rtvDescriptorHeap, descriptorSizeRTV, 2);
+
+	device->CreateRenderTargetView(renderTextureResource, &rtDesc, cHandle_);
 
 	//SRVの設定
 	renderTextureSrvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
@@ -331,9 +340,13 @@ void DirectXFunc::RenderTextureInitialize()
 	renderTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	renderTextureSrvDesc.Texture2D.MipLevels = 1;
 
-	//SRVの生成
-	//device->CreateShaderResourceView(renderTextureResource, &renderTextureSrvDesc, handle_);
-	SRVManager::GetInstance()->CreateSRV(renderTextureResource, nullptr, renderTextureSrvDesc);
+	Handles data = SRVManager::GetInstance()->CreateSRV(renderTextureResource, renderTextureSrvDesc);
+
+	gHandle_ = data.gpu;
+	//cHandle_ = data.cpu;
+
+
+
 
 }
 
@@ -344,8 +357,71 @@ void DirectXFunc::RenderTextureInitialize()
 
 void DirectXFunc::PrePreDraw()
 {
+
+	//	//バリア
+	//	D3D12_RESOURCE_BARRIER barrier_{};
+	//	//これから書き込むバックバッファのインデックスを取得
+	//	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
+	//#pragma region TransitionBarrierを張る
+	//	//Transitionbarrierの設定
+	//	////今回のバリアはTransition
+	//	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//	////Noneにしておく
+	//	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//	////バリアを張る対象のリソース、現在のバックバッファに対して行う
+	//	barrier_.Transition.pResource = renderTextureResource;
+	//	//barrier_.Transition.pResource = swapChainResources[backBufferIndex].Get();
+	//	////遷移前（現在）のResourceState
+	//	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+	//	////遷移後のResourceState
+	//	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	//	////TransitionBarrierを張る
+	//	commandList->ResourceBarrier(1, &barrier_);
+#pragma endregion
+
+#pragma region RTVとDSVの設定
+	//描画先のRTVとDSVを設定する
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = GetCPUDescriptorHandle(dsvDescriptorHeap, descriptorSizeDSV, 0);
+	commandList->OMSetRenderTargets(1, &cHandle_, false, &dsvHandle);
+#pragma endregion
+	//指定した色で画面全体をクリアする
+	float clearColor[] = { kRenderTargetClearValue.x,kRenderTargetClearValue.y,kRenderTargetClearValue.z,kRenderTargetClearValue.w };
+	//指定した深度で画面全体をクリアする
+	commandList->ClearRenderTargetView(cHandle_, clearColor, 0, nullptr);
+	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+#pragma region ViewportとScissor(シザー)
+	//ビューポート
+	D3D12_VIEWPORT viewport{};
+	//クライアント領域のサイズと一緒にして画面全体に表示
+	viewport.Width = (FLOAT)WindowApp::kClientWidth;
+	viewport.Height = (FLOAT)WindowApp::kClientHeight;
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
+
+	//シザー短形
+	D3D12_RECT scissorRect{};
+	//基本的にビューポートと同じ短形が構成されるようにする
+	scissorRect.left = 0;
+	scissorRect.right = WindowApp::kClientWidth;
+	scissorRect.top = 0;
+	scissorRect.bottom = WindowApp::kClientHeight;
+
+	commandList->RSSetViewports(1, &viewport);
+	commandList->RSSetScissorRects(1, &scissorRect);
+#pragma endregion
+
+}
+
+
+void DirectXFunc::PreDraw()
+{
+	//バリア
+	D3D12_RESOURCE_BARRIER barrier_{};
 	//これから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
+
 #pragma region TransitionBarrierを張る
 	//Transitionbarrierの設定
 	////今回のバリアはTransition
@@ -362,72 +438,33 @@ void DirectXFunc::PrePreDraw()
 	commandList->ResourceBarrier(1, &barrier_);
 #pragma endregion
 
-#pragma region RTVとDSVの設定
-	//描画先のRTVとDSVを設定する
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = GetCPUDescriptorHandle(dsvDescriptorHeap, descriptorSizeDSV, 0);
-	commandList->OMSetRenderTargets(1, &handle_, false, &dsvHandle);
-#pragma endregion
-	//指定した色で画面全体をクリアする
-	float clearColor[] = { kRenderTargetClearValue.x,kRenderTargetClearValue.y,kRenderTargetClearValue.z,kRenderTargetClearValue.w };
-	//指定した深度で画面全体をクリアする
-	commandList->ClearRenderTargetView(handle_, clearColor, 0, nullptr);
-	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-#pragma region ViewportとScissor(シザー)
-	//ビューポート
-	D3D12_VIEWPORT viewport{};
-	//クライアント領域のサイズと一緒にして画面全体に表示
-	viewport.Width = (FLOAT)WindowApp::kClientWidth;
-	viewport.Height = (FLOAT)WindowApp::kClientHeight;
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
+#pragma region ResourceBarrier
 
-	//シザー短形
-	D3D12_RECT scissorRect{};
-	//基本的にビューポートと同じ短形が構成されるようにする
-	scissorRect.left = 0;
-	scissorRect.right = WindowApp::kClientWidth;
-	scissorRect.top = 0;
-	scissorRect.bottom = WindowApp::kClientHeight;
+	//Transitionbarrierの設定
+////今回のバリアはTransition
+	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	////Noneにしておく
+	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	////バリアを張る対象のリソース、現在のバックバッファに対して行う
+	barrier_.Transition.pResource = renderTextureResource;
+	////遷移前（現在）のResourceState
+	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	////遷移後のResourceState
+	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 
-	commandList->RSSetViewports(1, &viewport);
-	commandList->RSSetScissorRects(1, &scissorRect);
-#pragma endregion
-	
-}
+	////TransitionBarrierを張る
+	commandList->ResourceBarrier(1, &barrier_);
 
-
-void DirectXFunc::PreDraw()
-{
-	//これから書き込むバックバッファのインデックスを取得
-	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
-#pragma region TransitionBarrierを張る
-	////Transitionbarrierの設定
-	//////今回のバリアはTransition
-	//barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	//////Noneにしておく
-	//barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	//////バリアを張る対象のリソース、現在のバックバッファに対して行う
-	//barrier_.Transition.pResource = swapChainResources[backBufferIndex].Get();
-	//////遷移前（現在）のResourceState
-	//barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-	//////遷移後のResourceState
-	//barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	//////TransitionBarrierを張る
-	//commandList->ResourceBarrier(1, &barrier_);
-#pragma endregion
-
+#pragma region Swapchan
 #pragma region RTVとDSVの設定
 	//描画先のRTVとDSVを設定する
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = GetCPUDescriptorHandle(dsvDescriptorHeap, descriptorSizeDSV, 0);
 	commandList->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, &dsvHandle);
 #pragma endregion
 	//指定した色で画面全体をクリアする
-	float clearColor[] = { 0.1f,0.25f,0.5f,1.0f };//青っぽい色
 	//指定した深度で画面全体をクリアする
 	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-	commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], clearColor, 0, nullptr);
+	commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], &kRenderTargetClearValue.x, 0, nullptr);
 
 #pragma region ViewportとScissor(シザー)
 	//ビューポート
@@ -450,6 +487,28 @@ void DirectXFunc::PreDraw()
 #pragma endregion
 	commandList->RSSetViewports(1, &viewport);
 	commandList->RSSetScissorRects(1, &scissorRect);
+#pragma endregion
+
+
+
+	//RenderTextureをSwapchainに描画
+	offScreen_->PreDraw();
+	commandList->SetGraphicsRootDescriptorTable(0, gHandle_);
+	commandList->DrawInstanced(3, 1, 0, 0);
+
+	////バリアを張る対象のリソース、現在のバックバッファに対して行う
+	barrier_.Transition.pResource = renderTextureResource;;
+	////遷移前（現在）のResourceState
+	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	////遷移後のResourceState
+	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	////TransitionBarrierを張る
+	commandList->ResourceBarrier(1, &barrier_);
+#pragma endregion
+
+
+
+
 
 }
 
@@ -458,6 +517,16 @@ void DirectXFunc::PostDraw()
 #pragma region 画面表示できるようにする
 	//画面に描く処理はすべて終わり、画面に移すので状態を遷移
 	//今回はRenderTargetからPresentにする
+	//バリア
+	D3D12_RESOURCE_BARRIER barrier_{};
+	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
+
+	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	////Noneにしておく
+	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	////バリアを張る対象のリソース、現在のバックバッファに対して行う
+	barrier_.Transition.pResource = swapChainResources[backBufferIndex].Get();
+
 	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	//TransitionBarrierを張る

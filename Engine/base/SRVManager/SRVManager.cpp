@@ -22,15 +22,28 @@ int SRVManager::CreateSRV(ID3D12Resource* textureResource, ID3D12Resource* inter
 	return AddtextureNum(textureSrvHandleGPU);
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE SRVManager::CreateSRVHandle()
+Handles SRVManager::CreateSRV(ID3D12Resource* textureResource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvdesc)
 {
+	//SRVを作成するDescriptorHeapの場所を決める
 	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = GetCPU_DES_HANDLE();
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = GetGPU_DES_HANDLE();
+
+	//srvの生成
+	DXF_->CreateShaderResourceView(PushTextureResource(textureResource), &srvdesc, textureSrvHandleCPU);
+
+	intermediaResources_.emplace_back(std::move(nullptr));
 	
 	AddtextureNum(textureSrvHandleGPU);
 
-	return textureSrvHandleCPU;
+	Handles data = {
+		.cpu{textureSrvHandleCPU},
+		.gpu{textureSrvHandleGPU}
+	};
+
+	return data;
 }
+
+
 
 
 

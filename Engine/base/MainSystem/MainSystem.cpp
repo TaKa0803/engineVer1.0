@@ -35,13 +35,14 @@ void MainSystem::Initializes() {
 	winApp_ = WindowApp::GetInstance();
 	winApp_->Initialize(L"LE2A_07_キクチ",1280,720);
 
+	//DXCマネージャ
+	DXCManager* DXC = DXCManager::GetInstance();
+	DXC->Initialize();
+
 	//DirectX
 	DXF_ = DirectXFunc::GetInstance();
 	DXF_->Initialize(winApp_);
-
-	//DXCマネージャ
-	DXCManager*DXC= DXCManager::GetInstance();
-	DXC->Initialize();
+	DXF_->InitializeOthher();
 
 	SRVM_ = SRVManager::GetInstance();
 

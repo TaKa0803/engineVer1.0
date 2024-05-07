@@ -1,11 +1,14 @@
 #pragma once
 #include"WinApp/WinApp.h"
+
 #include"Vector4.h"
 #include<d3d12.h>
 #include<dxgi1_6.h>
 #include<stdint.h>
 #include<wrl.h>
 #include<chrono>
+
+class OffScreenRendering;
 
 class DirectXFunc {
 public://シングルトンパターン
@@ -33,6 +36,7 @@ public:
 	/// <param name="winApp"></param>
 	void Initialize(WindowApp* winApp);
 
+	void InitializeOthher();
 
 	void PrePreDraw();
 
@@ -140,10 +144,15 @@ private://メンバ変数
 
 
 
+	OffScreenRendering* offScreen_ = nullptr;
+
 	const Vector4 kRenderTargetClearValue={ 1.0f,0.0f,0.0f,1.0f };
 	ID3D12Resource* renderTextureResource;
 	D3D12_SHADER_RESOURCE_VIEW_DESC renderTextureSrvDesc{};
-	D3D12_CPU_DESCRIPTOR_HANDLE handle_;
+	D3D12_CPU_DESCRIPTOR_HANDLE cHandle_;
+	D3D12_GPU_DESCRIPTOR_HANDLE gHandle_;
+
+	ID3D12Resource* texResource_;
 
 	//フェンス
 	ComPtr<ID3D12Fence> fence = nullptr;
@@ -151,8 +160,7 @@ private://メンバ変数
 	//イベント
 	HANDLE fenceEvent;
 
-	//バリア
-	D3D12_RESOURCE_BARRIER barrier_{};
+
 
 
 	//fps固定用
@@ -162,5 +170,4 @@ private://メンバ変数
 	const bool isAssertForgetReleasing_ = false;
 
 
-	
 };
