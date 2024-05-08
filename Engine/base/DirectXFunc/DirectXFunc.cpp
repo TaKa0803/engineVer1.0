@@ -578,6 +578,8 @@ void DirectXFunc::KickCommand()
 void DirectXFunc::Finalize()
 {
 	CloseHandle(fenceEvent);
+	delete offScreen_;
+	offScreen_ = nullptr;
 	//renderTextureResource->Release();
 	depthStencilResource->Release();
 	dsvDescriptorHeap->Release();

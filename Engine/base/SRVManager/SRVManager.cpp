@@ -92,8 +92,10 @@ void SRVManager::Finalize() {
 	}
 
 	for (ID3D12Resource* texRsource : textureResources_) {
-		texRsource->Release();
-		texRsource = nullptr;
+		if (texRsource != nullptr) {
+			texRsource->Release();
+			texRsource = nullptr;
+		}
 	}
 
 	srvDescriptorHeap->Release();
