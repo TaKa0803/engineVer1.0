@@ -340,7 +340,7 @@ void DirectXFunc::RenderTextureInitialize()
 	renderTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	renderTextureSrvDesc.Texture2D.MipLevels = 1;
 
-	Handles data = SRVManager::GetInstance()->CreateSRV(renderTextureResource, renderTextureSrvDesc);
+	Handles data = SRVManager::CreateSRV(renderTextureResource,nullptr, renderTextureSrvDesc);
 
 	gHandle_ = data.gpu;
 	//cHandle_ = data.cpu;

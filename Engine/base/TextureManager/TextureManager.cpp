@@ -154,7 +154,7 @@ int TextureManager::CreateData(const std::string& filePath,const DirectX::Scratc
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dtexture
 	srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
 
-	int texNum= SRVM->CreateSRV(textureResource, intermediateResource, srvDesc);
+	int texNum= SRVM->CreateSRV(textureResource, intermediateResource, srvDesc).textureNum;
 
 	Texturedata texData = { texNum,filePath };
 

@@ -8,6 +8,7 @@
 struct Handles {
 	D3D12_CPU_DESCRIPTOR_HANDLE cpu;
 	D3D12_GPU_DESCRIPTOR_HANDLE gpu;
+	int textureNum;
 };
 
 
@@ -17,7 +18,7 @@ class SRVManager {
 public://シングルトンパターン
 	static SRVManager* GetInstance();
 
-	
+
 private:
 	SRVManager() = default;
 	~SRVManager() = default;
@@ -28,91 +29,100 @@ public:
 	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 	/// <summary>
-	/// SRVの作成
-	/// </summary>
-	/// <param name="textureResource"></param>
-	/// <param name="intermediateResource"></param>
-	/// <param name="srvdesc"></param>
-	/// <returns>データ型のイテレータ返却</returns>
-	int CreateSRV(ID3D12Resource* textureResource, ID3D12Resource* intermediateResource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvdesc);
-
-	/// <summary>
-	/// SRVの作成
-	/// </summary>
-	/// <param name="textureResource"></param>
-	/// <param name="srvdesc"></param>
-	/// <returns>GPUHandleの返却</returns>
-	Handles CreateSRV(ID3D12Resource* textureResource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvdesc);
-
-	Handles CreateNewSRVHandles();
-
-	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <param name="DXF"></param>
-	void Initialize(ID3D12Device*DXF);
+	void Initialize(ID3D12Device* DXF);
 
 	/// <summary>
 	/// Texture読み込みがすべて終わった後GPUに送る処理
 	/// </summary>
 	void PostInitialize();
 
+	/// <summary>
+	/// 終了処理
+	/// </summary>
 	void Finalize();
 
+	/// <summary>
+	/// SRVの作成
+	/// </summary>
+	/// <param name="textureResource"></param>
+	/// <param name="intermediateResource"></param>
+	/// <param name="srvdesc"></param>
+	/// <returns>データ型のイテレータ返却</returns>
+	static Handles CreateSRV(ID3D12Resource* textureResource, ID3D12Resource* intermediateResource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvdesc);
+
+	/// <summary>
+	/// 新しいSRVの各Handleを取得して返却する
+	/// </summary>
+	/// <returns>新しいSRVのHandles</returns>
+	static Handles CreateNewSRVHandles();
+
+	//SRVDescriptorHeapを取得
+	ID3D12DescriptorHeap* GetSRV()const { return srvDescriptorHeap; }
+
+	/// <summary>
+	/// 要素番号のGPUHandleを返却
+	/// </summary>
+	/// <param name="num"></param>
+	/// <returns></returns>
+	D3D12_GPU_DESCRIPTOR_HANDLE GetTextureDescriptorHandle(int num) {
+		return hDatas_[num];
+	}
+
+
+private:
+	/// <summary>
+	/// リソースをデータ群に追加してデータ群のポインタ返却
+	/// </summary>
+	/// <param name="resource"></param>
+	/// <returns></returns>
 	ID3D12Resource* PushTextureResource(ID3D12Resource* resource);
 
 	/// <summary>
 	/// GPUHandleを登録してサイズを増加
 	/// </summary>
-	/// <param name="textureSrvHandleGPU"></param>
-	/// <returns></returns>
-	int AddtextureNum(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU) {
-		//サイズカウントの位置にhandleを設置
-		hDatas_[SRVsize_] = textureSrvHandleGPU;
-		//GPUと紐付けされた値を保存
-		int ans = SRVsize_;
-		
-		//値を増やしてずらす
-		SRVsize_++;
+	/// <param name="textureSrvHandleGPU">GPUHandle</param>
+	/// <returns>Handleが登録されたデータ群の要素番号</returns>
+	int AddtextureNum(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU);
 
-		return ans;
-	}
-public:
+	/// <summary>
+	/// GPUに送るResourceの設定
+	/// </summary>
+	/// <param name="intermediateResource"></param>
+	void AddIntermediaResource(ID3D12Resource* intermediateResource);
 
-	ID3D12DescriptorHeap* GetSRV()const { return srvDescriptorHeap; }
-
-	uint32_t GetSRVSize()const { return descriptorSizeSRV; }
-
-	int GetGPUHandleDataSize() { return (int)hDatas_.size(); }
-
-	//使ってないサイズを取得
+	//使ってない位置のCPUHandleを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPU_DES_HANDLE();
-	//使ってないサイズを取得
+	//使ってない位置のGPUHandleを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPU_DES_HANDLE();
 
-	D3D12_GPU_DESCRIPTOR_HANDLE GetTextureDescriptorHandle(int num) {
-		return hDatas_[num];
-	}
+
 private:
 
-	
-	ID3D12Device* DXF_=nullptr;
+	ID3D12Device* DXF_ = nullptr;
 
 	//SRV用のヒープでディスクリプタの数は１２８。SRVはSHADER内で触るものなので、ShaderVisibleはtrue
-	ID3D12DescriptorHeap* srvDescriptorHeap=nullptr;
-	uint32_t descriptorSizeSRV=0u;
+	ID3D12DescriptorHeap* srvDescriptorHeap = nullptr;
+	uint32_t descriptorSizeSRV = 0u;
 
+	//リソースデータ群
 	std::vector<ID3D12Resource*>textureResources_;
 
+	//GPUに送るデータ群
 	std::list<ID3D12Resource*>intermediaResources_;
 
 	//データ群
 	//std::vector<D3D12_GPU_DESCRIPTOR_HANDLE> datas_;
+
+	//GPUHandleデータ群
 	std::map<int, D3D12_GPU_DESCRIPTOR_HANDLE>hDatas_;
-	
-	//SRV値初期値
+
+	//SRVの数
 	int SRVsize_ = 0;
 
-	const size_t maxSRVSize_ = 256;
+	//最大SRV量
+	const UINT maxSRVSize_ = 256;
 };
 

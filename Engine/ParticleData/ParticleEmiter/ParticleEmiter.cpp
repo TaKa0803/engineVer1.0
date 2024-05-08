@@ -236,7 +236,7 @@ void ParticleEmiter::Initialize(const Camera* camera, int32_t texture, int32_t o
 	instancingDesc.Buffer.StructureByteStride = sizeof(Particle4GPU);
 
 	SRVManager* SRVM = SRVManager::GetInstance();
-	instancingHandleNum = SRVM->CreateSRV(transformationMatrixResource_, nullptr, instancingDesc);
+	instancingHandleNum = SRVM->CreateSRV(transformationMatrixResource_, nullptr, instancingDesc).textureNum;
 #pragma endregion
 
 
