@@ -11,7 +11,7 @@ protected:
 	std::string tag_;
 
 	//ワールド
-	WorldTransform world_{};
+	EulerWorldTransform world_{};
 
 	//インスタンシングモデルマネージャー
 	InstancingModelManager* IMM_=nullptr;
@@ -20,7 +20,7 @@ protected:
 	Vector4 color_ = { 1,1,1,1 };
 public:
 	//ワールド取得
-	const WorldTransform& GetWorld()const { return world_; }
+	const EulerWorldTransform& GetWorld()const { return world_; }
 
 	void SetTranslate(const Vector3& trans) { world_.translate_ = trans; }
 
@@ -33,7 +33,7 @@ public:
 
 	void SetRotateY(const float rotate) { world_.rotate_.y = rotate; }
 
-	void SetParent(const WorldTransform* parent) { world_.parent_ = parent; }
+	void SetParent(const EulerWorldTransform* parent) { world_.parent_ = parent; }
 
 	void SetColor(const Vector4& color) { color_ = color; }
 

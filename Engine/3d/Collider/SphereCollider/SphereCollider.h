@@ -11,7 +11,7 @@ public:
 	//
 	SphereCollider();
 
-	void Initialize(const std::string& tag,const WorldTransform& parent);
+	void Initialize(const std::string& tag,const EulerWorldTransform& parent);
 
 	void Initialize(const std::string& tag);
 
@@ -65,7 +65,7 @@ public:
 	std::string GetTag()const { return colliderTag_; }
 
 	//ワールド取得
-	WorldTransform GetWorld()const { return world_; }
+	EulerWorldTransform GetWorld()const { return world_; }
 
 	
 private:
@@ -79,7 +79,7 @@ private:
 	static bool isDraw_;
 
 	//過去の状態
-	WorldTransform preWorld_;
+	EulerWorldTransform preWorld_;
 
 	//透明度
 	float alpha_ = 0.5f;

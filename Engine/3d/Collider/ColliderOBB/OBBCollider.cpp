@@ -5,7 +5,7 @@
 
 bool OBBCollider::isDraw_ = true;
 
-void OBBCollider::Initialize(const std::string& tag, const WorldTransform& parent)
+void OBBCollider::Initialize(const std::string& tag, const EulerWorldTransform& parent)
 {
 	//インスタンシングの初期化
 	InstancingGameObject::Initialize("box");
@@ -173,7 +173,7 @@ bool OBBCollider::IsCollision(SphereCollider* collider,Vector3& backVec)
 
 
 		////最近接点描画
-		WorldTransform sWo;
+		EulerWorldTransform sWo;
 		sWo.translate_ = saikin;
 		sWo.scale_ = { 0.1f,0.1f,0.1f };
 		sWo.UpdateMatrix();
@@ -191,7 +191,7 @@ bool OBBCollider::IsCollision(SphereCollider* collider,Vector3& backVec)
 	}
 	else {
 		//最近接点描画
-		WorldTransform sWo;
+		EulerWorldTransform sWo;
 		sWo.translate_ = Transform(saikin, OBBM_);
 		sWo.scale_ = { 0.1f,0.1f,0.1f };
 		sWo.UpdateMatrix();

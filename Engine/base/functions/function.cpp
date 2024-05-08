@@ -78,7 +78,7 @@ Animation LoadAnimationFile(const std::string& directoryPath, const std::string&
 
 	Assimp::Importer importer;
 	std::string filePath = directoryPath + "/" + filename;
-
+	
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
 	if (scene->mNumAnimations == 0) {
 		return result;
@@ -123,33 +123,45 @@ Animation LoadAnimationFile(const std::string& directoryPath, const std::string&
 
 Node ReadNode(aiNode* node) {
 	Node result;
-	aiMatrix4x4 aiLocalMatrix = node->mTransformation;
-	aiLocalMatrix.Transpose();
-	result.localMatrix.m[0][0] = aiLocalMatrix[0][0];
-	result.localMatrix.m[1][0] = aiLocalMatrix[1][0];
-	result.localMatrix.m[2][0] = aiLocalMatrix[2][0];
-	result.localMatrix.m[3][0] = aiLocalMatrix[3][0];
+	//aiMatrix4x4 aiLocalMatrix = node->mTransformation;
+	//aiLocalMatrix.Transpose();
+	//result.localMatrix.m[0][0] = aiLocalMatrix[0][0];
+	//result.localMatrix.m[1][0] = aiLocalMatrix[1][0];
+	//result.localMatrix.m[2][0] = aiLocalMatrix[2][0];
+	//result.localMatrix.m[3][0] = aiLocalMatrix[3][0];
 
-	result.localMatrix.m[0][1] = aiLocalMatrix[0][1];
-	result.localMatrix.m[1][1] = aiLocalMatrix[1][1];
-	result.localMatrix.m[2][1] = aiLocalMatrix[2][1];
-	result.localMatrix.m[3][1] = aiLocalMatrix[3][1];
+	//result.localMatrix.m[0][1] = aiLocalMatrix[0][1];
+	//result.localMatrix.m[1][1] = aiLocalMatrix[1][1];
+	//result.localMatrix.m[2][1] = aiLocalMatrix[2][1];
+	//result.localMatrix.m[3][1] = aiLocalMatrix[3][1];
 
-	result.localMatrix.m[0][2] = aiLocalMatrix[0][2];
-	result.localMatrix.m[1][2] = aiLocalMatrix[1][2];
-	result.localMatrix.m[2][2] = aiLocalMatrix[2][2];
-	result.localMatrix.m[3][2] = aiLocalMatrix[3][2];
+	//result.localMatrix.m[0][2] = aiLocalMatrix[0][2];
+	//result.localMatrix.m[1][2] = aiLocalMatrix[1][2];
+	//result.localMatrix.m[2][2] = aiLocalMatrix[2][2];
+	//result.localMatrix.m[3][2] = aiLocalMatrix[3][2];
 
-	result.localMatrix.m[0][3] = aiLocalMatrix[0][3];
-	result.localMatrix.m[1][3] = aiLocalMatrix[1][3];
-	result.localMatrix.m[2][3] = aiLocalMatrix[2][3];
-	result.localMatrix.m[3][3] = aiLocalMatrix[3][3];
+	//result.localMatrix.m[0][3] = aiLocalMatrix[0][3];
+	//result.localMatrix.m[1][3] = aiLocalMatrix[1][3];
+	//result.localMatrix.m[2][3] = aiLocalMatrix[2][3];
+	//result.localMatrix.m[3][3] = aiLocalMatrix[3][3];
 
 	result.name = node->mName.C_Str();
 	result.children.resize(node->mNumChildren);
 	for (uint32_t childIndex = 0; childIndex < node->mNumChildren; ++childIndex) {
 		result.children[childIndex] = ReadNode(node->mChildren[childIndex]);
 	}
+
+	//トランスフォーム
+	aiVector3D scale, translate;
+	aiQuaternion rotate;
+	node->mTransformation.Decompose(scale, rotate, translate);//assimp行列からSRTを抽出する関数を利用
+	result.transform.scale_ = { scale.x,scale.y,scale.z };
+	result.transform.rotate_ = { rotate.x,-rotate.y,-rotate.z,rotate.w };
+	result.transform.translate_ = { -translate.x,translate.y,translate.z };
+
+	result.transform.UpdateMatrix();
+
+	result.localMatrix = result.transform.matWorld_;
 
 	return result;
 }

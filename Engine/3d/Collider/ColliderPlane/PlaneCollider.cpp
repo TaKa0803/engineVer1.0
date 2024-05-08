@@ -23,7 +23,7 @@ struct Plane
 //	return false;
 //}
 
-void PlaneCollider::Initialize(const std::string& tag, const WorldTransform& parent)
+void PlaneCollider::Initialize(const std::string& tag, const EulerWorldTransform& parent)
 {
 	InstancingGameObject::Initialize("z+Plane");
 

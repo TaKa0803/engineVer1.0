@@ -24,11 +24,11 @@ public:
 
 	void Draw();
 
-	void EffectOccurred(const WorldTransform& world, int spawnNum);
+	void EffectOccurred(const EulerWorldTransform& world, int spawnNum);
 
 
 	struct EffectData {
-		WorldTransform world;
+		EulerWorldTransform world;
 		Vector3 velocity_;
 		Vector3 accce_ = { 0,-0.1f,0 };
 		float BulletForce = 0.4f;

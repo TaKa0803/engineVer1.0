@@ -61,7 +61,7 @@ void BrokenBody::Draw() {
 
 }
 
-void BrokenBody::EffectOccurred(const WorldTransform& world, int spawnNum) {
+void BrokenBody::EffectOccurred(const EulerWorldTransform& world, int spawnNum) {
 
 	for (int count = 0; count < spawnNum; ++count) {
 

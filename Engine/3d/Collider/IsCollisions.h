@@ -1,7 +1,6 @@
 #pragma once
-
+#include"struct.h"
 #include"Vector3.h"
-#include"WorldTransform/WorldTransform.h"
 
 struct AABB {
 	Vector3 minV;
@@ -14,23 +13,23 @@ struct Sphere {
 };
 
 //すべてのX回転量取得
-float GetAllRotateX(const WorldTransform& world);
+float GetAllRotateX(const EulerWorldTransform& world);
 //すべてのY回転量取得
-float GetAllRotateY(const WorldTransform& world);
+float GetAllRotateY(const EulerWorldTransform& world);
 //すべてのZ回転量取得
-float GetAllRotateZ(const WorldTransform& world);
+float GetAllRotateZ(const EulerWorldTransform& world);
 //親元も合わせた回転量取得
-Vector3 GetAllRotate(const WorldTransform& world);
+Vector3 GetAllRotate(const EulerWorldTransform& world);
 
 //すべてのX拡縮取得
-float GetAllScaleX(const WorldTransform& world);
+float GetAllScaleX(const EulerWorldTransform& world);
 //すべてのY拡縮取得
-float GetAllScaleY(const WorldTransform& world);
+float GetAllScaleY(const EulerWorldTransform& world);
 //すべてのZ拡縮取得
-float GetAllScaleZ(const WorldTransform& world);
+float GetAllScaleZ(const EulerWorldTransform& world);
 
 //親も合わせた拡縮取得
-Vector3 GetAllScale(const WorldTransform& world);
+Vector3 GetAllScale(const EulerWorldTransform& world);
 
 
 //AABBと円

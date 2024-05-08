@@ -5,7 +5,7 @@
 #include"WorldTransform/WorldTransform.h"
 
 struct Particle {
-	WorldTransform world_;
+	EulerWorldTransform world_;
 	Vector3 velocity;
 	Vector4 color;
 	float lifeTime;

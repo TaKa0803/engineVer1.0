@@ -16,15 +16,15 @@ public:
 
 	void Draw();
 
-	void Spawn(const WorldTransform playerW);
+	void Spawn(const EulerWorldTransform playerW);
 private:
 	struct ImpactData
 	{
-		WorldTransform base;
+		EulerWorldTransform base;
 
-		WorldTransform center;
+		EulerWorldTransform center;
 
-		WorldTransform pos;
+		EulerWorldTransform pos;
 
 		Vector3 velo;
 

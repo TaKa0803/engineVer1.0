@@ -8,6 +8,6 @@ static const int modelNum_ = 5;
 
 struct ModelAnimeParts {
 	int RoopFrame;
-	WorldTransform stPartsWorlds[modelNum_];
-	WorldTransform edPartsWorlds[modelNum_];
+	EulerWorldTransform stPartsWorlds[modelNum_];
+	EulerWorldTransform edPartsWorlds[modelNum_];
 };

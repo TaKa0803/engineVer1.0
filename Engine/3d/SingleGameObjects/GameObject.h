@@ -11,11 +11,11 @@ protected:
 
 	Model* model_=nullptr;
 
-	WorldTransform world_;
+	EulerWorldTransform world_;
 
 	
 public:
-	const WorldTransform& GetWorld() { return world_; }
+	const EulerWorldTransform& GetWorld() { return world_; }
 
 	virtual ~GameObject();
 

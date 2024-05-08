@@ -40,7 +40,7 @@ public:
 	/// ワールドを追加
 	/// </summary>
 	/// <param name="world"></param>
-	void AddWorld(const WorldTransform& world,const Vector4&color={1,1,1,1});
+	void AddWorld(const EulerWorldTransform& world,const Vector4&color={1,1,1,1});
 
 	/// <summary>
 	/// 描画
@@ -176,11 +176,11 @@ private:
 	DirectionalLight* directionalLightData_ = nullptr;
 
 	//UVのワールド
-	WorldTransform uvWorld_;
+	EulerWorldTransform uvWorld_;
 
 	//インスタンシングで利用するデータ
 	struct InstancingData {
-		WorldTransform world;
+		EulerWorldTransform world;
 		Vector4 color;
 	};
 	//ワールド軍

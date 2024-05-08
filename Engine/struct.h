@@ -3,12 +3,14 @@
 #include<vector>
 #include<string>
 #include<map>
+#include<optional>
 
 #include"Math/Vector2.h"
 #include"Math/Vector3.h"
 #include"Math/Vector4.h"
 #include"Math/Matrix.h"
-#include"Quaternion.h"
+
+#include"WorldTransform/WorldTransform.h"
 
 #pragma region 構造体
 
@@ -57,13 +59,27 @@ struct MaterialData {
 };
 
 struct Node {
+	QuaterinionWorldTransform transform;
 	Matrix4x4 localMatrix;
 	std::string name;
 	std::vector<Node>children;
 };
 
+struct Joint {
+	QuaterinionWorldTransform transform;	//Transform情報
+	Matrix4x4 localMatrix;					//localMatrix
+	Matrix4x4 skeletonSpaceMatrix;			//skeletonSpaceでの変換行列
+	std::string name;						//名前
+	std::vector<int32_t>children;			//子のjointIndexのリスト。いなければ空
+	int32_t index;							//自身のIndex
+	std::optional<int32_t>parent;			//親ジョイントのIndex。いなければnull
+};
 
-
+struct Skeleton {
+	int32_t root;//rootJointのIndex
+	std::map<std::string, int32_t>jointMap;
+	std::vector<Joint>joints;
+};
 
 template<typename tValue>
 struct Keyframe {

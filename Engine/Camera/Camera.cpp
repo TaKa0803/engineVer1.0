@@ -138,7 +138,7 @@ void Camera::IsCollision(OBBCollider* obb)
 
 	while (t <= 1.0f) {
 		//Zが設定値のmatWorldを生成
-		WorldTransform world = mainCamera_;
+		EulerWorldTransform world = mainCamera_;
 		world.translate_.z = farFeaturedPos_;
 		world.UpdateMatrix();
 		//カメラ位置
@@ -189,7 +189,7 @@ void Camera::IsCollision(OBBCollider* obb)
 	}
 }
 
-void Camera::SetTarget(const WorldTransform* parent) {
+void Camera::SetTarget(const EulerWorldTransform* parent) {
 	FeaturedWorldTransform_ = parent;
 }
 

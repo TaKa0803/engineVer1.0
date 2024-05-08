@@ -33,7 +33,7 @@ void DZoneEffect::Update()
 		//ｔを算出
 		float t = data.count / data.maxCount;
 
-		WorldTransform world;
+		EulerWorldTransform world;
 
 		Vector3 pos = { data.pos.st * (1.0f - t) + data.pos.ed * t };
 		Vector3 scale = { data.scale.st * (1.0f - t) + data.scale.ed * t };

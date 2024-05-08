@@ -95,7 +95,7 @@ private:
 	std::vector<Particle*>particles_;
 
 	
-	WorldTransform uvWorld_;
+	EulerWorldTransform uvWorld_;
 
 	Vector3 scale_ = { 1,1,1 };
 	Vector3 rotate_ = { 0,0,0 };

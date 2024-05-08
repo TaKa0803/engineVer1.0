@@ -12,7 +12,7 @@ SphereCollider::SphereCollider() {
 }
 
 
-void SphereCollider::Initialize(const std::string& tag, const WorldTransform& world) {
+void SphereCollider::Initialize(const std::string& tag, const EulerWorldTransform& world) {
 	InstancingGameObject::Initialize("sphere");
 
 	world_.parent_ = (&world);
@@ -170,7 +170,7 @@ bool SphereCollider::IsCollision(OBBCollider& obb, Vector3& backVec, float divis
 
 #ifdef _DEBUG
 			////最近接点描画
-			WorldTransform sWo;
+			EulerWorldTransform sWo;
 			sWo.translate_ = saikin;
 			sWo.scale_ = { 0.1f,0.1f,0.1f };
 			sWo.UpdateMatrix();
@@ -204,7 +204,7 @@ bool SphereCollider::IsCollision(OBBCollider& obb, Vector3& backVec, float divis
 
 #ifdef _DEBUG
 			//最近接点描画
-			WorldTransform sWo;
+			EulerWorldTransform sWo;
 			sWo.translate_ = Transform(saikin, OBBM);
 			sWo.scale_ = { 0.1f,0.1f,0.1f };
 			sWo.UpdateMatrix();

@@ -37,7 +37,7 @@ public:
 	std::unique_ptr<ALEnemy> PopEnemy();
 
 	//プレイヤーの座標取得
-	void SetPlayerWorld(const WorldTransform* world) { playerWorld_ = world; }
+	void SetPlayerWorld(const EulerWorldTransform* world) { playerWorld_ = world; }
 
 private:
 
@@ -84,7 +84,7 @@ private:
 	std::vector<PopData>popDatas_;
 
 	//プレイヤーの座標
-	const  WorldTransform* playerWorld_ = nullptr;
+	const  EulerWorldTransform* playerWorld_ = nullptr;
 
 	float spawnHeight = 1.5f;
 
@@ -93,6 +93,6 @@ private:
 
 	std::string ring_ = "ring";
 
-	std::vector<WorldTransform>flagWorlds_;
+	std::vector<EulerWorldTransform>flagWorlds_;
 
 };

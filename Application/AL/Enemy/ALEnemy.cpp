@@ -5,7 +5,7 @@
 #include"AudioManager/AudioManager.h"
 #include"AL/BrokenBody/BrokenBody.h"
 
-void ALEnemy::Initialize(const Vector3& position, const WorldTransform* playerWorld) {
+void ALEnemy::Initialize(const Vector3& position, const EulerWorldTransform* playerWorld) {
 	InstancingGameObject::Initialize("player");
 
 

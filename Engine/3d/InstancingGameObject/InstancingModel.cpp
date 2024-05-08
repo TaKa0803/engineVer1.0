@@ -8,11 +8,7 @@
 #include"functions/function.h"
 #include"Log/Log.h"
 #include<imgui.h>
-/*
-#include<assimp/Importer.hpp>
-#include<assimp/scene.h>
-#include<assimp/postprocess.h>
-*/
+
 
 
 
@@ -72,7 +68,7 @@ void InstancingModel::PreUpdate() {
 	worlds_.clear();
 }
 
-void InstancingModel::AddWorld(const WorldTransform& world, const Vector4& color) {
+void InstancingModel::AddWorld(const EulerWorldTransform& world, const Vector4& color) {
 	//データをコピー
 	InstancingData worl = { world,color };
 

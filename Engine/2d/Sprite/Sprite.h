@@ -110,7 +110,7 @@ public:///セッター
 	void IsEnableTexture(const bool ans) { materialData_->enableTexture = ans; }
 
 	//親子関係取得
-	void SetParent(const WorldTransform& parent) { world_.parent_ = &parent; }
+	void SetParent(const EulerWorldTransform& parent) { world_.parent_ = &parent; }
 public:
 	/// <summary>
 	/// マテリアルデータ構造体取得
@@ -134,7 +134,7 @@ public:
 	/// ワールド行列取得
 	/// </summary>
 	/// <returns></returns>
-	const WorldTransform& GetWorld()const { return world_; }
+	const EulerWorldTransform& GetWorld()const { return world_; }
 private:
 
 
@@ -145,7 +145,7 @@ private:
 	/// </summary>
 	void Initialize(int texture,
 
-	WorldTransform world,
+	EulerWorldTransform world,
 
 	ID3D12Resource* vertexResource,
 
@@ -193,10 +193,10 @@ private:
 
 	
 	//スプライトのワールドデータ
-	WorldTransform world_;
+	EulerWorldTransform world_;
 
 	//uvのWorld
-	WorldTransform uvWorld_{};
+	EulerWorldTransform uvWorld_{};
 
 	
 };

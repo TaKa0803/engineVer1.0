@@ -125,7 +125,7 @@ private:
 		RFOOT
 	};
 
-	WorldTransform mWorlds[modelNum_] = {};
+	EulerWorldTransform mWorlds[modelNum_] = {};
 
 	std::unique_ptr<Model>models[modelNum_];
 

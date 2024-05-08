@@ -43,7 +43,7 @@ void EffectImpact::Draw()
 
 }
 
-void EffectImpact::Spawn(const WorldTransform pos)
+void EffectImpact::Spawn(const EulerWorldTransform pos)
 {
 	//飛ぶ方向
 	Vector3 offset = { 0,1,0 };

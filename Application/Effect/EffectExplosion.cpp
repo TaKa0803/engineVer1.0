@@ -80,7 +80,7 @@ void EffectExplosion::Draw()
 		//各ワールドデータ
 		for (auto& worldData : data.mData) {
 			//ワールド取り出し
-			WorldTransform world = worldData.world;
+			EulerWorldTransform world = worldData.world;
 
 			world.UpdateMatrix();
 

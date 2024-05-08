@@ -5,7 +5,7 @@
 
 #pragma region 回転量取得関数
 //すべてのX回転量取得
-float GetAllRotateX(const WorldTransform& world) {
+float GetAllRotateX(const EulerWorldTransform& world) {
 	if (world.parent_ != nullptr) {
 		return world.rotate_.x + GetAllRotateX(*world.parent_);
 	}
@@ -15,7 +15,7 @@ float GetAllRotateX(const WorldTransform& world) {
 }
 
 //すべてのY回転量取得
-float GetAllRotateY(const WorldTransform& world) {
+float GetAllRotateY(const EulerWorldTransform& world) {
 	if (world.parent_ != nullptr) {
 		return world.rotate_.y + GetAllRotateY(*world.parent_);
 	}
@@ -25,7 +25,7 @@ float GetAllRotateY(const WorldTransform& world) {
 }
 
 //すべてのZ回転量取得
-float GetAllRotateZ(const WorldTransform& world) {
+float GetAllRotateZ(const EulerWorldTransform& world) {
 	if (world.parent_ != nullptr) {
 		return world.rotate_.z + GetAllRotateZ(*world.parent_);
 	}
@@ -35,7 +35,7 @@ float GetAllRotateZ(const WorldTransform& world) {
 }
 
 //親元も合わせた回転量取得
-Vector3 GetAllRotate(const WorldTransform& world) {
+Vector3 GetAllRotate(const EulerWorldTransform& world) {
 	return{
 		GetAllRotateX(world),
 		GetAllRotateY(world),
@@ -45,7 +45,7 @@ Vector3 GetAllRotate(const WorldTransform& world) {
 #pragma endregion
 
 #pragma region Scale
-float GetAllScaleX(const WorldTransform& world) {
+float GetAllScaleX(const EulerWorldTransform& world) {
 	if (world.parent_ != nullptr) {
 		return world.scale_.x * GetAllScaleX(*world.parent_);
 	}
@@ -54,7 +54,7 @@ float GetAllScaleX(const WorldTransform& world) {
 	}
 }
 
-float GetAllScaleY(const WorldTransform& world) {
+float GetAllScaleY(const EulerWorldTransform& world) {
 	if (world.parent_ != nullptr) {
 		return world.scale_.y * GetAllScaleY(*world.parent_);
 	}
@@ -63,7 +63,7 @@ float GetAllScaleY(const WorldTransform& world) {
 	}
 }
 
-float GetAllScaleZ(const WorldTransform& world) {
+float GetAllScaleZ(const EulerWorldTransform& world) {
 	if (world.parent_ != nullptr) {
 		return world.scale_.z * GetAllScaleZ(*world.parent_);
 	}
@@ -72,7 +72,7 @@ float GetAllScaleZ(const WorldTransform& world) {
 	}
 }
 
-Vector3 GetAllScale(const WorldTransform& world) {
+Vector3 GetAllScale(const EulerWorldTransform& world) {
 	return{
 		GetAllScaleX(world),
 		GetAllScaleY(world),

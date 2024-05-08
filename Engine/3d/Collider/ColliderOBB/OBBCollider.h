@@ -14,7 +14,7 @@ public:
 	/// </summary>
 	/// <param name="tag">コライダーのタグ</param>
 	/// <param name="parent">親のワールド</param>
-	void Initialize(const std::string& tag, const WorldTransform& parent);
+	void Initialize(const std::string& tag, const EulerWorldTransform& parent);
 
 	/// <summary>
 	/// 初期化
@@ -125,7 +125,7 @@ private:
 	OBB obb_;
 
 	//過去情報
-	WorldTransform preWorld_;
+	EulerWorldTransform preWorld_;
 
 	//world行列
 	Matrix4x4 OBBM_;

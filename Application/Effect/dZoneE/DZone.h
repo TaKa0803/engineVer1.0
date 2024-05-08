@@ -18,7 +18,7 @@ struct  DZoneEData
 	int swapCount = 0;
 	const Vector4 stColor = { 1,1,1,0 };
 	const Vector4 edColor = { 1,1,1,1 };
-	WorldTransform world;
+	EulerWorldTransform world;
 
 	//以下設定必要
 	float maxCount;		//総アニメーション数

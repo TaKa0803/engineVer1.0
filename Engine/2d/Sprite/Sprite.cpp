@@ -61,7 +61,7 @@ void Sprite::DrawDebugImGui(const char* name) {
 Sprite* Sprite::Create(int texture, const Vector2 size, const Vector2 Rect, const Vector2 scale , const Vector2 translate, const Vector2 anchor, const float rotate) {
 	DirectXFunc* DXF = DirectXFunc::GetInstance();
 	
-	WorldTransform newWorld;
+	EulerWorldTransform newWorld;
 	newWorld.translate_ = { translate.x,translate.y,0 };
 	newWorld.rotate_.z = rotate;
 	newWorld.scale_ = { scale.x,scale.y,1 };
@@ -146,7 +146,7 @@ Sprite* Sprite::Create(int texture, const Vector2 size, const Vector2 Rect, cons
 
 void Sprite::Initialize(int texture,
 
-	WorldTransform world,
+	EulerWorldTransform world,
 
 	ID3D12Resource* vertexResource,
 

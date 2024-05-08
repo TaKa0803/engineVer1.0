@@ -43,13 +43,13 @@ public:
 	/// <returns>translateを返却</returns>
 	const Vector3& GetFeaturedPos()const { return CameraMotionSupport_.translate_; }
 
-	const WorldTransform& GetFeaturedWorld()const { return *FeaturedWorldTransform_; }
+	const EulerWorldTransform& GetFeaturedWorld()const { return *FeaturedWorldTransform_; }
 
 	/// <summary>
 	/// メインカメラのWorldTransform取得
 	/// </summary>
 	/// <returns>WorldTransformを返却</returns>
-	const WorldTransform& GetMainCamera()const { return mainCamera_; }
+	const EulerWorldTransform& GetMainCamera()const { return mainCamera_; }
 
 	/// <summary>
 	/// ViewProjectionを取得
@@ -72,7 +72,7 @@ public:
 	const Segment GetSegment() { return segment_; }
 public:
 	//ターゲット設定
-	void SetTarget(const WorldTransform* parent);
+	void SetTarget(const EulerWorldTransform* parent);
 
 	//カメラのターゲットとの距離設定
 	void SetCameraDirection(const float far);
@@ -90,20 +90,20 @@ public:
 
 private:
 	//カメラ本体
-	WorldTransform mainCamera_;
+	EulerWorldTransform mainCamera_;
 
 	//カメラの平行移動
 	Vector3 camerapos_{};
 
 	//カメラの注目点があるときの回転処理用
-	WorldTransform CameraMotionSupport_;
+	EulerWorldTransform CameraMotionSupport_;
 
 	//カメラの回転量
 	const float maxRotateX = 1.0f;
 	const float minRotateX = 0.01f;
 
 	//注目しているWorldT
-	const WorldTransform* FeaturedWorldTransform_ = nullptr;
+	const EulerWorldTransform* FeaturedWorldTransform_ = nullptr;
 
 	//カメラの注目品との初期距離
 	const float rangeCameraFeaturedPoint = -50;

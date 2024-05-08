@@ -58,7 +58,7 @@ public:
 	/// </summary>
 	/// <param name="tag">モデルタグ名</param>
 	/// <param name="world">ワールドトランスフォーム</param>
-	void SetData(const std::string& tag, const WorldTransform& world,const Vector4&color={1,1,1,1});
+	void SetData(const std::string& tag, const EulerWorldTransform& world,const Vector4&color={1,1,1,1});
 
 	/// <summary>
 	/// タグのモデルに画像を設定

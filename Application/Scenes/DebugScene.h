@@ -36,13 +36,13 @@ private:
 	//キー入力
 	Input* input_ = nullptr;
 
-	WorldTransform cWorld_;
+	EulerWorldTransform cWorld_;
 	std::unique_ptr<Camera> camera_;
 
 	
-	WorldTransform sw1;
-	WorldTransform sw2;
-	WorldTransform obbw;
+	EulerWorldTransform sw1;
+	EulerWorldTransform sw2;
+	EulerWorldTransform obbw;
 
 
 	std::unique_ptr<SphereCollider> sp1;

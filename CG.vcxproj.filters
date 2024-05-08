@@ -20,7 +20,6 @@
     <ClCompile Include="Application\Scenes\MT4Scene.cpp" />
     <ClCompile Include="Engine\3d\Collider\ColliderOBB\OBBCollider.cpp" />
     <ClCompile Include="Engine\3d\Collider\ColliderPlane\PlaneCollider.cpp" />
-    <ClCompile Include="Engine\base\AssimpManager\AssimpManager.cpp" />
     <ClCompile Include="Engine\base\AudioManager\AudioManager.cpp" />
     <ClCompile Include="Engine\Camera\Camera.cpp" />
     <ClCompile Include="Engine\base\DirectXFunc\DirectXFunc.cpp" />
@@ -79,7 +78,6 @@
     <ClCompile Include="Engine\2d\SpriteManager\SpriteManager.cpp" />
     <ClCompile Include="Engine\2d\SpritePSO\SpritePSO.cpp" />
     <ClCompile Include="Engine\base\OffScreanPipeline\OffScreanPipeline.cpp" />
-    <ClCompile Include="Engine\base\DescriptorHeap\DescriptorHeapManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -88,7 +86,6 @@
     <ClInclude Include="Application\Scenes\MT4Scene.h" />
     <ClInclude Include="Engine\3d\Collider\ColliderOBB\OBBCollider.h" />
     <ClInclude Include="Engine\3d\Collider\ColliderPlane\PlaneCollider.h" />
-    <ClInclude Include="Engine\base\AssimpManager\AssimpManager.h" />
     <ClInclude Include="Engine\base\AudioManager\AudioManager.h" />
     <ClInclude Include="Engine\base\AudioManager\SoundData.h" />
     <ClInclude Include="Engine\Camera\Camera.h" />
@@ -148,7 +145,6 @@
     <ClInclude Include="Engine\2d\SpriteManager\SpriteManager.h" />
     <ClInclude Include="Engine\2d\SpritePSO\SpritePSO.h" />
     <ClInclude Include="Engine\base\OffScreanPipeline\OffScreanPipeline.h" />
-    <ClInclude Include="Engine\base\DescriptorHeap\DescriptorHeapManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

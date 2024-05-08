@@ -8,7 +8,7 @@
 //各パーツのデータ
 struct moveData {
 	//ワールドデータ
-	WorldTransform world;
+	EulerWorldTransform world;
 	//速度
 	Vector3 velo;
 	//加速度

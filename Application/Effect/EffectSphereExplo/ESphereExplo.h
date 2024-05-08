@@ -6,7 +6,7 @@
 
 struct ExploData
 {
-	WorldTransform world;//world
+	EulerWorldTransform world;//world
 	int count=0;//カウント
 	int maxDeadCount;//死亡までのカウント
 	float minScale=0;//最小サイズ

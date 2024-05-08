@@ -12,7 +12,7 @@ public:
 	/// <summary>
 	/// 
 	/// </summary>
-	void Initialize(const Vector3& position, const WorldTransform* playerWorld);
+	void Initialize(const Vector3& position, const EulerWorldTransform* playerWorld);
 
 	/// <summary>
 	/// 
@@ -43,7 +43,7 @@ public:
 	SphereCollider* GetCollider() { return collider_.get(); }
 private:
 	//プレイヤーのワールド
-	const WorldTransform* playerWorld_;
+	const EulerWorldTransform* playerWorld_;
 
 	std::unique_ptr<SphereCollider>collider_;
 
@@ -72,7 +72,7 @@ private:
 		RFOOT
 	};
 
-	WorldTransform mWorlds[modelNum_] = {};
+	EulerWorldTransform mWorlds[modelNum_] = {};
 
 
 	//歩くアニメーション

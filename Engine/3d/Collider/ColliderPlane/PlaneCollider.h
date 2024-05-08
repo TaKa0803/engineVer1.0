@@ -6,7 +6,7 @@ class PlaneCollider : public InstancingGameObject {
 
 public:
 
-	void Initialize(const std::string& tag, const WorldTransform& parent);
+	void Initialize(const std::string& tag, const EulerWorldTransform& parent);
 
 	void Update();
 
