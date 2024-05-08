@@ -412,6 +412,8 @@ void DirectXFunc::PrePreDraw()
 	commandList->RSSetScissorRects(1, &scissorRect);
 #pragma endregion
 
+	//形状を設定、PSOに設定しているものとはまた別、同じものを設定すると考えておけばいい
+	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 

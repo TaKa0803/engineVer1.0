@@ -130,21 +130,18 @@ void MainSystem::MainRoop() {
 		///描画前処理
 		//DirectX
 
-		DXF_->PrePreDraw();
-
-		
+		DXF_->PrePreDraw();	
 		//ImGui
 		imguiManager_->PreDraw();
 
-
-
 		//==以下描画==//
+		gameScene_->PostEffectDraw();
+		
+		DXF_->PreDraw();
+
 		gameScene_->Draw();
 		//==描画終わり==//
 
-		DXF_->PreDraw();
-
-		
 		///描画あと処理
 		//imGui
 		imguiManager_->PostDraw();

@@ -134,6 +134,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3d\Collider\IsCollisions.cpp" />
     <ClCompile Include="Engine\base\AssimpManager\AssimpManager.cpp" />
     <ClCompile Include="Engine\base\AudioManager\AudioManager.cpp" />
+    <ClCompile Include="Engine\base\DescriptorHeap\DescriptorHeapManager.cpp" />
     <ClCompile Include="Engine\base\DXC\DXCManager.cpp" />
     <ClCompile Include="Engine\base\OffScreanPipeline\OffScreanPipeline.cpp" />
     <ClCompile Include="Engine\Camera\Camera.cpp" />
@@ -249,6 +250,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\base\AssimpManager\AssimpManager.h" />
     <ClInclude Include="Engine\base\AudioManager\AudioManager.h" />
     <ClInclude Include="Engine\base\AudioManager\SoundData.h" />
+    <ClInclude Include="Engine\base\DescriptorHeap\DescriptorHeapManager.h" />
     <ClInclude Include="Engine\base\DXC\DXCManager.h" />
     <ClInclude Include="Engine\base\OffScreanPipeline\OffScreanPipeline.h" />
     <ClInclude Include="Engine\Camera\Camera.h" />

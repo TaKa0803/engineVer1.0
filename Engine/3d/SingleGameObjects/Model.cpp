@@ -272,8 +272,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 	pointLightData_->position = pointlight;
 
 	DXF_->GetCMDList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
-	//形状を設定、PSOに設定しているものとはまた別、同じものを設定すると考えておけばいい
-	DXF_->GetCMDList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	
 	//wvp用のCBufferの場所の設定
 	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
 	//マテリアルCBufferの場所を設定

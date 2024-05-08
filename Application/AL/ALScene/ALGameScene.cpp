@@ -210,7 +210,8 @@ void ALGameScene::Update() {
 	SceneChange();
 }
 
-void ALGameScene::Draw() {
+void ALGameScene::PostEffectDraw()
+{
 	//地面
 	plane_->Draw(*camera_);
 	//敵の旗
@@ -227,6 +228,14 @@ void ALGameScene::Draw() {
 
 	brokenBody_->Draw();
 
+
+
+	
+	//インスタンシングのモデルを全描画
+	InstancingModelManager::GetInstance()->DrawAllModel(camera_->GetViewProjectionMatrix());
+}
+
+void ALGameScene::Draw() {
 	switch (scene_) {
 	case ALGameScene::Game:
 
@@ -241,11 +250,8 @@ void ALGameScene::Draw() {
 	default:
 		break;
 	}
-
 	sceneC_->Draw();
 
-	//インスタンシングのモデルを全描画
-	InstancingModelManager::GetInstance()->DrawAllModel(camera_->GetViewProjectionMatrix());
 }
 
 void ALGameScene::DebugWindows() {

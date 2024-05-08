@@ -6,7 +6,7 @@ SRVManager* SRVManager::GetInstance() {
 	return &instance;
 }
 
-int SRVManager::CreateSRV(ID3D12Resource* textureResource, ID3D12Resource* intermediateResource,D3D12_SHADER_RESOURCE_VIEW_DESC& srvdesc) {
+int SRVManager::CreateSRV(ID3D12Resource* textureResource, ID3D12Resource* intermediateResource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvdesc) {
 	//SRVを作成するDescriptorHeapの場所を決める
 	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = GetCPU_DES_HANDLE();
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = GetGPU_DES_HANDLE();
@@ -14,12 +14,12 @@ int SRVManager::CreateSRV(ID3D12Resource* textureResource, ID3D12Resource* inter
 	//srvの生成
 	DXF_->CreateShaderResourceView(PushTextureResource(textureResource), &srvdesc, textureSrvHandleCPU);
 
-
-	
+	//GPUに送るように準備
 	intermediaResources_.emplace_back(std::move(intermediateResource));
-	
 
+	//GPUハンドルを登録してサイズを増やす
 	return AddtextureNum(textureSrvHandleGPU);
+
 }
 
 Handles SRVManager::CreateSRV(ID3D12Resource* textureResource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvdesc)
@@ -32,15 +32,35 @@ Handles SRVManager::CreateSRV(ID3D12Resource* textureResource, D3D12_SHADER_RESO
 	DXF_->CreateShaderResourceView(PushTextureResource(textureResource), &srvdesc, textureSrvHandleCPU);
 
 	intermediaResources_.emplace_back(std::move(nullptr));
-	
-	AddtextureNum(textureSrvHandleGPU);
 
 	Handles data = {
-		.cpu{textureSrvHandleCPU},
-		.gpu{textureSrvHandleGPU}
+			.cpu{textureSrvHandleCPU},
+			.gpu{textureSrvHandleGPU}
 	};
+	AddtextureNum(textureSrvHandleGPU);
+
+
 
 	return data;
+
+}
+
+Handles SRVManager::CreateNewSRVHandles()
+{
+	//SRVを作成するDescriptorHeapの場所を決める
+	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = GetCPU_DES_HANDLE();
+	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = GetGPU_DES_HANDLE();
+
+	//GPUHandleを登録してサイズを増加
+	AddtextureNum(textureSrvHandleGPU);
+
+	//返却用構造体
+	Handles result = {
+		textureSrvHandleCPU,
+		textureSrvHandleGPU
+	};
+
+	return result;
 }
 
 
@@ -82,7 +102,7 @@ void SRVManager::PostInitialize() {
 }
 
 void SRVManager::Finalize() {
-	
+
 	//yomikomigai開放する
 	for (auto& inter : intermediaResources_) {
 		if (inter != nullptr) {
@@ -109,9 +129,9 @@ ID3D12Resource* SRVManager::PushTextureResource(ID3D12Resource* resource) {
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE SRVManager::GetCPU_DES_HANDLE() {
-	return GetCPUDescriptorHandle(srvDescriptorHeap, descriptorSizeSRV, GetDataSize() + 1);
+	return GetCPUDescriptorHandle(srvDescriptorHeap, descriptorSizeSRV, SRVsize_);
 }
 
 D3D12_GPU_DESCRIPTOR_HANDLE SRVManager::GetGPU_DES_HANDLE() {
-	return  GetGPUDescriptorHandle(srvDescriptorHeap, descriptorSizeSRV, GetDataSize() + 1);
+	return  GetGPUDescriptorHandle(srvDescriptorHeap, descriptorSizeSRV, SRVsize_);
 }

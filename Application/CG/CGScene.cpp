@@ -39,6 +39,10 @@ void CGScnene::Update()
 	Debug();
 }
 
+void CGScnene::PostEffectDraw()
+{
+}
+
 void CGScnene::Draw()
 {
 	object->Draw(*camera_,pointLightPos_,ball);

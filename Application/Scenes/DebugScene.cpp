@@ -135,6 +135,10 @@ void DebugScene::Update()
 
 }
 
+void DebugScene::PostEffectDraw()
+{
+}
+
 void DebugScene::Draw()
 {
 

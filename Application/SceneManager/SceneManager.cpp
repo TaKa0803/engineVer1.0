@@ -68,8 +68,13 @@ void SceneManager::Update()
 
 }
 
-void SceneManager::Draw()
+void SceneManager::PostEffectDraw()
 {
+	sceneArr_[currentSceneNo_]->PostEffectDraw();
+}
+
+void SceneManager::Draw()
+{	
 	//描画処理
 	sceneArr_[currentSceneNo_]->Draw();
 

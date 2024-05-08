@@ -273,8 +273,8 @@ void InstancingModel::Initialize(
 		instancingDesc.Buffer.StructureByteStride = sizeof(WorldTransformation);
 
 		SRVManager* SRVM = SRVManager::GetInstance();
-		int instancingHandleNum = SRVM->CreateSRV(wvpResource_, nullptr, instancingDesc);
-		instancingHandle_ = SRVM->GetTextureDescriptorHandle(instancingHandleNum);
+		instancingHandle_ = SRVM->CreateSRV(wvpResource_, instancingDesc).gpu;
+		
 	}
 #pragma endregion
 

@@ -15,6 +15,8 @@ public:
 	void Initialize() override;
 	void Update() override;
 
+	void PostEffectDraw()override;
+
 	void Draw() override;
 
 private:

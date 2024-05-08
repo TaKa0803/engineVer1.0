@@ -18,6 +18,7 @@ OffScreenRendering::~OffScreenRendering()
 	psoState_->Release();
 
 	materialResource_->Release();
+	materialResource_ = nullptr;
 }
 
 void OffScreenRendering::Initialize()

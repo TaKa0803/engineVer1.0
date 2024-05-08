@@ -10,6 +10,8 @@ struct Handles {
 	D3D12_GPU_DESCRIPTOR_HANDLE gpu;
 };
 
+
+
 class SRVManager {
 
 public://シングルトンパターン
@@ -42,6 +44,8 @@ public:
 	/// <returns>GPUHandleの返却</returns>
 	Handles CreateSRV(ID3D12Resource* textureResource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvdesc);
 
+	Handles CreateNewSRVHandles();
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -57,10 +61,21 @@ public:
 
 	ID3D12Resource* PushTextureResource(ID3D12Resource* resource);
 
+	/// <summary>
+	/// GPUHandleを登録してサイズを増加
+	/// </summary>
+	/// <param name="textureSrvHandleGPU"></param>
+	/// <returns></returns>
 	int AddtextureNum(D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU) {
-		SRVsize_++;
+		//サイズカウントの位置にhandleを設置
 		hDatas_[SRVsize_] = textureSrvHandleGPU;
-		return SRVsize_;
+		//GPUと紐付けされた値を保存
+		int ans = SRVsize_;
+		
+		//値を増やしてずらす
+		SRVsize_++;
+
+		return ans;
 	}
 public:
 
@@ -68,7 +83,7 @@ public:
 
 	uint32_t GetSRVSize()const { return descriptorSizeSRV; }
 
-	int GetDataSize() { return (int)hDatas_.size(); }
+	int GetGPUHandleDataSize() { return (int)hDatas_.size(); }
 
 	//使ってないサイズを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPU_DES_HANDLE();

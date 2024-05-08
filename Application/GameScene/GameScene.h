@@ -14,6 +14,9 @@ public:
 	//ゲーム更新
 	void Update();
 
+	//ポストエフェクト描画
+	void PostEffectDraw();
+
 	//描画
 	void Draw();
 

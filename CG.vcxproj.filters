@@ -79,6 +79,7 @@
     <ClCompile Include="Engine\2d\SpriteManager\SpriteManager.cpp" />
     <ClCompile Include="Engine\2d\SpritePSO\SpritePSO.cpp" />
     <ClCompile Include="Engine\base\OffScreanPipeline\OffScreanPipeline.cpp" />
+    <ClCompile Include="Engine\base\DescriptorHeap\DescriptorHeapManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -147,6 +148,7 @@
     <ClInclude Include="Engine\2d\SpriteManager\SpriteManager.h" />
     <ClInclude Include="Engine\2d\SpritePSO\SpritePSO.h" />
     <ClInclude Include="Engine\base\OffScreanPipeline\OffScreanPipeline.h" />
+    <ClInclude Include="Engine\base\DescriptorHeap\DescriptorHeapManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

@@ -26,6 +26,11 @@ public:
 	void Update();
 
 	/// <summary>
+	/// ポストエフェクト影響下オブジェクト描画
+	/// </summary>
+	void PostEffectDraw();
+
+	/// <summary>
 	/// 描画処理
 	/// </summary>
 	void Draw();

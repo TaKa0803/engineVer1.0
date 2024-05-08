@@ -25,6 +25,8 @@ void ImGuiManager::Initialize(WindowApp* winApp,DirectXFunc *DXF)
 
 	SRVM_ = SRVManager::GetInstance();
 	
+	Handles srvHandle = SRVM_->CreateNewSRVHandles();
+
 #pragma region ImGuiの初期化
 	//ImGuiの初期化。詳細はさして重要ではないので解説は省略
 	//こういうもんである
@@ -37,8 +39,8 @@ void ImGuiManager::Initialize(WindowApp* winApp,DirectXFunc *DXF)
 		DXF_->GetswapChainDesc().BufferCount,
 		DXF_->GetrtvDesc().Format,
 		SRVM_->GetSRV(),
-		SRVM_->GetSRV()->GetCPUDescriptorHandleForHeapStart(),
-		SRVM_->GetSRV()->GetGPUDescriptorHandleForHeapStart());
+		srvHandle.cpu,
+		srvHandle.gpu);
 #pragma endregion
 
 }

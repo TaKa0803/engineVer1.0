@@ -71,6 +71,10 @@ void ALTitleScene::Update() {
 	
 }
 
+void ALTitleScene::PostEffectDraw()
+{
+}
+
 void ALTitleScene::Draw() {
 	sprite_->Draw();
 
