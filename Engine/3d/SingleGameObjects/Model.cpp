@@ -161,6 +161,15 @@ Model* Model::CreateFromOBJ(const std::string& filePath)
 	return model;
 }
 
+void Model::UpdateAnimation()
+{
+
+	animationTime += 1.0f / 60.0f;
+	animationTime = std::fmod(animationTime, modelData_.animation.duration);
+	ApplyAnimation(skeleton_, modelData_.animation,animationTime);
+	Update(skeleton_);
+}
+
 void Model::Initialize(
 	ModelAllData data,
 	std::string name_,
@@ -179,6 +188,7 @@ void Model::Initialize(
 
 	name =name_;
 
+	skeleton_ = CreateSkeleton(modelData_.model.rootNode);
 
 	SRVManager* SRVM = SRVManager::GetInstance();
 
@@ -250,9 +260,10 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 
 	materialData_->uvTransform = MakeAffineMatrix(uvscale, uvrotate, uvpos);
 
+	//animationのあるモデルならローカルを駆ける
 	if (modelData_.animation.nodeAnimations.size() != 0) {
 
-		Matrix4x4 WVP = localM_ * worldMatrix * camera.GetViewProjectionMatrix();
+		Matrix4x4 WVP = worldMatrix * camera.GetViewProjectionMatrix();
 
 		wvpData_->WVP = WVP;
 		wvpData_->World = localM_ * worldMatrix;
@@ -316,6 +327,20 @@ void Model::PlayAnimation(int animeNum)
 
 	}
 
+}
+
+void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime)
+{
+
+	
+	for (Joint& joint : skeleton.joints) {
+		if (auto it = animation.nodeAnimations.find(joint.name); it != animation.nodeAnimations.end()) {
+			const NodeAnimation& rootNodeAnimation = (*it).second;
+			joint.transform.translate_ = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
+			joint.transform.rotate_ = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
+			joint.transform.scale_ = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
+		}
+	}
 }
 
 void Model::DebugParameter(const char* name)

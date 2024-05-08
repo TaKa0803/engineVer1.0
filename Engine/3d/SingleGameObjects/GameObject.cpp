@@ -13,8 +13,9 @@ void GameObject::Initialize(const std::string& filepath) {
 }
 
 void GameObject::Update() {
-	model_->PlayAnimation();
 	world_.UpdateMatrix();
+
+	model_->UpdateAnimation();
 }
 
 void GameObject::Draw(const Camera& camera, Vector3 pointlight, int tex) {

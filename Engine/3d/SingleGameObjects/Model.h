@@ -12,6 +12,7 @@
 #include"Camera/Camera.h"
 
 
+void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime);
 
 class Model {
 public:
@@ -41,6 +42,10 @@ public:
 
 
 public:
+
+	void UpdateAnimation();
+
+
 	/// <summary>
 	/// 描画
 	/// </summary>
@@ -50,6 +55,7 @@ public:
 	void Draw(const Matrix4x4& WVP, const Camera& camera, Vector3 pointlight = { 0,0,0 }, int texture = -1);
 
 	void PlayAnimation(int animeNum = 0);
+
 
 	/// <summary>
 	/// Debug用ImGui表示
@@ -125,6 +131,8 @@ private:
 	ModelManager* modelM_;
 
 	ModelAllData modelData_;
+
+	Skeleton skeleton_;
 
 	//埋めるか否か
 	FillMode fillMode_ = FillMode::kSolid;

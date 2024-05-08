@@ -166,6 +166,53 @@ Node ReadNode(aiNode* node) {
 	return result;
 }
 
+void Update(Skeleton& skeleton) {
+	for (Joint& joint : skeleton.joints) {
+		joint.transform.UpdateMatrix();
+		joint.localMatrix = joint.transform.matWorld_;
+		if (joint.parent) {
+			joint.skeletonSpaceMatrix = joint.localMatrix * skeleton.joints[*joint.parent].skeletonSpaceMatrix;
+		}
+		else {//親がいないのでlocalMとskeletonは一致する
+			joint.skeletonSpaceMatrix = joint.localMatrix;
+		}
+	}
+}
+
+int32_t CreateJoint(const Node& node,
+	const std::optional<int32_t>& parent,
+	std::vector<Joint>& joints) {
+	Joint joint;
+	joint.name = node.name;
+	joint.localMatrix = node.localMatrix;
+	joint.skeletonSpaceMatrix = MakeIdentity4x4();
+	joint.transform = node.transform;
+	joint.index = int32_t(joints.size());//登録され輝和をIndexに
+	joint.parent = parent;
+	joints.push_back(joint);
+	for (const Node& child : node.children) {
+		//子ジョイントを作成しそのIndexを登録
+		int32_t childIndex = CreateJoint(child, joint.index, joints);
+		joints[joint.index].children.push_back(childIndex);
+	}
+
+	return joint.index;
+}
+
+Skeleton CreateSkeleton(const Node& node) {
+	Skeleton skeleton;
+	skeleton.root = CreateJoint(node, {},skeleton.joints);
+
+	//名前とindexのマッピングを行いアクセスしやすくする
+	for (const Joint& joint : skeleton.joints) {
+		skeleton.jointMap.emplace(joint.name, joint.index);
+	}
+
+	Update(skeleton);
+
+	return skeleton;
+}
+
 ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& modelName) {
 	ModelAllData modeldata;//構築するModelData
 

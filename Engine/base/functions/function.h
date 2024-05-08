@@ -21,6 +21,9 @@ ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& 
 ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
 
 
+void Update(Skeleton& skeleton);
+
+Skeleton CreateSkeleton(const Node& node);
 
 IDxcBlob* CompileShader(
 	//CompilerするShaderファイルへのパス
