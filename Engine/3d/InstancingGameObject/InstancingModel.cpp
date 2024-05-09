@@ -80,20 +80,12 @@ void InstancingModel::AddWorld(const EulerWorldTransform& world, const Vector4& 
 
 void InstancingModel::Draw(const Matrix4x4& viewProjection, int texture) {
 
-	if (modelData_.animation.nodeAnimations.size() != 0) {
-		animationTime += 1.0f / 60.0f;
-		animationTime = std::fmod(animationTime, modelData_.animation.duration);
+	animationTime+= 1.0f / 60.0f;
+	animationTime = std::fmod(animationTime, modelData_.animation.duration);
+	ApplyAnimation(skeleton_, animation_, animationTime);
+	Update(skeleton_);
 
-		NodeAnimation& rootNodeAnimation = modelData_.animation.nodeAnimations[modelData_.model.rootNode.name];
-		Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
-		Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
-		Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
-
-
-
-		localM_ = MakeAffineMatrix(scale, rotate, translate);
-
-	}
+	
 
 	int index = 0;
 	for (auto& world : worlds_) {
@@ -109,7 +101,7 @@ void InstancingModel::Draw(const Matrix4x4& viewProjection, int texture) {
 
 		}
 		else {
-			worldM =localM_* world->world.matWorld_;
+			worldM = world->world.matWorld_;
 
 			WVP =localM_* worldM * viewProjection;
 		}
@@ -134,6 +126,7 @@ void InstancingModel::Draw(const Matrix4x4& viewProjection, int texture) {
 
 
 		DXF_->GetCMDList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
+		DXF_->GetCMDList()->IASetIndexBuffer(&indexBufferView_);//IBVを設定
 		//形状を設定、PSOに設定しているものとはまた別、同じものを設定すると考えておけばいい
 		DXF_->GetCMDList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -158,8 +151,9 @@ void InstancingModel::Draw(const Matrix4x4& viewProjection, int texture) {
 		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(1, instancingHandle_);
 
 		//描画！		
-		DXF_->GetCMDList()->DrawInstanced(point_, index, 0, 0);
-
+		//DXF_->GetCMDList()->DrawInstanced(point_, index, 0, 0);
+		//描画！		
+		DXF_->GetCMDList()->DrawIndexedInstanced(static_cast<UINT>(modelData_.model.indices.size()), index, 0, 0, 0);
 	}
 	
 	//追加されたデータ削除
@@ -219,6 +213,17 @@ void InstancingModel::Initialize(
 		wvpData_[index].World = MakeIdentity4x4();
 		wvpData_[index].color = { 1,1,1,1 };
 	}
+
+	//インデックス
+	indexResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(uint32_t) * modelData_.model.indices.size());
+	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
+	indexBufferView_.SizeInBytes = sizeof(uint32_t) * (uint32_t)modelData_.model.indices.size();
+	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
+
+	uint32_t* mappedIndex;
+	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedIndex));
+	std::memcpy(mappedIndex, modelData_.model.indices.data(), sizeof(uint32_t) * modelData_.model.indices.size());
+
 
 #pragma region マテリアル
 	//マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する

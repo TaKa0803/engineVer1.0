@@ -146,6 +146,7 @@ private:
 
 	DirectXFunc* DXF_;
 
+	Skeleton skeleton_;
 	
 	std::string tag_;
 
@@ -165,6 +166,9 @@ private:
 	ID3D12Resource* vertexData_;
 	//頂点バッファビューを作成する
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
+
+	ID3D12Resource* indexResource_;
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
 
 	ID3D12Resource* wvpResource_;
 	WorldTransformation* wvpData_ = nullptr;
