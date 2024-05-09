@@ -21,6 +21,7 @@
 
 Model::~Model() {
 	
+	indexResource_->Release();
 	vertexData_->Release();
 	wvpResource_->Release();
 	materialResource_->Release();
@@ -213,6 +214,15 @@ void Model::Initialize(
 	wvpData_ = wvpData;
 	wvpResource_ = wvpResource;
 	
+	//インデックス
+	indexResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(uint32_t) * modelData_.model.indices.size());
+	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
+	indexBufferView_.SizeInBytes = sizeof(uint32_t) * (uint32_t)modelData_.model.indices.size();
+	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
+
+	uint32_t* mappedIndex;
+	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedIndex));
+	std::memcpy(mappedIndex, modelData_.model.indices.data(), sizeof(uint32_t) * modelData_.model.indices.size());
 
 #pragma region マテリアル
 	//マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
@@ -300,7 +310,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 	pointLightData_->position = pointlight;
 
 	DXF_->GetCMDList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
-	
+	DXF_->GetCMDList()->IASetIndexBuffer(&indexBufferView_);//IBVを設定
 	//wvp用のCBufferの場所の設定
 	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
 	//マテリアルCBufferの場所を設定
@@ -320,7 +330,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, SRVManager::GetInstance()->GetTextureDescriptorHandle(texture));
 	}
 	//描画！		
-	DXF_->GetCMDList()->DrawInstanced(point_, 1, 0, 0);
+	DXF_->GetCMDList()->DrawIndexedInstanced(static_cast<UINT>(modelData_.model.indices.size()), 1, 0, 0, 0);
 }
 
 
@@ -346,19 +356,7 @@ void Model::PlayAnimation(int animeNum)
 
 }
 
-void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime)
-{
 
-	
-	for (Joint& joint : skeleton.joints) {
-		if (auto it = animation.nodeAnimations.find(joint.name); it != animation.nodeAnimations.end()) {
-			const NodeAnimation& rootNodeAnimation = (*it).second;
-			joint.transform.translate_ = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
-			joint.transform.rotate_ = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
-			joint.transform.scale_ = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
-		}
-	}
-}
 
 void Model::DebugParameter(const char* name)
 {

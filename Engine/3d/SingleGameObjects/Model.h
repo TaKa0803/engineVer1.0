@@ -151,6 +151,9 @@ private:
 	//頂点数
 	int point_;
 
+	ID3D12Resource* indexResource_;
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
+
 
 	ID3D12Resource* vertexData_;
 	//頂点バッファビューを作成する

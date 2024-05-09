@@ -232,25 +232,48 @@ ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& 
 		assert(mesh->HasNormals());
 		assert(mesh->HasTextureCoords(0));
 		//中身の回析
+		modeldata.model.vertices.resize(mesh->mNumVertices);
+		for (uint32_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; ++vertexIndex) {
+			aiVector3D& position = mesh->mVertices[vertexIndex];
+			aiVector3D& normal = mesh->mNormals[vertexIndex];
+			aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
+			//座標変換わすれず
+			modeldata.model.vertices[vertexIndex].position = { -position.x,position.y,position.z,1.0f };
+			modeldata.model.vertices[vertexIndex].normal = { -normal.x,position.y,position.z };
+			modeldata.model.vertices[vertexIndex].texcoord = { texcoord.x,texcoord.y };
+
+		}
+		//Indexの解析
 		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
 			aiFace& face = mesh->mFaces[faceIndex];
-			assert(face.mNumIndices == 3);//三角形のみサポ
-			//各頂点回析
+			assert(face.mNumIndices == 3);
+
 			for (uint32_t element = 0; element < face.mNumIndices; ++element) {
 				uint32_t vertexIndex = face.mIndices[element];
-				aiVector3D& position = mesh->mVertices[vertexIndex];
-				aiVector3D& normal = mesh->mNormals[vertexIndex];
-				aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
-				VertexData vertex;
-				vertex.position = { position.x,position.y,position.z,1.0f };
-				vertex.normal = { normal.x,normal.y,normal.z };
-				vertex.texcoord = { texcoord.x,texcoord.y };
-
-				vertex.position.x *= -1.0f;
-				vertex.normal.x *= -1.0f;
-				modeldata.model.vertices.push_back(vertex);
+				modeldata.model.indices.push_back(vertexIndex);
 			}
 		}
+
+
+		//for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
+		//	aiFace& face = mesh->mFaces[faceIndex];
+		//	assert(face.mNumIndices == 3);//三角形のみサポ
+		//	//各頂点回析
+		//	for (uint32_t element = 0; element < face.mNumIndices; ++element) {
+		//		uint32_t vertexIndex = face.mIndices[element];
+		//		aiVector3D& position = mesh->mVertices[vertexIndex];
+		//		aiVector3D& normal = mesh->mNormals[vertexIndex];
+		//		aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
+		//		VertexData vertex;
+		//		vertex.position = { position.x,position.y,position.z,1.0f };
+		//		vertex.normal = { normal.x,normal.y,normal.z };
+		//		vertex.texcoord = { texcoord.x,texcoord.y };
+
+		//		vertex.position.x *= -1.0f;
+		//		vertex.normal.x *= -1.0f;
+		//		modeldata.model.vertices.push_back(vertex);
+		//	}
+		//}
 	}
 	//マテリアル解析
 	for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex) {
@@ -270,7 +293,19 @@ ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& 
 	return modeldata;
 
 }
+void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime)
+{
 
+
+	for (Joint& joint : skeleton.joints) {
+		if (auto it = animation.nodeAnimations.find(joint.name); it != animation.nodeAnimations.end()) {
+			const NodeAnimation& rootNodeAnimation = (*it).second;
+			joint.transform.translate_ = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
+			joint.transform.rotate_ = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
+			joint.transform.scale_ = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
+		}
+	}
+}
 
 ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename) {
 #pragma region 中で必要となる変数の宣言
