@@ -190,6 +190,10 @@ void Model::Initialize(
 
 	skeleton_ = CreateSkeleton(modelData_.model.rootNode);
 
+	//ジョイントのMの作成
+	jointM__ = InstancingModelManager::GetInstance();
+	jointMtag_ = "sphere";
+
 	SRVManager* SRVM = SRVManager::GetInstance();
 
 	//スプライトの指定がない場合
@@ -256,8 +260,20 @@ void Model::Initialize(
 
 void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 pointlight, int texture)
 {
-	ModelManager::PreDraw(fillMode_,blendMode_);
 
+	//ジョイントMの更新
+	int i = 0;
+	for (auto&jointW : skeleton_.joints) {
+		Matrix4x4 world = jointW.skeletonSpaceMatrix;
+
+		EulerWorldTransform newdata;
+		newdata.matWorld_ = world;
+
+		jointM__->SetData(jointMtag_,newdata , { 1,1,1,1 });
+
+		i++;
+	}
+	
 	materialData_->uvTransform = MakeAffineMatrix(uvscale, uvrotate, uvpos);
 
 	//animationのあるモデルならローカルを駆ける
@@ -275,6 +291,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 		wvpData_->World =worldMatrix;
 	}
 
+	ModelManager::PreDraw(fillMode_, blendMode_);
 
 	wvpData_->WorldInverseTranspose = Inverse(Transpose(worldMatrix));
 

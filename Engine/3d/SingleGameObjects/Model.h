@@ -10,7 +10,7 @@
 
 #include"SingleModelManager/ModelManager.h"
 #include"Camera/Camera.h"
-
+#include"InstancingGameObject/InstancingModel.h"
 
 void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime);
 
@@ -133,6 +133,10 @@ private:
 	ModelAllData modelData_;
 
 	Skeleton skeleton_;
+
+	//ジョイントの描画データ
+	InstancingModelManager* jointM__;
+	std::string jointMtag_;
 
 	//埋めるか否か
 	FillMode fillMode_ = FillMode::kSolid;

@@ -46,8 +46,9 @@ void CGScnene::PostEffectDraw()
 void CGScnene::Draw()
 {
 	object->Draw(*camera_,pointLightPos_,ball);
-	terrain->Draw(*camera_, pointLightPos_);
+	//terrain->Draw(*camera_, pointLightPos_);
 
+	InstancingModelManager::GetInstance()->DrawAllModel(camera_->GetViewProjectionMatrix());
 }
 
 void CGScnene::Debug()

@@ -78,7 +78,7 @@ Animation LoadAnimationFile(const std::string& directoryPath, const std::string&
 
 	Assimp::Importer importer;
 	std::string filePath = directoryPath + "/" + filename;
-	
+
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
 	if (scene->mNumAnimations == 0) {
 		return result;
@@ -88,33 +88,33 @@ Animation LoadAnimationFile(const std::string& directoryPath, const std::string&
 
 	//assimpでは個々のNodeのAnimationをchannelと読んでいるのでchannelを回してNodeAnimationの情報を取る
 	for (uint32_t channelIndex = 0; channelIndex < animationAssimp->mNumChannels; ++channelIndex) {
-			aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
-			//参照渡し
-			NodeAnimation& nodeAnimation = result.nodeAnimations[nodeAnimationAssimp->mNodeName.C_Str()];
+		aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
+		//参照渡し
+		NodeAnimation& nodeAnimation = result.nodeAnimations[nodeAnimationAssimp->mNodeName.C_Str()];
 
-			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex) {
-				aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
-				KayframeVector3 keyframe;
-				keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
-				keyframe.value = { -keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };//右手ー＞左手
-				nodeAnimation.translate.keyframes.push_back(keyframe);
-			}
-
-			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex) {
-				aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
-				KayframeQuaternion keyframe;
-				keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
-				keyframe.value = { keyAssimp.mValue.x,-keyAssimp.mValue.y,-keyAssimp.mValue.z,keyAssimp.mValue.w };//右手ー＞左手
-				nodeAnimation.rotate.keyframes.push_back(keyframe);
-			}
-			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex) {
-				aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
-				KayframeVector3 keyframe;
-				keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
-				keyframe.value = { keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };//右手ー＞左手
-				nodeAnimation.scale.keyframes.push_back(keyframe);
-			}
+		for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex) {
+			aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
+			KayframeVector3 keyframe;
+			keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
+			keyframe.value = { -keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };//右手ー＞左手
+			nodeAnimation.translate.keyframes.push_back(keyframe);
 		}
+
+		for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex) {
+			aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
+			KayframeQuaternion keyframe;
+			keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
+			keyframe.value = { keyAssimp.mValue.x,-keyAssimp.mValue.y,-keyAssimp.mValue.z,keyAssimp.mValue.w };//右手ー＞左手
+			nodeAnimation.rotate.keyframes.push_back(keyframe);
+		}
+		for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex) {
+			aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
+			KayframeVector3 keyframe;
+			keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
+			keyframe.value = { keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };//右手ー＞左手
+			nodeAnimation.scale.keyframes.push_back(keyframe);
+		}
+	}
 
 
 
@@ -201,7 +201,7 @@ int32_t CreateJoint(const Node& node,
 
 Skeleton CreateSkeleton(const Node& node) {
 	Skeleton skeleton;
-	skeleton.root = CreateJoint(node, {},skeleton.joints);
+	skeleton.root = CreateJoint(node, {}, skeleton.joints);
 
 	//名前とindexのマッピングを行いアクセスしやすくする
 	for (const Joint& joint : skeleton.joints) {
@@ -218,7 +218,7 @@ ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& 
 
 	//読み込み
 	Assimp::Importer imp;
-	std::string filePath = directoryPath + "/" + modelName ;
+	std::string filePath = directoryPath + "/" + modelName;
 	const aiScene* scene = imp.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
 
 	if (scene->mNumAnimations != 0) {
@@ -461,7 +461,7 @@ ID3D12DescriptorHeap* CreateDescriptorHeap(ID3D12Device* device, D3D12_DESCRIPTO
 	descriptorHeapDesc.Type = heapType;
 	descriptorHeapDesc.NumDescriptors = numDescriptors;
 	descriptorHeapDesc.Flags = shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	
+
 	HRESULT hr = device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
 	assert(SUCCEEDED(hr));
 
