@@ -6,7 +6,7 @@
 #include"functions/function.h"
 
 #include<cassert>
-
+#include<array>
 
 #pragma region モデル用
 ObjectPSO::ObjectPSO() {
@@ -54,7 +54,7 @@ void ObjectPSO::Initialize() {
 				D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 #pragma region RootParameter 
 			//RootParameter作成。PixelShaderのMAterialとVertexShaderのTransform
-			D3D12_ROOT_PARAMETER rootParameters[6] = {};
+			D3D12_ROOT_PARAMETER rootParameters[7] = {};
 			//
 			rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
 			rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;		//PixelShaderで使う
@@ -80,6 +80,19 @@ void ObjectPSO::Initialize() {
 			rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 			rootParameters[5].Descriptor.ShaderRegister = 3;
 
+#pragma region 
+			D3D12_DESCRIPTOR_RANGE descriptorRangeForSkinning[1] = {};
+			descriptorRangeForSkinning[0].BaseShaderRegister = 0;
+			descriptorRangeForSkinning[0].NumDescriptors = 1;
+			descriptorRangeForSkinning[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+			descriptorRangeForSkinning[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+			//VSのDescriptorTable
+			rootParameters[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;		//CBVを使う
+			rootParameters[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;	//VertexShaderで使う
+			rootParameters[6].DescriptorTable.pDescriptorRanges = descriptorRangeForSkinning;
+			rootParameters[6].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForSkinning);
+#pragma endregion
 
 #pragma region ディスクリプタレンジ
 			D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
@@ -132,7 +145,7 @@ void ObjectPSO::Initialize() {
 #pragma endregion
 #pragma region InputLayoutの設定
 			//InputLayout
-			D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
+			D3D12_INPUT_ELEMENT_DESC inputElementDescs[5]={};
 			inputElementDescs[0].SemanticName = "POSITION";
 			inputElementDescs[0].SemanticIndex = 0;
 			inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -147,6 +160,19 @@ void ObjectPSO::Initialize() {
 			inputElementDescs[2].SemanticIndex = 0;
 			inputElementDescs[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 			inputElementDescs[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+			inputElementDescs[3].SemanticName = "WEIGHT";
+			inputElementDescs[3].SemanticIndex = 0;
+			inputElementDescs[3].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+			inputElementDescs[3].InputSlot = 1;
+			inputElementDescs[3].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+			inputElementDescs[4].SemanticName = "INDEX";
+			inputElementDescs[4].SemanticIndex = 0;
+			inputElementDescs[4].Format = DXGI_FORMAT_R32G32B32A32_SINT;
+			inputElementDescs[4].InputSlot = 1;
+			inputElementDescs[4].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
 
 			D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 			inputLayoutDesc.pInputElementDescs = inputElementDescs;

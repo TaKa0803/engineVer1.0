@@ -167,8 +167,12 @@ void Model::UpdateAnimation()
 
 	animationTime += 1.0f / 60.0f;
 	animationTime = std::fmod(animationTime, modelData_.animation.duration);
+	//animationの更新を行って骨ごとのローカル情報を更新
 	ApplyAnimation(skeleton_, modelData_.animation,animationTime);
+	//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
 	Update(skeleton_);
+	//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
+	Update(skinCluster_, skeleton_);
 }
 
 void Model::Initialize(
@@ -190,6 +194,10 @@ void Model::Initialize(
 	name =name_;
 
 	skeleton_ = CreateSkeleton(modelData_.model.rootNode);
+
+	Handles handles = SRVManager::GetInstance()->CreateNewSRVHandles();
+
+	skinCluster_ = CreateSkinCluster(*DXF_->GetDevice(), skeleton_, modelData_.model, handles.cpu, handles.gpu);
 
 	//ジョイントのMの作成
 	jointM__ = InstancingModelManager::GetInstance();
@@ -270,38 +278,56 @@ void Model::Initialize(
 
 void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 pointlight, int texture)
 {
+	UpdateAnimation();
 
-	//ジョイントMの更新
-	int i = 0;
-	for (auto&jointW : skeleton_.joints) {
-		Matrix4x4 world = jointW.skeletonSpaceMatrix;
-
-		EulerWorldTransform newdata;
-		newdata.matWorld_ = world;
-
-		jointM__->SetData(jointMtag_,newdata , { 1,1,1,1 });
-
-		i++;
-	}
 	
 	materialData_->uvTransform = MakeAffineMatrix(uvscale, uvrotate, uvpos);
 
-	//animationのあるモデルならローカルを駆ける
+	Matrix4x4 WVP = worldMatrix * camera.GetViewProjectionMatrix();
+
+	wvpData_->WVP = WVP;
+	wvpData_->World = worldMatrix;
+
+	bool isAnime = false;
+	//animationのあるモデルなら
 	if (modelData_.animation.nodeAnimations.size() != 0) {
+		isAnime = true;
+		//ジョイントMの更新
+		int i = 0;
+		for (auto& jointW : skeleton_.joints) {
+			Matrix4x4 world = jointW.skeletonSpaceMatrix;
 
-		Matrix4x4 WVP = worldMatrix * camera.GetViewProjectionMatrix();
+			EulerWorldTransform newdata;
+			newdata.matWorld_ = world;
 
-		wvpData_->WVP = WVP;
-		wvpData_->World = localM_ * worldMatrix;
+			jointM__->SetData(jointMtag_, newdata, { 1,1,1,1 });
+
+			i++;
+		}
+		
+		
+
 	}
 	else {
-		Matrix4x4 WVP = worldMatrix * camera.GetViewProjectionMatrix();
-
-		wvpData_->WVP = WVP;
-		wvpData_->World =worldMatrix;
+		
 	}
 
-	ModelManager::PreDraw(fillMode_, blendMode_);
+
+	ModelManager::PreDraw(isAnime,fillMode_, blendMode_);
+
+	if (isAnime) {
+		D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
+		vertexBufferView_,					//VertexDataのView
+		skinCluster_.influenceBufferView	//InfluenceのVPV
+		};
+
+		DXF_->GetCMDList()->IASetVertexBuffers(0, 2, vbvs);
+		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(6, skinCluster_.paletteSrvHandle.second);
+	}
+	else {
+		DXF_->GetCMDList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
+	}
+
 
 	wvpData_->WorldInverseTranspose = Inverse(Transpose(worldMatrix));
 
@@ -309,7 +335,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 
 	pointLightData_->position = pointlight;
 
-	DXF_->GetCMDList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
+	
 	DXF_->GetCMDList()->IASetIndexBuffer(&indexBufferView_);//IBVを設定
 	//wvp用のCBufferの場所の設定
 	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
@@ -329,6 +355,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 		//SRVのDescriptorTableの先頭を設定。２はParameter[2]である。
 		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, SRVManager::GetInstance()->GetTextureDescriptorHandle(texture));
 	}
+	
 	//描画！		
 	DXF_->GetCMDList()->DrawIndexedInstanced(static_cast<UINT>(modelData_.model.indices.size()), 1, 0, 0, 0);
 }

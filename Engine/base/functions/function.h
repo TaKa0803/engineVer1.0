@@ -24,7 +24,11 @@ void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animat
 
 void Update(Skeleton& skeleton);
 
+void Update(SkinCluster& skinCluster, const Skeleton& skeleton);
+
 Skeleton CreateSkeleton(const Node& node);
+
+SkinCluster CreateSkinCluster(ID3D12Device& device, const Skeleton& skeleton, const ModelData& modelData, D3D12_CPU_DESCRIPTOR_HANDLE cHandle, D3D12_GPU_DESCRIPTOR_HANDLE gHandle);
 
 IDxcBlob* CompileShader(
 	//CompilerするShaderファイルへのパス

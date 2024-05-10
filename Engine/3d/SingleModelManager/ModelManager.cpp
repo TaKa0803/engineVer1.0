@@ -23,7 +23,9 @@ void ModelManager::SepUp()
 {
 	//PSOの初期化
 	grarphics_ = new ObjectPSO();
+	SkinningGrarphics_ = new SkinningPSO();
 	grarphics_->Initialize();
+	SkinningGrarphics_->Initialize();
 }
 
 void ModelManager::LoadAllModels() {
@@ -115,9 +117,14 @@ ModelAllData ModelManager::GetModelData(const std::string& filename) {
 
 	return ModelAllData();
 }
-void ModelManager::PreDraw(FillMode fillMode, BlendMode blendMode)
+void ModelManager::PreDraw(bool isHaveAnimation,FillMode fillMode, BlendMode blendMode)
 {
-	ModelManager::GetInstance()->grarphics_->PreDraw(fillMode,blendMode);
+	if(isHaveAnimation){
+		ModelManager::GetInstance()->SkinningGrarphics_->PreDraw(fillMode, blendMode);
+	}
+	else {
+		ModelManager::GetInstance()->grarphics_->PreDraw(fillMode, blendMode);
+	}
 }
 #pragma endregion
 

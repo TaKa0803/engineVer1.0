@@ -7,6 +7,7 @@
 #include"WorldTransform/WorldTransform.h"
 #include"DirectXFunc/DirectXFunc.h"
 #include"SingleGameObjects/ObjectPSO.h"
+#include"SkinningPSO/SkinningPSO.h"
 #include"struct.h"
 
 
@@ -39,12 +40,14 @@ public:
 	ModelAllData GetModelData( const std::string& filename);
 
 	//描画前処理
-	static void PreDraw(FillMode fillMode = FillMode::kSolid, BlendMode blendMode = BlendMode::kNormal);
+	static void PreDraw(bool isHaveAnimation,FillMode fillMode = FillMode::kSolid, BlendMode blendMode = BlendMode::kNormal);
 
 private:
 
 	//各モデル描画用のPSO
+	SkinningPSO* SkinningGrarphics_;
 	ObjectPSO* grarphics_;
+
 
 	//モデルデータのパスが記入されたファイルへのパス
 	const std::string modelPathFile = "resources/jsonfile/modelPathFile.json";

@@ -1,7 +1,5 @@
 #include"IsCollisions.h"
-
-#include <algorithm>
-
+#include<algorithm>
 
 #pragma region 回転量取得関数
 //すべてのX回転量取得
@@ -196,7 +194,6 @@ bool InCollision(const AABB& AA, const Segment& S) {
 	float tXmax = (AA.maxV.x - S.origin.x) / S.diff.x;
 	float tYmax = (AA.maxV.y - S.origin.y) / S.diff.y;
 	float tZmax = (AA.maxV.z - S.origin.z) / S.diff.z;
-
 
 	float tNearX = std::min(tXmin, tXmax);
 	float tNearY = std::min(tYmin, tYmax);

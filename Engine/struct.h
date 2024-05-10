@@ -4,6 +4,11 @@
 #include<string>
 #include<map>
 #include<optional>
+#include<wrl.h>
+#include<array>
+#include<span>
+
+#include<d3d12.h>
 
 #include"Math/Vector2.h"
 #include"Math/Vector3.h"
@@ -11,6 +16,7 @@
 #include"Math/Matrix.h"
 
 #include"WorldTransform/WorldTransform.h"
+
 
 #pragma region 構造体
 
@@ -109,11 +115,45 @@ struct Animation
 	std::map<std::string, NodeAnimation>nodeAnimations;
 };
 
+
+struct VertexWeightData {
+	float weight;
+	uint32_t vertexIndex;
+};
+struct JointWeightData {
+	Matrix4x4 inverseBindPoseMatrix;
+	std::vector<VertexWeightData>vertexWeights;
+};
+
 struct ModelData {
+	std::map<std::string, JointWeightData>skinClusterData;
 	std::vector<VertexData> vertices;
 	std::vector<uint32_t>indices;
 	MaterialData material;
 	Node rootNode;
+};
+
+const uint32_t kNumMaxInfluence = 4;
+struct VertexInfluence {
+	std::array<float, kNumMaxInfluence>weights;
+	std::array<int32_t, kNumMaxInfluence>jointIndices;
+};
+
+struct WellForGPU {
+	Matrix4x4 skeletonSpaceMatrix;
+	Matrix4x4 skeletonSpaceInverseTransposeMatrix;
+};
+
+struct SkinCluster {
+	std::vector<Matrix4x4>inverseBindPoseMatrices;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource>influenceResource;
+	D3D12_VERTEX_BUFFER_VIEW influenceBufferView;
+	std::span<VertexInfluence>mapedInfluence;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource>paletteResource;
+	std::span<WellForGPU>mappedPalette;
+	std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE>paletteSrvHandle;
 };
 
 struct ModelAllData
@@ -159,10 +199,6 @@ struct Camera4GPU {
 	Vector3 worldPosition;
 };
 
-struct Segment {
-	Vector3 origin;
-	Vector3 diff;
-};
 
 
 //ポイントライト

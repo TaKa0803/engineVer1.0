@@ -1,44 +1,46 @@
-#include "InstancingPSO.h"
-
-#include"functions/function.h"
-#include"Log/Log.h"
-
-#include<cassert>
+#include "SkinningPSO.h"
 
 #include"DXC/DXCManager.h"
 
-InstancingPSO::InstancingPSO() {
+#include"Log/Log.h"
+#include"functions/function.h"
 
+#include<cassert>
+#include<array>
+
+
+SkinningPSO::SkinningPSO()
+{
 }
 
-InstancingPSO::~InstancingPSO() {
-
-	if (rootSignature != nullptr) {
+SkinningPSO::~SkinningPSO()
+{
+	if (rootSignature != nullptr && this != nullptr) {
 		rootSignature->Release();
 		rootSignature = nullptr;
-
-		//ルートシグネチャが解放されていたら他もされてるだろ！ガハハ！
 		for (int i = 0; i < int(FillMode::kCountOfFillMode); i++) {
 			for (int h = 0; h < int(BlendMode::kCountOfBlendMode); h++) {
 				if (graphicsPipelineState[i][h] != nullptr) {
 					graphicsPipelineState[i][h]->Release();
 					graphicsPipelineState[i][h] = nullptr;
 				}
+
 			}
 		}
 	}
-	
 }
 
-void InstancingPSO::Initialize() {
-
+void SkinningPSO::Initialize()
+{
 
 	if (isInitialize_) {
 		return;
 	}
-	isInitialize_ = true; 
+	else {
+		isInitialize_ = true;
+		DXF_ = DirectXFunc::GetInstance();
+	}
 
-	DXF_ = DirectXFunc::GetInstance();
 #pragma region RootSignatureを生成する
 
 	//RootSignatureの作成
@@ -47,36 +49,45 @@ void InstancingPSO::Initialize() {
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 #pragma region RootParameter 
 	//RootParameter作成。PixelShaderのMAterialとVertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameters[4] = {};
-
-	//マテリアル
+	D3D12_ROOT_PARAMETER rootParameters[7] = {};
+	//
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;		//PixelShaderで使う
 	rootParameters[0].Descriptor.ShaderRegister = 0;						//レジスタ番号０とバインド
+
+	//world
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;	//PixelShaderで使う
+	rootParameters[1].Descriptor.ShaderRegister = 0;						//レジスタ番号０とバインド
 
 	//ライト
 	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	rootParameters[3].Descriptor.ShaderRegister = 1;
 
-#pragma region Worldデータをsrv管理
-	D3D12_DESCRIPTOR_RANGE descriptorRangeForInstancing[1] = {};
-	descriptorRangeForInstancing[0].BaseShaderRegister = 0;
-	descriptorRangeForInstancing[0].NumDescriptors = 1;
-	descriptorRangeForInstancing[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRangeForInstancing[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	//カメラ
+	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters[4].Descriptor.ShaderRegister = 2;
+
+	//ポイントライト
+	rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters[5].Descriptor.ShaderRegister = 3;
+
+#pragma region 
+	D3D12_DESCRIPTOR_RANGE descriptorRangeForSkinning[1] = {};
+	descriptorRangeForSkinning[0].BaseShaderRegister = 0;
+	descriptorRangeForSkinning[0].NumDescriptors = 1;
+	descriptorRangeForSkinning[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descriptorRangeForSkinning[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 	//VSのDescriptorTable
-	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;		//CBVを使う
-	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;	//PixelShaderで使う
-	rootParameters[1].DescriptorTable.pDescriptorRanges = descriptorRangeForInstancing;
-	rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForInstancing);
+	rootParameters[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;		//CBVを使う
+	rootParameters[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;	//VertexShaderで使う
+	rootParameters[6].DescriptorTable.pDescriptorRanges = descriptorRangeForSkinning;
+	rootParameters[6].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForSkinning);
 #pragma endregion
-
-
-
-
-	
 
 #pragma region ディスクリプタレンジ
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
@@ -87,7 +98,7 @@ void InstancingPSO::Initialize() {
 #pragma endregion
 
 #pragma region ディスクリプタテーブル
-	//PSのDescriptorTable
+	//DescriptorTable
 	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;;		//DescriptorHeapを使う
 	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;					//PixelShaderで使う 
 	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;				//tableの中身の配列を指定
@@ -129,7 +140,7 @@ void InstancingPSO::Initialize() {
 #pragma endregion
 #pragma region InputLayoutの設定
 	//InputLayout
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs[4] = {};
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs[5] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
 	inputElementDescs[0].SemanticIndex = 0;
 	inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -145,10 +156,17 @@ void InstancingPSO::Initialize() {
 	inputElementDescs[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	inputElementDescs[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
-	inputElementDescs[3].SemanticName = "COLOR";
+	inputElementDescs[3].SemanticName = "WEIGHT";
 	inputElementDescs[3].SemanticIndex = 0;
 	inputElementDescs[3].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	inputElementDescs[3].InputSlot = 1;
 	inputElementDescs[3].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+	inputElementDescs[4].SemanticName = "INDEX";
+	inputElementDescs[4].SemanticIndex = 0;
+	inputElementDescs[4].Format = DXGI_FORMAT_R32G32B32A32_SINT;
+	inputElementDescs[4].InputSlot = 1;
+	inputElementDescs[4].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
 
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
@@ -160,16 +178,10 @@ void InstancingPSO::Initialize() {
 	DXCManager* DXC = DXCManager::GetInstance();
 
 	//Shaderをコンパイルする
-	/*IDxcBlob* vertexShaderBlob = CompileShader(vsPass, L"vs_6_0", dxcUtils, dxcCompiler, includeHandler);
+	IDxcBlob* vertexShaderBlob = CompileShader(L"resources/shaders/SkinningObject3D.VS.hlsl", L"vs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
 	assert(vertexShaderBlob != nullptr);
 
-	IDxcBlob* pixelShaderBlob = CompileShader(psPass, L"ps_6_0", dxcUtils, dxcCompiler, includeHandler);
-	assert(pixelShaderBlob != nullptr);*/
-
-	IDxcBlob* vertexShaderBlob = CompileShader(vsPass, L"vs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
-	assert(vertexShaderBlob != nullptr);
-
-	IDxcBlob* pixelShaderBlob = CompileShader(psPass, L"ps_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
+	IDxcBlob* pixelShaderBlob = CompileShader(L"resources/shaders/SkinningObject3D.PS.hlsl", L"ps_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
 	assert(pixelShaderBlob != nullptr);
 #pragma endregion
 #pragma region DepthStencilStateの設定を行う
@@ -315,12 +327,12 @@ void InstancingPSO::Initialize() {
 #pragma endregion
 		}
 	}
-	Log("Complete Instancing GraphicsSystem Initialize\n");
-
+	Log("Complete Model GraphicsSystem Initialize\n");
 }
 
-void InstancingPSO::PreDraw(const FillMode&fillMode,const BlendMode&blendMode) {
+void SkinningPSO::PreDraw(FillMode fillmode, BlendMode blendMode)
+{
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	DXF_->GetCMDList()->SetGraphicsRootSignature(rootSignature);
-	DXF_->GetCMDList()->SetPipelineState(graphicsPipelineState[static_cast<int>(fillMode)][static_cast<int>(blendMode)]);
+	DXF_->GetCMDList()->SetPipelineState(graphicsPipelineState[static_cast<int>(fillmode)][static_cast<int>(blendMode)]);
 }

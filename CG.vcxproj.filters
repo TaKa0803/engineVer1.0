@@ -11,6 +11,8 @@
     <FxCompile Include="resources\shaders\Sprite.VS.hlsl" />
     <FxCompile Include="resources\shaders\CopyImage.PS.hlsl" />
     <FxCompile Include="resources\shaders\CopyImage.VS.hlsl" />
+    <FxCompile Include="resources\shaders\SkinningObject3D.VS.hlsl" />
+    <FxCompile Include="resources\shaders\SkinningObject3D.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\AL\Plane\Plane.cpp" />
@@ -78,6 +80,7 @@
     <ClCompile Include="Engine\2d\SpriteManager\SpriteManager.cpp" />
     <ClCompile Include="Engine\2d\SpritePSO\SpritePSO.cpp" />
     <ClCompile Include="Engine\base\OffScreanPipeline\OffScreanPipeline.cpp" />
+    <ClCompile Include="Engine\3d\SkinningPSO\SkinningPSO.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -145,6 +148,7 @@
     <ClInclude Include="Engine\2d\SpriteManager\SpriteManager.h" />
     <ClInclude Include="Engine\2d\SpritePSO\SpritePSO.h" />
     <ClInclude Include="Engine\base\OffScreanPipeline\OffScreanPipeline.h" />
+    <ClInclude Include="Engine\3d\SkinningPSO\SkinningPSO.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />
@@ -157,6 +161,7 @@
     <None Include="resources\shaders\Particle.hlsli" />
     <None Include="resources\shaders\Sprite.hlsli" />
     <None Include="resources\shaders\CopyImage.hlsli" />
+    <None Include="resources\shaders\SkinningObject3D.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\Imgui\LICENSE.txt" />

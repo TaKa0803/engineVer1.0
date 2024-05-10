@@ -1,6 +1,10 @@
 #pragma once
-#include"struct.h"
-#include"Vector3.h"
+#include"WorldTransform/WorldTransform.h"
+
+struct Segment {
+	Vector3 origin;
+	Vector3 diff;
+};
 
 struct AABB {
 	Vector3 minV;
