@@ -139,7 +139,8 @@ private:
 	//ジョイントの描画データ
 	InstancingModelManager* jointM__;
 	std::string jointMtag_;
-
+	bool drawJoint_ = false;
+	bool drawModel_ = true;
 	//埋めるか否か
 	FillMode fillMode_ = FillMode::kSolid;
 	BlendMode  blendMode_ = BlendMode::kNormal;

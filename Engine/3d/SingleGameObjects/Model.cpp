@@ -292,19 +292,21 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 	//animationのあるモデルなら
 	if (modelData_.animation.nodeAnimations.size() != 0) {
 		isAnime = true;
-		//ジョイントMの更新
-		int i = 0;
-		for (auto& jointW : skeleton_.joints) {
-			Matrix4x4 world = jointW.skeletonSpaceMatrix;
 
-			EulerWorldTransform newdata;
-			newdata.matWorld_ = world;
+		if (drawJoint_) {
+			//ジョイントMの更新
+			int i = 0;
+			for (auto& jointW : skeleton_.joints) {
+				Matrix4x4 world = jointW.skeletonSpaceMatrix;
 
-			//jointM__->SetData(jointMtag_, newdata, { 1,1,1,1 });
+				EulerWorldTransform newdata;
+				newdata.matWorld_ = world;
 
-			i++;
+				jointM__->SetData(jointMtag_, newdata, { 1,1,1,1 });
+
+				i++;
+			}
 		}
-		
 		
 
 	}
@@ -355,9 +357,10 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 		//SRVのDescriptorTableの先頭を設定。２はParameter[2]である。
 		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, SRVManager::GetInstance()->GetTextureDescriptorHandle(texture));
 	}
-	
-	//描画！		
-	DXF_->GetCMDList()->DrawIndexedInstanced(static_cast<UINT>(modelData_.model.indices.size()), 1, 0, 0, 0);
+	if (drawModel_) {
+		//描画！		
+		DXF_->GetCMDList()->DrawIndexedInstanced(static_cast<UINT>(modelData_.model.indices.size()), 1, 0, 0, 0);
+	}
 }
 
 
@@ -397,6 +400,11 @@ void Model::DebugParameter(const char* name)
 	const char* items[] = { "None","Normal","Add","Subtract","Multiply","Screen" };
 	int currentItem = static_cast<int>(blend);
 
+	FillMode fill = fillMode_;
+	const char* fitems[] = { "Solid","WireFrame"};
+	int currentfItem = static_cast<int>(fill);
+
+
 	float discardnum = materialData_->discardNum;
 
 	bool usePhong = materialData_->enablePhongReflection;
@@ -404,16 +412,22 @@ void Model::DebugParameter(const char* name)
 
 	bool usePointLight = materialData_->enablePointLight;
 
+
 	if (ImGui::BeginMenu(name)) {
 		ImGui::Checkbox("Texture", &useTexture);
 		ImGui::Checkbox("Shader", &useShader);
 		ImGui::Checkbox("HalfLambert", &useHalf);
 		ImGui::Checkbox("PhongReflection", &usePhong);
 		ImGui::Checkbox("enable pointlight", &usePointLight);
+		ImGui::Checkbox("draw model", &drawModel_);
+		ImGui::Checkbox("draw joint", &drawJoint_);
 
 		ImGui::ColorEdit4("Material color", &color.x);
 		if (ImGui::Combo("blendmode", &currentItem, items, IM_ARRAYSIZE(items))) {
 			blend = static_cast<BlendMode>(currentItem);
+		}
+		if (ImGui::Combo("fillmode", &currentfItem, fitems, IM_ARRAYSIZE(fitems))) {
+			fill = static_cast<FillMode>(currentfItem);
 		}
 		ImGui::DragFloat("discardNum", &discardnum, 0.01f);
 
@@ -442,6 +456,7 @@ void Model::DebugParameter(const char* name)
 	materialData_->enableHalfLambert = useHalf;
 	materialData_->color = color;
 	blendMode_ = blend;
+	fillMode_ = fill;
 	materialData_->discardNum= discardnum;
 	materialData_->enablePhongReflection = usePhong;
 	materialData_->shininess = shininess;

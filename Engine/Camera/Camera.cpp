@@ -94,15 +94,15 @@ void Camera::DrawDebugWindow(const char* name) {
 #ifdef _DEBUG
 
 	if (ImGui::BeginMenu(name)) {
-		ImGui::Text("mainCamera");
-		ImGui::DragFloat3("mainC pos", &camerapos_.x, 0.01f);
-		ImGui::DragFloat("targetFar", &mainCamera_.translate_.z,0.1f);
-		ImGui::DragFloat3("mainC rotate", &mainCamera_.rotate_.x, 0.01f);
-		ImGui::DragFloat3("mainC scale", &mainCamera_.scale_.x, 0.01f);
+		ImGui::Text("メインカメラ");
+		ImGui::DragFloat3("メイン、座標", &camerapos_.x, 0.01f);
+		ImGui::DragFloat("ターゲットとの距離", &mainCamera_.translate_.z,0.1f);
+		ImGui::DragFloat3("メイン、回転", &mainCamera_.rotate_.x, 0.01f);
+		ImGui::DragFloat3("メイン、スケール", &mainCamera_.scale_.x, 0.01f);
 
-		ImGui::Text("LocationCenterMotion");
-		ImGui::DragFloat3("PCM pos", &CameraMotionSupport_.translate_.x, 0.01f);
-		ImGui::DragFloat3("PCM rotate", &CameraMotionSupport_.rotate_.x, 0.01f);
+		ImGui::Text("ターゲットカメラ");
+		ImGui::DragFloat3("ターゲット座標", &CameraMotionSupport_.translate_.x, 0.01f);
+		ImGui::DragFloat3("ターゲットを中心に回転", &CameraMotionSupport_.rotate_.x, 0.01f);
 		ImGui::DragFloat3("PCM scale", &CameraMotionSupport_.scale_.x, 0.01f);
 		ImGui::Checkbox("isOnlyGetPosition", &isOnlyGetPosition);
 		ImGui::EndMenu();
