@@ -17,7 +17,7 @@ CGScnene::~CGScnene() { delete terrain; }
 
 void CGScnene::Initialize()
 {
-	object->Initialize("walk");
+	object->Initialize("flag");
 	terrain->Initialize("terrain");
 
 	camera_->Initialize();

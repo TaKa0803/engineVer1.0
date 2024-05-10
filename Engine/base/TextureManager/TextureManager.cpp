@@ -87,6 +87,8 @@ ID3D12Resource* UploadTextureData(ID3D12Resource* texture, const DirectX::Scratc
 
 int TextureManager::uvChecker_ = -1;
 
+int TextureManager::white_ = -1;
+
 #pragma region インスタンスと初期化
 TextureManager* TextureManager::GetInstance()
 {
@@ -98,6 +100,8 @@ void TextureManager::Initialize(DirectXFunc* DXF_)
 	DXF = DXF_;
 
 	uvChecker_ = TextureManager::LoadTex(uvCheckerTex);
+
+	white_ = TextureManager::LoadTex("resources/Texture/SystemResources/white.png");
 
 	Log("Complete TextureManager Initialize\n");
 

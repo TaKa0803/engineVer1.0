@@ -3,7 +3,7 @@
 		"position": [ 0, 0, 100 ],
 		"PopAreaSize": 30,
 		"RangeWithPopStarting": 100,
-		"PopInterval": 1,
+		"PopInterval": 5,
 		"maxAreaPopCount": 50
 	},
 
@@ -11,7 +11,7 @@
 		"position": [ 100, 0, 0 ],
 		"PopAreaSize": 30,
 		"RangeWithPopStarting": 100,
-		"PopInterval": 1,
+		"PopInterval": 5,
 		"maxAreaPopCount": 50
 	},
 
@@ -19,7 +19,7 @@
 		"position": [ 0, 0, -100 ],
 		"PopAreaSize": 30,
 		"RangeWithPopStarting": 100,
-		"PopInterval": 1,
+		"PopInterval": 5,
 		"maxAreaPopCount": 50
 	},
 
@@ -27,7 +27,7 @@
 		"position": [ -100, 0, 0 ],
 		"PopAreaSize": 30,
 		"RangeWithPopStarting": 100,
-		"PopInterval": 1,
+		"PopInterval": 5,
 		"maxAreaPopCount": 50
 	},
 
@@ -35,7 +35,7 @@
 		"position": [ -70, 0, 70 ],
 		"PopAreaSize": 30,
 		"RangeWithPopStarting": 100,
-		"PopInterval": 1,
+		"PopInterval": 5,
 		"maxAreaPopCount": 50
 	},
 
@@ -43,7 +43,7 @@
 		"position": [ 70, 0, -70 ],
 		"PopAreaSize": 30,
 		"RangeWithPopStarting": 100,
-		"PopInterval": 1,
+		"PopInterval": 5,
 		"maxAreaPopCount": 50
 	},
 
@@ -51,7 +51,7 @@
 		"position": [ 70, 0, 70 ],
 		"PopAreaSize": 30,
 		"RangeWithPopStarting": 100,
-		"PopInterval": 1,
+		"PopInterval": 5,
 		"maxAreaPopCount": 50
 	},
 
@@ -59,7 +59,7 @@
 		"position": [ -70, 0, -70 ],
 		"PopAreaSize": 30,
 		"RangeWithPopStarting": 100,
-		"PopInterval": 1,
+		"PopInterval": 5,
 		"maxAreaPopCount": 50
 	}
 }

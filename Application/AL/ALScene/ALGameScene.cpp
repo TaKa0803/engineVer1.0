@@ -19,6 +19,7 @@ ALGameScene::ALGameScene() {
 	enemyPopManager_ = std::make_unique<EnemyPopManager>();
 	enemyPopManager_->LoadPopdata();
 
+	
 
 	//インスタンシングの複数モデルが同じ画像利用の時の対応
 	InstancingModelManager* IMM = InstancingModelManager::GetInstance();
@@ -215,7 +216,7 @@ void ALGameScene::PostEffectDraw()
 	//地面
 	plane_->Draw(*camera_);
 	//敵の旗
-	enemyPopManager_->Draw();
+	enemyPopManager_->Draw(*camera_);
 
 	//敵
 	for (auto& enemy : enemies_) {

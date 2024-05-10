@@ -12,7 +12,8 @@
     "sphere": [ "SystemResources/sphere", "sphere.obj" ],
     "terrain": [ "terrain", "terrain.obj" ],
     "AnimeCube": [ "AnimatedCube", "AnimatedCube.gltf" ],
-    "walk": [ "walk", "sneakWalk.gltf" ]
+    "walk": [ "walk", "sneakWalk.gltf" ],
+    "flag" :  ["flag","flag.gltf"]
   },
   "InstancingmodelPathFile": {
     "weapon": [ "resources/Models/Weapon", "Weapon.obj", 64 ],
@@ -27,7 +28,7 @@
     "RArm": [ "resources/Models/Object/RArm", "RArm.obj", 1000 ],
     "LFoot": [ "resources/Models/Object/LFoot", "LFoot.obj", 1000 ],
     "RFoot": [ "resources/Models/Object/RFoot", "RFoot.obj", 1000 ],
-    "Flag": [ "resources/Models/Object/Flag", "Flag.obj", 10 ],
+    "Flag": [ "resources/Models/pole", "pole.obj", 10 ],
     "EBox": [ "resources/Models/Particle/EBox", "EBox.obj", 50000 ],
     "SkyDome": [ "resources/Models/Skydome", "Skydome.obj", 5 ],
     "Impact": [ "resources/Models/Impact", "Impact.obj", 100 ],

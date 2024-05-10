@@ -7,6 +7,7 @@
 #include<json.hpp>
 
 #include"RandomNum/RandomNum.h"
+#include"TextureManager/TextureManager.h"
 
 void EnemyPopManager::LoadPopdata() {
 
@@ -86,10 +87,20 @@ void EnemyPopManager::LoadPopdata() {
 	for (auto& popData : popDatas_) {
 		//スポーン地点の座標指定
 		flagWorlds_[Index].translate_ = popData.areaPosition;
+
+
+		//旗も追加
+		std::unique_ptr<GameObject>newdata = std::make_unique<GameObject>();
+		newdata->Initialize("flag");
+		newdata->world_.translate_ = popData.areaPosition;
+		newdata->world_.translate_.y += 6.0f;
+		flagModel_.emplace_back(std::move(newdata));
+
 		Index++;
 	}
 
-
+	
+	
 }
 
 void EnemyPopManager::Initialzie() {
@@ -97,6 +108,10 @@ void EnemyPopManager::Initialzie() {
 		popdata.PopIntervalCount = 0;
 		popdata.maxAreaPopCount = 0;
 	}
+
+	InstancingModelManager* IMM = InstancingModelManager::GetInstance();
+
+	IMM->SetTexture(flag_, TextureManager::white_);
 }
 
 void EnemyPopManager::Update() {
@@ -106,19 +121,23 @@ void EnemyPopManager::Update() {
 	for (auto& world : flagWorlds_) {
 		if (popDatas_[Index].maxAreaPopCount < popDatas_[Index].maxAreaPop) {
 			world.UpdateMatrix();
+
+			flagModel_[Index]->Update();
 		}
 		Index++;
 	}
 
 }
 
-void EnemyPopManager::Draw() {
+void EnemyPopManager::Draw(const Camera&camera) {
 	InstancingModelManager* IMM = InstancingModelManager::GetInstance();
 	int Index = 0;
 	for (auto& world : flagWorlds_) {
 		world.UpdateMatrix();
 		if (popDatas_[Index].maxAreaPopCount < popDatas_[Index].maxAreaPop) {
 			IMM->SetData(flag_, world);
+
+			flagModel_[Index]->Draw(camera,{0,0,0},TextureManager::white_);
 		}
 		Index++;
 	}

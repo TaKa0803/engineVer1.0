@@ -33,6 +33,7 @@ public:
 	/// </summary>
 	static int uvChecker_;
 
+	static int white_;
 
 	/// <summary>
 	/// 画像の読み込み処理

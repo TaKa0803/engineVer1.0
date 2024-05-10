@@ -32,7 +32,7 @@ public:
 
 	void Update();
 
-	void Draw();
+	void Draw(const Camera& camera);
 
 	std::unique_ptr<ALEnemy> PopEnemy();
 
@@ -95,4 +95,5 @@ private:
 
 	std::vector<EulerWorldTransform>flagWorlds_;
 
+	std::vector<std::unique_ptr<GameObject>>flagModel_;
 };

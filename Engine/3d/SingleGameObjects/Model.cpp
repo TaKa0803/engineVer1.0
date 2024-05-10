@@ -300,7 +300,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 			EulerWorldTransform newdata;
 			newdata.matWorld_ = world;
 
-			jointM__->SetData(jointMtag_, newdata, { 1,1,1,1 });
+			//jointM__->SetData(jointMtag_, newdata, { 1,1,1,1 });
 
 			i++;
 		}
