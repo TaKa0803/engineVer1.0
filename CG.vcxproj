@@ -135,6 +135,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\base\AudioManager\AudioManager.cpp" />
     <ClCompile Include="Engine\base\DXC\DXCManager.cpp" />
     <ClCompile Include="Engine\base\OffScreanPipeline\OffScreanPipeline.cpp" />
+    <ClCompile Include="Engine\base\OffScreanPipeline\VignettingPSO.cpp" />
     <ClCompile Include="Engine\Camera\Camera.cpp" />
     <ClCompile Include="Engine\base\DirectXFunc\DirectXFunc.cpp" />
     <ClCompile Include="Engine\base\functions\function.cpp" />
@@ -234,6 +235,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="resources\shaders\Vignette.PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\ALScene\ALGameScene.h" />
@@ -262,6 +269,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\base\AudioManager\SoundData.h" />
     <ClInclude Include="Engine\base\DXC\DXCManager.h" />
     <ClInclude Include="Engine\base\OffScreanPipeline\OffScreanPipeline.h" />
+    <ClInclude Include="Engine\base\OffScreanPipeline\VignettingPSO.h" />
     <ClInclude Include="Engine\Camera\Camera.h" />
     <ClInclude Include="Engine\base\DirectXFunc\DirectXFunc.h" />
     <ClInclude Include="Engine\base\functions\function.h" />

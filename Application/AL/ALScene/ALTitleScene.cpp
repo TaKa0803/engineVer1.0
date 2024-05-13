@@ -42,7 +42,7 @@ void ALTitleScene::Initialize() {
 	AudioManager::PlaySoundData(titleSound_,0.08f);
 
 
-	OffScreenRendering::materialData_->type = 0;
+	OffScreenRendering::materialData_->type = 2;
 }
 
 void ALTitleScene::Update() {

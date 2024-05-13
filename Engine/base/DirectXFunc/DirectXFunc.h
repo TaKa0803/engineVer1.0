@@ -10,6 +10,8 @@
 
 class OffScreenRendering;
 
+class VignettingPSO;
+
 class DirectXFunc {
 public://シングルトンパターン
 	static DirectXFunc* GetInstance();
@@ -145,6 +147,8 @@ private://メンバ変数
 
 
 	OffScreenRendering* offScreen_ = nullptr;
+	//VignettingPSO* offScreen_ = nullptr;
+
 
 	const Vector4 kRenderTargetClearValue={ 1.0f,0.0f,0.0f,1.0f };
 	ID3D12Resource* renderTextureResource;

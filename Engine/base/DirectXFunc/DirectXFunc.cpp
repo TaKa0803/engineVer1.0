@@ -3,6 +3,7 @@
 #include"functions/function.h"
 #include"SRVManager/SRVManager.h"
 #include"OffScreanPipeline/OffScreanPipeline.h"
+#include"OffScreanPipeline/VignettingPSO.h"
 #include<thread>
 #include<cassert>
 
@@ -108,6 +109,7 @@ void DirectXFunc::Initialize(WindowApp* winApp)
 void DirectXFunc::InitializeOthher()
 {
 	offScreen_ = new OffScreenRendering();
+	//offScreen_ = new VignettingPSO();
 	offScreen_->Initialize();
 }
 

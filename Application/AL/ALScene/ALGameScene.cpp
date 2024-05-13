@@ -135,6 +135,8 @@ void ALGameScene::Initialize() {
 	AudioManager::GetInstance()->StopAllSounds();
 	AudioManager::PlaySoundData(bgmGame_, 0.08f);
 
+
+	OffScreenRendering::materialData_->type = 3;
 }
 
 
@@ -196,6 +198,8 @@ void ALGameScene::Update() {
 		break;
 	case ALGameScene::Clear:
 
+		OffScreenRendering::materialData_->type = 1;
+
 		num1_->DrawDebugImGui("num1");
 		num10_->DrawDebugImGui("num10");
 		num100_->DrawDebugImGui("num100");
@@ -246,7 +250,7 @@ void ALGameScene::Draw() {
 
 		ClearUIUpdate();
 
-		OffScreenRendering::materialData_->type = 1;
+		//OffScreenRendering::materialData_->type = 1;
 		break;
 	default:
 		break;
