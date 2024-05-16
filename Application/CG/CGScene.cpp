@@ -17,7 +17,8 @@ CGScnene::~CGScnene() { delete terrain; }
 
 void CGScnene::Initialize()
 {
-	object->Initialize("walk");
+	//object->Initialize("walk");
+	object->Initialize("sphere");
 	terrain->Initialize("terrain");
 
 	camera_->Initialize();
@@ -41,19 +42,22 @@ void CGScnene::Update()
 
 void CGScnene::PostEffectDraw()
 {
+	
+	object->Draw(*camera_, pointLightPos_, ball);
+	terrain->Draw(*camera_, pointLightPos_);
+
+	InstancingModelManager::GetInstance()->DrawAllModel(camera_->GetViewProjectionMatrix());
+	
 }
 
 void CGScnene::Draw()
 {
-	object->Draw(*camera_,pointLightPos_,ball);
-	//terrain->Draw(*camera_, pointLightPos_);
 
-	InstancingModelManager::GetInstance()->DrawAllModel(camera_->GetViewProjectionMatrix());
 }
 
 void CGScnene::Debug()
 {
 	object->Debug("object");
-	//terrain->Debug("terrain");
+	terrain->Debug("terrain");
 	camera_->DrawDebugWindow("camera");
 }

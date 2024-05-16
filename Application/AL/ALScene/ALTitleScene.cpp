@@ -42,7 +42,7 @@ void ALTitleScene::Initialize() {
 	AudioManager::PlaySoundData(titleSound_,0.08f);
 
 
-	OffScreenRendering::materialData_->type = 2;
+	//OffScreenRendering::materialData_->type = 2;
 }
 
 void ALTitleScene::Update() {
@@ -76,6 +76,7 @@ void ALTitleScene::PostEffectDraw()
 }
 
 void ALTitleScene::Draw() {
+	
 	sprite_->Draw();
 
 	pressSp_->Draw();
@@ -83,6 +84,7 @@ void ALTitleScene::Draw() {
 	BButtonSp_->Draw();
 
 	sceneC_->Draw();
+	
 }
 
 void ALTitleScene::Debug() {

@@ -268,6 +268,8 @@ void Model::Initialize(
 	pointlightResource_->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData_));
 	pointLightData_->color = { 1,1,1,1 };
 	pointLightData_->intensity = 1.0f;
+	pointLightData_->radius = 1.0f;
+	pointLightData_->decay = 1.0f;
 #pragma endregion
 
 	localM_ = MakeIdentity4x4();
@@ -447,6 +449,8 @@ void Model::DebugParameter(const char* name)
 		ImGui::Text("PointLight");
 		ImGui::DragFloat("p light intencity", &pointLightData_->intensity,0.01f);
 		ImGui::DragFloat3("p light pos", &pointLightData_->position.x, 0.1f);
+		ImGui::DragFloat("p light radius", &pointLightData_->radius, 0.1f);
+		ImGui::DragFloat("p light decay", &pointLightData_->decay, 0.1f);
 		ImGui::EndMenu();
 	}
 	

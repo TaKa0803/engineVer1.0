@@ -207,6 +207,9 @@ struct PointLight
 	Vector4 color;//ライトの色
 	Vector3 position;//座標
 	float intensity;//光度
+	float radius;
+	float decay;
+	//float padding[2];
 };
 
 #pragma endregion

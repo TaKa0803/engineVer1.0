@@ -215,7 +215,7 @@ Skeleton CreateSkeleton(const Node& node) {
 
 
 
-SkinCluster CreateSkinCluster (ID3D12Device& device, const Skeleton& skeleton, const ModelData& modelData, D3D12_CPU_DESCRIPTOR_HANDLE cHandle,D3D12_GPU_DESCRIPTOR_HANDLE gHandle) {
+SkinCluster CreateSkinCluster(ID3D12Device& device, const Skeleton& skeleton, const ModelData& modelData, D3D12_CPU_DESCRIPTOR_HANDLE cHandle, D3D12_GPU_DESCRIPTOR_HANDLE gHandle) {
 
 	SkinCluster skinCluster;
 #pragma region MatrixPaletteの作成
@@ -319,7 +319,7 @@ ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& 
 			aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
 			//座標変換わすれず
 			modeldata.model.vertices[vertexIndex].position = { -position.x,position.y,position.z,1.0f };
-			modeldata.model.vertices[vertexIndex].normal = { -normal.x,position.y,position.z };
+			modeldata.model.vertices[vertexIndex].normal = { -normal.x,normal.y,normal.z };
 			modeldata.model.vertices[vertexIndex].texcoord = { texcoord.x,texcoord.y };
 
 		}
@@ -377,6 +377,81 @@ ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& 
 		//	}
 		//}
 	}
+
+
+	assert(scene->HasMeshes());//メッシュがないのは非対応
+	//メッシュ解析
+	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
+		aiMesh* mesh = scene->mMeshes[meshIndex];
+		assert(mesh->HasNormals());
+		assert(mesh->HasTextureCoords(0));
+		//中身の回析
+		modeldata.model.vertices.resize(mesh->mNumVertices);
+		for (uint32_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; ++vertexIndex) {
+			aiVector3D& position = mesh->mVertices[vertexIndex];
+			aiVector3D& normal = mesh->mNormals[vertexIndex];
+			aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
+			//座標変換わすれず
+			modeldata.model.vertices[vertexIndex].position = { -position.x,position.y,position.z,1.0f };
+			modeldata.model.vertices[vertexIndex].normal = { -normal.x,normal.y,normal.z };
+			modeldata.model.vertices[vertexIndex].texcoord = { texcoord.x,texcoord.y };
+
+		}
+		//Indexの解析
+		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
+			aiFace& face = mesh->mFaces[faceIndex];
+			assert(face.mNumIndices == 3);
+
+			for (uint32_t element = 0; element < face.mNumIndices; ++element) {
+				uint32_t vertexIndex = face.mIndices[element];
+				modeldata.model.indices.push_back(vertexIndex);
+			}
+		}
+
+		//SkinCluster構築用のデータ取得を追加
+		for (uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex) {
+			//Jointごとの格納領域をつくる
+			aiBone* bone = mesh->mBones[boneIndex];
+			std::string jointName = bone->mName.C_Str();
+			JointWeightData& jointWeightData = modeldata.model.skinClusterData[jointName];
+
+			//InverseBindPoseMatrixの抽出
+			aiMatrix4x4 bindPoseMatrixAssimp = bone->mOffsetMatrix.Inverse();
+			aiVector3D scale, translate;
+			aiQuaternion rotate;
+			bindPoseMatrixAssimp.Decompose(scale, rotate, translate);
+			//左手座標系のBindPoseMatrixを作る
+			Matrix4x4 bindPoseMatrix = MakeAffineMatrix({ scale.x,scale.y,scale.z }, { rotate.x,-rotate.y,-rotate.z,rotate.w }, { -translate.x,translate.y,translate.z });
+			//InverseBindPoseMatrixにする
+			jointWeightData.inverseBindPoseMatrix = Inverse(bindPoseMatrix);
+
+			//Weight情報を取り出す
+			for (uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex) {
+				jointWeightData.vertexWeights.push_back({ bone->mWeights[weightIndex].mWeight, bone->mWeights[weightIndex].mVertexId });
+			}
+		}
+
+		//for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
+		//	aiFace& face = mesh->mFaces[faceIndex];
+		//	assert(face.mNumIndices == 3);//三角形のみサポ
+		//	//各頂点回析
+		//	for (uint32_t element = 0; element < face.mNumIndices; ++element) {
+		//		uint32_t vertexIndex = face.mIndices[element];
+		//		aiVector3D& position = mesh->mVertices[vertexIndex];
+		//		aiVector3D& normal = mesh->mNormals[vertexIndex];
+		//		aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
+		//		VertexData vertex;
+		//		vertex.position = { position.x,position.y,position.z,1.0f };
+		//		vertex.normal = { normal.x,normal.y,normal.z };
+		//		vertex.texcoord = { texcoord.x,texcoord.y };
+
+		//		vertex.position.x *= -1.0f;
+		//		vertex.normal.x *= -1.0f;
+		//		modeldata.model.vertices.push_back(vertex);
+		//	}
+		//}
+	}
+
 	//マテリアル解析
 	for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex) {
 		aiMaterial* material = scene->mMaterials[materialIndex];

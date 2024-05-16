@@ -56,6 +56,8 @@ struct PointLight
     float32_t4 color;
     float32_t3 position;
     float intensity;
+    float radius;
+    float decay;
 };
 
 ConstantBuffer<PointLight> gPointLight : register(b3);
@@ -123,22 +125,26 @@ PixelShaderOutput main(VertexShaderOutput input)
                     float32_t3 pointlightColor = gPointLight.color.rgb * gPointLight.intensity;
                     
                     //ライトへの線w
-                    float32_t3 direction = normalize(gPointLight.position-input.worldPosition);
+                    float32_t3 direction = normalize(gPointLight.position - input.worldPosition);
                     
                     float32_t3 halfVector2 = normalize(-pointLightDirection + direction);
                 
                     float NDot = dot(normalize(input.normal), halfVector2);
                     float specularPoww = pow(saturate(NDot), gMaterial.shininess);
                 
+                    //減衰係数の計算
+                    float32_t distance = length(gPointLight.position - input.worldPosition);
+                    float32_t factor = pow(saturate(-distance / gPointLight.radius + 1.0), gPointLight.decay);
+                    
                 //拡散反射の色
-                    float32_t3 diffucepoint = pointlightColor * textureColor.rgb * gPointLight.color.rgb * cos * gPointLight.intensity;
+                    float32_t3 diffucepoint = pointlightColor * textureColor.rgb * gPointLight.color.rgb * cos * gPointLight.intensity * factor;
                 //鏡面反射の色(反射色は白色を指定中)
-                    float32_t3 specularpoint = pointlightColor * specularPow * float32_t3(1.0f, 1.0f, 1.0f);
+                    float32_t3 specularpoint = pointlightColor * gPointLight.intensity * specularPoww * float32_t3(1.0f, 1.0f, 1.0f) * factor;
            
                    
                     //計算結果を合わせる
-                    output.color.rgb = diffuce + specular + diffucepoint + specularPoww;
-                    //output.color.rgb =  diffucepoint + specularPoww;
+                    output.color.rgb = diffuce + specular + diffucepoint + specularpoint;
+                    //output.color.rgb =  diffucepoint + specularpoint;
                 
                  //アルファの処理
                     output.color.a = gMaterial.color.a * textureColor.a;
@@ -162,23 +168,20 @@ PixelShaderOutput main(VertexShaderOutput input)
                 
                 return output;
             }
-        }
+        } //拡散処理を行う場合の処理終わり
         else
         {
-        
             //Lambertian Reflectance
             cos = saturate(dot(normalize(input.normal), -gDirectionalLight.direction));
-            
-           
         }
         //計算
         //output.color = gMaterial.color * textureColor * gDirectionalLight.color * cos * gDirectionalLight.intensity;
     
         output.color.rgb = gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
-       //アルファの処理
+            //アルファの処理
         output.color.a = gMaterial.color.a * textureColor.a;
       
-    }
+    } //シェーダーON時処理おわり
     else
     {
         output.color = gMaterial.color * textureColor;
