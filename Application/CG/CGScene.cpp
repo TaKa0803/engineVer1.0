@@ -22,7 +22,7 @@ CGScnene::~CGScnene() {
 
 void CGScnene::Initialize()
 {
-	object->Initialize("walk");
+	object->Initialize("AnimeCube");
 	//object->Initialize("sphere");
 	terrain->Initialize("terrain");
 

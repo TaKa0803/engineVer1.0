@@ -164,15 +164,25 @@ Model* Model::CreateFromOBJ(const std::string& filePath)
 
 void Model::UpdateAnimation()
 {
-
-	animationTime += 1.0f / 60.0f;
-	animationTime = std::fmod(animationTime, modelData_.animation.duration);
-	//animationの更新を行って骨ごとのローカル情報を更新
-	ApplyAnimation(skeleton_, modelData_.animation,animationTime);
-	//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
-	Update(skeleton_);
-	//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
-	Update(skinCluster_, skeleton_);
+	if (modelData_.animation.nodeAnimations.size() != 0) {
+		animationTime += 1.0f / 60.0f;
+		animationTime = std::fmod(animationTime, modelData_.animation.duration);//最後まで行ったら最初からリピート再生
+		if (modelData_.model.skinClusterData.size() != 0) {
+			//animationの更新を行って骨ごとのローカル情報を更新
+			ApplyAnimation(skeleton_, modelData_.animation, animationTime);
+			//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
+			Update(skeleton_);
+			//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
+			Update(skinCluster_, skeleton_);
+		}
+		else {
+			NodeAnimation& rootNodeAnimation = modelData_.animation.nodeAnimations[modelData_.model.rootNode.name];
+			Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
+			Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
+			Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
+			localM_ = MakeAffineMatrix(scale, rotate, translate);
+		}
+	}
 }
 
 void Model::Initialize(
@@ -282,17 +292,26 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 {
 	UpdateAnimation();
 
+	//各データ確認用においてるだけ
+	modelData_;
+	skeleton_;
+	skinCluster_;
 	
 	materialData_->uvTransform = MakeAffineMatrix(uvscale, uvrotate, uvpos);
 
 	Matrix4x4 WVP = worldMatrix * camera.GetViewProjectionMatrix();
 
-	wvpData_->WVP = WVP;
-	wvpData_->World = worldMatrix;
-
+	if (modelData_.model.skinClusterData.size() != 0) {
+		wvpData_->WVP = WVP;
+		wvpData_->World = worldMatrix;
+	}
+	else {
+		wvpData_->WVP =localM_* WVP;
+		wvpData_->World =localM_* worldMatrix;
+	}
 	bool isAnime = false;
 	//animationのあるモデルなら
-	if (modelData_.animation.nodeAnimations.size() != 0) {
+	if (modelData_.animation.nodeAnimations.size() != 0&&modelData_.model.skinClusterData.size()!=0) {
 		isAnime = true;
 
 		if (drawJoint_) {
@@ -316,9 +335,10 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 		
 	}
 
-
+	//描画準備
 	ModelManager::PreDraw(isAnime, blendMode_, fillMode_);
 
+	//animationがある場合vertexBufferViewを二つ用意
 	if (isAnime) {
 		D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
 		vertexBufferView_,					//VertexDataのView
@@ -329,6 +349,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(6, skinCluster_.paletteSrvHandle.second);
 	}
 	else {
+		//ない場合はいままで通り
 		DXF_->GetCMDList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 	}
 
