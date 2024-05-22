@@ -12,13 +12,13 @@ Vector3 CalculateValue(const std::vector<KayframeVector3>& keyframes, float time
 
 Quaternion CalculateValue(const std::vector<KayframeQuaternion>& keyframes, float time);
 
-MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
 Animation LoadAnimationFile(const std::string& directoryPath, const std::string& filename);
 
 ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& modelName);
 
-ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
+//MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
+//ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
 
 void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime);
 
@@ -30,15 +30,6 @@ Skeleton CreateSkeleton(const Node& node);
 
 SkinCluster CreateSkinCluster(ID3D12Device& device, const Skeleton& skeleton, const ModelData& modelData, D3D12_CPU_DESCRIPTOR_HANDLE cHandle, D3D12_GPU_DESCRIPTOR_HANDLE gHandle);
 
-IDxcBlob* CompileShader(
-	//CompilerするShaderファイルへのパス
-	const std::wstring& filePath,
-	//Compilerに使用するProfire
-	const wchar_t* profile,
-	//初期化で生成したものを3つ
-	IDxcUtils* dxcUtils,
-	IDxcCompiler3* dxcCompiler,
-	IDxcIncludeHandler* includeHandler);
 
 ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes);
 

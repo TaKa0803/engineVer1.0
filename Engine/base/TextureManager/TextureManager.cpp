@@ -11,13 +11,24 @@ DirectX::ScratchImage LoadTexture(const std::string& filePath) {
 	DirectX::ScratchImage image{};
 	std::wstring filePathW = ConvertString(filePath);
 	
-	HRESULT hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	HRESULT hr;
+	if (filePathW.ends_with(L".dds")) {
+		hr = DirectX::LoadFromDDSFile(filePathW.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
+	}
+	else {
+		hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	}
 	assert(SUCCEEDED(hr));
 	
 
 	/**/
 	DirectX::ScratchImage mipImages{};
-	hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+	if (DirectX::IsCompressed(image.GetMetadata().format)) {//圧縮フォーマットなのか調べる
+		mipImages = std::move(image);//圧縮じょーまっとならそのまま使うのでmoveする
+	}
+	else {
+		hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+	}
 	assert(SUCCEEDED(hr));
 	
 
@@ -99,16 +110,17 @@ void TextureManager::Initialize(DirectXFunc* DXF_)
 {	
 	DXF = DXF_;
 
-	uvChecker_ = TextureManager::LoadTex(uvCheckerTex);
+	uvChecker_ = TextureManager::LoadTex(uvCheckerTex).texNum;
 
-	white_ = TextureManager::LoadTex("resources/Texture/SystemResources/white.png");
+	white_ = TextureManager::LoadTex("resources/Texture/SystemResources/white.png").texNum;
 
 	Log("Complete TextureManager Initialize\n");
 
 }
 
 void TextureManager::Finalize() {
-	
+	tagNumDatas_.clear();
+	texDatas_.clear();
 }
 
 
@@ -120,7 +132,7 @@ void TextureManager::Finalize() {
 
 
 
-int TextureManager::LoadTex(const std::string& filePath)
+ReturnData TextureManager::LoadTex(const std::string& filePath)
 {
 	DirectXFunc*DXF= DirectXFunc::GetInstance();
 
@@ -143,7 +155,7 @@ int TextureManager::LoadTex(const std::string& filePath)
 }
 
 
-int TextureManager::CreateData(const std::string& filePath,const DirectX::ScratchImage& mipImages) {
+ReturnData TextureManager::CreateData(const std::string& filePath,const DirectX::ScratchImage& mipImages) {
 
 	SRVManager* SRVM = SRVManager::GetInstance();
 
@@ -155,20 +167,31 @@ int TextureManager::CreateData(const std::string& filePath,const DirectX::Scratc
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = metadata.format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dtexture
-	srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
+	if(metadata.IsCubemap()){
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+		srvDesc.TextureCube.MostDetailedMip = 0;
+		srvDesc.TextureCube.MipLevels = UINT_MAX;
+		srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+	}
+	else {
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dtexture
+		srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
+	}
+	Handles texNum= SRVM->CreateSRV(textureResource, intermediateResource, srvDesc);
 
-	int texNum= SRVM->CreateSRV(textureResource, intermediateResource, srvDesc).textureNum;
+	Texturedata texData = { texNum.textureNum,filePath };
 
-	Texturedata texData = { texNum,filePath };
-
+	ReturnData newdata = {
+		texNum.gpu,
+		texNum.textureNum
+	};
 	//データをプッシュ
-	tagNumDatas_[filePath] = texNum;
-	texDatas_[texNum] = &texData;
+	tagNumDatas_[filePath] = newdata;
+	texDatas_[texNum.textureNum] = &texData;
 
 	Log("Texture " + filePath + " is Loaded!");
 
-	return texNum;
+	return newdata;
 }
 
 bool TextureManager::CheckSameData(const std::string& filepath) {
@@ -193,7 +216,7 @@ bool TextureManager::CheckSameData(const std::string& filepath) {
 
 }
 
-int TextureManager::GetDataFromPath(const std::string& path) {
+ReturnData TextureManager::GetDataFromPath(const std::string& path) {
 	auto it = tagNumDatas_.find(path);
 
 	if (it != tagNumDatas_.end()) {
@@ -203,7 +226,7 @@ int TextureManager::GetDataFromPath(const std::string& path) {
 	else {
 	//見つからないのはおかしいのでエラー
 	assert(false);
-	return-1;
+	return ReturnData();
 	}
 
 	

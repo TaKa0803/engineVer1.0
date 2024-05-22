@@ -139,12 +139,11 @@ public:
 
 
 private:
+	DirectXFunc* DXF_;
 
 	ModelAllData modelData_;
 
 	Animation animation_;
-
-	DirectXFunc* DXF_;
 
 	Skeleton skeleton_;
 	
@@ -163,19 +162,19 @@ private:
 
 	int setTexture_ = -1;
 
-	ID3D12Resource* vertexData_;
-	//頂点バッファビューを作成する
+	//vertexリソースとビュー
+	ID3D12Resource* vertexResource_;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
-
+	//indexリソースとビュー
 	ID3D12Resource* indexResource_;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
-
+	//wvpリソースとデータ
 	ID3D12Resource* wvpResource_;
 	WorldTransformation* wvpData_ = nullptr;
-
+	//マテリアルリソースとデータ
 	ID3D12Resource* materialResource_;
 	Material* materialData_ = nullptr;
-
+	//ディレクショナルライト
 	ID3D12Resource* directionalLightResource_;
 	DirectionalLight* directionalLightData_ = nullptr;
 
@@ -187,10 +186,10 @@ private:
 		EulerWorldTransform world;
 		Vector4 color;
 	};
-	//ワールド軍
+	//ワールド群
 	std::vector<std::unique_ptr<InstancingData>>worlds_;
-
+	//animationの時間
 	float animationTime = 0.0f;
-
+	//ローカル
 	Matrix4x4 localM_;
 };

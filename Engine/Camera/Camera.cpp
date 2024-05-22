@@ -36,13 +36,13 @@ void Camera::Update() {
 
 	isCollision_ = false;
 
-	//回転量Xの制限
-	if (CameraMotionSupport_.rotate_.x < minRotateX) {
-		CameraMotionSupport_.rotate_.x = minRotateX;
-	}
-	else if (CameraMotionSupport_.rotate_.x > maxRotateX) {
-		CameraMotionSupport_.rotate_.x = maxRotateX;
-	}
+	////回転量Xの制限
+	//if (CameraMotionSupport_.rotate_.x < minRotateX) {
+	//	CameraMotionSupport_.rotate_.x = minRotateX;
+	//}
+	//else if (CameraMotionSupport_.rotate_.x > maxRotateX) {
+	//	CameraMotionSupport_.rotate_.x = maxRotateX;
+	//}
 
 	//一週以上している場合制限
 	if (CameraMotionSupport_.rotate_.y > (float)std::numbers::pi * 2.0f) {

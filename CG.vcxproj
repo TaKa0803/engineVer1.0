@@ -132,6 +132,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3d\Collider\ColliderOBB\OBBCollider.cpp" />
     <ClCompile Include="Engine\3d\Collider\ColliderPlane\PlaneCollider.cpp" />
     <ClCompile Include="Engine\3d\Collider\IsCollisions.cpp" />
+    <ClCompile Include="Engine\3d\SkyBoxModel\SkyBoxModel.cpp" />
+    <ClCompile Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.cpp" />
     <ClCompile Include="Engine\base\AudioManager\AudioManager.cpp" />
     <ClCompile Include="Engine\base\DXC\DXCManager.cpp" />
     <ClCompile Include="Engine\base\OffScreanPipeline\OffScreanPipeline.cpp" />
@@ -227,6 +229,18 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="resources\shaders\SkyBox.PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\SkyBox.VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="resources\shaders\Sprite.PS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -265,6 +279,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\3d\Collider\ColliderOBB\OBBCollider.h" />
     <ClInclude Include="Engine\3d\Collider\ColliderPlane\PlaneCollider.h" />
     <ClInclude Include="Engine\3d\Collider\IsCollisions.h" />
+    <ClInclude Include="Engine\3d\SkyBoxModel\SkyBoxModel.h" />
+    <ClInclude Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.h" />
     <ClInclude Include="Engine\base\AudioManager\AudioManager.h" />
     <ClInclude Include="Engine\base\AudioManager\SoundData.h" />
     <ClInclude Include="Engine\base\DXC\DXCManager.h" />
@@ -342,6 +358,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
     <None Include="resources\shaders\SkinningObject3D.hlsli" />
+    <None Include="resources\shaders\SkyBox.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="resources\shaders\Sprite.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

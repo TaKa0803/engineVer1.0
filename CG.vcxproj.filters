@@ -14,6 +14,8 @@
     <FxCompile Include="resources\shaders\SkinningObject3D.VS.hlsl" />
     <FxCompile Include="resources\shaders\SkinningObject3D.PS.hlsl" />
     <FxCompile Include="resources\shaders\Vignette.PS.hlsl" />
+    <FxCompile Include="resources\shaders\SkyBox.VS.hlsl" />
+    <FxCompile Include="resources\shaders\SkyBox.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\AL\Plane\Plane.cpp" />
@@ -83,6 +85,8 @@
     <ClCompile Include="Engine\base\OffScreanPipeline\OffScreanPipeline.cpp" />
     <ClCompile Include="Engine\3d\SkinningPSO\SkinningPSO.cpp" />
     <ClCompile Include="Engine\base\OffScreanPipeline\VignettingPSO.cpp" />
+    <ClCompile Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.cpp" />
+    <ClCompile Include="Engine\3d\SkyBoxModel\SkyBoxModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -152,6 +156,8 @@
     <ClInclude Include="Engine\base\OffScreanPipeline\OffScreanPipeline.h" />
     <ClInclude Include="Engine\3d\SkinningPSO\SkinningPSO.h" />
     <ClInclude Include="Engine\base\OffScreanPipeline\VignettingPSO.h" />
+    <ClInclude Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.h" />
+    <ClInclude Include="Engine\3d\SkyBoxModel\SkyBoxModel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />
@@ -165,6 +171,7 @@
     <None Include="resources\shaders\Sprite.hlsli" />
     <None Include="resources\shaders\CopyImage.hlsli" />
     <None Include="resources\shaders\SkinningObject3D.hlsli" />
+    <None Include="resources\shaders\SkyBox.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\Imgui\LICENSE.txt" />

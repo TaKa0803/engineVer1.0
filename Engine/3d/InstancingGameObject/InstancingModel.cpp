@@ -15,7 +15,8 @@
 InstancingModel::~InstancingModel() {
 	
 	
-		vertexData_->Release();
+		vertexResource_->Release();
+		indexResource_->Release();
 		wvpResource_->Release();
 		materialResource_->Release();
 		directionalLightResource_->Release();
@@ -103,7 +104,7 @@ void InstancingModel::Draw(const Matrix4x4& viewProjection, int texture) {
 		else {
 			worldM = world->world.matWorld_;
 
-			WVP =localM_* worldM * viewProjection;
+			WVP =worldM * viewProjection;
 		}
 
 		wvpData_[index].WVP = WVP;
@@ -199,7 +200,7 @@ void InstancingModel::Initialize(
 	//各データ受け渡し
 	point_ = point;
 	instancingNum_ = instancingNum;
-	vertexData_ = vertexRtea;
+	vertexResource_ = vertexRtea;
 	vertexBufferView_ = vertexBufferView;
 	
 	//WVP用のリソースを作る。Matrix４ｘ４1つ分のサイズを用意する
@@ -258,8 +259,8 @@ void InstancingModel::Initialize(
 	}
 	else {
 		//指定があった場合
-		int texture = TextureManager::LoadTex(name);
-		texture_ = SRVM->GetTextureDescriptorHandle(texture);
+		texture_ = TextureManager::LoadTex(name).gpuHandle;
+		//texture_ = SRVM->GetTextureDescriptorHandle(texture);
 	}
 #pragma endregion
 #pragma region instancing関係のデータ

@@ -10,19 +10,27 @@ CGScnene::CGScnene()
 	object = std::make_unique<GameObject>();
 	terrain = new GameObject();
 
-	ball = TextureManager::LoadTex("resources/Texture/SystemResources/monsterBall.png");
+	//ball = TextureManager::LoadTex("resources/Texture/CG/rostock_laage_airport_4k.dds").texNum;
+
+	skybox_ = new SkyBoxModel("resources/Texture/CG/rostock_laage_airport_4k.dds");
 }
 
-CGScnene::~CGScnene() { delete terrain; }
+CGScnene::~CGScnene() { 
+	delete terrain;
+	delete skybox_; 
+}
 
 void CGScnene::Initialize()
 {
-	//object->Initialize("walk");
-	object->Initialize("sphere");
+	object->Initialize("walk");
+	//object->Initialize("sphere");
 	terrain->Initialize("terrain");
 
 	camera_->Initialize();
 	camera_->SetTarget(&object->GetWorld());
+
+	skybox_->Initialize();
+	skybox_->world_.scale_ = { 500,500,500 };
 }
 
 void CGScnene::Update()
@@ -35,6 +43,7 @@ void CGScnene::Update()
 
 	object->Update();
 	terrain->Update();
+	skybox_->Update();
 	camera_->Update();
 
 	Debug();
@@ -43,8 +52,10 @@ void CGScnene::Update()
 void CGScnene::PostEffectDraw()
 {
 	
-	object->Draw(*camera_, pointLightPos_, ball);
+	object->Draw(*camera_, pointLightPos_);
 	terrain->Draw(*camera_, pointLightPos_);
+
+	skybox_->Draw(camera_.get());
 
 	InstancingModelManager::GetInstance()->DrawAllModel(camera_->GetViewProjectionMatrix());
 	
@@ -52,7 +63,7 @@ void CGScnene::PostEffectDraw()
 
 void CGScnene::Draw()
 {
-
+	
 }
 
 void CGScnene::Debug()

@@ -13,7 +13,7 @@ DebugScene::DebugScene()
 
 	obb = std::make_unique<OBBCollider>();
 
-	int tex = TextureManager::LoadTex("resources/Texture/AL/skill.png");
+	int tex = TextureManager::LoadTex("resources/Texture/AL/skill.png").texNum;
 	splite_.reset(Sprite::Create(tex, { 64,64 }, { 64,64 },{64,64}));
 
 	//エフェクト

@@ -19,7 +19,7 @@ ModelManager* ModelManager::GetInstance() {
 	return &instance;
 }
 
-void ModelManager::SepUp()
+void ModelManager::Initialize()
 {
 	//PSOの初期化
 	grarphics_ = new ObjectPSO();
@@ -89,6 +89,9 @@ void ModelManager::Finalize()
 	//PSO削除
 	delete grarphics_;
 	grarphics_ = nullptr;
+
+	delete SkinningGrarphics_;
+	SkinningGrarphics_ = nullptr;
 }
 
 ModelAllData ModelManager::GetModelData(const std::string& filename) {
@@ -101,23 +104,25 @@ ModelAllData ModelManager::GetModelData(const std::string& filename) {
 			return modeldata.second;
 		}
 	}
+
 	//存在しない場合の処理
-	if (isError) {
-		//存在していないのでエラー
-		assert(false);
-	}
-	else {
+	if (isAnotherModelLoad_) {
 		//モデルデータを作成して設定
 		ModelAllData newmodelData = LoadModelFile("resources", filename);
 		std::pair<std::string, ModelAllData>newData(filename, newmodelData);
 		modelDatas.emplace_back(newData);
-		return modelDatas.back().second;
+		return modelDatas.back().second;	
+	}
+	else {
+		//存在していないのでエラー
+		assert(false);
+
+		return ModelAllData();
 	}
 
-
-	return ModelAllData();
+	
 }
-void ModelManager::PreDraw(bool isHaveAnimation,FillMode fillMode, BlendMode blendMode)
+void ModelManager::PreDraw(bool isHaveAnimation, BlendMode blendMode,FillMode fillMode)
 {
 	if(isHaveAnimation){
 		ModelManager::GetInstance()->SkinningGrarphics_->PreDraw(fillMode, blendMode);

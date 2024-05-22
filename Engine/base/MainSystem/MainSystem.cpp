@@ -39,11 +39,12 @@ void MainSystem::Initializes() {
 	DXCManager* DXC = DXCManager::GetInstance();
 	DXC->Initialize();
 
-	//DirectX
+	//DirectXマネージャ初期化
 	DXF_ = DirectXFunc::GetInstance();
 	DXF_->Initialize(winApp_);
 	DXF_->InitializeOthher();
 
+	//SRVインスタンス取得
 	SRVM_ = SRVManager::GetInstance();
 
 	//画像関係
@@ -70,8 +71,9 @@ void MainSystem::Initializes() {
 	audioManager->Initialize();
 	audioManager->LoadAllSoundData();
 
-	ModelManager::GetInstance()->SepUp();
-
+	//モデルマネージャ初期化
+	ModelManager::GetInstance()->Initialize();
+	//スプライトマネージャ初期化
 	SpriteManager::GetInstance()->Initialize();
 }
 
@@ -82,7 +84,7 @@ void MainSystem::MainRoop() {
 
 	//モデルデータ関係読み込み
 	ModelManager::GetInstance()->LoadAllModels();
-	instancingMM_->Initialize();
+	instancingMM_->Initialize(true);
 
 
 	//音声データ読み込み
@@ -109,7 +111,7 @@ void MainSystem::MainRoop() {
 
 #ifdef _DEBUG
 		//GlobalVariableデータの更新処理
-		GlobalVariables::GetInstance()->Update();
+		//GlobalVariables::GetInstance()->Update();
 		auto delta = ImGui::GetIO().Framerate;
 
 		ImGui::Begin("Engine");

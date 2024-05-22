@@ -14,16 +14,25 @@
 #include<wrl.h>
 #include<map>
 
+struct ReturnData
+{
+	D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle;
+	int texNum;
+};
+
 class TextureManager {
 public://シングルトンパターン
 	static TextureManager* GetInstance();
 
+	
 private:
 	TextureManager() = default;
 	~TextureManager() = default;
 	TextureManager(const TextureManager& o) = delete;
 	const TextureManager& operator=(const TextureManager& o) = delete;
 
+
+	
 public:
 
 	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -35,12 +44,15 @@ public:
 
 	static int white_;
 
+	
+	
+
 	/// <summary>
 	/// 画像の読み込み処理
 	/// </summary>
 	/// <param name="filePath"></param>
 	/// <returns></returns>
-	static int LoadTex(const std::string& filePath);
+	static ReturnData LoadTex(const std::string& filePath);
 
 	/// <summary>
 	/// 
@@ -58,7 +70,7 @@ private://メンバ関数
 	/// <param name="filePath">ファイルパス</param>
 	/// <param name="mipImages"></param>
 	/// <returns></returns>
-	int CreateData(const std::string& filePath, const DirectX::ScratchImage& mipImages);
+	ReturnData CreateData(const std::string& filePath, const DirectX::ScratchImage& mipImages);
 
 	/// <summary>
 	/// 似たようなデータがないかチェック
@@ -72,7 +84,7 @@ private://メンバ関数
 	/// </summary>
 	/// <param name="path">パス</param>
 	/// <returns>イテレータ番号</returns>
-	int GetDataFromPath(const std::string& path);
+	ReturnData GetDataFromPath(const std::string& path);
 private://メンバ変数
 
 	//
@@ -89,8 +101,9 @@ private://メンバ変数
 	//データ群
 	//std::vector<Texturedata*>datas_;
 
-	std::map<std::string, int>tagNumDatas_;
+	std::map<std::string, ReturnData>tagNumDatas_;
 
+	//
 	std::map<int, Texturedata*>texDatas_;
 
 	std::string uvCheckerTex = "resources/Texture/SystemResources/uvChecker.png";

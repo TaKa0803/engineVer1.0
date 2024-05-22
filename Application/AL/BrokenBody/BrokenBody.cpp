@@ -12,7 +12,7 @@ void BrokenBody::Initialize() {
 	world_.scale_ = { 0.5f,0.5f,0.5f };
 	effectDatas_.clear();
 
-	int tex = TextureManager::LoadTex("resources/Models/Object/enemy.png");
+	int tex = TextureManager::LoadTex("resources/Models/Object/enemy.png").texNum;
 
 	IMM_->SetTexture(tag_, tex);
 }

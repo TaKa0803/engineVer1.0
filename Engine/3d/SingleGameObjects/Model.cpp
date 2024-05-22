@@ -212,8 +212,8 @@ void Model::Initialize(
 	}
 	else {
 		//指定があった場合
-		int texture = TextureManager::LoadTex(name);	
-		texture_ = SRVM->GetTextureDescriptorHandle(texture);
+		texture_ = TextureManager::LoadTex(name).gpuHandle;
+		//texture_ = SRVM->GetTextureDescriptorHandle(texture);
 	}
 
 	point_ = point;
@@ -317,7 +317,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 	}
 
 
-	ModelManager::PreDraw(isAnime,fillMode_, blendMode_);
+	ModelManager::PreDraw(isAnime, blendMode_, fillMode_);
 
 	if (isAnime) {
 		D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {

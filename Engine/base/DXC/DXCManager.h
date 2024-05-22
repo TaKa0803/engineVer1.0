@@ -2,12 +2,21 @@
 #include<d3d12.h>
 #include<dxcapi.h>
 #include<wrl.h>
+#include<string>
+
+IDxcBlob* CompileShader(
+	//CompilerするShaderファイルへのパス
+	const std::wstring& filePath,
+	//Compilerに使用するProfire
+	const wchar_t* profile,
+	//初期化で生成したものを3つ
+	IDxcUtils* dxcUtils,
+	IDxcCompiler3* dxcCompiler,
+	IDxcIncludeHandler* includeHandler);
 
 class DXCManager {
 public://シングルトンパターン
 	static DXCManager* GetInstance();
-
-
 private:
 	DXCManager() = default;
 	~DXCManager() = default;

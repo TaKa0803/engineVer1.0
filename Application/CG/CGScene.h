@@ -4,6 +4,7 @@
 #include"Input/Input.h"
 #include"Camera/Camera.h"
 #include"SingleGameObjects/GameObject.h"
+#include"SkyBoxModel/SkyBoxModel.h"
 
 class CGScnene : public IScene {
 
@@ -31,6 +32,8 @@ private:
 	std::unique_ptr<GameObject>object;
 
 	GameObject*terrain;
+
+	SkyBoxModel* skybox_;
 
 	Vector3 pointLightPos_{ 0,2,0 };
 

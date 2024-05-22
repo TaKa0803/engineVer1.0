@@ -13,20 +13,20 @@ InstancingSkinningPSO::InstancingSkinningPSO()
 
 InstancingSkinningPSO::~InstancingSkinningPSO()
 {
-	if (rootSignature != nullptr) {
-		rootSignature->Release();
-		rootSignature = nullptr;
 
-		//ルートシグネチャが解放されていたら他もされてるだろ！ガハハ！
-		for (int i = 0; i < int(FillMode::kCountOfFillMode); i++) {
-			for (int h = 0; h < int(BlendMode::kCountOfBlendMode); h++) {
-				if (graphicsPipelineState[i][h] != nullptr) {
-					graphicsPipelineState[i][h]->Release();
-					graphicsPipelineState[i][h] = nullptr;
-				}
+	rootSignature->Release();
+	rootSignature = nullptr;
+
+	//ルートシグネチャが解放されていたら他もされてるだろ！ガハハ！
+	for (int i = 0; i < int(FillMode::kCountOfFillMode); i++) {
+		for (int h = 0; h < int(BlendMode::kCountOfBlendMode); h++) {
+			if (graphicsPipelineState[i][h] != nullptr) {
+				graphicsPipelineState[i][h]->Release();
+				graphicsPipelineState[i][h] = nullptr;
 			}
 		}
 	}
+
 }
 
 void InstancingSkinningPSO::Initialize()
@@ -82,7 +82,7 @@ void InstancingSkinningPSO::Initialize()
 	descriptorRange[0].NumDescriptors = 1;									//数
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;			//SRVを使う
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//offsetを自動計算	
-	
+
 #pragma endregion
 
 #pragma region ディスクリプタテーブル

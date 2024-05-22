@@ -17,19 +17,25 @@ public://シングルトンパターン
 	static ModelManager* GetInstance();
 
 private://シングルトンパターン
-
 	ModelManager() = default;
 	~ModelManager() = default;
 	ModelManager(const ModelManager& o) = delete;
 	const ModelManager& operator=(const ModelManager& o) = delete;
-
-
 public:	
 
-	void SepUp();
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Initialize();
 
+	/// <summary>
+	/// パスのモデルをすべて読み込む処理
+	/// </summary>
 	void LoadAllModels();
 
+	/// <summary>
+	/// 終了処理
+	/// </summary>
 	void Finalize();
 
 	/// <summary>
@@ -39,14 +45,18 @@ public:
 	/// <returns>モデルデータ</returns>
 	ModelAllData GetModelData( const std::string& filename);
 
-	//描画前処理
-	static void PreDraw(bool isHaveAnimation,FillMode fillMode = FillMode::kSolid, BlendMode blendMode = BlendMode::kNormal);
-
+	/// <summary>
+	///各モデル描画前処理
+	/// </summary>
+	/// <param name="isHaveAnimation">animationがあるか否か</param>
+	/// <param name="blendMode">ブレンド設定</param>
+	/// <param name="fillMode">埋めるか否か</param>
+	static void PreDraw(bool isHaveAnimation ,BlendMode blendMode = BlendMode::kNormal, FillMode fillMode = FillMode::kSolid );
 private:
 
 	//各モデル描画用のPSO
-	SkinningPSO* SkinningGrarphics_;
-	ObjectPSO* grarphics_;
+	SkinningPSO* SkinningGrarphics_ = nullptr;
+	ObjectPSO* grarphics_ = nullptr;
 
 
 	//モデルデータのパスが記入されたファイルへのパス
@@ -55,10 +65,8 @@ private:
 	//モデルデータを入れるフォルダ
 	const std::string modeldirectoryPath = "resources/Models/";
 
-	//モデルデータのパス群
+	//モデルデータのグループ名
 	const std::string groupName = "modelPathFile";
-
-
 
 	//データ保存の構造体
 	struct NameAndPath {
@@ -66,17 +74,14 @@ private:
 		std::string path;
 	};
 
-
-	
-
-	//保存データ構造
+	//保存データ群
 	std::vector<std::pair<NameAndPath, ModelAllData>> modelDatas;
 
-	//最大量設定
+	//モデル最大量設定
 	const size_t maxModelData = 256;
 
-	//GetModelDataでモデルが見つからない場合エラーをはくか否か
-	bool isError = false;
+	//パスに含まれないモデルを読み込まないか否か
+	bool isAnotherModelLoad_ = false;
 
 
 };
