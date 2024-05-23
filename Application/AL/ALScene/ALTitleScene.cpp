@@ -26,7 +26,9 @@ ALTitleScene::ALTitleScene() {
 	titleSound_ = AudioManager::LoadSoundNum("title");
 }
 
-ALTitleScene::~ALTitleScene() {}
+ALTitleScene::~ALTitleScene() {
+
+}
 
 void ALTitleScene::Initialize() {
 	sceneXhangeCount_ = maxSceneChangeCount_;

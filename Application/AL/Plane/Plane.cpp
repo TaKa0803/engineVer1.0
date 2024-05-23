@@ -7,6 +7,11 @@ Plane::Plane() {
 	GameObject::Initialize("plane");
 }
 
+Plane::~Plane()
+{
+	
+}
+
 //void Plane::CaluclateInit()
 //{
 //	GlobalVariables* global = GlobalVariables::GetInstance();

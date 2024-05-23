@@ -342,14 +342,9 @@ void DirectXFunc::RenderTextureInitialize()
 	renderTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	renderTextureSrvDesc.Texture2D.MipLevels = 1;
 
-	Handles data = SRVManager::CreateSRV(renderTextureResource,nullptr, renderTextureSrvDesc);
+	Handles data = SRVManager::CreateSRV(renderTextureResource,renderTextureSrvDesc);
 
 	gHandle_ = data.gpu;
-	//cHandle_ = data.cpu;
-
-
-
-
 }
 
 
@@ -584,7 +579,7 @@ void DirectXFunc::Finalize()
 	CloseHandle(fenceEvent);
 	delete offScreen_;
 	offScreen_ = nullptr;
-	//renderTextureResource->Release();
+	renderTextureResource->Release();
 	depthStencilResource->Release();
 	dsvDescriptorHeap->Release();
 	rtvDescriptorHeap->Release();

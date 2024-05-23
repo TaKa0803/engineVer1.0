@@ -23,6 +23,10 @@ struct PopData {
 class EnemyPopManager {
 
 public:
+
+	EnemyPopManager();
+	~EnemyPopManager();
+
 	/// <summary>
 	/// jsonファイル読み込み
 	/// </summary>

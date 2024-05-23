@@ -111,7 +111,7 @@ void MainSystem::MainRoop() {
 
 #ifdef _DEBUG
 		//GlobalVariableデータの更新処理
-		//GlobalVariables::GetInstance()->Update();
+		GlobalVariables::GetInstance()->Update();
 		auto delta = ImGui::GetIO().Framerate;
 
 		ImGui::Begin("Engine");

@@ -45,13 +45,21 @@ public:
 	void Finalize();
 
 	/// <summary>
-	/// SRVの作成
+	/// 画像のSRVの作成
 	/// </summary>
 	/// <param name="textureResource"></param>
 	/// <param name="intermediateResource"></param>
 	/// <param name="srvdesc"></param>
 	/// <returns>データ型のイテレータ返却</returns>
-	static Handles CreateSRV(ID3D12Resource* textureResource, ID3D12Resource* intermediateResource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvdesc);
+	static Handles CreateTextureSRV(ID3D12Resource* textureResource, ID3D12Resource* intermediateResource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvdesc);
+
+	/// <summary>
+	/// リソースを登録せずSRV作成
+	/// </summary>
+	/// <param name="resource"></param>
+	/// <param name="srvDesc"></param>
+	/// <returns></returns>
+	static Handles CreateSRV(ID3D12Resource*resource,D3D12_SHADER_RESOURCE_VIEW_DESC&srvDesc);
 
 	/// <summary>
 	/// 新しいSRVの各Handleを取得して返却する

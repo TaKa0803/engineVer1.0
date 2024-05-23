@@ -7,7 +7,7 @@ SRVManager* SRVManager::GetInstance() {
 	return &instance;
 }
 
-Handles SRVManager::CreateSRV(ID3D12Resource* textureResource, ID3D12Resource* intermediateResource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvdesc)
+Handles SRVManager::CreateTextureSRV(ID3D12Resource* textureResource, ID3D12Resource* intermediateResource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvdesc)
 {
 	SRVManager* SRVM = SRVManager::GetInstance();
 	
@@ -37,6 +37,29 @@ Handles SRVManager::CreateSRV(ID3D12Resource* textureResource, ID3D12Resource* i
 	};	
 	return data;
 
+}
+
+Handles SRVManager::CreateSRV(ID3D12Resource* resource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvDesc)
+{
+	SRVManager* SRVM = SRVManager::GetInstance();
+
+	//SRVを作成するDescriptorHeapの場所を決める
+	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = SRVM->GetCPU_DES_HANDLE();
+	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = SRVM->GetGPU_DES_HANDLE();
+
+	//srvの生成
+	DirectXFunc::GetInstance()->GetDevice()->CreateShaderResourceView(resource, &srvDesc, textureSrvHandleCPU);
+
+	//GPUHandleを登録してサイズを増加
+	SRVM->AddtextureNum(textureSrvHandleGPU);
+
+	//返却用構造体
+	Handles result = {
+		textureSrvHandleCPU,
+		textureSrvHandleGPU
+	};
+
+	return result;
 }
 
 Handles SRVManager::CreateNewSRVHandles()

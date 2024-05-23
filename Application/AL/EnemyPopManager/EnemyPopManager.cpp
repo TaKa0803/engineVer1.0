@@ -9,6 +9,17 @@
 #include"RandomNum/RandomNum.h"
 #include"TextureManager/TextureManager.h"
 
+EnemyPopManager::EnemyPopManager()
+{
+}
+
+EnemyPopManager::~EnemyPopManager()
+{
+	popDatas_.clear();
+	flagWorlds_.clear();
+	flagModel_.clear();
+}
+
 void EnemyPopManager::LoadPopdata() {
 
 	std::ifstream ifs;
@@ -78,10 +89,7 @@ void EnemyPopManager::LoadPopdata() {
 		iterator++;
 	}
 
-
 	flagWorlds_.resize(popDatas_.size());
-
-
 
 	int Index = 0;
 	for (auto& popData : popDatas_) {
@@ -94,13 +102,14 @@ void EnemyPopManager::LoadPopdata() {
 		newdata->Initialize("flag");
 		newdata->world_.translate_ = popData.areaPosition;
 		newdata->world_.translate_.y += 6.0f;
-		flagModel_.emplace_back(std::move(newdata));
+		//値をもとに末尾に直接構築
+		flagModel_.push_back(std::move(newdata));
+
+		//もう使わない
+		//newdata.reset();
 
 		Index++;
 	}
-
-	
-	
 }
 
 void EnemyPopManager::Initialzie() {

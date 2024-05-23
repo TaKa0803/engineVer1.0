@@ -12,22 +12,16 @@ InstancingPSO::InstancingPSO() {
 }
 
 InstancingPSO::~InstancingPSO() {
+	rootSignature_->Release();
+	rootSignature_ = nullptr;
 
-	if (rootSignature != nullptr) {
-		rootSignature->Release();
-		rootSignature = nullptr;
-
-		//ルートシグネチャが解放されていたら他もされてるだろ！ガハハ！
-		for (int i = 0; i < int(FillMode::kCountOfFillMode); i++) {
-			for (int h = 0; h < int(BlendMode::kCountOfBlendMode); h++) {
-				if (graphicsPipelineState[i][h] != nullptr) {
-					graphicsPipelineState[i][h]->Release();
-					graphicsPipelineState[i][h] = nullptr;
-				}
-			}
+	//ルートシグネチャが解放されていたら他もされてるだろ！ガハハ！
+	for (int i = 0; i < int(FillMode::kCountOfFillMode); i++) {
+		for (int h = 0; h < int(BlendMode::kCountOfBlendMode); h++) {
+			graphicsPipelineState_[i][h]->Release();
+			graphicsPipelineState_[i][h] = nullptr;
 		}
 	}
-	
 }
 
 void InstancingPSO::Initialize() {
@@ -36,7 +30,7 @@ void InstancingPSO::Initialize() {
 	if (isInitialize_) {
 		return;
 	}
-	isInitialize_ = true; 
+	isInitialize_ = true;
 
 	DXF_ = DirectXFunc::GetInstance();
 #pragma region RootSignatureを生成する
@@ -76,7 +70,7 @@ void InstancingPSO::Initialize() {
 
 
 
-	
+
 
 #pragma region ディスクリプタレンジ
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
@@ -122,7 +116,7 @@ void InstancingPSO::Initialize() {
 	}
 	//バイナリをもとに生成
 
-	hr = DXF_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
+	hr = DXF_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
 	assert(SUCCEEDED(hr));
 
 
@@ -287,7 +281,7 @@ void InstancingPSO::Initialize() {
 #pragma region PSOを生成
 			//psoDesc
 			D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-			graphicsPipelineStateDesc.pRootSignature = rootSignature;	//RootSignature
+			graphicsPipelineStateDesc.pRootSignature = rootSignature_;	//RootSignature
 			graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;	//InputLayout
 			graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),
 				vertexShaderBlob->GetBufferSize() };
@@ -309,7 +303,7 @@ void InstancingPSO::Initialize() {
 			//実際に生成
 
 			hr = DXF_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc,
-				IID_PPV_ARGS(&graphicsPipelineState[fillNum][blendNum]));
+				IID_PPV_ARGS(&graphicsPipelineState_[fillNum][blendNum]));
 			assert(SUCCEEDED(hr));
 #pragma endregion
 #pragma endregion
@@ -319,8 +313,8 @@ void InstancingPSO::Initialize() {
 
 }
 
-void InstancingPSO::PreDraw(const FillMode&fillMode,const BlendMode&blendMode) {
+void InstancingPSO::PreDraw(const FillMode& fillMode, const BlendMode& blendMode) {
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
-	DXF_->GetCMDList()->SetGraphicsRootSignature(rootSignature);
-	DXF_->GetCMDList()->SetPipelineState(graphicsPipelineState[static_cast<int>(fillMode)][static_cast<int>(blendMode)]);
+	DXF_->GetCMDList()->SetGraphicsRootSignature(rootSignature_);
+	DXF_->GetCMDList()->SetPipelineState(graphicsPipelineState_[static_cast<int>(fillMode)][static_cast<int>(blendMode)]);
 }

@@ -208,7 +208,7 @@ SkinCluster CreateSkinCluster(ID3D12Device& device, const Skeleton& skeleton, co
 	paletteSRVDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 	paletteSRVDesc.Buffer.NumElements = UINT(skeleton.joints.size());
 	paletteSRVDesc.Buffer.StructureByteStride = sizeof(WellForGPU);
-	device.CreateShaderResourceView(skinCluster.paletteResource.Get(), &paletteSRVDesc, skinCluster.paletteSrvHandle.first);
+	device.CreateShaderResourceView(skinCluster.paletteResource, &paletteSRVDesc, skinCluster.paletteSrvHandle.first);
 #pragma endregion
 
 #pragma region Influence用Resourceの作成

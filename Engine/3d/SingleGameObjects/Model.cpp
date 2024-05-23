@@ -21,6 +21,10 @@
 
 Model::~Model() {
 	
+
+	skinCluster_.influenceResource->Release();
+	skinCluster_.paletteResource->Release();
+
 	indexResource_->Release();
 	vertexData_->Release();
 	wvpResource_->Release();
@@ -28,6 +32,8 @@ Model::~Model() {
 	directionalLightResource_->Release();
 	cameraResource_->Release();
 	pointlightResource_->Release();
+
+
 }
 
 Model* Model::CreateSphere(float kSubdivision,bool enableLighting, const std::string& filePath)

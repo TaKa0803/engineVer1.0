@@ -38,12 +38,10 @@ private:
 	std::wstring psPass = L"resources/shaders/InstancingObject.PS.hlsl";
 
 	//ルートシグネチャ
-	ID3D12RootSignature* rootSignature = nullptr;
+	ID3D12RootSignature* rootSignature_ = nullptr;
 
 	//グラフィックパイプライン
-	ID3D12PipelineState* graphicsPipelineState[int(FillMode::kCountOfFillMode)][int(BlendMode::kCountOfBlendMode)] = { nullptr };
-
-	
+	ID3D12PipelineState* graphicsPipelineState_[int(FillMode::kCountOfFillMode)][int(BlendMode::kCountOfBlendMode)] = { nullptr };
 
 	bool isInitialize_ = false;
 };

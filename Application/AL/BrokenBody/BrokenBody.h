@@ -24,6 +24,8 @@ public:
 
 	void Draw();
 
+	void Finalize();
+
 	void EffectOccurred(const EulerWorldTransform& world, int spawnNum);
 
 

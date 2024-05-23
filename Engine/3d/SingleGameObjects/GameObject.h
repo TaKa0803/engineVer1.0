@@ -9,10 +9,8 @@ class GameObject {
 
 protected:
 
-	Model* model_=nullptr;
+	Model* model_ = nullptr;
 
-
-	
 public:
 
 	EulerWorldTransform world_;
@@ -21,12 +19,12 @@ public:
 
 	virtual ~GameObject();
 
-	virtual void Initialize(const std::string&filepath );
+	virtual void Initialize(const std::string& filepath);
 
 	virtual void Update();
 
-	virtual void Draw(const Camera&camera, Vector3 pointlight = { 0,0,0 },int tex =-1);
+	virtual void Draw(const Camera& camera, Vector3 pointlight = { 0,0,0 }, int tex = -1);
 
-	virtual void Debug(const char*name);
+	virtual void Debug(const char* name);
 };
 

@@ -18,6 +18,7 @@ InstancingModel::~InstancingModel() {
 		vertexResource_->Release();
 		indexResource_->Release();
 		wvpResource_->Release();
+		wvpResource_ = nullptr;
 		materialResource_->Release();
 		directionalLightResource_->Release();
 	
@@ -274,8 +275,7 @@ void InstancingModel::Initialize(
 		instancingDesc.Buffer.NumElements = instancingNum;
 		instancingDesc.Buffer.StructureByteStride = sizeof(WorldTransformation);
 
-		instancingHandle_ = SRVManager::CreateSRV(wvpResource_,nullptr, instancingDesc).gpu;
-		
+		instancingHandle_ = SRVManager::CreateSRV(wvpResource_, instancingDesc).gpu;
 	}
 #pragma endregion
 

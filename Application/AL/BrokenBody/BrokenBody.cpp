@@ -61,6 +61,11 @@ void BrokenBody::Draw() {
 
 }
 
+void BrokenBody::Finalize()
+{
+	effectDatas_.clear();
+}
+
 void BrokenBody::EffectOccurred(const EulerWorldTransform& world, int spawnNum) {
 
 	for (int count = 0; count < spawnNum; ++count) {

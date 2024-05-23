@@ -84,7 +84,8 @@ ALGameScene::ALGameScene() {
 }
 
 ALGameScene::~ALGameScene() {
-
+	enemies_.clear();
+	brokenBody_->Finalize();
 }
 
 void ALGameScene::Initialize() {
@@ -135,15 +136,12 @@ void ALGameScene::Initialize() {
 	AudioManager::GetInstance()->StopAllSounds();
 	AudioManager::PlaySoundData(bgmGame_, 0.08f);
 
-
 	OffScreenRendering::materialData_->type = 3;
 }
 
 
 
 void ALGameScene::Update() {
-
-	
 
 	switch (scene_) {
 	case ALGameScene::Game:
@@ -173,9 +171,8 @@ void ALGameScene::Update() {
 		CameraShake();
 
 		
-		//
+		
 		enemyPopManager_->Update();
-
 		//敵の生成処理
 		if (std::unique_ptr<ALEnemy>newEnemy = enemyPopManager_->PopEnemy()) {
 			enemies_.push_back(std::move(newEnemy));
@@ -250,7 +247,7 @@ void ALGameScene::Draw() {
 
 		ClearUIUpdate();
 
-		//OffScreenRendering::materialData_->type = 1;
+		OffScreenRendering::materialData_->type = 1;
 		break;
 	default:
 		break;
@@ -273,9 +270,9 @@ void ALGameScene::DebugWindows() {
 
 
 
-	//skillSp_->DrawDebugImGui("skill");
-	//BButton_->DrawDebugImGui("BButton");
-	//punchSp_->DrawDebugImGui("punch");
+	skillSp_->DrawDebugImGui("skill");
+	BButton_->DrawDebugImGui("BButton");
+	punchSp_->DrawDebugImGui("punch");
 
 
 }

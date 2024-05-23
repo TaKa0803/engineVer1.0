@@ -6,6 +6,7 @@ class Plane :public GameObject {
 public:
 
 	Plane();
+	~Plane();
 
 	//void CaluclateInit();
 
