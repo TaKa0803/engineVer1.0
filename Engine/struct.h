@@ -159,7 +159,7 @@ struct SkinCluster {
 struct ModelAllData
 {
 	ModelData model;
-	Animation animation;
+	std::vector<Animation> animation;
 };
 
 struct Material {

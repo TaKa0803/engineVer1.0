@@ -12,8 +12,9 @@
     "sphere": [ "SystemResources/sphere", "sphere.obj" ],
     "terrain": [ "terrain", "terrain.obj" ],
     "AnimeCube": [ "AnimatedCube", "AnimatedCube.gltf" ],
-    "walk": [ "walk", "sneakWalk.gltf" ],
-    "flag" :  ["flag","flag.gltf"]
+    "sWalk": [ "walk", "sneakWalk.gltf" ],
+    "walk": [ "walk", "walk.gltf" ],
+    "flag": [ "flag", "flag.gltf" ]
   },
   "InstancingmodelPathFile": {
     "weapon": [ "resources/Models/Weapon", "Weapon.obj", 64 ],

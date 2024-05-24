@@ -3,6 +3,7 @@
 #include<stdint.h>
 
 #include<string>
+#include<vector>
 #include<dxcapi.h>
 
 #include"struct.h"
@@ -13,7 +14,7 @@ Vector3 CalculateValue(const std::vector<KayframeVector3>& keyframes, float time
 Quaternion CalculateValue(const std::vector<KayframeQuaternion>& keyframes, float time);
 
 
-Animation LoadAnimationFile(const std::string& directoryPath, const std::string& filename);
+std::vector<Animation> LoadAnimationFile(const std::string& directoryPath, const std::string& filename);
 
 ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& modelName);
 

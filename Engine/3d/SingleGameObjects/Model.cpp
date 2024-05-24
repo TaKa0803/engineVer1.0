@@ -20,7 +20,7 @@
 
 
 Model::~Model() {
-	
+
 
 	skinCluster_.influenceResource->Release();
 	skinCluster_.paletteResource->Release();
@@ -36,15 +36,15 @@ Model::~Model() {
 
 }
 
-Model* Model::CreateSphere(float kSubdivision,bool enableLighting, const std::string& filePath)
+Model* Model::CreateSphere(float kSubdivision, bool enableLighting, const std::string& filePath)
 {
-	DirectXFunc*DXF= DirectXFunc::GetInstance();
+	DirectXFunc* DXF = DirectXFunc::GetInstance();
 
 #pragma region 円
 #pragma region VertexBufferViewを作成
 	int point = (int)kSubdivision * (int)kSubdivision * 6;
 
-	
+
 	ID3D12Resource* vertexResourceSphere = CreateBufferResource(DXF->GetDevice(), sizeof(VertexData) * point);
 
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewSphere{};
@@ -122,10 +122,10 @@ Model* Model::CreateSphere(float kSubdivision,bool enableLighting, const std::st
 	ModelAllData modeldata;
 
 	Model* model = new Model();
-	model->Initialize(modeldata,filePath, point,vertexResourceSphere, vertexBufferViewSphere, wvpResourceS, wvpDataS);
-	
-	
-	
+	model->Initialize(modeldata, filePath, point, vertexResourceSphere, vertexBufferViewSphere, wvpResourceS, wvpDataS);
+
+
+
 	return model;
 
 }
@@ -135,11 +135,11 @@ Model* Model::CreateFromOBJ(const std::string& filePath)
 	DirectXFunc* DXF = DirectXFunc::GetInstance();
 
 #pragma region モデル
-	ModelManager*mManager= ModelManager::GetInstance();
+	ModelManager* mManager = ModelManager::GetInstance();
 
-	ModelAllData modeltea =mManager->GetModelData(filePath); 
+	ModelAllData modeltea = mManager->GetModelData(filePath);
 
-	
+
 
 	ID3D12Resource* vertexRtea = CreateBufferResource(DXF->GetDevice(), sizeof(VertexData) * modeltea.model.vertices.size());
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewtea{};
@@ -162,33 +162,52 @@ Model* Model::CreateFromOBJ(const std::string& filePath)
 	wvpDataTea->World = MakeIdentity4x4();
 #pragma endregion
 
-	Model* model =new Model();
-	model->Initialize(modeltea,modeltea.model.material.textureFilePath,UINT(modeltea.model.vertices.size()),vertexRtea, vertexBufferViewtea, wvpResourceTea, wvpDataTea);
-	
+	Model* model = new Model();
+	model->Initialize(modeltea, modeltea.model.material.textureFilePath, UINT(modeltea.model.vertices.size()), vertexRtea, vertexBufferViewtea, wvpResourceTea, wvpDataTea);
+
 	return model;
 }
 
 void Model::UpdateAnimation()
 {
-	if (modelData_.animation.nodeAnimations.size() != 0) {
-		animationTime += 1.0f / 60.0f;
-		animationTime = std::fmod(animationTime, modelData_.animation.duration);//最後まで行ったら最初からリピート再生
-		if (modelData_.model.skinClusterData.size() != 0) {
-			//animationの更新を行って骨ごとのローカル情報を更新
-			ApplyAnimation(skeleton_, modelData_.animation, animationTime);
-			//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
-			Update(skeleton_);
-			//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
-			Update(skinCluster_, skeleton_);
+
+	//OBJではない
+	if (modelType_ != kOBJModel) {
+		if (isAnimationActive_) {
+			animationTime += animationRoopSecond_ / 60.0f;
+			animationTime = std::fmod(animationTime, modelData_.animation[animeNum_].duration);//最後まで行ったら最初からリピート再生
+			//マイナス領域の時の処理
+			if (animationRoopSecond_ < 0) {
+				if (animationTime < 0) {
+					animationTime += modelData_.animation[animeNum_].duration;
+				}
+			}
+
+			//ボーンのあるモデルの場合
+			if (modelType_ == kSkinningGLTF) {
+				//animationの更新を行って骨ごとのローカル情報を更新
+				ApplyAnimation(skeleton_, modelData_.animation[animeNum_], animationTime);
+				//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
+				Update(skeleton_);
+				//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
+				Update(skinCluster_, skeleton_);
+			}
+			else {
+				//ないanimationモデルの場合
+				NodeAnimation& rootNodeAnimation = modelData_.animation[animeNum_].nodeAnimations[modelData_.model.rootNode.name];
+				Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
+				Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
+				Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
+				localM_ = MakeAffineMatrix(scale, rotate, translate);
+			}
 		}
 		else {
-			NodeAnimation& rootNodeAnimation = modelData_.animation.nodeAnimations[modelData_.model.rootNode.name];
-			Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
-			Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
-			Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
-			localM_ = MakeAffineMatrix(scale, rotate, translate);
+			animationTime = 0;
+			//animationの更新を行って骨ごとのローカル情報を更新
+			ApplyAnimation(skeleton_, modelData_.animation[animeNum_], animationTime);
 		}
 	}
+
 }
 
 void Model::Initialize(
@@ -207,13 +226,16 @@ void Model::Initialize(
 
 	modelData_ = data;
 
-	name =name_;
+	name = name_;
 
 	skeleton_ = CreateSkeleton(modelData_.model.rootNode);
 
 	Handles handles = SRVManager::GetInstance()->CreateNewSRVHandles();
-
 	skinCluster_ = CreateSkinCluster(*DXF_->GetDevice(), skeleton_, modelData_.model, handles.cpu, handles.gpu);
+
+	//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
+	Update(skinCluster_, skeleton_);
+
 
 	//ジョイントのMの作成
 	jointM__ = InstancingModelManager::GetInstance();
@@ -237,7 +259,7 @@ void Model::Initialize(
 	vertexBufferView_ = vertexBufferView;
 	wvpData_ = wvpData;
 	wvpResource_ = wvpResource;
-	
+
 	//インデックス
 	indexResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(uint32_t) * modelData_.model.indices.size());
 	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
@@ -290,38 +312,52 @@ void Model::Initialize(
 
 	localM_ = MakeIdentity4x4();
 
-	Log("Model " +name_ +" is Created!\n");
+	//アニメーションデータやボーンからモデルの状態を予想して設定
+	if (modelData_.animation.size() != 0) {
+		if (modelData_.model.skinClusterData.size() != 0) {
+			modelType_ = kSkinningGLTF;
+		}
+		else {
+			modelType_ = kAnimationGLTF;
+		}
+	}
+	else {
+		modelType_ = kOBJModel;
+	}
+
+
+
+	Log("Model " + name_ + " is Created!\n");
 }
 
 
-void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 pointlight, int texture)
+void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera, Vector3 pointlight, int texture)
 {
-	UpdateAnimation();
+	//UpdateAnimation();
 
 	//各データ確認用においてるだけ
 	modelData_;
 	skeleton_;
 	skinCluster_;
-	
-	materialData_->uvTransform = MakeAffineMatrix(uvscale, uvrotate, uvpos);
+
+	materialData_->uvTransform = uvWorld_.UpdateMatrix();
 
 	Matrix4x4 WVP = worldMatrix * camera.GetViewProjectionMatrix();
 
-	if (modelData_.model.skinClusterData.size() != 0) {
+	if (modelType_ == kAnimationGLTF) {
+		wvpData_->WVP = localM_ * WVP;
+		wvpData_->World = localM_ * worldMatrix;
+		wvpData_->WorldInverseTranspose = Inverse(Transpose(wvpData_->World));
+	}
+	else {
 		wvpData_->WVP = WVP;
 		wvpData_->World = worldMatrix;
 		wvpData_->WorldInverseTranspose = Inverse(Transpose(worldMatrix));
 
 	}
-	else {
-		wvpData_->WVP =localM_* WVP;
-		wvpData_->World =localM_* worldMatrix;
-		wvpData_->WorldInverseTranspose = Inverse(Transpose(wvpData_->World));
-
-	}
 	bool isAnime = false;
 	//animationのあるモデルなら
-	if (modelData_.animation.nodeAnimations.size() != 0&&modelData_.model.skinClusterData.size()!=0) {
+	if (modelType_ == kSkinningGLTF) {
 		isAnime = true;
 
 		if (drawJoint_) {
@@ -338,11 +374,11 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 				i++;
 			}
 		}
-		
+
 
 	}
 	else {
-		
+
 	}
 
 	//描画準備
@@ -364,12 +400,12 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 	}
 
 
-	
+
 	cameraData_->worldPosition = camera.GetMainCamera().GetMatWorldTranslate();
 
 	pointLightData_->position = pointlight;
 
-	
+
 	DXF_->GetCMDList()->IASetIndexBuffer(&indexBufferView_);//IBVを設定
 	//wvp用のCBufferの場所の設定
 	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
@@ -379,7 +415,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(3, directionalLightResource_->GetGPUVirtualAddress());
 	//カメラ位置転送
 	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(4, cameraResource_->GetGPUVirtualAddress());
-	
+
 	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(5, pointlightResource_->GetGPUVirtualAddress());
 
 	if (texture == -1) {
@@ -399,24 +435,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 
 
 
-void Model::PlayAnimation(int animeNum)
-{
-	if (modelData_.animation.nodeAnimations.size() != 0) {
-		animationTime += 1.0f / 60.0f;
-		animationTime = std::fmod(animationTime, modelData_.animation.duration);
 
-		NodeAnimation& rootNodeAnimation = modelData_.animation.nodeAnimations[modelData_.model.rootNode.name];
-		Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
-		Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
-		Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
-
-
-
-		localM_ = MakeAffineMatrix(scale, rotate, translate);
-
-	}
-
-}
 
 
 
@@ -433,7 +452,7 @@ void Model::DebugParameter(const char* name)
 	int currentItem = static_cast<int>(blend);
 
 	FillMode fill = fillMode_;
-	const char* fitems[] = { "Solid","WireFrame"};
+	const char* fitems[] = { "Solid","WireFrame" };
 	int currentfItem = static_cast<int>(fill);
 
 
@@ -464,26 +483,30 @@ void Model::DebugParameter(const char* name)
 		ImGui::DragFloat("discardNum", &discardnum, 0.01f);
 
 		ImGui::Text("UV");
-		ImGui::DragFloat2("uv pos", &uvpos.x, 0.1f);
-		ImGui::DragFloat("uv rotate", &uvrotate.z, 0.1f);
-		ImGui::DragFloat2("uv scale", &uvscale.x, 0.1f);
+		ImGui::DragFloat2("uv pos", &uvWorld_.translate_.x, 0.1f);
+		ImGui::DragFloat("uv rotate", &uvWorld_.rotate_.z, 0.1f);
+		ImGui::DragFloat2("uv scale", &uvWorld_.scale_.x, 0.1f);
+
+		ImGui::Text("Animation");
+		ImGui::Checkbox("animeActive", &isAnimationActive_);
+		ImGui::DragFloat("Roop second", &animationRoopSecond_,0.1f);
 
 		ImGui::Text("DirectionalLight");
 		ImGui::DragFloat3("D light direction", &directionalLightData_->direction.x, 0.01f);
 		ImGui::DragFloat("D light intensity", &directionalLightData_->intensity, 0.01f);
 		ImGui::ColorEdit4("D light color", &directionalLightData_->color.x);
-		
+
 		ImGui::Text("Blinn Phong Reflection");
 		ImGui::DragFloat("Shininess", &shininess);
-		
+
 		ImGui::Text("PointLight");
-		ImGui::DragFloat("p light intencity", &pointLightData_->intensity,0.01f);
+		ImGui::DragFloat("p light intencity", &pointLightData_->intensity, 0.01f);
 		ImGui::DragFloat3("p light pos", &pointLightData_->position.x, 0.1f);
 		ImGui::DragFloat("p light radius", &pointLightData_->radius, 0.1f);
 		ImGui::DragFloat("p light decay", &pointLightData_->decay, 0.1f);
 		ImGui::EndMenu();
 	}
-	
+
 
 	materialData_->enableTexture = useTexture;
 	materialData_->enableLighting = useShader;
@@ -491,12 +514,12 @@ void Model::DebugParameter(const char* name)
 	materialData_->color = color;
 	blendMode_ = blend;
 	fillMode_ = fill;
-	materialData_->discardNum= discardnum;
+	materialData_->discardNum = discardnum;
 	materialData_->enablePhongReflection = usePhong;
 	materialData_->shininess = shininess;
 	materialData_->enablePointLight = usePointLight;
 #endif // _DEBUG
-	
+
 }
 #pragma endregion
 

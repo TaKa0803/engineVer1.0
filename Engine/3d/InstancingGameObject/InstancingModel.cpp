@@ -36,8 +36,7 @@ InstancingModel* InstancingModel::CreateFromOBJ(const std::string& directory,con
 	
 
 	ModelAllData modeltea = LoadModelFile(directory,filePath);
-
-	Animation animation = LoadAnimationFile(directory, filePath);
+	
 
 	//頂点データ
 	ID3D12Resource* vertexRtea = CreateBufferResource(DXF->GetDevice(), sizeof(VertexData) * modeltea.model.vertices.size());
@@ -57,7 +56,7 @@ InstancingModel* InstancingModel::CreateFromOBJ(const std::string& directory,con
 
 
 	InstancingModel* model = new InstancingModel();
-	model->Initialize(modeltea,animation,modeltea.model.material.textureFilePath, UINT(modeltea.model.vertices.size()),instancingNum, vertexRtea, vertexBufferViewtea);
+	model->Initialize(modeltea,modeltea.model.material.textureFilePath, UINT(modeltea.model.vertices.size()),instancingNum, vertexRtea, vertexBufferViewtea);
 
 
 
@@ -83,8 +82,8 @@ void InstancingModel::AddWorld(const EulerWorldTransform& world, const Vector4& 
 void InstancingModel::Draw(const Matrix4x4& viewProjection, int texture) {
 
 	animationTime+= 1.0f / 60.0f;
-	animationTime = std::fmod(animationTime, modelData_.animation.duration);
-	ApplyAnimation(skeleton_, animation_, animationTime);
+	animationTime = std::fmod(animationTime, modelData_.animation[animeNum_].duration);
+	ApplyAnimation(skeleton_, animation_[animeNum_], animationTime);
 	Update(skeleton_);
 
 	
@@ -95,7 +94,7 @@ void InstancingModel::Draw(const Matrix4x4& viewProjection, int texture) {
 
 		Matrix4x4 WVP;
 
-		if (modelData_.animation.nodeAnimations.size() == 0) {
+		if (modelData_.animation.size() == 0) {
 
 			worldM = world->world.matWorld_;
 
@@ -186,7 +185,6 @@ void InstancingModel::Debug(const char* name)
 
 void InstancingModel::Initialize(
 	ModelAllData modelData,
-	Animation animation,
 	std::string name,
 	int point,
 	int instancingNum,
@@ -196,7 +194,6 @@ void InstancingModel::Initialize(
 	DXF_ = DirectXFunc::GetInstance();
 
 	modelData_ = modelData;
-	animation_ = animation;
 
 	//各データ受け渡し
 	point_ = point;

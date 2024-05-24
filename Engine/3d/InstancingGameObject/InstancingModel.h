@@ -2,6 +2,7 @@
 
 #include<wrl.h>
 #include<string>
+#include<vector>
 
 #include"DirectXFunc/DirectXFunc.h"
 #include"InstancingGameObject/InstancingPSO.h"
@@ -121,7 +122,6 @@ private:
 	//初期化
 	void Initialize(
 		ModelAllData modelData_,
-		Animation animation_,
 		std::string name,
 		int point,
 		int instancingNum,
@@ -143,7 +143,7 @@ private:
 
 	ModelAllData modelData_;
 
-	Animation animation_;
+	std::vector<Animation> animation_;
 
 	Skeleton skeleton_;
 	
@@ -190,6 +190,9 @@ private:
 	std::vector<std::unique_ptr<InstancingData>>worlds_;
 	//animationの時間
 	float animationTime = 0.0f;
+
+	int animeNum_ = 0;
+
 	//ローカル
 	Matrix4x4 localM_;
 };

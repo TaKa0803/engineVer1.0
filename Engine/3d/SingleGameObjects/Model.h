@@ -54,8 +54,6 @@ public:
 	/// <param name="texture"></param>
 	void Draw(const Matrix4x4& WVP, const Camera& camera, Vector3 pointlight = { 0,0,0 }, int texture = -1);
 
-	void PlayAnimation(int animeNum = 0);
-
 
 	/// <summary>
 	/// Debug用ImGui表示
@@ -75,16 +73,10 @@ public:
 	/// <param name="ans">画像を使うか</param>
 	void IsEnableTexture(bool ans) { materialData_->enableTexture = ans; }
 #pragma region セッター
-
-	/// <summary>
-	/// uv座標の変換
-	/// </summary>
-	/// <param name="uv">uvMatrix</param>
-	void SetUV(Matrix4x4 uv) { materialData_->uvTransform = uv; }
-
-	void SetUVTranslate(Vector2 pos) { uvpos.x = pos.x; uvpos.y = pos.y; }
-
-	void SetUVScale(Vector3 scale) { uvscale = scale; }
+	//uv座標設定
+	void SetUVTranslate(Vector2 pos) { uvWorld_.translate_.x = pos.x; uvWorld_.translate_.y = pos.y; }
+	//uvサイズ設定
+	void SetUVScale(Vector3 scale) { uvWorld_.scale_ = scale; }
 
 	/// <summary>
 	/// 色の変更
@@ -98,7 +90,6 @@ public:
 
 	void SetFillMode(FillMode fillmode) { fillMode_=fillmode; }
 
-
 #pragma endregion
 
 	/// <summary>
@@ -109,9 +100,17 @@ public:
 
 	const Material* GetMaterialData() { return materialData_; }
 
-	const Vector3 GetUVScale()const { return uvscale; }
-private:
+public:
 
+	//UVのworldデータ
+	EulerWorldTransform uvWorld_{};
+
+	//埋めるか否か
+	FillMode fillMode_ = FillMode::kSolid;
+	//各ブレンドモード
+	BlendMode  blendMode_ = BlendMode::kNormal;
+
+private:
 
 	//初期化
 	void Initialize(
@@ -130,21 +129,22 @@ private:
 
 	ModelManager* modelM_;
 
+	//モデルとanimationデータ
 	ModelAllData modelData_;
 
+	//スケルトンデータ
 	Skeleton skeleton_;
-
+	//スキンanimationデータ
 	SkinCluster skinCluster_;
 
+	
 	//ジョイントの描画データ
 	InstancingModelManager* jointM__;
 	std::string jointMtag_;
 	bool drawJoint_ = false;
 	bool drawModel_ = true;
-	//埋めるか否か
-	FillMode fillMode_ = FillMode::kSolid;
-	BlendMode  blendMode_ = BlendMode::kNormal;
 
+	
 	std::string name;
 
 	D3D12_GPU_DESCRIPTOR_HANDLE texture_;
@@ -154,18 +154,20 @@ private:
 	//頂点数
 	int point_;
 
+	//インデックスリソース
 	ID3D12Resource* indexResource_;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
 
-
+	//vertexリソース
 	ID3D12Resource* vertexData_;
 	//頂点バッファビューを作成する
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
+	//ワールドデータリソース
 	ID3D12Resource* wvpResource_;
 	WorldTransformation* wvpData_ = nullptr;
 
-	//マテリアル
+	//マテリアルリソース
 	ID3D12Resource* materialResource_;
 	Material* materialData_ = nullptr;
 
@@ -181,12 +183,28 @@ private:
 	ID3D12Resource* pointlightResource_;
 	PointLight* pointLightData_;
 
-	Vector3 uvpos{};
-	Vector3 uvscale{ 1.0f,1.0f,1.0f };
-	Vector3 uvrotate{};
+	//モデルデータのタイプ
+	enum ModelDataType {
+		kOBJModel,		//普通のobjモデル
+		kAnimationGLTF,	//ボーンのないanimationモデル
+		kSkinningGLTF,	//ボーンのあるスキニングanimationモデル
+	};
+	
+	//モデルタイプ
+	ModelDataType modelType_;
 
+	bool isAnimationActive_ = false;
 	float animationTime = 0.0f;
+	//animationの一周までの秒数
+	float animationRoopSecond_ = 1.0f;
+
+	//アニメーション要素番号
+	int animeNum_ = 0;
+
+	//ボーンのないanimationキューブ用のlocalMatrix
 	Matrix4x4 localM_;
+
+	
 };
 
 
