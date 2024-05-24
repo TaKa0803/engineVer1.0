@@ -268,13 +268,9 @@ void ALGameScene::DebugWindows() {
 	plane_->DebagWindow();
 #endif // _DEBUG
 
-
-
 	skillSp_->DrawDebugImGui("skill");
 	BButton_->DrawDebugImGui("BButton");
 	punchSp_->DrawDebugImGui("punch");
-
-
 }
 
 void ALGameScene::Collision() {

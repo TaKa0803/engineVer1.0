@@ -310,10 +310,14 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 	if (modelData_.model.skinClusterData.size() != 0) {
 		wvpData_->WVP = WVP;
 		wvpData_->World = worldMatrix;
+		wvpData_->WorldInverseTranspose = Inverse(Transpose(worldMatrix));
+
 	}
 	else {
 		wvpData_->WVP =localM_* WVP;
 		wvpData_->World =localM_* worldMatrix;
+		wvpData_->WorldInverseTranspose = Inverse(Transpose(wvpData_->World));
+
 	}
 	bool isAnime = false;
 	//animationのあるモデルなら
@@ -360,8 +364,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera,Vector3 poin
 	}
 
 
-	wvpData_->WorldInverseTranspose = Inverse(Transpose(worldMatrix));
-
+	
 	cameraData_->worldPosition = camera.GetMainCamera().GetMatWorldTranslate();
 
 	pointLightData_->position = pointlight;
