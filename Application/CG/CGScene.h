@@ -35,7 +35,9 @@ private:
 
 	SkyBoxModel* skybox_;
 
-	Vector3 pointLightPos_{ 0,2,0 };
+	PointLight pointLight_{ 0,2,0 };
+
+
 
 	int ball;
 };

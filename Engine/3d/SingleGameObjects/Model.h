@@ -52,7 +52,7 @@ public:
 	/// <param name="WVP"></param>
 	/// <param name="viewProjection"></param>
 	/// <param name="texture"></param>
-	void Draw(const Matrix4x4& WVP, const Camera& camera, Vector3 pointlight = { 0,0,0 }, int texture = -1);
+	void Draw(const Matrix4x4& WVP, const Camera& camera, PointLight pointlight = { 0,0,0 }, int texture = -1);
 
 
 	/// <summary>

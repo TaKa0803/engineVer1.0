@@ -206,9 +206,9 @@ struct PointLight
 {
 	Vector4 color;//ライトの色
 	Vector3 position;//座標
-	float intensity;//光度
-	float radius;
-	float decay;
+	float intensity = 1;//光度
+	float radius = 1;
+	float decay = 1;
 	//float padding[2];
 };
 

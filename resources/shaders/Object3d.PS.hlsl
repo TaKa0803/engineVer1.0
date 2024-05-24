@@ -68,43 +68,33 @@ PixelShaderOutput main(VertexShaderOutput input)
     float4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
     float32_t4 textureColor = gTexture.Sample(gSampler, transformedUV.xy);
    
-   
-    if (gMaterial.enableTexture != 0)
-    {
-    }
-    else
+    //画像有効フラグが無効の時マテリアルの色のみ有効
+    if (gMaterial.enableTexture == 0)
     {
         textureColor = gMaterial.color;
     }
     
     PixelShaderOutput output;
-    if (gMaterial.enableLighting != 0)
+    
+    //ライティングフラグが有効の時
+    if (gMaterial.enableLighting)
     {
         float cos;
        
         //拡散反射を行うか否か
         if (gMaterial.enableHalfLambert)
-        {
-        
-             //Half Lambert
+        {     
+            //Half Lambert処理でcosを計算
             float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
             cos = pow(NdotL * 0.5f + 0.5f, 1.0f);
             
-              //追加で鏡面反射を適応させるか
+            //追加で鏡面反射を適応させるか
             if (gMaterial.enablePhongReflection)
-            {
-            
+            {           
                 //カメラへの方向算出
                 float32_t3 toEye = normalize(gCamera.worldPosition - input.worldPosition);
                 
-                //入射光の反射ベクトル
-                //float32_t3 reflectLight = reflect(gDirectionalLight.direction, normalize(input.normal));
-                   //内積
-                //float RdotE = dot(reflectLight, toEye);
-                //鏡面反射強度
-                //float specularPow = pow(saturate(RdotE), gMaterial.shininess);
-                
-                //BlinnPhong
+                //BlinnPhong反射モデルで鏡面反射を実装
                 float32_t3 halfVector = normalize(-gDirectionalLight.direction + toEye);
                 //
                 float NDotH = dot(normalize(input.normal), halfVector);

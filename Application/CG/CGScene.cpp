@@ -1,5 +1,6 @@
 #include "CGScene.h"
 #include"TextureManager/TextureManager.h"
+#include"ImGuiManager/ImGuiManager.h"
 
 CGScnene::CGScnene()
 {
@@ -32,6 +33,8 @@ void CGScnene::Initialize()
 
 	skybox_->Initialize();
 	skybox_->world_.scale_ = { 500,500,500 };
+
+
 }
 
 void CGScnene::Update()
@@ -40,7 +43,7 @@ void CGScnene::Update()
 	Vector3 move = input_->GetAllArrowKey();
 	move.y = input_->GetWASD().z;
 
-	pointLightPos_ += move;
+	pointLight_.position += move;
 
 	object->Update();
 	terrain->Update();
@@ -53,8 +56,8 @@ void CGScnene::Update()
 void CGScnene::PostEffectDraw()
 {
 	
-	object->Draw(*camera_, pointLightPos_);
-	terrain->Draw(*camera_, pointLightPos_);
+	object->Draw(*camera_, pointLight_);
+	terrain->Draw(*camera_, pointLight_);
 
 	skybox_->Draw(camera_.get());
 
@@ -72,4 +75,11 @@ void CGScnene::Debug()
 	object->Debug("object");
 	terrain->Debug("terrain");
 	camera_->DrawDebugWindow("camera");
+
+	ImGui::Text("PointLight");
+	ImGui::DragFloat("p light intencity", &pointLight_.intensity, 0.01f);
+	ImGui::DragFloat3("p light pos", &pointLight_.position.x, 0.1f);
+	ImGui::ColorEdit4("light color", &pointLight_.color.x);
+	ImGui::DragFloat("p light radius", &pointLight_.radius, 0.1f);
+	ImGui::DragFloat("p light decay", &pointLight_.decay, 0.1f);
 }

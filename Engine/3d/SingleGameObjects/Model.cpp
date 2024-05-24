@@ -331,9 +331,8 @@ void Model::Initialize(
 }
 
 
-void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera, Vector3 pointlight, int texture)
+void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera, PointLight pointlight, int texture)
 {
-	//UpdateAnimation();
 
 	//各データ確認用においてるだけ
 	modelData_;
@@ -403,7 +402,12 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera, Vector3 poi
 
 	cameraData_->worldPosition = camera.GetMainCamera().GetMatWorldTranslate();
 
-	pointLightData_->position = pointlight;
+	pointLightData_->color = pointlight.color;
+	pointLightData_->position = pointlight.position;
+	pointLightData_->radius= pointlight.radius;
+	pointLightData_->intensity = pointlight.intensity;
+	pointLightData_->decay = pointlight.decay;
+
 
 
 	DXF_->GetCMDList()->IASetIndexBuffer(&indexBufferView_);//IBVを設定
@@ -499,11 +503,7 @@ void Model::DebugParameter(const char* name)
 		ImGui::Text("Blinn Phong Reflection");
 		ImGui::DragFloat("Shininess", &shininess);
 
-		ImGui::Text("PointLight");
-		ImGui::DragFloat("p light intencity", &pointLightData_->intensity, 0.01f);
-		ImGui::DragFloat3("p light pos", &pointLightData_->position.x, 0.1f);
-		ImGui::DragFloat("p light radius", &pointLightData_->radius, 0.1f);
-		ImGui::DragFloat("p light decay", &pointLightData_->decay, 0.1f);
+		
 		ImGui::EndMenu();
 	}
 
