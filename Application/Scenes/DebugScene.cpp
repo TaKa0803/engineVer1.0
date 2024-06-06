@@ -6,7 +6,7 @@ DebugScene::DebugScene()
 {
 	input_ = Input::GetInstance();
 
-	camera_ = std::make_unique<Camera>();
+	camera_ = Camera::GetInstance();
 
 	sp1 = std::make_unique<SphereCollider>();
 	sp2 = std::make_unique<SphereCollider>();
@@ -18,6 +18,7 @@ DebugScene::DebugScene()
 
 	//エフェクト
 	EffectExp_ = EffectExplosion::GetInstance();
+
 }
 
 DebugScene::~DebugScene() {}

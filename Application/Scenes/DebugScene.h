@@ -37,7 +37,7 @@ private:
 	Input* input_ = nullptr;
 
 	EulerWorldTransform cWorld_;
-	std::unique_ptr<Camera> camera_;
+	Camera* camera_;
 
 	
 	EulerWorldTransform sw1;

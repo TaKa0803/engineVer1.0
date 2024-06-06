@@ -11,7 +11,7 @@
 ALGameScene::ALGameScene() {
 	input_ = Input::GetInstance();
 
-	camera_ = std::make_unique<Camera>();
+	camera_ = Camera::GetInstance();
 	player_ = std::make_unique<ALPlayer>();
 
 	plane_ = std::make_unique<Plane>();
@@ -101,7 +101,7 @@ void ALGameScene::Initialize() {
 	//各種設定
 	camera_->SetTarget(&player_->GetWorld());
 	camera_->SetCameraDirection(-40.0f);
-	player_->SetCamera(camera_.get());
+	player_->SetCamera(camera_);
 
 	enemyPopManager_->Initialzie();
 	enemyPopManager_->SetPlayerWorld(&player_->GetWorld());

@@ -81,10 +81,10 @@ void InstancingModel::AddWorld(const EulerWorldTransform& world, const Vector4& 
 
 void InstancingModel::Draw(const Matrix4x4& viewProjection, int texture) {
 
-	animationTime+= 1.0f / 60.0f;
+	/*animationTime+= 1.0f / 60.0f;
 	animationTime = std::fmod(animationTime, modelData_.animation[animeNum_].duration);
 	ApplyAnimation(skeleton_, animation_[animeNum_], animationTime);
-	Update(skeleton_);
+	Update(skeleton_);*/
 
 	
 

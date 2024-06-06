@@ -9,8 +9,16 @@ class Camera {
 
 public:
 
-	Camera();
-	~Camera();
+	static Camera* GetInstance();
+
+private:
+
+	Camera() = default;
+	~Camera() = default;
+	Camera(const Camera& o) = delete;
+	const Camera& operator=(const Camera& o) = delete;
+
+public:
 
 	/// <summary>
 	/// 初期化処理

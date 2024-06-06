@@ -52,7 +52,7 @@ private:
 	//キー入力
 	Input* input_ = nullptr;
 	//カメラクラス
-	std::unique_ptr<Camera> camera_;
+	Camera* camera_;
 
 	float xrotateNum = 0.05f;
 	float yrotatenum = 0.02f;

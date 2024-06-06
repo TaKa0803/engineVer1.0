@@ -27,7 +27,7 @@ private:
 	//キー入力
 	Input* input_ = nullptr;
 
-	std::unique_ptr<Camera> camera_;
+	Camera* camera_;
 
 	std::unique_ptr<GameObject>object;
 

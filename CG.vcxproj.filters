@@ -87,6 +87,7 @@
     <ClCompile Include="Engine\base\OffScreanPipeline\VignettingPSO.cpp" />
     <ClCompile Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.cpp" />
     <ClCompile Include="Engine\3d\SkyBoxModel\SkyBoxModel.cpp" />
+    <ClCompile Include="Engine\MapLoader\MapLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -158,6 +159,7 @@
     <ClInclude Include="Engine\base\OffScreanPipeline\VignettingPSO.h" />
     <ClInclude Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.h" />
     <ClInclude Include="Engine\3d\SkyBoxModel\SkyBoxModel.h" />
+    <ClInclude Include="Engine\MapLoader\MapLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

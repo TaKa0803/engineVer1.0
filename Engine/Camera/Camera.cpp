@@ -3,9 +3,12 @@
 #include<imgui.h>
 #include<numbers>
 
-Camera::Camera() {}
 
-Camera::~Camera() {}
+Camera* Camera::GetInstance()
+{
+	static Camera instance;
+	return &instance;
+}
 
 void Camera::Initialize() {
 

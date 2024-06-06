@@ -1,12 +1,13 @@
 #include "CGScene.h"
 #include"TextureManager/TextureManager.h"
 #include"ImGuiManager/ImGuiManager.h"
+#include"MapLoader/MapLoader.h"
 
 CGScnene::CGScnene()
 {
 
 	input_ = Input::GetInstance();
-	camera_ = std::make_unique<Camera>();
+	camera_ = Camera::GetInstance();
 
 	object = std::make_unique<GameObject>();
 	terrain = new GameObject();
@@ -14,6 +15,9 @@ CGScnene::CGScnene()
 	//ball = TextureManager::LoadTex("resources/Texture/CG/rostock_laage_airport_4k.dds").texNum;
 
 	skybox_ = new SkyBoxModel("resources/Texture/CG/rostock_laage_airport_4k.dds");
+
+	MapLoader::GetInstance()->LoadLevelEditor("untitled",".json");
+	MapLoader::GetInstance()->CreateModel(0);
 }
 
 CGScnene::~CGScnene() { 
@@ -50,6 +54,8 @@ void CGScnene::Update()
 	skybox_->Update();
 	camera_->Update();
 
+	MapLoader::GetInstance()->UpdateLevelData();
+
 	Debug();
 }
 
@@ -59,7 +65,9 @@ void CGScnene::PostEffectDraw()
 	object->Draw(*camera_, pointLight_);
 	terrain->Draw(*camera_, pointLight_);
 
-	skybox_->Draw(camera_.get());
+	skybox_->Draw(camera_);
+
+	MapLoader::GetInstance()->DrawLevelData();
 
 	InstancingModelManager::GetInstance()->DrawAllModel(camera_->GetViewProjectionMatrix());
 	
