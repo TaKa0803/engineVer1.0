@@ -20,8 +20,6 @@
 
 
 Model::~Model() {
-
-
 	skinCluster_.influenceResource->Release();
 	skinCluster_.paletteResource->Release();
 
@@ -32,103 +30,8 @@ Model::~Model() {
 	directionalLightResource_->Release();
 	cameraResource_->Release();
 	pointlightResource_->Release();
-
-
 }
 
-Model* Model::CreateSphere(float kSubdivision, bool enableLighting, const std::string& filePath)
-{
-	DirectXFunc* DXF = DirectXFunc::GetInstance();
-
-#pragma region 円
-#pragma region VertexBufferViewを作成
-	int point = (int)kSubdivision * (int)kSubdivision * 6;
-
-
-	ID3D12Resource* vertexResourceSphere = CreateBufferResource(DXF->GetDevice(), sizeof(VertexData) * point);
-
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewSphere{};
-
-	//リソースの戦闘のアドレスから使う
-	vertexBufferViewSphere.BufferLocation = vertexResourceSphere->GetGPUVirtualAddress();
-	//使用するリソースのサイズ
-	vertexBufferViewSphere.SizeInBytes = sizeof(VertexData) * point;
-	//1頂点当たりのサイズ
-	vertexBufferViewSphere.StrideInBytes = sizeof(VertexData);
-#pragma endregion
-#pragma region Resourceにデータを書き込む
-	//時計周りに点を設定していく
-	VertexData* vertexDataS = nullptr;
-	//書き込むためのアドレスを取得
-	vertexResourceSphere->Map(0, nullptr,
-		reinterpret_cast<void**>(&vertexDataS));
-
-	//経度一つ分の角度δ
-	const float kLonEvery = (float)M_PI * 2.0f / float(kSubdivision);
-	//緯度一つ分の角度Θ
-	const float kLatEvery = (float)M_PI / float(kSubdivision);
-	//緯度の方向に分割
-	for (int latIndex = 0; latIndex < kSubdivision; ++latIndex) {//σ
-		float lat = -(float)M_PI / 2.0f + kLatEvery * latIndex;
-		//経度のほう
-		for (int lonIndex = 0; lonIndex < kSubdivision; ++lonIndex) {//Θ
-			uint32_t start = ((int)latIndex * (int)kSubdivision + (int)lonIndex) * 6;
-			float lon = lonIndex * kLonEvery;
-			//一枚目
-			//1(a)
-			vertexDataS[start].position = { cos(lat) * cos(lon),sin(lat),  cos(lat) * sin(lon),1.0f };
-			vertexDataS[start].texcoord = { (lonIndex) / (float)kSubdivision,1.0f - (latIndex) / (float)kSubdivision };
-			vertexDataS[start].normal = { vertexDataS[start].position.x,vertexDataS[start].position.y,vertexDataS[start].position.z };
-
-			//2(b)
-			vertexDataS[start + 1].position = { cos(lat + kLatEvery) * cos(lon),sin(lat + kLatEvery), cos(lat + kLatEvery) * sin(lon),1.0f };
-			vertexDataS[start + 1].texcoord = { (lonIndex) / (float)kSubdivision,1.0f - (latIndex + 1) / (float)kSubdivision };
-			vertexDataS[start + 1].normal = { vertexDataS[start + 1].position.x,vertexDataS[start + 1].position.y,vertexDataS[start + 1].position.z };
-
-			//3(c)
-			vertexDataS[start + 2].position = { cos(lat) * cos(lon + kLonEvery),sin(lat),  cos(lat) * sin(lon + kLonEvery),1.0f };
-			vertexDataS[start + 2].texcoord = { (lonIndex + 1) / (float)kSubdivision,1.0f - (latIndex) / (float)kSubdivision };
-			vertexDataS[start + 2].normal = { vertexDataS[start + 2].position.x,vertexDataS[start + 2].position.y,vertexDataS[start + 2].position.z };
-
-			//二枚目
-			//
-			vertexDataS[start + 3] = vertexDataS[start + 1];
-			//
-			vertexDataS[start + 4].position = { cos(lat + kLatEvery) * cos(lon + kLonEvery),sin(lat + kLatEvery), cos(lat + kLatEvery) * sin(lon + kLonEvery),1.0f };
-			vertexDataS[start + 4].texcoord = { (lonIndex + 1) / (float)kSubdivision,1.0f - (latIndex + 1) / (float)kSubdivision };
-			vertexDataS[start + 4].normal = { vertexDataS[start + 4].position.x,vertexDataS[start + 4].position.y,vertexDataS[start + 4].position.z };
-			//
-			vertexDataS[start + 5] = vertexDataS[start + 2];
-		}
-	}
-#pragma endregion
-#pragma region wvp設定
-	ID3D12Resource* wvpResourceS;
-
-	//WVP用のリソースを作る。Matrix４ｘ４1つ分のサイズを用意する
-	wvpResourceS = CreateBufferResource(DXF->GetDevice(), sizeof(WorldTransformation));
-	//データを書き込む
-	WorldTransformation* wvpDataS = nullptr;
-
-	//書き込むためのアドレスを取得
-	wvpResourceS->Map(0, nullptr, reinterpret_cast<void**>(&wvpDataS));
-	//単位行列を書き込んでおくtextureResource
-	wvpDataS->WVP = MakeIdentity4x4();
-	wvpDataS->World = MakeIdentity4x4();
-#pragma endregion	
-#pragma endregion	
-
-
-	ModelAllData modeldata;
-
-	Model* model = new Model();
-	model->Initialize(modeldata, filePath, point, vertexResourceSphere, vertexBufferViewSphere, wvpResourceS, wvpDataS);
-
-
-
-	return model;
-
-}
 
 Model* Model::CreateFromOBJ(const std::string& filePath)
 {
@@ -140,7 +43,7 @@ Model* Model::CreateFromOBJ(const std::string& filePath)
 	ModelAllData modeltea = mManager->GetModelData(filePath);
 
 
-
+	//頂点データ
 	ID3D12Resource* vertexRtea = CreateBufferResource(DXF->GetDevice(), sizeof(VertexData) * modeltea.model.vertices.size());
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewtea{};
 	vertexBufferViewtea.BufferLocation = vertexRtea->GetGPUVirtualAddress();
@@ -151,19 +54,11 @@ Model* Model::CreateFromOBJ(const std::string& filePath)
 	vertexRtea->Map(0, nullptr, reinterpret_cast<void**>(&vertexDatatea));
 	std::memcpy(vertexDatatea, modeltea.model.vertices.data(), sizeof(VertexData) * modeltea.model.vertices.size());
 
-	//WVP用のリソースを作る。Matrix４ｘ４1つ分のサイズを用意する
-	ID3D12Resource* wvpResourceTea = CreateBufferResource(DXF->GetDevice(), sizeof(WorldTransformation));
-	//データを書き込む
-	WorldTransformation* wvpDataTea = nullptr;
-	//書き込むためのアドレスを取得
-	wvpResourceTea->Map(0, nullptr, reinterpret_cast<void**>(&wvpDataTea));
-	//単位行列を書き込んでおくtextureResource
-	wvpDataTea->WVP = MakeIdentity4x4();
-	wvpDataTea->World = MakeIdentity4x4();
+
 #pragma endregion
 
 	Model* model = new Model();
-	model->Initialize(modeltea, modeltea.model.material.textureFilePath, UINT(modeltea.model.vertices.size()), vertexRtea, vertexBufferViewtea, wvpResourceTea, wvpDataTea);
+	model->Initialize(modeltea, modeltea.model.material.textureFilePath, UINT(modeltea.model.vertices.size()), vertexRtea, vertexBufferViewtea);
 
 	return model;
 }
@@ -212,12 +107,10 @@ void Model::UpdateAnimation()
 
 void Model::Initialize(
 	ModelAllData data,
-	std::string name_,
+	std::string name,
 	int point,
 	ID3D12Resource* vertexRtea,
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView,
-	ID3D12Resource* wvpResource,
-	WorldTransformation* wvpData
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView
 ) {
 
 	DXF_ = DirectXFunc::GetInstance();
@@ -226,13 +119,9 @@ void Model::Initialize(
 
 	modelData_ = data;
 
-	name = name_;
-
 	skeleton_ = CreateSkeleton(modelData_.model.rootNode);
-
 	Handles handles = SRVManager::GetInstance()->CreateNewSRVHandles();
 	skinCluster_ = CreateSkinCluster(*DXF_->GetDevice(), skeleton_, modelData_.model, handles.cpu, handles.gpu);
-
 	//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
 	Update(skinCluster_, skeleton_);
 
@@ -241,24 +130,23 @@ void Model::Initialize(
 	jointM__ = InstancingModelManager::GetInstance();
 	jointMtag_ = "sphere";
 
-	SRVManager* SRVM = SRVManager::GetInstance();
 
-	//スプライトの指定がない場合
-	if (name_ == "") {
-		int tex = TextureManager::uvChecker_;
-		texture_ = SRVM->GetTextureDescriptorHandle(tex);
-	}
-	else {
-		//指定があった場合
-		texture_ = TextureManager::LoadTex(name).gpuHandle;
-		//texture_ = SRVM->GetTextureDescriptorHandle(texture);
-	}
-
+	//各データ受け渡し
 	point_ = point;
 	vertexData_ = vertexRtea;
 	vertexBufferView_ = vertexBufferView;
-	wvpData_ = wvpData;
-	wvpResource_ = wvpResource;
+
+	//WVP用のリソースを作る。Matrix４ｘ４1つ分のサイズを用意する
+	wvpResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(WorldTransformation));
+	//データを書き込む
+
+	//書き込むためのアドレスを取得
+	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
+	//単位行列を書き込んでおくtextureResource
+	wvpData_->WVP = MakeIdentity4x4();
+	wvpData_->World = MakeIdentity4x4();
+	wvpData_->WorldInverseTranspose = MakeIdentity4x4();
+	wvpData_->color = { 1,1,1,1 };
 
 	//インデックス
 	indexResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(uint32_t) * modelData_.model.indices.size());
@@ -269,6 +157,7 @@ void Model::Initialize(
 	uint32_t* mappedIndex;
 	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedIndex));
 	std::memcpy(mappedIndex, modelData_.model.indices.data(), sizeof(uint32_t) * modelData_.model.indices.size());
+
 
 #pragma region マテリアル
 	//マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
@@ -312,6 +201,19 @@ void Model::Initialize(
 
 	localM_ = MakeIdentity4x4();
 
+	SRVManager* SRVM = SRVManager::GetInstance();
+
+	//スプライトの指定がない場合
+	if (name == "") {
+		int tex = TextureManager::uvChecker_;
+		texture_ = SRVM->GetTextureDescriptorHandle(tex);
+	}
+	else {
+		//指定があった場合
+		texture_ = TextureManager::LoadTex(name).gpuHandle;
+	}
+
+
 	//アニメーションデータやボーンからモデルの状態を予想して設定
 	if (modelData_.animation.size() != 0) {
 		if (modelData_.model.skinClusterData.size() != 0) {
@@ -327,13 +229,12 @@ void Model::Initialize(
 
 
 
-	Log("Model " + name_ + " is Created!\n");
+	Log("Model " + name + " is Created!\n");
 }
 
 
 void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera, PointLight pointlight, int texture)
 {
-
 	//各データ確認用においてるだけ
 	modelData_;
 	skeleton_;
@@ -366,7 +267,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera, PointLight 
 				Matrix4x4 world = jointW.skeletonSpaceMatrix;
 
 				EulerWorldTransform newdata;
-				newdata.matWorld_ = world;
+				newdata.matWorld_ = world * wvpData_->World;
 
 				jointM__->SetData(jointMtag_, newdata, { 1,1,1,1 });
 
@@ -404,7 +305,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera, PointLight 
 
 	pointLightData_->color = pointlight.color;
 	pointLightData_->position = pointlight.position;
-	pointLightData_->radius= pointlight.radius;
+	pointLightData_->radius = pointlight.radius;
 	pointLightData_->intensity = pointlight.intensity;
 	pointLightData_->decay = pointlight.decay;
 
@@ -493,7 +394,7 @@ void Model::DebugParameter(const char* name)
 
 		ImGui::Text("Animation");
 		ImGui::Checkbox("animeActive", &isAnimationActive_);
-		ImGui::DragFloat("Roop second", &animationRoopSecond_,0.1f);
+		ImGui::DragFloat("Roop second", &animationRoopSecond_, 0.1f);
 
 		ImGui::Text("DirectionalLight");
 		ImGui::DragFloat3("D light direction", &directionalLightData_->direction.x, 0.01f);
@@ -503,7 +404,7 @@ void Model::DebugParameter(const char* name)
 		ImGui::Text("Blinn Phong Reflection");
 		ImGui::DragFloat("Shininess", &shininess);
 
-		
+
 		ImGui::EndMenu();
 	}
 

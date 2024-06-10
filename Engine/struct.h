@@ -47,6 +47,13 @@ enum class FillMode {
 	kCountOfFillMode
 };
 
+//モデルデータのタイプ
+enum ModelDataType {
+	kOBJModel,		//普通のobjモデル
+	kAnimationGLTF,	//ボーンのないanimationモデル
+	kSkinningGLTF,	//ボーンのあるスキニングanimationモデル
+};
+
 struct WorldTransformation {
 	Matrix4x4 WVP;
 	Matrix4x4 World;

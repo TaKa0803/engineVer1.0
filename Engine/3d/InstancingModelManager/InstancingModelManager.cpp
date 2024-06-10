@@ -73,7 +73,7 @@ void InstancingModelManager::LoadAllModel() {
 
 				//モデルデータを作成して設定
 				InstancingModel* newModel = new InstancingModel();
-				newModel = InstancingModel::CreateFromOBJ(foldaPath, modelPath, instancingNum);
+				newModel = InstancingModel::CreateFromOBJ(baseFolda_+foldaPath, modelPath, instancingNum);
 				newModel->SetTag(itemName);
 				//送信
 				modelDatas_[itemName] = (newModel);

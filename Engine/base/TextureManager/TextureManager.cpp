@@ -189,7 +189,7 @@ ReturnData TextureManager::CreateData(const std::string& filePath,const DirectX:
 	tagNumDatas_[filePath] = newdata;
 	texDatas_[texNum.textureNum] = &texData;
 
-	Log("Texture " + filePath + " is Loaded!");
+	Log("Texture " + filePath + " is Loaded!\n");
 
 	return newdata;
 }

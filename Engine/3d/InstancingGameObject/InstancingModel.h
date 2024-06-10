@@ -6,10 +6,13 @@
 
 #include"DirectXFunc/DirectXFunc.h"
 #include"InstancingGameObject/InstancingPSO.h"
+
 #include"Math/Vector2.h"
 #include"Math/Matrix.h"
 #include"struct.h"
 #include"WorldTransform/WorldTransform.h"
+
+class InstancingModelManager;
 
 class InstancingModel {
 public:
@@ -115,13 +118,13 @@ public:
 /// <summary>
 /// worldの数取得
 /// </summary>
-	const float GetWorldNum() { return (float)worlds_.size(); }
+	const float GetWorldNum() { return (float)instancingDatas_.size(); }
 private:
 
 
 	//初期化
 	void Initialize(
-		ModelAllData modelData_,
+		ModelAllData modelData,
 		std::string name,
 		int point,
 		int instancingNum,
@@ -131,6 +134,9 @@ private:
 
 public:
 	
+	//UVのワールド
+	EulerWorldTransform uvWorld_;
+
 	//blendMode1
 	BlendMode blendMode_ = BlendMode::kNormal;
 
@@ -141,11 +147,19 @@ public:
 private:
 	DirectXFunc* DXF_;
 
+	//モデルデータ
 	ModelAllData modelData_;
 
-	std::vector<Animation> animation_;
-
+	//スケルトンデータ
 	Skeleton skeleton_;
+	//スキンanimationデータ
+	SkinCluster skinCluster_;
+
+	//ジョイントの描画データ
+	InstancingModelManager* IMM_;
+	std::string jointMtag_;
+	bool drawJoint_ = false;
+	bool drawModel_ = true;
 	
 	std::string tag_;
 
@@ -154,8 +168,6 @@ private:
 	D3D12_GPU_DESCRIPTOR_HANDLE instancingHandle_;
 
 	int instancingNum_;
-
-	bool isDebug = false;
 
 	//頂点数
 	int point_;
@@ -168,31 +180,57 @@ private:
 	//indexリソースとビュー
 	ID3D12Resource* indexResource_;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
+
+#pragma region 各追加送信データ
 	//wvpリソースとデータ
 	ID3D12Resource* wvpResource_;
 	WorldTransformation* wvpData_ = nullptr;
+
 	//マテリアルリソースとデータ
 	ID3D12Resource* materialResource_;
 	Material* materialData_ = nullptr;
+
 	//ディレクショナルライト
 	ID3D12Resource* directionalLightResource_;
 	DirectionalLight* directionalLightData_ = nullptr;
 
-	//UVのワールド
-	EulerWorldTransform uvWorld_;
+	//カメラ
+	ID3D12Resource* cameraResource_;
+	Camera4GPU* cameraData_ = nullptr;
 
+	//ポイントライト
+	ID3D12Resource* pointlightResource_;
+	PointLight* pointLightData_;
+#pragma endregion
+
+#pragma region アニメーション関係
+	//アニメーションフラグ
+	bool isAnimationActive_ = true;
+	float animationTime = 0.0f;
+	//animationの一周までの秒数
+	float animationRoopSecond_ = 1.0f;
+
+	//アニメーション要素番号
+	int animeNum_ = 0;
+	//ボーンのないanimationキューブ用のlocalMatrix
+	Matrix4x4 localM_;
+#pragma endregion
+
+#pragma region インスタンシング特有のデータ
 	//インスタンシングで利用するデータ
 	struct InstancingData {
 		EulerWorldTransform world;
 		Vector4 color;
 	};
 	//ワールド群
-	std::vector<std::unique_ptr<InstancingData>>worlds_;
-	//animationの時間
-	float animationTime = 0.0f;
+	std::vector<std::unique_ptr<InstancingData>>instancingDatas_;
+#pragma endregion
 
-	int animeNum_ = 0;
+	
 
-	//ローカル
-	Matrix4x4 localM_;
+
+
+
+	//モデルタイプ
+	ModelDataType modelType_;
 };

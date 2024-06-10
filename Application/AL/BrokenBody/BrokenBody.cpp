@@ -29,6 +29,8 @@ void BrokenBody::Update() {
 		}
 		else {
 
+
+			eData->world.scale_ = world_.scale_;
 			eData->velocity_ += eData->accce_;
 			eData->world.translate_ += eData->velocity_;
 
@@ -79,7 +81,7 @@ void BrokenBody::EffectOccurred(const EulerWorldTransform& world, int spawnNum) 
 			upSPD_,
 			RandomNumber::Get(-upSPD_,upSPD_)
 		};
-
+		edata->world.scale_ = world.scale_;
 		effectDatas_.push_back(edata);
 	}
 

@@ -111,6 +111,9 @@ private:
 	//グループ名
 	const std::string groupName_ = "InstancingmodelPathFile";
 
+	//モデルデータ置き場所の必須位置
+	const std::string baseFolda_ = "resources/Models/";
+ 
 	//データ
 	//std::vector<std::unique_ptr<InstancingModel>>modeldatas_;
 

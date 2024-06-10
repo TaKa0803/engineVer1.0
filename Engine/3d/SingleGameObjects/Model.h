@@ -25,13 +25,6 @@ public:
 
 	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-	/// <summary>
-	/// 円の作成
-	/// </summary>
-	/// <param name="kSubdivision">分割量</param>
-	/// <param name="enableLighting">影をつけるか</param>
-	/// <returns>モデルデータ</returns>
-	static Model* CreateSphere(float kSubdivision, bool enableLighting, const std::string& filePath = "");
 
 	/// <summary>
 	/// OBJ作成
@@ -100,6 +93,17 @@ public:
 
 	const Material* GetMaterialData() { return materialData_; }
 
+private:
+
+	//初期化
+	void Initialize(
+		ModelAllData data,
+		std::string name,
+		int point,
+		ID3D12Resource* vertexRtea,
+		D3D12_VERTEX_BUFFER_VIEW vertexBufferView
+	);
+
 public:
 
 	//UVのworldデータ
@@ -110,18 +114,6 @@ public:
 	//各ブレンドモード
 	BlendMode  blendMode_ = BlendMode::kNormal;
 
-private:
-
-	//初期化
-	void Initialize(
-		ModelAllData data,
-		std::string name,
-		int point,
-		ID3D12Resource* vertexRtea,
-		D3D12_VERTEX_BUFFER_VIEW vertexBufferView,
-		ID3D12Resource* wvpResource,
-		WorldTransformation* wvpData
-	);
 
 private:
 
@@ -144,12 +136,8 @@ private:
 	bool drawJoint_ = false;
 	bool drawModel_ = true;
 
-	
-	std::string name;
-
+	//画像handle
 	D3D12_GPU_DESCRIPTOR_HANDLE texture_;
-
-	bool isDebug = false;
 
 	//頂点数
 	int point_;
@@ -163,6 +151,7 @@ private:
 	//頂点バッファビューを作成する
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
+#pragma region 各追加送信データ
 	//ワールドデータリソース
 	ID3D12Resource* wvpResource_;
 	WorldTransformation* wvpData_ = nullptr;
@@ -182,17 +171,12 @@ private:
 	//ポイントライト
 	ID3D12Resource* pointlightResource_;
 	PointLight* pointLightData_;
+#pragma endregion
 
-	//モデルデータのタイプ
-	enum ModelDataType {
-		kOBJModel,		//普通のobjモデル
-		kAnimationGLTF,	//ボーンのないanimationモデル
-		kSkinningGLTF,	//ボーンのあるスキニングanimationモデル
-	};
-	
-	//モデルタイプ
-	ModelDataType modelType_;
 
+
+#pragma region アニメーション関係
+	//アニメーションフラグ
 	bool isAnimationActive_ = false;
 	float animationTime = 0.0f;
 	//animationの一周までの秒数
@@ -203,8 +187,11 @@ private:
 
 	//ボーンのないanimationキューブ用のlocalMatrix
 	Matrix4x4 localM_;
+#pragma endregion
 
-	
+
+	//モデルタイプ
+	ModelDataType modelType_;
 };
 
 
