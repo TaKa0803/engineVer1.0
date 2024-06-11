@@ -194,9 +194,6 @@ void ALGameScene::Update() {
 
 		break;
 	case ALGameScene::Clear:
-
-		OffScreenRendering::materialData_->type = 1;
-
 		num1_->DrawDebugImGui("num1");
 		num10_->DrawDebugImGui("num10");
 		num100_->DrawDebugImGui("num100");
@@ -247,7 +244,7 @@ void ALGameScene::Draw() {
 
 		ClearUIUpdate();
 
-		OffScreenRendering::materialData_->type = 1;
+		
 		break;
 	default:
 		break;
@@ -310,7 +307,8 @@ void ALGameScene::SceneChange() {
 			scene_ = Clear;
 			AudioManager::GetInstance()->StopAllSounds();
 			AudioManager::PlaySoundData(bgmClear_, 0.08f);
-			
+
+			OffScreenRendering::materialData_->type = 5;
 		}
 
 		
@@ -318,6 +316,7 @@ void ALGameScene::SceneChange() {
 #ifdef _DEBUG
 		if (input_->TriggerKey(DIK_P)) {
 			scene_ = Clear;
+			OffScreenRendering::materialData_->type = 5;
 			
 		}
 #endif // _DEBUG

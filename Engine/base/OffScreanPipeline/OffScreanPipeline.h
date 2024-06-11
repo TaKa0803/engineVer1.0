@@ -9,6 +9,8 @@ struct FullScreenData
 {
 	int32_t type;
 	float sepiaValue;
+	int32_t blurIntensity;
+	float standardDeviation;
 };
 
 class OffScreenRendering {

@@ -185,6 +185,8 @@ void OffScreenRendering::Initialize()
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->type = 0;
 	materialData_->sepiaValue = 0.5f;
+	materialData_->standardDeviation = 2.0f;
+	materialData_->blurIntensity = 3;
 
 	Log("Complete FullScreenPSO Initialized!\n");
 }
@@ -205,6 +207,7 @@ void OffScreenRendering::Debug()
 	ImGui::Begin("offScreen");
 	ImGui::DragInt("影響タイプ", &materialData_->type);
 	ImGui::DragFloat("セピアの値", &materialData_->sepiaValue,0.01f);
+	ImGui::DragFloat("標準偏差", &materialData_->standardDeviation,0.1f);
 	ImGui::End();
 #endif // _DEBUG
 
