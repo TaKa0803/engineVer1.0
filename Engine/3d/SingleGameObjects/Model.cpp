@@ -60,6 +60,9 @@ Model* Model::CreateFromOBJ(const std::string& filePath)
 	Model* model = new Model();
 	model->Initialize(modeltea, modeltea.model.material.textureFilePath, UINT(modeltea.model.vertices.size()), vertexRtea, vertexBufferViewtea);
 
+
+	Log("Model " + filePath + " is Created!\n");
+
 	return model;
 }
 
@@ -229,7 +232,6 @@ void Model::Initialize(
 
 
 
-	Log("Model " + name + " is Created!\n");
 }
 
 

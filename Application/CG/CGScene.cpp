@@ -2,6 +2,7 @@
 #include"TextureManager/TextureManager.h"
 #include"ImGuiManager/ImGuiManager.h"
 #include"MapLoader/MapLoader.h"
+#include"OffScreanPipeline/OffScreanPipeline.h"
 
 CGScnene::CGScnene()
 {
@@ -39,6 +40,7 @@ void CGScnene::Initialize()
 	skybox_->world_.scale_ = { 500,500,500 };
 
 
+	OffScreenRendering::materialData_->type = 3;
 }
 
 void CGScnene::Update()

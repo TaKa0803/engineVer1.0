@@ -118,6 +118,7 @@ void MainSystem::MainRoop() {
 		ImGui::Text("Frame %4.1f", delta);
 		ImGui::End();
 #endif // _DEBUG
+		DXF_->Update();
 
 		//ゲームシーン更新
 		gameScene_->Update();

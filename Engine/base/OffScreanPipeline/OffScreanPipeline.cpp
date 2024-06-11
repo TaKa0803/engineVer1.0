@@ -3,7 +3,7 @@
 #include"DXC/DXCManager.h"
 #include"DirectXFunc/DirectXFunc.h"
 #include"functions/function.h"
-
+#include"ImGuiManager/ImGuiManager.h"
 #include<cassert>
 
 FullScreenData* OffScreenRendering::materialData_ = nullptr;
@@ -196,5 +196,16 @@ void OffScreenRendering::PreDraw()
 	DXF_->GetCMDList()->SetPipelineState(psoState_);
 	//マテリアルCBufferの場所を設定
 	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, materialResource_->GetGPUVirtualAddress());
+
+}
+
+void OffScreenRendering::Debug()
+{
+#ifdef _DEBUG
+	ImGui::Begin("offScreen");
+	ImGui::DragInt("影響タイプ", &materialData_->type);
+	ImGui::DragFloat("セピアの値", &materialData_->sepiaValue,0.01f);
+	ImGui::End();
+#endif // _DEBUG
 
 }

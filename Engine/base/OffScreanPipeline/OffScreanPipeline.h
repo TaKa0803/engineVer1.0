@@ -28,6 +28,11 @@ public:
 	/// </summary>
 	void PreDraw();
 
+	/// <summary>
+	/// 
+	/// </summary>
+	void Debug();
+
 	static FullScreenData* materialData_;
 
 private:

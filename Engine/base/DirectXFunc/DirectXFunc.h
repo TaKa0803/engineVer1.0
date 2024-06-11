@@ -40,6 +40,8 @@ public:
 
 	void InitializeOthher();
 
+	void Update();
+
 	void PrePreDraw();
 
 	/// <summary>

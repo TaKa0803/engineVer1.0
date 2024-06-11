@@ -113,6 +113,11 @@ void DirectXFunc::InitializeOthher()
 	offScreen_->Initialize();
 }
 
+void DirectXFunc::Update()
+{
+	offScreen_->Debug();
+}
+
 
 
 void DirectXFunc::FixFPSInitialize() {

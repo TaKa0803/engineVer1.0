@@ -65,7 +65,7 @@ InstancingModel* InstancingModel::CreateFromOBJ(const std::string& directory, co
 
 
 
-	Log("Model " + filePath + " is Created!\n");
+	Log("Instancing Model " + filePath + " is Created!\n");
 
 	return model;
 }
@@ -327,8 +327,9 @@ void InstancingModel::Initialize(
 	materialData_->enableTexture = true;
 	materialData_->enableHalfLambert = true;
 	materialData_->discardNum = 0.0f;
-	materialData_->enablePhongReflection = 0;
+	materialData_->enablePhongReflection = false;
 	materialData_->shininess = 20.0f;
+	materialData_->enablePointLight = false;
 #pragma endregion
 
 #pragma region ライト
@@ -402,6 +403,5 @@ void InstancingModel::Initialize(
 
 
 
-	Log("Instancing Model " + name + " is Created!\n");
 
 }
