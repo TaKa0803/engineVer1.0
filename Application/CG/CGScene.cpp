@@ -63,11 +63,14 @@ void CGScnene::Update()
 
 void CGScnene::PostEffectDraw()
 {
-	
-	object->Draw(*camera_, pointLight_);
-	terrain->Draw(*camera_, pointLight_);
 
 	skybox_->Draw(camera_);
+	
+	terrain->Draw(*camera_, pointLight_);
+
+
+	object->Draw(*camera_, pointLight_);
+	
 
 	MapLoader::GetInstance()->DrawLevelData();
 
