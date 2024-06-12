@@ -24,7 +24,7 @@ public:
 
 	void Update();
 
-	void Draw(const Camera*camera);
+	void Draw();
 
 public:
 	//移動用

@@ -9,8 +9,8 @@
 #include"struct.h"
 
 #include"SingleModelManager/ModelManager.h"
-#include"Camera/Camera.h"
-#include"InstancingGameObject/InstancingModel.h"
+#include"InstancingModelManager/InstancingModelManager.h"
+#include"LightManager/LightManager.h"
 
 void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime);
 
@@ -43,9 +43,8 @@ public:
 	/// 描画
 	/// </summary>
 	/// <param name="WVP"></param>
-	/// <param name="viewProjection"></param>
 	/// <param name="texture"></param>
-	void Draw(const Matrix4x4& WVP, const Camera& camera, PointLight pointlight = { 0,0,0 }, int texture = -1);
+	void Draw(const Matrix4x4& WVP,  PointLight pointlight = { 0,0,0 }, int texture = -1);
 
 
 	/// <summary>

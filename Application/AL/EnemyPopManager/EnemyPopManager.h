@@ -3,7 +3,6 @@
 #include<vector>
 
 #include"Math/Vector3.h"
-
 #include"AL/Enemy/ALEnemy.h"
 
 struct PopData {
@@ -36,7 +35,7 @@ public:
 
 	void Update();
 
-	void Draw(const Camera& camera);
+	void Draw();
 
 	std::unique_ptr<ALEnemy> PopEnemy();
 

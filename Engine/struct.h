@@ -195,12 +195,7 @@ struct Material {
 	int32_t enablePointLight=true;
 };
 
-struct DirectionalLight {
-	Vector4 color;
-	Vector3 direction;
-	float intensity;
-	//float padding2[3];
-};
+
 
 struct Camera4GPU {
 	Vector3 worldPosition;
@@ -208,15 +203,6 @@ struct Camera4GPU {
 
 
 
-//ポイントライト
-struct PointLight
-{
-	Vector4 color;//ライトの色
-	Vector3 position;//座標
-	float intensity = 1;//光度
-	float radius = 1;
-	float decay = 1;
-	//float padding[2];
-};
+
 
 #pragma endregion

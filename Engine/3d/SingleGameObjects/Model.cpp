@@ -6,8 +6,9 @@
 
 #include"ImGuiManager/ImGuiManager.h"
 #include"SRVManager/SRVManager.h"
-
+#include"InstancingModelManager/InstancingModelManager.h"
 #include"struct.h"
+#include"Camera/Camera.h"
 
 #define _USE_MATH_DEFINES
 #include<math.h>
@@ -235,7 +236,7 @@ void Model::Initialize(
 }
 
 
-void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera, PointLight pointlight, int texture)
+void Model::Draw(const Matrix4x4& worldMatrix, PointLight pointlight, int texture)
 {
 	//各データ確認用においてるだけ
 	modelData_;
@@ -244,7 +245,9 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera, PointLight 
 
 	materialData_->uvTransform = uvWorld_.UpdateMatrix();
 
-	Matrix4x4 WVP = worldMatrix * camera.GetViewProjectionMatrix();
+	Camera* camera = Camera::GetInstance();
+
+	Matrix4x4 WVP = worldMatrix * camera->GetViewProjectionMatrix();
 
 	if (modelType_ == kAnimationGLTF) {
 		wvpData_->WVP = localM_ * WVP;
@@ -303,7 +306,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, const Camera& camera, PointLight 
 
 
 
-	cameraData_->worldPosition = camera.GetMainCamera().GetMatWorldTranslate();
+	cameraData_->worldPosition = camera->GetMainCamera().GetMatWorldTranslate();
 
 	pointLightData_->color = pointlight.color;
 	pointLightData_->position = pointlight.position;

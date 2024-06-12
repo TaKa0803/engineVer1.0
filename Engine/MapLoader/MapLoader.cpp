@@ -150,7 +150,7 @@ void MapLoader::UpdateLevelData()
 void MapLoader::DrawLevelData()
 {
 	for (auto& data : models_[stageNum_]) {
-		data->Draw(*Camera::GetInstance());
+		data->Draw();
 	}
 }
 

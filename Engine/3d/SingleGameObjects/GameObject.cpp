@@ -17,8 +17,9 @@ void GameObject::Update() {
 	model_->UpdateAnimation();
 }
 
-void GameObject::Draw(const Camera& camera, PointLight pointlight, int tex) {
-	model_->Draw(world_.matWorld_, camera,pointlight,tex);
+void GameObject::Draw( PointLight pointlight, int tex) {
+
+	model_->Draw(world_.matWorld_,pointlight,tex);
 }
 
 void GameObject::Debug(const char* name)

@@ -64,17 +64,17 @@ void CGScnene::Update()
 void CGScnene::PostEffectDraw()
 {
 
-	skybox_->Draw(camera_);
+	skybox_->Draw();
 	
-	terrain->Draw(*camera_, pointLight_);
+	terrain->Draw(pointLight_);
 
 
-	object->Draw(*camera_, pointLight_);
+	object->Draw(pointLight_);
 	
 
 	MapLoader::GetInstance()->DrawLevelData();
 
-	InstancingModelManager::GetInstance()->DrawAllModel(camera_->GetViewProjectionMatrix());
+	InstancingModelManager::GetInstance()->DrawAllModel();
 	
 }
 

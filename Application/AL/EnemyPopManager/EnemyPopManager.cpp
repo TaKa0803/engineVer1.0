@@ -138,7 +138,7 @@ void EnemyPopManager::Update() {
 
 }
 
-void EnemyPopManager::Draw(const Camera&camera) {
+void EnemyPopManager::Draw() {
 	InstancingModelManager* IMM = InstancingModelManager::GetInstance();
 	int Index = 0;
 	for (auto& world : flagWorlds_) {
@@ -146,7 +146,7 @@ void EnemyPopManager::Draw(const Camera&camera) {
 		if (popDatas_[Index].maxAreaPopCount < popDatas_[Index].maxAreaPop) {
 			IMM->SetData(flag_, world);
 
-			flagModel_[Index]->Draw(camera,{0,0,0},TextureManager::white_);
+			flagModel_[Index]->Draw({0,0,0},TextureManager::white_);
 		}
 		Index++;
 	}

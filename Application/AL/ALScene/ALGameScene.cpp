@@ -212,9 +212,9 @@ void ALGameScene::Update() {
 void ALGameScene::PostEffectDraw()
 {
 	//地面
-	plane_->Draw(*camera_);
+	plane_->Draw();
 	//敵の旗
-	enemyPopManager_->Draw(*camera_);
+	enemyPopManager_->Draw();
 
 	//敵
 	for (auto& enemy : enemies_) {
@@ -231,7 +231,7 @@ void ALGameScene::PostEffectDraw()
 
 	
 	//インスタンシングのモデルを全描画
-	InstancingModelManager::GetInstance()->DrawAllModel(camera_->GetViewProjectionMatrix());
+	InstancingModelManager::GetInstance()->DrawAllModel();
 }
 
 void ALGameScene::Draw() {

@@ -150,7 +150,7 @@ void DebugScene::Draw()
 
 	EffectExp_->Draw();
 
-	InstancingModelManager::GetInstance()->DrawAllModel(camera_->GetViewProjectionMatrix());
+	InstancingModelManager::GetInstance()->DrawAllModel();
 
 	splite_->Draw();
 }

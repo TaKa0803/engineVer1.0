@@ -1,5 +1,5 @@
 #include "InstancingModelManager.h"
-
+#include"InstancingGameObject/InstancingModel.h"
 #include<cassert>
 #include<fstream>
 #include<json.hpp>
@@ -104,12 +104,12 @@ void InstancingModelManager::Finalize()
 	}
 }
 
-void InstancingModelManager::DrawAllModel(const Matrix4x4& viewProjection) {
+void InstancingModelManager::DrawAllModel() {
 
 	for (auto& model : modelDatas_) {
 		if (model.second->GetWorldNum() != 0) {
 			pso_->PreDraw(model.second->fillMode_, model.second->blendMode_);
-			model.second->Draw(viewProjection);
+			model.second->Draw();
 		}
 	}
 

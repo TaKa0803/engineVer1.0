@@ -4,8 +4,10 @@
 #include<vector>
 #include<map>
 #include<iostream>
-#include"InstancingGameObject/InstancingModel.h"
+
 #include"InstancingGameObject/InstancingPSO.h"
+
+class InstancingModel;
 
 class InstancingModelManager {
 public:
@@ -33,7 +35,7 @@ public:
 	/// <summary>
 	/// すべてのモデルの描画
 	/// </summary>
-	void DrawAllModel(const Matrix4x4& viewProjection);
+	void DrawAllModel();
 
 
 	/// <summary>

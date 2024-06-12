@@ -2,7 +2,6 @@
 
 #include"SingleGameObjects/Model.h"
 #include"WorldTransform/WorldTransform.h"
-#include"Camera/Camera.h"
 #include<vector>
 
 class GameObject {
@@ -23,7 +22,7 @@ public:
 
 	virtual void Update();
 
-	virtual void Draw(const Camera& camera, PointLight pointlight = PointLight(), int tex = -1);
+	virtual void Draw( PointLight pointlight = PointLight(), int tex = -1);
 
 	virtual void Debug(const char* name);
 };

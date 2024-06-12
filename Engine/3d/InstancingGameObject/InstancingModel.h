@@ -10,7 +10,8 @@
 #include"Math/Vector2.h"
 #include"Math/Matrix.h"
 #include"struct.h"
-#include"WorldTransform/WorldTransform.h"
+
+#include"LightManager/LightManager.h"
 
 class InstancingModelManager;
 
@@ -50,9 +51,8 @@ public:
 	/// 描画
 	/// </summary>
 	/// <param name="WVP"></param>
-	/// <param name="viewProjection"></param>
 	/// <param name="texture"></param>
-	void Draw(const Matrix4x4& viewProjection, int texture = -1);
+	void Draw(int texture = -1);
 
 	/// <summary>
 	/// Debug用ImGui表示
@@ -145,7 +145,7 @@ public:
 
 
 private:
-	DirectXFunc* DXF_;
+	DirectXFunc* DXF_=nullptr;
 
 	//モデルデータ
 	ModelAllData modelData_;

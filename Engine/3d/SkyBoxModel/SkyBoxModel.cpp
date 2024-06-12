@@ -141,8 +141,10 @@ void SkyBoxModel::Update()
 	world_.UpdateMatrix();
 }
 
-void SkyBoxModel::Draw(const Camera* camera)
+void SkyBoxModel::Draw()
 {
+	Camera* camera = Camera::GetInstance();
+
 	pso_->PreDraw();
 
 	Matrix4x4 WVP = world_.matWorld_ * camera->GetViewProjectionMatrix();

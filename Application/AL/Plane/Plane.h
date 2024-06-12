@@ -14,7 +14,7 @@ public:
 
 	void DebagWindow();
 
-	void Draw(const Camera& viewp);
+	void Draw();
 
 
 };

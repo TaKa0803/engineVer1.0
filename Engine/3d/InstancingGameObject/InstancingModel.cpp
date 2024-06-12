@@ -10,9 +10,8 @@
 #include"InstancingModelManager/InstancingModelManager.h"
 #include"Camera/Camera.h"
 
-#include<imgui.h>
-
-
+#include"ImGuiManager/ImGuiManager.h"
+#include<iostream>
 
 
 InstancingModel::~InstancingModel() {
@@ -84,7 +83,7 @@ void InstancingModel::AddWorld(const EulerWorldTransform& world, const Vector4& 
 
 }
 
-void InstancingModel::Draw(const Matrix4x4& viewProjection, int texture) {
+void InstancingModel::Draw(int texture) {
 
 	if (modelType_ != kOBJModel) {
 		if (isAnimationActive_) {
