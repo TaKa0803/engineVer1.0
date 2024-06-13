@@ -250,7 +250,6 @@ void ALGameScene::Draw() {
 		break;
 	}
 	sceneC_->Draw();
-
 }
 
 void ALGameScene::DebugWindows() {

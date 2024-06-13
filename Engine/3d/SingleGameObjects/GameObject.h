@@ -22,7 +22,7 @@ public:
 
 	virtual void Update();
 
-	virtual void Draw( PointLight pointlight = PointLight(), int tex = -1);
+	virtual void Draw( int tex = -1);
 
 	virtual void Debug(const char* name);
 };

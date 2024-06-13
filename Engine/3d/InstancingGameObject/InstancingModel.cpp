@@ -191,6 +191,19 @@ void InstancingModel::Draw(int texture) {
 
 	cameraData_->worldPosition = camera->GetMainCamera().GetMatWorldTranslate();
 
+	PointLight pl= LightManager::GetInstance()->GetPLight();
+	DirectionalLight dl = LightManager::GetInstance()->GetDLight();
+
+	pointLightData_->color = pl.color;
+	pointLightData_->decay = pl.decay;
+	pointLightData_->intensity = pl.intensity;
+	pointLightData_->position = pl.position;
+	pointLightData_->radius = pl.radius;
+
+	directionalLightData_->color = dl.color;
+	directionalLightData_->direction = dl.direction;
+	directionalLightData_->intensity = dl.intensity;
+
 	if (index > 0) {
 
 		uvWorld_.UpdateMatrix();

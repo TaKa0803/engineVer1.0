@@ -6,8 +6,8 @@
 
 struct DirectionalLight {
 	Vector4 color;
-	Vector3 direction;
-	float intensity;
+	Vector3 direction = {0,-1,0};
+	float intensity =1;
 	//float padding2[3];
 };
 
@@ -25,7 +25,7 @@ struct PointLight
 class LightManager {
 
 public:
-	LightManager* GetInstance();
+	static LightManager* GetInstance();
 
 private:
 	LightManager() = default;
@@ -39,9 +39,16 @@ public:
 
 	void PreUpdate();
 
+	void SetPLight(const PointLight& data) { pLights_ = data; }
+
+	void SetDLight(const DirectionalLight& data) { dLights_ = data; }
+
+	PointLight GetPLight() { return pLights_; }
+
+	DirectionalLight GetDLight() { return dLights_; }
 private:
 
-	std::list<PointLight>pLights_;
+	PointLight pLights_ ;
 
-	std::list<DirectionalLight>dLights_;
+	DirectionalLight dLights_;
 };

@@ -268,7 +268,7 @@ void ALPlayer::Draw() {
 	//各モデル描画
 	int Index = 0;
 	for (auto& model : models) {
-		model->Draw(mWorlds[Index].matWorld_, {0,0,0}, textureData);
+		model->Draw(mWorlds[Index].matWorld_, textureData);
 
 		Index++;
 	}

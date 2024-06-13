@@ -44,7 +44,7 @@ public:
 	/// </summary>
 	/// <param name="WVP"></param>
 	/// <param name="texture"></param>
-	void Draw(const Matrix4x4& WVP,  PointLight pointlight = { 0,0,0 }, int texture = -1);
+	void Draw(const Matrix4x4& WVP, int texture = -1);
 
 
 	/// <summary>

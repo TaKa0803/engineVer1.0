@@ -146,7 +146,7 @@ void EnemyPopManager::Draw() {
 		if (popDatas_[Index].maxAreaPopCount < popDatas_[Index].maxAreaPop) {
 			IMM->SetData(flag_, world);
 
-			flagModel_[Index]->Draw({0,0,0},TextureManager::white_);
+			flagModel_[Index]->Draw(TextureManager::white_);
 		}
 		Index++;
 	}

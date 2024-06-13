@@ -3,6 +3,7 @@
 #include"ImGuiManager/ImGuiManager.h"
 #include"MapLoader/MapLoader.h"
 #include"OffScreanPipeline/OffScreanPipeline.h"
+#include"LightManager/LightManager.h"
 
 CGScnene::CGScnene()
 {
@@ -19,6 +20,8 @@ CGScnene::CGScnene()
 
 	MapLoader::GetInstance()->LoadLevelEditor("untitled",".json");
 	MapLoader::GetInstance()->CreateModel(0);
+
+
 }
 
 CGScnene::~CGScnene() { 
@@ -39,12 +42,14 @@ void CGScnene::Initialize()
 	skybox_->Initialize();
 	skybox_->world_.scale_ = { 500,500,500 };
 
+	pointLight_ = PointLight();
 
 	OffScreenRendering::materialData_->type = 3;
 }
 
 void CGScnene::Update()
 {
+	Debug();
 
 	Vector3 move = input_->GetAllArrowKey();
 	move.y = input_->GetWASD().z;
@@ -58,7 +63,9 @@ void CGScnene::Update()
 
 	MapLoader::GetInstance()->UpdateLevelData();
 
-	Debug();
+	LightManager::GetInstance()->SetPLight(pointLight_);
+	LightManager::GetInstance()->SetDLight(dLight_);
+	
 }
 
 void CGScnene::PostEffectDraw()
@@ -66,10 +73,10 @@ void CGScnene::PostEffectDraw()
 
 	skybox_->Draw();
 	
-	terrain->Draw(pointLight_);
+	terrain->Draw();
 
 
-	object->Draw(pointLight_);
+	object->Draw();
 	
 
 	MapLoader::GetInstance()->DrawLevelData();
@@ -89,10 +96,20 @@ void CGScnene::Debug()
 	terrain->Debug("terrain");
 	camera_->DrawDebugWindow("camera");
 
+	ImGui::Begin("Light");
 	ImGui::Text("PointLight");
 	ImGui::DragFloat("p light intencity", &pointLight_.intensity, 0.01f);
 	ImGui::DragFloat3("p light pos", &pointLight_.position.x, 0.1f);
 	ImGui::ColorEdit4("light color", &pointLight_.color.x);
 	ImGui::DragFloat("p light radius", &pointLight_.radius, 0.1f);
 	ImGui::DragFloat("p light decay", &pointLight_.decay, 0.1f);
+
+	ImGui::Text("DirectionalLight");
+	ImGui::DragFloat("d light intencity", &dLight_.intensity, 0.01f);
+	ImGui::ColorEdit4("light color", &dLight_.color.x);
+	ImGui::DragFloat3("d direction", &dLight_.direction.x, 0.1f);
+
+	ImGui::End();
+
+	dLight_.direction.SetNormalize();
 }

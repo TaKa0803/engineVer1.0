@@ -236,7 +236,7 @@ void Model::Initialize(
 }
 
 
-void Model::Draw(const Matrix4x4& worldMatrix, PointLight pointlight, int texture)
+void Model::Draw(const Matrix4x4& worldMatrix,int texture)
 {
 	//各データ確認用においてるだけ
 	modelData_;
@@ -308,13 +308,18 @@ void Model::Draw(const Matrix4x4& worldMatrix, PointLight pointlight, int textur
 
 	cameraData_->worldPosition = camera->GetMainCamera().GetMatWorldTranslate();
 
+	PointLight pointlight = LightManager::GetInstance()->GetPLight();
+
 	pointLightData_->color = pointlight.color;
 	pointLightData_->position = pointlight.position;
 	pointLightData_->radius = pointlight.radius;
 	pointLightData_->intensity = pointlight.intensity;
 	pointLightData_->decay = pointlight.decay;
 
-
+	DirectionalLight dLight = LightManager::GetInstance()->GetDLight();
+	directionalLightData_->color = dLight.color;
+	directionalLightData_->direction = dLight.direction;
+	directionalLightData_->intensity = dLight.intensity;
 
 	DXF_->GetCMDList()->IASetIndexBuffer(&indexBufferView_);//IBVを設定
 	//wvp用のCBufferの場所の設定
@@ -400,11 +405,6 @@ void Model::DebugParameter(const char* name)
 		ImGui::Text("Animation");
 		ImGui::Checkbox("animeActive", &isAnimationActive_);
 		ImGui::DragFloat("Roop second", &animationRoopSecond_, 0.1f);
-
-		ImGui::Text("DirectionalLight");
-		ImGui::DragFloat3("D light direction", &directionalLightData_->direction.x, 0.01f);
-		ImGui::DragFloat("D light intensity", &directionalLightData_->intensity, 0.01f);
-		ImGui::ColorEdit4("D light color", &directionalLightData_->color.x);
 
 		ImGui::Text("Blinn Phong Reflection");
 		ImGui::DragFloat("Shininess", &shininess);

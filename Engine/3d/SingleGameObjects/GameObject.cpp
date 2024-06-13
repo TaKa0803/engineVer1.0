@@ -17,9 +17,9 @@ void GameObject::Update() {
 	model_->UpdateAnimation();
 }
 
-void GameObject::Draw( PointLight pointlight, int tex) {
+void GameObject::Draw(  int tex) {
 
-	model_->Draw(world_.matWorld_,pointlight,tex);
+	model_->Draw(world_.matWorld_,tex);
 }
 
 void GameObject::Debug(const char* name)

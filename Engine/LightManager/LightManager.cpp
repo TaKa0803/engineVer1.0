@@ -2,7 +2,8 @@
 
 LightManager* LightManager::GetInstance()
 {
-	return nullptr;
+	static LightManager instance;
+	return&instance;
 }
 
 void LightManager::Initialize()

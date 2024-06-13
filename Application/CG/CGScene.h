@@ -35,9 +35,9 @@ private:
 
 	SkyBoxModel* skybox_;
 
-	PointLight pointLight_{ 0,2,0 };
+	PointLight pointLight_;
 
-
+	DirectionalLight dLight_;
 
 	int ball;
 };
