@@ -14,7 +14,8 @@
     "AnimeCube": [ "AnimatedCube", "AnimatedCube.gltf" ],
     "sWalk": [ "walk", "sneakWalk.gltf" ],
     "walk": [ "walk", "walk.gltf" ],
-    "flag": [ "flag", "flag.gltf" ]
+    "flag": [ "flag", "flag.gltf" ],
+    "Player": [ "Object", "player.gltf"]
   },
   "InstancingmodelPathFile": {
     "weapon": [ "Weapon", "Weapon.obj", 64 ],
