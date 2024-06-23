@@ -132,6 +132,7 @@ private:
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView
 	);
 
+	void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime);
 public:
 	
 	//UVのワールド

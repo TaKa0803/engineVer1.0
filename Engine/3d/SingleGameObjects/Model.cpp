@@ -73,19 +73,32 @@ void Model::UpdateAnimation()
 	//OBJではない
 	if (modelType_ != kOBJModel) {
 		if (isAnimationActive_) {
-			animationTime += animationRoopSecond_ / 60.0f;
-			animationTime = std::fmod(animationTime, modelData_.animation[animeNum_].duration);//最後まで行ったら最初からリピート再生
+			animationTime_ += animationRoopSecond_ / 60.0f;
+			if (isAnimeRoop_) {
+				animationTime_ = std::fmod(animationTime_, modelData_.animation[animeNum_].duration);//最後まで行ったら最初からリピート再生
+			}
+			else {
+				if (animationTime_ > modelData_.animation[animeNum_].duration) {
+					animationTime_ = modelData_.animation[animeNum_].duration;
+				}
+			}
 			//マイナス領域の時の処理
 			if (animationRoopSecond_ < 0) {
-				if (animationTime < 0) {
-					animationTime += modelData_.animation[animeNum_].duration;
+				
+				if (animationTime_ < 0) {
+					if (isAnimeRoop_) {
+						animationTime_ += modelData_.animation[animeNum_].duration;
+					}
+					else {
+						animationTime_ = 0;
+					}
 				}
 			}
 
 			//ボーンのあるモデルの場合
 			if (modelType_ == kSkinningGLTF) {
 				//animationの更新を行って骨ごとのローカル情報を更新
-				ApplyAnimation(skeleton_, modelData_.animation[animeNum_], animationTime);
+				ApplyAnimation(skeleton_, modelData_.animation[animeNum_], animationTime_);
 				//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
 				Update(skeleton_);
 				//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
@@ -94,16 +107,16 @@ void Model::UpdateAnimation()
 			else {
 				//ないanimationモデルの場合
 				NodeAnimation& rootNodeAnimation = modelData_.animation[animeNum_].nodeAnimations[modelData_.model.rootNode.name];
-				Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
-				Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
-				Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
+				Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
+				Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
+				Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
 				localM_ = MakeAffineMatrix(scale, rotate, translate);
 			}
 		}
 		else {
-			animationTime = 0;
+			animationTime_ = 0;
 			//animationの更新を行って骨ごとのローカル情報を更新
-			ApplyAnimation(skeleton_, modelData_.animation[animeNum_], animationTime);
+			ApplyAnimation(skeleton_, modelData_.animation[animeNum_], animationTime_);
 		}
 	}
 
@@ -235,6 +248,40 @@ void Model::Initialize(
 
 }
 
+void Model::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime)
+{
+	float t = 0;
+	if (isSupplementation_) {
+		supplementationCount_++;
+		t = supplementationCount_ / maxSupplementationCount_;
+		if (t >= 1.0f) {
+			t = 1.0f;
+			isSupplementation_ = false;
+		}
+	}
+
+	int i = 0;
+	for (Joint& joint : skeleton.joints) {
+		if (auto it = animation.nodeAnimations.find(joint.name); it != animation.nodeAnimations.end()) {
+			const NodeAnimation& rootNodeAnimation = (*it).second;
+			joint.transform.translate_ = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
+			joint.transform.rotate_ = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
+			joint.transform.scale_ = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
+		}
+
+		//アニメーション変更によるフラグ処理ONの場合
+		if (isSupplementation_) {
+				
+			joint.transform.translate_ = Esing(savedT[i].translate_, joint.transform.translate_, t);
+			joint.transform.rotate_ = Slerp(savedT[i].rotate_, joint.transform.rotate_, t);
+			joint.transform.scale_ = Esing(savedT[i].scale_, joint.transform.scale_, t);
+
+		}
+
+		i++;
+	}
+}
+
 
 void Model::Draw(const Matrix4x4& worldMatrix,int texture)
 {
@@ -354,6 +401,31 @@ void Model::Draw(const Matrix4x4& worldMatrix,int texture)
 
 
 
+void Model::ChangeAnimation(int animeNum, float count)
+{
+
+	//アニメーションの値内ならアニメーション変更と補完処理フラグON
+	if (animeNum <= modelData_.animation.size()-2) {
+		animeNum_ = animeNum;
+
+		if (count != 0) {
+			isSupplementation_ = true;
+			
+			savedT.clear();
+			for (Joint& joint : skeleton_.joints) {
+
+				QuaterinionWorldTransform newd;
+				newd = joint.transform;
+				savedT.emplace_back(newd);
+			}
+
+			animationTime_ = 0;
+			supplementationCount_ = 0;
+			maxSupplementationCount_ = count;
+		}
+	}
+}
+
 void Model::DebugParameter(const char* name)
 {
 #ifdef _DEBUG
@@ -378,6 +450,7 @@ void Model::DebugParameter(const char* name)
 
 	bool usePointLight = materialData_->enablePointLight;
 
+	int anum = animeNum_;
 
 	if (ImGui::BeginMenu(name)) {
 		ImGui::Checkbox("Texture", &useTexture);
@@ -404,7 +477,9 @@ void Model::DebugParameter(const char* name)
 
 		ImGui::Text("Animation");
 		ImGui::Checkbox("animeActive", &isAnimationActive_);
+		ImGui::Checkbox("animeRoop", &isAnimeRoop_);
 		ImGui::DragFloat("Roop second", &animationRoopSecond_, 0.1f);
+		ImGui::SliderInt("AnimeNum", &anum, 0, (int)(modelData_.animation.size() - 2));
 
 		ImGui::Text("Blinn Phong Reflection");
 		ImGui::DragFloat("Shininess", &shininess);
@@ -424,6 +499,10 @@ void Model::DebugParameter(const char* name)
 	materialData_->enablePhongReflection = usePhong;
 	materialData_->shininess = shininess;
 	materialData_->enablePointLight = usePointLight;
+
+	if (animeNum_ != anum) {
+		ChangeAnimation(anum, 60);
+	}
 #endif // _DEBUG
 
 }

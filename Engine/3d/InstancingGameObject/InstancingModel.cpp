@@ -417,3 +417,15 @@ void InstancingModel::Initialize(
 
 
 }
+
+void InstancingModel::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime)
+{
+	for (Joint& joint : skeleton.joints) {
+		if (auto it = animation.nodeAnimations.find(joint.name); it != animation.nodeAnimations.end()) {
+			const NodeAnimation& rootNodeAnimation = (*it).second;
+			joint.transform.translate_ = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
+			joint.transform.rotate_ = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
+			joint.transform.scale_ = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
+		}
+	}
+}

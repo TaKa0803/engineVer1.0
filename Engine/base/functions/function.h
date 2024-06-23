@@ -21,7 +21,7 @@ ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& 
 //MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 //ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
 
-void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime);
+//void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime);
 
 void Update(Skeleton& skeleton);
 

@@ -217,7 +217,6 @@ void ALPlayer::Initialize() {
 
 void ALPlayer::Update() {
 
-
 	//状態の初期化処理
 	if (stateRequest_) {
 		state_ = stateRequest_.value();

@@ -12,7 +12,6 @@
 #include"InstancingModelManager/InstancingModelManager.h"
 #include"LightManager/LightManager.h"
 
-void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime);
 
 class Model {
 public:
@@ -38,7 +37,7 @@ public:
 
 	void UpdateAnimation();
 
-
+	
 	/// <summary>
 	/// 描画
 	/// </summary>
@@ -46,6 +45,17 @@ public:
 	/// <param name="texture"></param>
 	void Draw(const Matrix4x4& WVP, int texture = -1);
 
+
+
+	/// <summary>
+	/// アニメーション変更
+	/// </summary>
+	/// <param name="animeNum">番号</param>
+	/// <param name="count">変わりきるまでの速度</param>
+	void ChangeAnimation(int animeNum, float count);
+
+	//アニメーションループフラグ
+	void SetAnimationRoop(bool isLoop);
 
 	/// <summary>
 	/// Debug用ImGui表示
@@ -82,6 +92,7 @@ public:
 
 	void SetFillMode(FillMode fillmode) { fillMode_=fillmode; }
 
+	void SetAnimeSecond(float spd) { animationRoopSecond_ = spd; }
 #pragma endregion
 
 	/// <summary>
@@ -102,6 +113,8 @@ private:
 		ID3D12Resource* vertexRtea,
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView
 	);
+
+	void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime);
 
 public:
 
@@ -177,15 +190,30 @@ private:
 #pragma region アニメーション関係
 	//アニメーションフラグ
 	bool isAnimationActive_ = false;
-	float animationTime = 0.0f;
+	//アニメーションカウント
+	float animationTime_ = 0.0f;
 	//animationの一周までの秒数
 	float animationRoopSecond_ = 1.0f;
+
+	//アニメーションをループするか
+	bool isAnimeRoop_ = true;
 
 	//アニメーション要素番号
 	int animeNum_ = 0;
 
 	//ボーンのないanimationキューブ用のlocalMatrix
 	Matrix4x4 localM_;
+
+
+	//補完フラグ
+	bool isSupplementation_ =false;
+
+	//カウント変数
+	float supplementationCount_ = 0;
+	//
+	float maxSupplementationCount_;
+	//過去アニメーション
+	std::vector<QuaterinionWorldTransform> savedT;
 #pragma endregion
 
 
