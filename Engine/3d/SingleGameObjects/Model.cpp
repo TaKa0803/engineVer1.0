@@ -404,13 +404,20 @@ void Model::Draw(const Matrix4x4& worldMatrix,int texture)
 void Model::ChangeAnimation(int animeNum, float count)
 {
 
+	//同じものならスキップ
+	if (animeNum_ == animeNum) {
+		return;
+	}
+
 	//アニメーションの値内ならアニメーション変更と補完処理フラグON
 	if (animeNum <= modelData_.animation.size()-2) {
 		animeNum_ = animeNum;
 
 		if (count != 0) {
+			//補完フラグON
 			isSupplementation_ = true;
-			
+
+			//各ジョイント位置保存
 			savedT.clear();
 			for (Joint& joint : skeleton_.joints) {
 
@@ -419,10 +426,15 @@ void Model::ChangeAnimation(int animeNum, float count)
 				savedT.emplace_back(newd);
 			}
 
-			animationTime_ = 0;
+			
 			supplementationCount_ = 0;
 			maxSupplementationCount_ = count;
 		}
+		else {
+
+		}
+
+		animationTime_ = 0;
 	}
 }
 

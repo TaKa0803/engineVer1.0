@@ -109,25 +109,6 @@ private:
 #pragma region モデルに関する
 
 	//タグ軍
-	std::string tags[modelNum_] = {
-		"Head",
-		"LArm",
-		"RArm",
-		"LFoot",
-		"RFoot"
-	};
-
-	enum Parts {
-		HEAD,
-		LARM,
-		RARM,
-		LFOOT,
-		RFOOT
-	};
-
-	EulerWorldTransform mWorlds[modelNum_] = {};
-
-	std::unique_ptr<Model>models[modelNum_];
 
 	int textureData = 0;
 #pragma endregion
@@ -156,13 +137,8 @@ private:
 
 	ModelAnimeParts seuUpAnime;
 
-	//歩くアニメーション
-	ModelAnimeParts walkData_;
+	
 
-	//止まったモーション
-	ModelAnimeParts stopData_;
-
-	ModelAnimeParts nowRoop_;
 
 	int roopCount_ = 0;
 
@@ -198,11 +174,7 @@ private:
 
 
 
-	ModelAnimeParts ATKData1_;
 
-	ModelAnimeParts ATKData2_;
-
-	ModelAnimeParts ATKData3_;
 
 	//最大コンボ数
 	const int maxATKConBo = 3;
@@ -233,6 +205,14 @@ private:
 
 	bool ATKAnimationSetup_ = false;
 
+	enum NowATK {
+		kATK1,
+		kATK2,
+		kATK3,
+		_countATK
+	};
+
+	NowATK nowATKState_=kATK1;
 #pragma endregion
 
 	int punchSound_;

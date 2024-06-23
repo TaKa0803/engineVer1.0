@@ -55,7 +55,9 @@ public:
 	void ChangeAnimation(int animeNum, float count);
 
 	//アニメーションループフラグ
-	void SetAnimationRoop(bool isLoop);
+	void SetAnimationRoop(bool isLoop) { isAnimeRoop_ = isLoop; };
+
+	void SetAnimationActive(bool isActive) { isAnimationActive_ = isActive; }
 
 	/// <summary>
 	/// Debug用ImGui表示
@@ -126,7 +128,7 @@ public:
 	//各ブレンドモード
 	BlendMode  blendMode_ = BlendMode::kNormal;
 
-
+	Material* materialData_ = nullptr;
 private:
 
 	DirectXFunc* DXF_;
@@ -170,8 +172,7 @@ private:
 
 	//マテリアルリソース
 	ID3D12Resource* materialResource_;
-	Material* materialData_ = nullptr;
-
+	
 	//ディレクションライト
 	ID3D12Resource* directionalLightResource_;
 	DirectionalLight* directionalLightData_ = nullptr;
