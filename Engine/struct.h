@@ -193,6 +193,8 @@ struct Material {
 	float shininess = 1.0f;
 
 	int32_t enablePointLight=true;
+
+	int32_t enableEnvironmentMap =false;
 };
 
 
