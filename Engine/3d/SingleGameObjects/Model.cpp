@@ -391,7 +391,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 		}
 		
 		//仮
-		//DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(6, TextureManager::LoadTex("resources/Texture/CG/rostock_laage_airport_4k.dds").gpuHandle);
+		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(6, TextureManager::LoadTex("resources/Texture/CG/rostock_laage_airport_4k.dds").gpuHandle);
 
 
 		//描画！		
@@ -504,8 +504,8 @@ void Model::DebugParameter(const char* name)
 		ImGui::Text("Blinn Phong Reflection");
 		ImGui::DragFloat("Shininess", &shininess);
 
-		ImGui::Checkbox("EnvironmentTexture", &EnvironmentTexture);
-
+		ImGui::Checkbox("金属光沢処理", &EnvironmentTexture);
+		ImGui::SliderFloat("光沢度", &materialData_->enviromentCoefficient, 0, 1);
 		ImGui::EndMenu();
 	}
 

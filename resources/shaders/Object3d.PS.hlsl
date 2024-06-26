@@ -27,6 +27,8 @@ struct Material
     
     int32_t enableEnvironmentMap;
     
+    float enviromentCoefficient;
+    
 };
 ConstantBuffer<Material> gMaterial : register(b0);
 
@@ -74,7 +76,7 @@ float32_t3 SetEnvironmentMap(VertexShaderOutput input)
         float32_t3 reflectedVector = reflect(cameraToPosition, normalize(input.normal));
         float32_t4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
 
-        return environmentColor.rgb;
+        return environmentColor.rgb*gMaterial.enviromentCoefficient;
     }
     
     return float32_t3(0, 0, 0);
