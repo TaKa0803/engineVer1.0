@@ -84,7 +84,7 @@ void Model::UpdateAnimation()
 			}
 			//マイナス領域の時の処理
 			if (animationRoopSecond_ < 0) {
-				
+
 				if (animationTime_ < 0) {
 					if (isAnimeRoop_) {
 						animationTime_ += modelData_.animation[animeNum_].duration;
@@ -271,7 +271,7 @@ void Model::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float
 
 		//アニメーション変更によるフラグ処理ONの場合
 		if (isSupplementation_) {
-				
+
 			joint.transform.translate_ = Esing(savedT[i].translate_, joint.transform.translate_, t);
 			joint.transform.rotate_ = Slerp(savedT[i].rotate_, joint.transform.rotate_, t);
 			joint.transform.scale_ = Esing(savedT[i].scale_, joint.transform.scale_, t);
@@ -283,111 +283,117 @@ void Model::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float
 }
 
 
-void Model::Draw(const Matrix4x4& worldMatrix,int texture)
+void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 {
-	//各データ確認用においてるだけ
-	modelData_;
-	skeleton_;
-	skinCluster_;
 
-	materialData_->uvTransform = uvWorld_.UpdateMatrix();
+	if (drawModel_) {
+		//各データ確認用においてるだけ
+		//modelData_;
+		//skeleton_;
+		//skinCluster_;
 
-	Camera* camera = Camera::GetInstance();
+		materialData_->uvTransform = uvWorld_.UpdateMatrix();
 
-	Matrix4x4 WVP = worldMatrix * camera->GetViewProjectionMatrix();
+		Camera* camera = Camera::GetInstance();
 
-	if (modelType_ == kAnimationGLTF) {
-		wvpData_->WVP = localM_ * WVP;
-		wvpData_->World = localM_ * worldMatrix;
-		wvpData_->WorldInverseTranspose = Inverse(Transpose(wvpData_->World));
-	}
-	else {
-		wvpData_->WVP = WVP;
-		wvpData_->World = worldMatrix;
-		wvpData_->WorldInverseTranspose = Inverse(Transpose(worldMatrix));
+		Matrix4x4 WVP = worldMatrix * camera->GetViewProjectionMatrix();
 
-	}
-	bool isAnime = false;
-	//animationのあるモデルなら
-	if (modelType_ == kSkinningGLTF) {
-		isAnime = true;
+		if (modelType_ == kAnimationGLTF) {
+			wvpData_->WVP = localM_ * WVP;
+			wvpData_->World = localM_ * worldMatrix;
+			wvpData_->WorldInverseTranspose = Inverse(Transpose(wvpData_->World));
+		}
+		else {
+			wvpData_->WVP = WVP;
+			wvpData_->World = worldMatrix;
+			wvpData_->WorldInverseTranspose = Inverse(Transpose(worldMatrix));
 
-		if (drawJoint_) {
-			//ジョイントMの更新
-			int i = 0;
-			for (auto& jointW : skeleton_.joints) {
-				Matrix4x4 world = jointW.skeletonSpaceMatrix;
+		}
+		bool isAnime = false;
+		//animationのあるモデルなら
+		if (modelType_ == kSkinningGLTF) {
+			isAnime = true;
 
-				EulerWorldTransform newdata;
-				newdata.matWorld_ = world * wvpData_->World;
+			if (drawJoint_) {
+				//ジョイントMの更新
+				int i = 0;
+				for (auto& jointW : skeleton_.joints) {
+					Matrix4x4 world = jointW.skeletonSpaceMatrix;
 
-				jointM__->SetData(jointMtag_, newdata, { 1,1,1,1 });
+					EulerWorldTransform newdata;
+					newdata.matWorld_ = world * wvpData_->World;
 
-				i++;
+					jointM__->SetData(jointMtag_, newdata, { 1,1,1,1 });
+
+					i++;
+				}
 			}
+
+
+		}
+		else {
+
+		}
+
+		//描画準備
+		ModelManager::PreDraw(isAnime, blendMode_, fillMode_);
+
+		//animationがある場合vertexBufferViewを二つ用意
+		if (isAnime) {
+			D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
+			vertexBufferView_,					//VertexDataのView
+			skinCluster_.influenceBufferView	//InfluenceのVPV
+			};
+
+			DXF_->GetCMDList()->IASetVertexBuffers(0, 2, vbvs);
+			DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(7, skinCluster_.paletteSrvHandle.second);
+		}
+		else {
+			//ない場合はいままで通り
+			DXF_->GetCMDList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 		}
 
 
-	}
-	else {
 
-	}
+		cameraData_->worldPosition = camera->GetMainCamera().GetMatWorldTranslate();
 
-	//描画準備
-	ModelManager::PreDraw(isAnime, blendMode_, fillMode_);
+		PointLight pointlight = LightManager::GetInstance()->GetPLight();
 
-	//animationがある場合vertexBufferViewを二つ用意
-	if (isAnime) {
-		D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
-		vertexBufferView_,					//VertexDataのView
-		skinCluster_.influenceBufferView	//InfluenceのVPV
-		};
+		pointLightData_->color = pointlight.color;
+		pointLightData_->position = pointlight.position;
+		pointLightData_->radius = pointlight.radius;
+		pointLightData_->intensity = pointlight.intensity;
+		pointLightData_->decay = pointlight.decay;
+		
+		DirectionalLight dLight = LightManager::GetInstance()->GetDLight();
+		directionalLightData_->color = dLight.color;
+		directionalLightData_->direction = dLight.direction;
+		directionalLightData_->intensity = dLight.intensity;
 
-		DXF_->GetCMDList()->IASetVertexBuffers(0, 2, vbvs);
-		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(6, skinCluster_.paletteSrvHandle.second);
-	}
-	else {
-		//ない場合はいままで通り
-		DXF_->GetCMDList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
-	}
+		DXF_->GetCMDList()->IASetIndexBuffer(&indexBufferView_);//IBVを設定
+		//wvp用のCBufferの場所の設定
+		DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
+		//マテリアルCBufferの場所を設定
+		DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+		//
+		DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(3, directionalLightResource_->GetGPUVirtualAddress());
+		//カメラ位置転送
+		DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(4, cameraResource_->GetGPUVirtualAddress());
+
+		DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(5, pointlightResource_->GetGPUVirtualAddress());
+
+		if (texture == -1) {
+			DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, texture_);
+		}
+		else {
+			//SRVのDescriptorTableの先頭を設定。２はParameter[2]である。
+			DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, SRVManager::GetInstance()->GetTextureDescriptorHandle(texture));
+		}
+		
+		//仮
+		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(6, TextureManager::LoadTex("resources/Texture/CG/rostock_laage_airport_4k.dds").gpuHandle);
 
 
-
-	cameraData_->worldPosition = camera->GetMainCamera().GetMatWorldTranslate();
-
-	PointLight pointlight = LightManager::GetInstance()->GetPLight();
-
-	pointLightData_->color = pointlight.color;
-	pointLightData_->position = pointlight.position;
-	pointLightData_->radius = pointlight.radius;
-	pointLightData_->intensity = pointlight.intensity;
-	pointLightData_->decay = pointlight.decay;
-
-	DirectionalLight dLight = LightManager::GetInstance()->GetDLight();
-	directionalLightData_->color = dLight.color;
-	directionalLightData_->direction = dLight.direction;
-	directionalLightData_->intensity = dLight.intensity;
-
-	DXF_->GetCMDList()->IASetIndexBuffer(&indexBufferView_);//IBVを設定
-	//wvp用のCBufferの場所の設定
-	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
-	//マテリアルCBufferの場所を設定
-	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
-	//
-	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(3, directionalLightResource_->GetGPUVirtualAddress());
-	//カメラ位置転送
-	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(4, cameraResource_->GetGPUVirtualAddress());
-
-	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(5, pointlightResource_->GetGPUVirtualAddress());
-
-	if (texture == -1) {
-		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, texture_);
-	}
-	else {
-		//SRVのDescriptorTableの先頭を設定。２はParameter[2]である。
-		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, SRVManager::GetInstance()->GetTextureDescriptorHandle(texture));
-	}
-	if (drawModel_) {
 		//描画！		
 		DXF_->GetCMDList()->DrawIndexedInstanced(static_cast<UINT>(modelData_.model.indices.size()), 1, 0, 0, 0);
 	}
@@ -410,7 +416,7 @@ void Model::ChangeAnimation(int animeNum, float count)
 	}
 
 	//アニメーションの値内ならアニメーション変更と補完処理フラグON
-	if (animeNum <= modelData_.animation.size()-2) {
+	if (animeNum <= modelData_.animation.size() - 2) {
 		animeNum_ = animeNum;
 
 		if (count != 0) {
@@ -426,7 +432,7 @@ void Model::ChangeAnimation(int animeNum, float count)
 				savedT.emplace_back(newd);
 			}
 
-			
+
 			supplementationCount_ = 0;
 			maxSupplementationCount_ = count;
 		}
@@ -464,6 +470,8 @@ void Model::DebugParameter(const char* name)
 
 	int anum = animeNum_;
 
+	bool EnvironmentTexture = materialData_->enableEnvironmentMap;
+
 	if (ImGui::BeginMenu(name)) {
 		ImGui::Checkbox("Texture", &useTexture);
 		ImGui::Checkbox("Shader", &useShader);
@@ -496,10 +504,12 @@ void Model::DebugParameter(const char* name)
 		ImGui::Text("Blinn Phong Reflection");
 		ImGui::DragFloat("Shininess", &shininess);
 
-
+		ImGui::Checkbox("金属光沢処理", &EnvironmentTexture);
+		ImGui::SliderFloat("光沢度", &materialData_->enviromentCoefficient, 0, 1);
 		ImGui::EndMenu();
 	}
 
+	materialData_->enableEnvironmentMap = EnvironmentTexture;
 
 	materialData_->enableTexture = useTexture;
 	materialData_->enableLighting = useShader;

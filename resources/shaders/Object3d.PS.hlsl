@@ -3,6 +3,7 @@
 Texture2D<float32_t4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
+TextureCube<float32_t4> gEnvironmentTexture : register(t1);
 
 struct Material
 {
@@ -23,6 +24,10 @@ struct Material
     float32_t shininess;
     
     int32_t enablePointLight;
+    
+    int32_t enableEnvironmentMap;
+    
+    float enviromentCoefficient;
     
 };
 ConstantBuffer<Material> gMaterial : register(b0);
@@ -61,6 +66,21 @@ struct PointLight
 };
 
 ConstantBuffer<PointLight> gPointLight : register(b3);
+
+
+float32_t3 SetEnvironmentMap(VertexShaderOutput input)
+{
+    if (gMaterial.enableEnvironmentMap)
+    {
+        float32_t3 cameraToPosition = normalize(input.worldPosition - gCamera.worldPosition);
+        float32_t3 reflectedVector = reflect(cameraToPosition, normalize(input.normal));
+        float32_t4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
+
+        return environmentColor.rgb*gMaterial.enviromentCoefficient;
+    }
+    
+    return float32_t3(0, 0, 0);
+}
 
 PixelShaderOutput main(VertexShaderOutput input)
 {
@@ -149,7 +169,8 @@ PixelShaderOutput main(VertexShaderOutput input)
                 
                 }
                 
-               
+                output.color.rgb += SetEnvironmentMap(input);
+                
                  //textureのα値が0の時Pixelを棄却
                 if (output.color.a <= gMaterial.discardNum)
                 {
@@ -177,6 +198,7 @@ PixelShaderOutput main(VertexShaderOutput input)
         output.color = gMaterial.color * textureColor;
     }
       
+    output.color.rgb += SetEnvironmentMap(input);
     
     //textureのα値が0の時Pixelを棄却
     if (output.color.a <= gMaterial.discardNum)

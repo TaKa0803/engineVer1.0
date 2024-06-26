@@ -192,7 +192,14 @@ struct Material {
 	//光沢度
 	float shininess = 1.0f;
 
+	//ポイントライト適応
 	int32_t enablePointLight=true;
+
+	//周囲の映り込み
+	int32_t enableEnvironmentMap =false;
+
+	//
+	float enviromentCoefficient = 1.0f;
 };
 
 

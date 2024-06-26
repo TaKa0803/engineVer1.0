@@ -22,6 +22,8 @@ struct Material {
     float32_t shininess;
     
     int32_t enablePointLight;
+    
+    int32_t enableEnvironmentMap;
 };
 ConstantBuffer<Material> gMaterial : register(b0);
 
@@ -57,6 +59,7 @@ struct PointLight
 };
 
 ConstantBuffer<PointLight> gPointLight : register(b3);
+
 
 
 PixelShaderOutput main(VertexShaderOutput input) {

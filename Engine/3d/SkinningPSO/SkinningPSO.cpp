@@ -49,8 +49,8 @@ void SkinningPSO::Initialize()
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 #pragma region RootParameter 
 	//RootParameter作成。PixelShaderのMAterialとVertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameters[7] = {};
-	//
+	D3D12_ROOT_PARAMETER rootParameters[8] = {};
+	//materialData
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;		//PixelShaderで使う
 	rootParameters[0].Descriptor.ShaderRegister = 0;						//レジスタ番号０とバインド
@@ -75,20 +75,6 @@ void SkinningPSO::Initialize()
 	rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	rootParameters[5].Descriptor.ShaderRegister = 3;
 
-#pragma region 
-	D3D12_DESCRIPTOR_RANGE descriptorRangeForSkinning[1] = {};
-	descriptorRangeForSkinning[0].BaseShaderRegister = 0;
-	descriptorRangeForSkinning[0].NumDescriptors = 1;
-	descriptorRangeForSkinning[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRangeForSkinning[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-	//VSのDescriptorTable
-	rootParameters[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;		//CBVを使う
-	rootParameters[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;	//VertexShaderで使う
-	rootParameters[6].DescriptorTable.pDescriptorRanges = descriptorRangeForSkinning;
-	rootParameters[6].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForSkinning);
-#pragma endregion
-
 #pragma region ディスクリプタレンジ
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
 	descriptorRange[0].BaseShaderRegister = 0;								//0から始まる
@@ -104,6 +90,38 @@ void SkinningPSO::Initialize()
 	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;				//tableの中身の配列を指定
 	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);	//tableで利用する
 #pragma endregion
+
+#pragma region 環境マッピング
+	D3D12_DESCRIPTOR_RANGE descriptorRange4Map[1] = {};
+	descriptorRange4Map[0].BaseShaderRegister = 1;								//0から始まる
+	descriptorRange4Map[0].NumDescriptors = 1;									//数
+	descriptorRange4Map[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;			//SRVを使う
+	descriptorRange4Map[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//offsetを自動計算	
+#pragma endregion
+
+#pragma region ディスクリプタテーブル
+	//DescriptorTable
+	rootParameters[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;;		//DescriptorHeapを使う
+	rootParameters[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;					//PixelShaderで使う 
+	rootParameters[6].DescriptorTable.pDescriptorRanges = descriptorRange4Map;				//tableの中身の配列を指定
+	rootParameters[6].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange4Map);	//tableで利用する
+#pragma endregion
+
+#pragma region 
+	D3D12_DESCRIPTOR_RANGE descriptorRangeForSkinning[1] = {};
+	descriptorRangeForSkinning[0].BaseShaderRegister = 0;
+	descriptorRangeForSkinning[0].NumDescriptors = 1;
+	descriptorRangeForSkinning[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descriptorRangeForSkinning[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	//VSのDescriptorTable
+	rootParameters[7].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;		//CBVを使う
+	rootParameters[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;	//VertexShaderで使う
+	rootParameters[7].DescriptorTable.pDescriptorRanges = descriptorRangeForSkinning;
+	rootParameters[7].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForSkinning);
+#pragma endregion
+
+
 
 	descriptionRootSignature.pParameters = rootParameters;					//ルートパラメータ配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);		//配列の長さ
