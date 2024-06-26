@@ -346,7 +346,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 			};
 
 			DXF_->GetCMDList()->IASetVertexBuffers(0, 2, vbvs);
-			DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(6, skinCluster_.paletteSrvHandle.second);
+			DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(7, skinCluster_.paletteSrvHandle.second);
 		}
 		else {
 			//ない場合はいままで通り

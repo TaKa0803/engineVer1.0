@@ -32,8 +32,8 @@ CGScnene::~CGScnene() {
 void CGScnene::Initialize()
 {
 	//object->Initialize("AnimeCube");
-	object->Initialize("sphere");
-	//object->Initialize("walk");
+	//object->Initialize("sphere");
+	object->Initialize("walk");
 	//object->Initialize("Player");
 
 	terrain->Initialize("terrain");
