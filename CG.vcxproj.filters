@@ -89,6 +89,8 @@
     <ClCompile Include="Engine\3d\SkyBoxModel\SkyBoxModel.cpp" />
     <ClCompile Include="Engine\MapLoader\MapLoader.cpp" />
     <ClCompile Include="Engine\LightManager\LightManager.cpp" />
+    <ClCompile Include="Engine\PostEffectManager\PostEffectManager.cpp" />
+    <ClCompile Include="Engine\base\RTVManager\RTVManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -162,6 +164,8 @@
     <ClInclude Include="Engine\3d\SkyBoxModel\SkyBoxModel.h" />
     <ClInclude Include="Engine\MapLoader\MapLoader.h" />
     <ClInclude Include="Engine\LightManager\LightManager.h" />
+    <ClInclude Include="Engine\PostEffectManager\PostEffectManager.h" />
+    <ClInclude Include="Engine\base\RTVManager\RTVManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

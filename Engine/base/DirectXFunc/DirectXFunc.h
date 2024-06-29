@@ -8,7 +8,6 @@
 #include<wrl.h>
 #include<chrono>
 
-class OffScreenRendering;
 
 class VignettingPSO;
 
@@ -49,6 +48,7 @@ public:
 	/// </summary>
 	void PreDraw();
 
+	
 	/// <summary>
 	/// 描画後処理
 	/// </summary>
@@ -73,7 +73,7 @@ public:
 
 	D3D12_RENDER_TARGET_VIEW_DESC GetrtvDesc()const { return rtvDesc; }
 
-	
+	IDXGISwapChain4* GetSwapChain() { return swapChain.Get(); }
 #pragma endregion
 
 private://メンバ関数
@@ -139,8 +139,7 @@ private://メンバ変数
 
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
 
-	ID3D12DescriptorHeap* rtvDescriptorHeap;
-	uint32_t descriptorSizeRTV;
+	
 
 	ID3D12Resource* depthStencilResource;
 	ID3D12DescriptorHeap* dsvDescriptorHeap;
@@ -148,16 +147,10 @@ private://メンバ変数
 
 
 
-	OffScreenRendering* offScreen_ = nullptr;
 	//VignettingPSO* offScreen_ = nullptr;
 
 
-	const Vector4 kRenderTargetClearValue={ 1.0f,0.0f,0.0f,1.0f };
-	ID3D12Resource* renderTextureResource;
-	D3D12_SHADER_RESOURCE_VIEW_DESC renderTextureSrvDesc{};
-	D3D12_CPU_DESCRIPTOR_HANDLE cHandle_;
-	D3D12_GPU_DESCRIPTOR_HANDLE gHandle_;
-
+	
 	ID3D12Resource* texResource_;
 
 	//フェンス

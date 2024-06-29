@@ -3,11 +3,12 @@
 #include"GlobalVariables/GlobalVariables.h"
 #include"RandomNum/RandomNum.h"
 #include"AudioManager/AudioManager.h"
-
+#include"RTVManager/RTVManager.h"
 #include"SingleGameObjects/ObjectPSO.h"
 #include"DXC/DXCManager.h"
 #include"GameScene/GameScene.h"
 #include"SpriteManager/SpriteManager.h"
+#include"PostEffectManager/PostEffectManager.h"
 
 MainSystem* MainSystem::GetInstance() {
 	static MainSystem instance;
@@ -47,9 +48,13 @@ void MainSystem::Initializes() {
 	//SRVインスタンス取得
 	SRVM_ = SRVManager::GetInstance();
 
+	//RTVManager::GetInstance()->Initialize();
+
 	//画像関係
 	textureManager_= TextureManager::GetInstance();
 	textureManager_->Initialize(DXF_);
+
+	PostEffectManager::GetInstance()->Initialize();
 
 	//imgui
 	imguiManager_ = ImGuiManager::GetInstance();
@@ -140,10 +145,17 @@ void MainSystem::MainRoop() {
 		//==以下描画==//
 		gameScene_->PostEffectDraw();
 		
-		DXF_->PreDraw();
+		
+		//DXF_->PreDraw();
+
+		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kSepia, true);
+
+		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
 
 		gameScene_->Draw();
 		//==描画終わり==//
+
+		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kNone, true);
 
 		///描画あと処理
 		//imGui
@@ -172,6 +184,9 @@ void MainSystem::Finalize() {
 	///開放処理
 	instancingMM_->Finalize();
 	SRVM_->Finalize();
+	RTVManager::GetInstance()->Finalize();
+	PostEffectManager::GetInstance()->Finalize();
+
 	textureManager_->Finalize();
 	imguiManager_->Finalize();
 	DXF_->Finalize();
