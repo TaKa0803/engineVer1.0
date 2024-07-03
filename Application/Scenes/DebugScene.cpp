@@ -1,6 +1,7 @@
 #include "DebugScene.h"
 #include"InstancingModelManager/InstancingModelManager.h"
 #include"RandomNum/RandomNum.h"
+#include"ImGuiManager/ImGuiManager.h"
 
 DebugScene::DebugScene()
 {
@@ -57,6 +58,10 @@ void DebugScene::Update()
 
 
 	Vector3 move = input_->GetAllArrowKey();
+
+	sw1.translate_.x += move.x*0.1f;
+	sw1.translate_.y += move.z*0.1f;
+
 
 
 	sw1.UpdateMatrix();
@@ -133,7 +138,9 @@ void DebugScene::Update()
 	splite_->SetPosition(pos);
 #pragma endregion
 
-
+	ImGui::Begin("入力チェック");
+	ImGui::Text("入力 X,Y : %4.1f,%4.1f", move.x, move.z);
+	ImGui::End();
 }
 
 void DebugScene::PostEffectDraw()

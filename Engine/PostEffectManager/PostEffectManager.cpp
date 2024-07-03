@@ -124,7 +124,7 @@ void PostEffectManager::SystemPreDraw(D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle)
 void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 {
 
-	type;
+	
 
 	//描画先
 	int drawNum;
@@ -158,7 +158,7 @@ void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 	//指定した深度で画面全体をクリアする
 	//DXF_->GetCMDList()->ClearDepthStencilView(dsvHandle_, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 	if (isEffectReqeat_) {
-		//DXF_->GetCMDList()->ClearRenderTargetView(cHandle_[drawNum], &kRenderTClearValue.x, 0, nullptr);
+		DXF_->GetCMDList()->ClearRenderTargetView(cHandle_[drawNum], &kRenderTClearValue.x, 0, nullptr);
 	}
 	//RenderTextureをSwapchainに描画
 	offScreen_->materialData_->type = (int)type;

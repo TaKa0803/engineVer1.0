@@ -148,14 +148,15 @@ void MainSystem::MainRoop() {
 		
 		//DXF_->PreDraw();
 
-		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kSepia, true);
-
 		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
 
+		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
+
+		
 		gameScene_->Draw();
 		//==描画終わり==//
 
-		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kNone, true);
+		//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kNone, true);
 
 		///描画あと処理
 		//imGui
