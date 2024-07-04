@@ -6,7 +6,7 @@
 #include"TextureManager/TextureManager.h"
 #include"AudioManager/AudioManager.h"
 #include"RandomNum/RandomNum.h"
-#include"OffScreanPipeline/OffScreanPipeline.h"
+#include"PostEffectManager/PostEffectManager.h"
 
 ALGameScene::ALGameScene() {
 	input_ = Input::GetInstance();
@@ -136,7 +136,6 @@ void ALGameScene::Initialize() {
 	AudioManager::GetInstance()->StopAllSounds();
 	AudioManager::PlaySoundData(bgmGame_, 0.08f);
 
-	OffScreenRendering::materialData_->type = 3;
 }
 
 
@@ -209,8 +208,8 @@ void ALGameScene::Update() {
 	SceneChange();
 }
 
-void ALGameScene::PostEffectDraw()
-{
+void ALGameScene::Draw() {
+
 	//地面
 	plane_->Draw();
 	//敵の旗
@@ -227,14 +226,12 @@ void ALGameScene::PostEffectDraw()
 
 	brokenBody_->Draw();
 
-
-
-	
 	//インスタンシングのモデルを全描画
 	InstancingModelManager::GetInstance()->DrawAllModel();
-}
 
-void ALGameScene::Draw() {
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting,true);
+
+
 	switch (scene_) {
 	case ALGameScene::Game:
 
@@ -307,7 +304,6 @@ void ALGameScene::SceneChange() {
 			AudioManager::GetInstance()->StopAllSounds();
 			AudioManager::PlaySoundData(bgmClear_, 0.08f);
 
-			OffScreenRendering::materialData_->type = 5;
 		}
 
 		
@@ -315,7 +311,7 @@ void ALGameScene::SceneChange() {
 #ifdef _DEBUG
 		if (input_->TriggerKey(DIK_P)) {
 			scene_ = Clear;
-			OffScreenRendering::materialData_->type = 5;
+			
 			
 		}
 #endif // _DEBUG
@@ -346,8 +342,7 @@ void ALGameScene::SceneChange() {
 		if (sceneXhangeCount_++ >= maxSceneChangeCount_) {
 			sceneC_->SetColorAlpha(1);
 			sceneNo = ALTITLE;
-			OffScreenRendering::materialData_->type = 0;
-
+		
 		}
 	}
 	else {

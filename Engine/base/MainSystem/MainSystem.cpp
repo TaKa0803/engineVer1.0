@@ -137,26 +137,13 @@ void MainSystem::MainRoop() {
 #pragma region 描画		
 		///描画前処理
 		//DirectX
-
-		DXF_->PrePreDraw();	
+		DXF_->PreDraw();	
 		//ImGui
 		imguiManager_->PreDraw();
 
-		//==以下描画==//
-		gameScene_->PostEffectDraw();
-		
-		
-		//DXF_->PreDraw();
-
-		
-		//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
-
-		//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
-
+		//==以下描画==//	
 		gameScene_->Draw();
 		//==描画終わり==//
-
-		//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kNone, true);
 
 		///描画あと処理
 		//imGui

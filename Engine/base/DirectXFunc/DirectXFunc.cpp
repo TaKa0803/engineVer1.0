@@ -294,7 +294,7 @@ void DirectXFunc::RenderTextureInitialize()
 
 
 
-void DirectXFunc::PrePreDraw()
+void DirectXFunc::PreDraw()
 {
 
 	//	//バリア
@@ -375,85 +375,6 @@ void DirectXFunc::PrePreDraw()
 }
 
 
-void DirectXFunc::PreDraw()
-{
-
-
-//#pragma region ResourceBarrier
-//
-//	//Transitionbarrierの設定
-//////今回のバリアはTransition
-//	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-//	////Noneにしておく
-//	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-//	////バリアを張る対象のリソース、現在のバックバッファに対して行う
-//	barrier_.Transition.pResource = renderTextureResource;
-//	////遷移前（現在）のResourceState
-//	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-//	////遷移後のResourceState
-//	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-//
-//	////TransitionBarrierを張る
-//	commandList->ResourceBarrier(1, &barrier_);
-//
-//#pragma region Swapchan
-//#pragma region RTVとDSVの設定
-//	//描画先のRTVとDSVを設定する
-//	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = GetCPUDescriptorHandle(dsvDescriptorHeap, descriptorSizeDSV, 0);
-//	commandList->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, &dsvHandle);
-//#pragma endregion
-//	//指定した色で画面全体をクリアする
-//	//指定した深度で画面全体をクリアする
-//	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-//	commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], &kRenderTargetClearValue.x, 0, nullptr);
-//
-//#pragma region ViewportとScissor(シザー)
-//	//ビューポート
-//	D3D12_VIEWPORT viewport{};
-//	//クライアント領域のサイズと一緒にして画面全体に表示
-//	viewport.Width = (FLOAT)WindowApp::kClientWidth;
-//	viewport.Height = (FLOAT)WindowApp::kClientHeight;
-//	viewport.TopLeftX = 0;
-//	viewport.TopLeftY = 0;
-//	viewport.MinDepth = 0.0f;
-//	viewport.MaxDepth = 1.0f;
-//
-//	//シザー短形
-//	D3D12_RECT scissorRect{};
-//	//基本的にビューポートと同じ短形が構成されるようにする
-//	scissorRect.left = 0;
-//	scissorRect.right = WindowApp::kClientWidth;
-//	scissorRect.top = 0;
-//	scissorRect.bottom = WindowApp::kClientHeight;
-//#pragma endregion
-//	commandList->RSSetViewports(1, &viewport);
-//	commandList->RSSetScissorRects(1, &scissorRect);
-//#pragma endregion
-//
-//
-//
-//	//RenderTextureをSwapchainに描画
-//	offScreen_->PreDraw();
-//	commandList->SetGraphicsRootDescriptorTable(0, gHandle_);
-//	commandList->DrawInstanced(3, 1, 0, 0);
-//
-//	////バリアを張る対象のリソース、現在のバックバッファに対して行う
-//	barrier_.Transition.pResource = renderTextureResource;;
-//	////遷移前（現在）のResourceState
-//	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-//	////遷移後のResourceState
-//	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-//	////TransitionBarrierを張る
-//	commandList->ResourceBarrier(1, &barrier_);
-//#pragma endregion
-
-
-
-
-
-}
-
-
 
 void DirectXFunc::PostDraw()
 {
@@ -464,22 +385,6 @@ void DirectXFunc::PostDraw()
 	D3D12_RESOURCE_BARRIER barrier_{};
 	//これから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
-
-#pragma region TransitionBarrierを張る
-	////Transitionbarrierの設定
-	//////今回のバリアはTransition
-	//barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	//////Noneにしておく
-	//barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	//////バリアを張る対象のリソース、現在のバックバッファに対して行う
-	//barrier_.Transition.pResource = swapChainResources[backBufferIndex].Get();
-	//////遷移前（現在）のResourceState
-	//barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-	//////遷移後のResourceState
-	//barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	//////TransitionBarrierを張る
-	//commandList->ResourceBarrier(1, &barrier_);
-#pragma endregion
 
 #pragma region RTVとDSVの設定
 	//描画先のRTVとDSVを設定する
@@ -515,14 +420,13 @@ void DirectXFunc::PostDraw()
 	commandList->RSSetScissorRects(1, &scissorRect);
 #pragma endregion
 	
+	//レンダーテクスチャでの描画内容をスワップチェインにコピー
 	PostEffectManager::GetInstance()->SwapChainDraw();
 
 #pragma region 画面表示できるようにする
 	//画面に描く処理はすべて終わり、画面に移すので状態を遷移
 	//今回はRenderTargetからPresentにする
 	//バリア
-	//D3D12_RESOURCE_BARRIER barrier_{};
-	//UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
 
 	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	////Noneにしておく

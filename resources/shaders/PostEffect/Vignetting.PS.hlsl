@@ -26,7 +26,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     //correctだけで計算すると中心の最大値が0.0625で暗すぎるのでScaleを調整
     float vignette = correct.x * correct.y * gMaterial.value;
     //とりあえず0.8倍してみた
-    vignette = saturate(pow(vignette, 0.2f));
+    vignette = saturate(pow(vignette, 0.2f)) ;
     
     output.color.rgb *= vignette;
     return output;

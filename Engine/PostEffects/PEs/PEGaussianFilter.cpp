@@ -185,7 +185,7 @@ void PEGaussianFilter::PreDraw()
 void PEGaussianFilter::Debug()
 {
 #ifdef _DEBUG
-	ImGui::Begin("PEGrayScale");
+	ImGui::Begin("PEGaussianFilter");
 	ImGui::SliderFloat("value", &materialData_->value, 0.0f, 1.0f);
 	ImGui::End();
 #endif // _DEBUG

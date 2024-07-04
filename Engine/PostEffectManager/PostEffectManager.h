@@ -1,11 +1,11 @@
 #pragma once
 #include"Vector4.h"
 #include"DirectXFunc/DirectXFunc.h"
-#include"OffScreanPipeline/OffScreanPipeline.h"
 #include"PostEffects/IPipelineStateObject.h"
 
 #include<d3d12.h>
 #include<stdint.h>
+#include<map>
 
 class PostEffectManager {
 public:
@@ -19,11 +19,6 @@ private:
 	const PostEffectManager& operator=(const PostEffectManager& o) = delete;
 
 public:
-
-	void Initialize();
-
-	void Finalize();
-
 	enum EffectType {
 		kNone,
 		kGrayScale,
@@ -34,22 +29,41 @@ public:
 		_countOfEffectType
 	};
 
-	void SystemPreDraw(D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle);
-
 	/// <summary>
-	/// 
+	/// これまでの描画モデルにポストエフェクトをかける
 	/// </summary>
-	/// <param name="type"></param>
+	/// <param name="type">エフェクトタイプ</param>
 	/// <param name="isClear">エフェクトを重ね掛けするか</param>
 	void PostEffectDraw(EffectType type, bool isClear);
 
+	/// <summary>
+	/// デバッグImGui描画
+	/// </summary>
+	void Debug(EffectType type);
+
+
+
+	/// <summary>
+	/// 初期化（システム
+	/// </summary>
+	void Initialize();
+
+	//終了処理（システム
+	void Finalize();
+
+	
+	//システム上の描画前処理
+	void SystemPreDraw(D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle);
+
+	//SwapCahain前処理
 	void PreSwapChainDraw();
 
+	//SwapChainに描画
 	void SwapChainDraw();
 private:
 	DirectXFunc* DXF_;
 
-	OffScreenRendering* offScreen_ = nullptr;
+	//OffScreenRendering* offScreen_ = nullptr;
 
 	//後続演出フラグ
 	bool isEffectReqeat_ = false;
@@ -66,6 +80,7 @@ private:
 
 
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle_;
+
 
 	std::map<EffectType, IPipelineStateObject*>peData_;
 };

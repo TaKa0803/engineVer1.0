@@ -21,11 +21,6 @@ void GameScene::Update()
 	sceneManager->Update();
 }
 
-void GameScene::PostEffectDraw()
-{
-	sceneManager->PostEffectDraw();
-}
-
 void GameScene::Draw()
 {
 	sceneManager->Draw();

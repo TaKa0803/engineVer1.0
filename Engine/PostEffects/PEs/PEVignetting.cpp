@@ -186,8 +186,8 @@ void PEVignetting::PreDraw()
 void PEVignetting::Debug()
 {
 #ifdef _DEBUG
-	ImGui::Begin("PEGrayScale");
-	ImGui::DragFloat("value", &materialData_->value, 0.01f);
+	ImGui::Begin("PEVignetting");
+	ImGui::DragFloat("value", &materialData_->value, 0.1f);
 	ImGui::End();
 #endif // _DEBUG
 }

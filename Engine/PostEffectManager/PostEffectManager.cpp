@@ -99,9 +99,9 @@ void PostEffectManager::Initialize()
 	gHandle_[1] = SRVManager::CreateSRV(renderTexture_[1], renderTextureSrvDesc).gpu;
 
 
-	offScreen_ = new OffScreenRendering();
+	//offScreen_ = new OffScreenRendering();
 	//offScreen_ = new VignettingPSO();
-	offScreen_->Initialize();
+	//offScreen_->Initialize();
 
 
 	peData_[kNone] = new PEOffScreen();
@@ -129,7 +129,6 @@ void PostEffectManager::Finalize()
 	renderTexture_[0]->Release();
 	renderTexture_[1]->Release();
 
-	delete offScreen_;
 
 	for (auto& data : peData_) {
 		data.second->Release();
@@ -158,9 +157,6 @@ void PostEffectManager::SystemPreDraw(D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle)
 
 void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 {
-
-	
-
 	//描画先
 	int drawNum;
 	if (resourceNum_ == 0) {
@@ -196,7 +192,7 @@ void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 		DXF_->GetCMDList()->ClearRenderTargetView(cHandle_[drawNum], &kRenderTClearValue.x, 0, nullptr);
 	}
 	//RenderTextureをSwapchainに描画
-	offScreen_->materialData_->type = (int)type;
+	//offScreen_->materialData_->type = (int)type;
 	//offScreen_->PreDraw();
 	if (type >= 0 && type <= _countOfEffectType) {
 		peData_[type]->PreDraw();
@@ -246,6 +242,11 @@ void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 	}
 }
 
+void PostEffectManager::Debug(EffectType type)
+{
+	peData_[type]->Debug();
+}
+
 void PostEffectManager::PreSwapChainDraw()
 {
 	if (!isEffectReqeat_) {
@@ -270,7 +271,11 @@ void PostEffectManager::SwapChainDraw()
 	DXF_->GetCMDList()->ResourceBarrier(1, &barrier_);
 
 	//RenderTextureをSwapchainに描画
-	offScreen_->PreDraw();
+	//offScreen_->PreDraw();
+	
+	peData_[kNone]->PreDraw();
+	
+
 	DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(0, gHandle_[resourceNum_]);
 	DXF_->GetCMDList()->DrawInstanced(3, 1, 0, 0);
 

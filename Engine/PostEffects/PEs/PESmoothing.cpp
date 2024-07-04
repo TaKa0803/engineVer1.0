@@ -185,7 +185,7 @@ void PESmoothing::PreDraw()
 void PESmoothing::Debug()
 {
 #ifdef _DEBUG
-	ImGui::Begin("PEGrayScale");
+	ImGui::Begin("PESmoothing");
 	ImGui::SliderFloat("value", &materialData_->value, 0.0f, 1.0f);
 	ImGui::End();
 #endif // _DEBUG

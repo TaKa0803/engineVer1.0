@@ -41,13 +41,9 @@ public:
 
 	void Update();
 
-	void PrePreDraw();
-
-	/// <summary>
-	/// 描画前処理
-	/// </summary>
 	void PreDraw();
 
+	
 	
 	/// <summary>
 	/// 描画後処理

@@ -24,8 +24,6 @@ public:
 
 	void Update() override;
 
-	void PostEffectDraw()override;
-
 	void Draw() override;
 
 private:

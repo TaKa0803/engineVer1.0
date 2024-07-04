@@ -168,7 +168,7 @@ void PESepia::Initialize()
 	//マテリアルにデータを書き込む
 	//書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
-	materialData_->value = 0.5f;
+	materialData_->value = 16.0f;
 
 	Log("Complete SepiaPSO Initialized!\n");
 
@@ -186,7 +186,7 @@ void PESepia::PreDraw()
 void PESepia::Debug()
 {
 #ifdef _DEBUG
-	ImGui::Begin("PEGrayScale");
+	ImGui::Begin("PESepia");
 	ImGui::SliderFloat("value", &materialData_->value, 0.0f, 1.0f);
 	ImGui::End();
 #endif // _DEBUG

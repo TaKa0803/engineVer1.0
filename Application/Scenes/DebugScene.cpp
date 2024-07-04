@@ -143,9 +143,6 @@ void DebugScene::Update()
 	ImGui::End();
 }
 
-void DebugScene::PostEffectDraw()
-{
-}
 
 void DebugScene::Draw()
 {

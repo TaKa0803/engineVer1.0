@@ -2,8 +2,8 @@
 #include"TextureManager/TextureManager.h"
 #include"ImGuiManager/ImGuiManager.h"
 #include"MapLoader/MapLoader.h"
-#include"OffScreanPipeline/OffScreanPipeline.h"
 #include"LightManager/LightManager.h"
+#include"PostEffectManager/PostEffectManager.h"
 
 CGScnene::CGScnene()
 {
@@ -46,7 +46,6 @@ void CGScnene::Initialize()
 
 	pointLight_ = PointLight();
 
-	//OffScreenRendering::materialData_->type = 3;
 }
 
 void CGScnene::Update()
@@ -70,30 +69,33 @@ void CGScnene::Update()
 	
 }
 
-void CGScnene::PostEffectDraw()
-{
 
+
+void CGScnene::Draw()
+{
 	skybox_->Draw();
-	
+
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
+
 	terrain->Draw();
 
-
 	object->Draw();
-	
 
 	MapLoader::GetInstance()->DrawLevelData();
 
 	InstancingModelManager::GetInstance()->DrawAllModel();
-	
-}
 
-void CGScnene::Draw()
-{
-	
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
+
 }
 
 void CGScnene::Debug()
 {
+
+	PostEffectManager::GetInstance()->Debug(PostEffectManager::kGrayScale);
+	PostEffectManager::GetInstance()->Debug(PostEffectManager::kVinetting);
+
+
 	object->Debug("object");
 	terrain->Debug("terrain");
 	camera_->DrawDebugWindow("camera");

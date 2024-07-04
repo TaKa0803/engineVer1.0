@@ -1,8 +1,7 @@
 #include"ALTitleScene.h"
 #include"TextureManager/TextureManager.h"
 #include"AudioManager/AudioManager.h"
-#include"OffScreanPipeline/OffScreanPipeline.h"
-#include<imgui.h>
+#include"ImGuiManager/ImGuiManager.h"
 
 ALTitleScene::ALTitleScene() {
 	input_ = Input::GetInstance();
@@ -42,9 +41,6 @@ void ALTitleScene::Initialize() {
 
 	AudioManager::GetInstance()->StopAllSounds();
 	AudioManager::PlaySoundData(titleSound_,0.08f);
-
-
-	OffScreenRendering::materialData_->type = 0;
 }
 
 void ALTitleScene::Update() {
@@ -73,20 +69,15 @@ void ALTitleScene::Update() {
 	
 }
 
-void ALTitleScene::PostEffectDraw()
-{
-	sprite_->Draw();
+void ALTitleScene::Draw() {
+	
+sprite_->Draw();
 
 	pressSp_->Draw();
 
 	BButtonSp_->Draw();
 
 	sceneC_->Draw();
-}
-
-void ALTitleScene::Draw() {
-	
-
 	
 }
 
