@@ -3,7 +3,17 @@
 #include"SRVManager/SRVManager.h"
 #include"functions/function.h"
 #include"RTVManager/RTVManager.h"
+
+#include"PostEffects/PEs/PEOffScreen.h"
+#include"PostEffects/PEs/PEGrayScale.h"
+#include"PostEffects/PEs/PESepia.h"
+#include"PostEffects/PEs/PEVignetting.h"
+#include"PostEffects/PEs/PESmoothing.h"
+#include"PostEffects/PEs/PEGaussianFilter.h"
+
+
 #include<cassert>
+
 
 PostEffectManager* PostEffectManager::GetInstance()
 {
@@ -92,6 +102,26 @@ void PostEffectManager::Initialize()
 	offScreen_ = new OffScreenRendering();
 	//offScreen_ = new VignettingPSO();
 	offScreen_->Initialize();
+
+
+	peData_[kNone] = new PEOffScreen();
+	peData_[kNone]->Initialize();
+
+	peData_[kGrayScale] = new PEGrayScale();
+	peData_[kGrayScale]->Initialize();
+
+	peData_[kSepia] = new PESepia();
+	peData_[kSepia]->Initialize();
+
+	peData_[kVinetting] = new PEVignetting();
+	peData_[kVinetting]->Initialize();
+
+	peData_[kSmoothing] = new PESmoothing();
+	peData_[kSmoothing]->Initialize();
+
+	peData_[kGaussianFilter] = new PEGaussianFilter();
+	peData_[kGaussianFilter]->Initialize();
+
 }
 
 void PostEffectManager::Finalize()
@@ -100,6 +130,11 @@ void PostEffectManager::Finalize()
 	renderTexture_[1]->Release();
 
 	delete offScreen_;
+
+	for (auto& data : peData_) {
+		data.second->Release();
+	}
+	
 }
 
 
@@ -162,7 +197,13 @@ void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 	}
 	//RenderTextureをSwapchainに描画
 	offScreen_->materialData_->type = (int)type;
-	offScreen_->PreDraw();
+	//offScreen_->PreDraw();
+	if (type >= 0 && type <= _countOfEffectType) {
+		peData_[type]->PreDraw();
+	}
+	else {
+		peData_[kNone]->PreDraw();
+	}
 	DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(0, gHandle_[resourceNum_]);
 	DXF_->GetCMDList()->DrawInstanced(3, 1, 0, 0);
 #pragma endregion

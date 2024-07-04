@@ -148,11 +148,11 @@ void MainSystem::MainRoop() {
 		
 		//DXF_->PreDraw();
 
-		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
-
-		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
-
 		
+		//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
+
+		//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
+
 		gameScene_->Draw();
 		//==描画終わり==//
 

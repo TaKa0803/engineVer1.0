@@ -1,9 +1,14 @@
 #pragma once
 #include"PostEffects/IPipelineStateObject.h"
 
-class PEGrayScale : public IPipelineStateObject {
+class PEOffScreen : public IPipelineStateObject {
 
 public:
+
+	PEOffScreen();
+	~PEOffScreen();
+
+	//IPipelineStateObject() override;
 
 	void Initialize() override;
 
@@ -18,7 +23,7 @@ private:
 
 	//パス
 	std::wstring vsPath = L"resources/shaders/PostEffect/CopyImage.VS.hlsl";
-	std::wstring psPath = L"resources/shaders/PostEffect/GrayScale.PS.hlsl";
+	std::wstring psPath = L"resources/shaders/PostEffect/CopyImage.PS.hlsl";
 
 	//ルートシグネチャ
 	ID3D12RootSignature* rootSignature_;
@@ -26,7 +31,6 @@ private:
 	//パイプライン
 	ID3D12PipelineState* psoState_ = nullptr;
 
-	ID3D12Resource* materialResource_;
 
 	struct PEMaterialData {
 		float value;
@@ -34,5 +38,4 @@ private:
 
 public:
 
-	PEMaterialData* materialData_;
 };

@@ -192,3 +192,10 @@ void PEGrayScale::Debug()
 #endif // _DEBUG
 
 }
+
+void PEGrayScale::Release()
+{
+	rootSignature_->Release();
+	psoState_->Release();
+	materialResource_->Release();
+}

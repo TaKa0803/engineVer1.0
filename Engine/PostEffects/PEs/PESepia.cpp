@@ -192,3 +192,10 @@ void PESepia::Debug()
 #endif // _DEBUG
 
 }
+
+void PESepia::Release()
+{
+	rootSignature_->Release();
+	psoState_->Release();
+	materialResource_->Release();
+}

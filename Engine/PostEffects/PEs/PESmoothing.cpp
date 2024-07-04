@@ -1,12 +1,11 @@
-#include "PEVignetting.h"
+#include "PESmoothing.h"
 #include"cassert"
 #include"Log/Log.h"
 #include"functions/function.h"
 #include"DXC/DXCManager.h"
 #include"ImGuiManager/ImGuiManager.h"
 
-
-void PEVignetting::Initialize()
+void PESmoothing::Initialize()
 {
 	if (DXF_ == nullptr) {
 		DXF_ = DirectXFunc::GetInstance();
@@ -169,13 +168,13 @@ void PEVignetting::Initialize()
 	//マテリアルにデータを書き込む
 	//書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
-	materialData_->value = 16.0f;
+	materialData_->value = 1.0f;
 
-	Log("Complete VignettingPSO Initialized!\n");
+	Log("Complete GrayScalePSO Initialized!\n");
 }
 
-void PEVignetting::PreDraw()
-{	
+void PESmoothing::PreDraw()
+{
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	DXF_->GetCMDList()->SetGraphicsRootSignature(rootSignature_);
 	DXF_->GetCMDList()->SetPipelineState(psoState_);
@@ -183,16 +182,16 @@ void PEVignetting::PreDraw()
 	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, materialResource_->GetGPUVirtualAddress());
 }
 
-void PEVignetting::Debug()
+void PESmoothing::Debug()
 {
 #ifdef _DEBUG
 	ImGui::Begin("PEGrayScale");
-	ImGui::DragFloat("value", &materialData_->value, 0.01f);
+	ImGui::SliderFloat("value", &materialData_->value, 0.0f, 1.0f);
 	ImGui::End();
 #endif // _DEBUG
 }
 
-void PEVignetting::Release()
+void PESmoothing::Release()
 {
 	rootSignature_->Release();
 	psoState_->Release();

@@ -44,7 +44,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     PixelShaderOutput output;
     output.color = gTexture.Sample(gSampler, input.texcoord);
     
-    //Smoothing
+ //Smoothing
     uint32_t width, height; //uvStepSizeの算出
     gTexture.GetDimensions(width, height);
     float32_t2 uvStepSize = float32_t2(rcp(width), rcp(height));
@@ -64,4 +64,6 @@ PixelShaderOutput main(VertexShaderOutput input)
             output.color.rgb += fetchColor * kKernel3x3[x][y];
         }
     }
+    
+    return output;
 }

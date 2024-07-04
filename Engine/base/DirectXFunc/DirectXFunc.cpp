@@ -581,7 +581,7 @@ void DirectXFunc::KickCommand()
 void DirectXFunc::Finalize()
 {
 	CloseHandle(fenceEvent);
-
+	
 	
 	depthStencilResource->Release();
 	dsvDescriptorHeap->Release();

@@ -9,8 +9,11 @@ protected:
 
 public:
 
+	
 	virtual void Initialize() = 0;
 	virtual void PreDraw() = 0;;
 
 	virtual void Debug() = 0;
+
+	virtual void Release() = 0;
 };

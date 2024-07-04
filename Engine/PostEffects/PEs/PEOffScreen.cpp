@@ -1,12 +1,20 @@
-#include "PEVignetting.h"
+#include "PEOffScreen.h"
 #include"cassert"
 #include"Log/Log.h"
 #include"functions/function.h"
 #include"DXC/DXCManager.h"
 #include"ImGuiManager/ImGuiManager.h"
 
+PEOffScreen::PEOffScreen()
+{
+}
 
-void PEVignetting::Initialize()
+PEOffScreen::~PEOffScreen()
+{
+
+}
+
+void PEOffScreen::Initialize()
 {
 	if (DXF_ == nullptr) {
 		DXF_ = DirectXFunc::GetInstance();
@@ -20,12 +28,8 @@ void PEVignetting::Initialize()
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 #pragma region RootParameter 
 	//RootParameter作成。PixelShaderのMAterialとVertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameters[2] = {};
+	D3D12_ROOT_PARAMETER rootParameters[1] = {};
 
-	//マテリアル
-	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
-	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;		//PixelShaderで使う
-	rootParameters[1].Descriptor.ShaderRegister = 0;						//レジスタ番号０とバインド
 
 #pragma region ディスクリプタレンジ
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
@@ -164,37 +168,25 @@ void PEVignetting::Initialize()
 #pragma endregion
 #pragma endregion
 
-	//マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
-	materialResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(PEMaterialData));
-	//マテリアルにデータを書き込む
-	//書き込むためのアドレスを取得
-	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
-	materialData_->value = 16.0f;
 
-	Log("Complete VignettingPSO Initialized!\n");
+	Log("Complete GrayScalePSO Initialized!\n");
+
 }
 
-void PEVignetting::PreDraw()
-{	
+void PEOffScreen::PreDraw()
+{
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	DXF_->GetCMDList()->SetGraphicsRootSignature(rootSignature_);
 	DXF_->GetCMDList()->SetPipelineState(psoState_);
-	//マテリアルCBufferの場所を設定
-	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, materialResource_->GetGPUVirtualAddress());
 }
 
-void PEVignetting::Debug()
+void PEOffScreen::Debug()
 {
-#ifdef _DEBUG
-	ImGui::Begin("PEGrayScale");
-	ImGui::DragFloat("value", &materialData_->value, 0.01f);
-	ImGui::End();
-#endif // _DEBUG
 }
 
-void PEVignetting::Release()
+void PEOffScreen::Release()
 {
 	rootSignature_->Release();
 	psoState_->Release();
-	materialResource_->Release();
+
 }

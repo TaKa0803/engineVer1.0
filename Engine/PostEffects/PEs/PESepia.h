@@ -10,6 +10,8 @@ public:
 	void PreDraw()override;
 
 	void Debug()override;
+
+	void Release()override;
 private:
 
 	//パス

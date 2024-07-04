@@ -2,6 +2,8 @@
 #include"Vector4.h"
 #include"DirectXFunc/DirectXFunc.h"
 #include"OffScreanPipeline/OffScreanPipeline.h"
+#include"PostEffects/IPipelineStateObject.h"
+
 #include<d3d12.h>
 #include<stdint.h>
 
@@ -64,4 +66,6 @@ private:
 
 
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle_;
+
+	std::map<EffectType, IPipelineStateObject*>peData_;
 };

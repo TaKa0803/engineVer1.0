@@ -1,7 +1,7 @@
 #pragma once
 #include"PostEffects/IPipelineStateObject.h"
 
-class PEGrayScale : public IPipelineStateObject {
+class PEGaussianFilter : public IPipelineStateObject {
 
 public:
 
@@ -11,6 +11,7 @@ public:
 
 	void Debug()override;
 
+
 	void Release()override;
 private:
 
@@ -18,7 +19,7 @@ private:
 
 	//パス
 	std::wstring vsPath = L"resources/shaders/PostEffect/CopyImage.VS.hlsl";
-	std::wstring psPath = L"resources/shaders/PostEffect/GrayScale.PS.hlsl";
+	std::wstring psPath = L"resources/shaders/PostEffect/GaussinanFilter.PS.hlsl";
 
 	//ルートシグネチャ
 	ID3D12RootSignature* rootSignature_;

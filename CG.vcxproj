@@ -168,8 +168,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Math\Quaternion.cpp" />
     <ClCompile Include="Engine\PostEffectManager\PostEffectManager.cpp" />
     <ClCompile Include="Engine\PostEffects\IPipelineStateObject.cpp" />
+    <ClCompile Include="Engine\PostEffects\PEs\PEGaussianFilter.cpp" />
     <ClCompile Include="Engine\PostEffects\PEs\PEGrayScale.cpp" />
+    <ClCompile Include="Engine\PostEffects\PEs\PEOffScreen.cpp" />
     <ClCompile Include="Engine\PostEffects\PEs\PESepia.cpp" />
+    <ClCompile Include="Engine\PostEffects\PEs\PESmoothing.cpp" />
     <ClCompile Include="Engine\PostEffects\PEs\PEVignetting.cpp" />
     <ClCompile Include="Engine\RandomNum\RandomNum.cpp" />
     <ClCompile Include="Engine\3d\Collider\SphereCollider\SphereCollider.cpp" />
@@ -353,8 +356,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Math\Quaternion.h" />
     <ClInclude Include="Engine\PostEffectManager\PostEffectManager.h" />
     <ClInclude Include="Engine\PostEffects\IPipelineStateObject.h" />
+    <ClInclude Include="Engine\PostEffects\PEs\PEGaussianFilter.h" />
     <ClInclude Include="Engine\PostEffects\PEs\PEGrayScale.h" />
+    <ClInclude Include="Engine\PostEffects\PEs\PEOffScreen.h" />
     <ClInclude Include="Engine\PostEffects\PEs\PESepia.h" />
+    <ClInclude Include="Engine\PostEffects\PEs\PESmoothing.h" />
     <ClInclude Include="Engine\PostEffects\PEs\PEVignetting.h" />
     <ClInclude Include="Engine\RandomNum\RandomNum.h" />
     <ClInclude Include="Engine\3d\Collider\SphereCollider\SphereCollider.h" />
