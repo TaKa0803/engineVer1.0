@@ -1,30 +1,24 @@
-#include "OffScreanPipeline.h"
+#include "PEOffScreen.h"
+#include"cassert"
 #include"Log/Log.h"
-#include"DXC/DXCManager.h"
-#include"DirectXFunc/DirectXFunc.h"
 #include"functions/function.h"
+#include"DXC/DXCManager.h"
 #include"ImGuiManager/ImGuiManager.h"
-#include<cassert>
 
-FullScreenData* OffScreenRendering::materialData_ = nullptr;
-
-OffScreenRendering::OffScreenRendering()
+PEOffScreen::PEOffScreen()
 {
 }
 
-OffScreenRendering::~OffScreenRendering()
+PEOffScreen::~PEOffScreen()
 {
-	rootSignature_->Release();
-	psoState_->Release();
 
-	materialResource_->Release();
-	materialResource_ = nullptr;
 }
 
-void OffScreenRendering::Initialize()
+void PEOffScreen::Initialize()
 {
-
-	DXF_ = DirectXFunc::GetInstance();
+	if (DXF_ == nullptr) {
+		DXF_ = DirectXFunc::GetInstance();
+	}
 
 #pragma region RootSignatureを生成する
 
@@ -34,12 +28,8 @@ void OffScreenRendering::Initialize()
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 #pragma region RootParameter 
 	//RootParameter作成。PixelShaderのMAterialとVertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameters[2] = {};
+	D3D12_ROOT_PARAMETER rootParameters[1] = {};
 
-	//マテリアル
-	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
-	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;		//PixelShaderで使う
-	rootParameters[1].Descriptor.ShaderRegister = 0;						//レジスタ番号０とバインド
 
 #pragma region ディスクリプタレンジ
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
@@ -92,7 +82,7 @@ void OffScreenRendering::Initialize()
 #pragma endregion
 #pragma region InputLayoutの設定
 	//InputLayout
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
+	/*D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
 	inputElementDescs[0].SemanticIndex = 0;
 	inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -101,7 +91,7 @@ void OffScreenRendering::Initialize()
 	inputElementDescs[1].SemanticName = "TEXCOORD";
 	inputElementDescs[1].SemanticIndex = 0;
 	inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;*/
 
 
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
@@ -113,16 +103,16 @@ void OffScreenRendering::Initialize()
 	DXCManager* DXC = DXCManager::GetInstance();
 
 	//Shaderをコンパイルする
-	IDxcBlob* vertexShaderBlob = CompileShader(L"resources/shaders/PostEffect/CopyImage.VS.hlsl", L"vs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
+	IDxcBlob* vertexShaderBlob = CompileShader(vsPath, L"vs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
 	assert(vertexShaderBlob != nullptr);
 
-	IDxcBlob* pixelShaderBlob = CompileShader(L"resources/shaders/PostEffect/Fullscreen.PS.hlsl", L"ps_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
+	IDxcBlob* pixelShaderBlob = CompileShader(psPath, L"ps_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
 	assert(pixelShaderBlob != nullptr);
 #pragma endregion
 #pragma region DepthStencilStateの設定を行う
 	//DepthStencilStateの設定
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
-	//Depthの機能を有効化する
+	//Depthの機能を無効化する
 	depthStencilDesc.DepthEnable = false;
 	//書き込みします
 	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
@@ -178,37 +168,25 @@ void OffScreenRendering::Initialize()
 #pragma endregion
 #pragma endregion
 
-	//マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
-	materialResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(FullScreenData));
-	//マテリアルにデータを書き込む
-	//書き込むためのアドレスを取得
-	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
-	materialData_->type = 0;
-	materialData_->sepiaValue = 0.5f;
-	materialData_->standardDeviation = 2.0f;
-	materialData_->blurIntensity = 3;
 
-	Log("Complete FullScreenPSO Initialized!\n");
+	Log("Complete GrayScalePSO Initialized!\n");
+
 }
 
-void OffScreenRendering::PreDraw()
+void PEOffScreen::PreDraw()
 {
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	DXF_->GetCMDList()->SetGraphicsRootSignature(rootSignature_);
 	DXF_->GetCMDList()->SetPipelineState(psoState_);
-	//マテリアルCBufferの場所を設定
-	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, materialResource_->GetGPUVirtualAddress());
-
 }
 
-void OffScreenRendering::Debug()
+void PEOffScreen::Debug()
 {
-#ifdef _DEBUG
-	ImGui::Begin("offScreen");
-	ImGui::DragInt("影響タイプ", &materialData_->type);
-	ImGui::DragFloat("セピアの値", &materialData_->sepiaValue,0.01f);
-	ImGui::DragFloat("標準偏差", &materialData_->standardDeviation,0.1f);
-	ImGui::End();
-#endif // _DEBUG
+}
+
+void PEOffScreen::Release()
+{
+	rootSignature_->Release();
+	psoState_->Release();
 
 }

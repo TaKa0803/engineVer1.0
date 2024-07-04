@@ -46,7 +46,7 @@ void CGScnene::Initialize()
 
 	pointLight_ = PointLight();
 
-	OffScreenRendering::materialData_->type = 3;
+	//OffScreenRendering::materialData_->type = 3;
 }
 
 void CGScnene::Update()
