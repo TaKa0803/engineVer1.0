@@ -170,7 +170,7 @@ void PELightOutline::Initialize()
 	//書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->value = 1.0f;
-
+	materialData_->enableColor = 1;
 	Log("Complete GrayScalePSO Initialized!\n");
 
 }

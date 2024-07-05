@@ -20,9 +20,10 @@
     <FxCompile Include="resources\shaders\PostEffect\Sepia.PS.hlsl" />
     <FxCompile Include="resources\shaders\PostEffect\Vignetting.PS.hlsl" />
     <FxCompile Include="resources\shaders\PostEffect\Smoothing.PS.hlsl" />
-    <FxCompile Include="resources\shaders\PostEffect\GaussinanFilter.PS.hlsl" />
+    <FxCompile Include="resources\shaders\PostEffect\GaussianFilter.PS.hlsl" />
     <FxCompile Include="resources\shaders\PostEffect\LightOutline.PS.hlsl" />
     <FxCompile Include="resources\shaders\PostEffect\DepthBasedOutline.PS.hlsl" />
+    <FxCompile Include="resources\shaders\PostEffect\RadialBlur.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\AL\Plane\Plane.cpp" />
@@ -106,6 +107,7 @@
     <ClCompile Include="Engine\PostEffects\PEs\PELightOutline.cpp" />
     <ClCompile Include="Engine\PostEffects\PEs\PEDepthBasedOutline.cpp" />
     <ClCompile Include="Engine\base\DSVManager\DSVManager.cpp" />
+    <ClCompile Include="Engine\PostEffects\PEs\PERadialBlur.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -189,6 +191,7 @@
     <ClInclude Include="Engine\PostEffects\PEs\PELightOutline.h" />
     <ClInclude Include="Engine\PostEffects\PEs\PEDepthBasedOutline.h" />
     <ClInclude Include="Engine\base\DSVManager\DSVManager.h" />
+    <ClInclude Include="Engine\PostEffects\PEs\PERadialBlur.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

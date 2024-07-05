@@ -1,14 +1,12 @@
-#include "PEDepthBasedOutline.h"
+#include "PERadialBlur.h"
+#include<cassert>
 #include"Log/Log.h"
 #include"functions/function.h"
 #include"DXC/DXCManager.h"
-#include"DSVManager/DSVManager.h"
 #include"ImGuiManager/ImGuiManager.h"
-#include"Camera/Camera.h"
-#include<cassert>
 
 
-void PEDepthBasedOutline::Initialize()
+void PERadialBlur::Initialize()
 {
 	if (DXF_ == nullptr) {
 		DXF_ = DirectXFunc::GetInstance();
@@ -22,7 +20,7 @@ void PEDepthBasedOutline::Initialize()
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 #pragma region RootParameter 
 	//RootParameter作成。PixelShaderのMAterialとVertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameters[3] = {};
+	D3D12_ROOT_PARAMETER rootParameters[2] = {};
 
 	//マテリアル
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
@@ -45,28 +43,11 @@ void PEDepthBasedOutline::Initialize()
 	rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);	//tableで利用する
 #pragma endregion
 
-#pragma region ディスクリプタレンジ
-	//深度地取得
-	D3D12_DESCRIPTOR_RANGE descriptorRange2[1] = {};
-	descriptorRange2[0].BaseShaderRegister = 1;								//1から始まる
-	descriptorRange2[0].NumDescriptors = 1;									//数
-	descriptorRange2[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;		//SRVを使う
-	descriptorRange2[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//offsetを自動計算	
-#pragma endregion
-
-#pragma region ディスクリプタテーブル
-	//DescriptorTable
-	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;		//DescriptorHeapを使う
-	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;					//PixelShaderで使う 
-	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange2;				//tableの中身の配列を指定
-	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange2);	//tableで利用する
-#pragma endregion
-
 	descriptionRootSignature.pParameters = rootParameters;					//ルートパラメータ配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);		//配列の長さ
 
 #pragma region Samplerの設定
-	D3D12_STATIC_SAMPLER_DESC staticSamplers[2] = {};
+	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
 	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;//バイニアリング
 	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -75,17 +56,6 @@ void PEDepthBasedOutline::Initialize()
 	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
 	staticSamplers[0].ShaderRegister = 0;
 	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-
-	staticSamplers[1].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
-	staticSamplers[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[1].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[1].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-	staticSamplers[1].MaxLOD = D3D12_FLOAT32_MAX;
-	staticSamplers[1].ShaderRegister = 1;
-	staticSamplers[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-
-
 	descriptionRootSignature.pStaticSamplers = staticSamplers;
 	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
 #pragma endregion
@@ -194,54 +164,42 @@ void PEDepthBasedOutline::Initialize()
 #pragma endregion
 #pragma endregion
 
-
-	D3D12_SHADER_RESOURCE_VIEW_DESC depthTextureSrvDesc{};
-	depthTextureSrvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-	depthTextureSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	depthTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	depthTextureSrvDesc.Texture2D.MipLevels = 1;
-
-	handle = SRVManager::CreateSRV(DSVManager::GetInstance()->GetdepthStancilResource(), depthTextureSrvDesc);
-
 	//マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
 	materialResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(PEMaterialData));
 	//マテリアルにデータを書き込む
 	//書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->value = 1.0f;
-	materialData_->enableColor = 1;
-	Log("Complete PEDepthBasedOutlinePSO Initialized!\n");
+	materialData_->center = { 0.5f,0.5f };
+	materialData_->numSample = 10;
+	materialData_->blurWidth = 0.01f;
+	Log("Complete GrayScalePSO Initialized!\n");
 
 }
 
-void PEDepthBasedOutline::PreDraw()
+void PERadialBlur::PreDraw()
 {
-	materialData_->projectionInverse = Inverse(Camera::GetInstance()->GetProjectionMatrix());
-
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	DXF_->GetCMDList()->SetGraphicsRootSignature(rootSignature_);
 	DXF_->GetCMDList()->SetPipelineState(psoState_);
 	//マテリアルCBufferの場所を設定
 	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, materialResource_->GetGPUVirtualAddress());
-	//深度画像
-	DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, handle.gpu);
+
 }
 
-void PEDepthBasedOutline::Debug()
+void PERadialBlur::Debug()
 {
 #ifdef _DEBUG
-
-	bool enableColor = (bool)materialData_->enableColor;
-	ImGui::Begin("PEGaussianFilter");
-	ImGui::DragFloat("value", &materialData_->value, 0.1f);
-	ImGui::Checkbox("色の有効化", &enableColor);
+	ImGui::Begin("PERadialBlur");
+	ImGui::SliderFloat("value", &materialData_->value, 0.0f, 1.0f);
+	ImGui::DragFloat2("center", &materialData_->center.x);
+	ImGui::DragInt("サンプリング数", &materialData_->numSample);
+	ImGui::DragFloat("BlurWidth", &materialData_->blurWidth,0.01f);
 	ImGui::End();
-
-	materialData_->enableColor = (int32_t)enableColor;
 #endif // _DEBUG
 }
 
-void PEDepthBasedOutline::Release()
+void PERadialBlur::Release()
 {
 	rootSignature_->Release();
 	psoState_->Release();

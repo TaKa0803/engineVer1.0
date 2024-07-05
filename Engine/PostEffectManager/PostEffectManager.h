@@ -28,6 +28,7 @@ public:
 		kGaussianFilter,
 		kLightOutline,
 		kDepthBasedOutline,
+		kRadialBlur,
 		_countOfEffectType
 	};
 

@@ -85,14 +85,14 @@ void CGScnene::Draw()
 
 	InstancingModelManager::GetInstance()->DrawAllModel();
 
-	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDepthBasedOutline, true);
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kRadialBlur, true);
 
 }
 
 void CGScnene::Debug()
 {
 
-	PostEffectManager::GetInstance()->Debug(PostEffectManager::kDepthBasedOutline);
+	PostEffectManager::GetInstance()->Debug(PostEffectManager::kRadialBlur);
 	//PostEffectManager::GetInstance()->Debug(PostEffectManager::kVinetting);
 
 

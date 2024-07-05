@@ -13,6 +13,7 @@
 #include"PostEffects/PEs/PEGaussianFilter.h"
 #include"PostEffects/PEs/PELightOutline.h"
 #include"PostEffects/PEs/PEDepthBasedOutline.h"
+#include"PostEffects/PEs/PERadialBlur.h"
 
 #include<cassert>
 
@@ -129,6 +130,10 @@ void PostEffectManager::Initialize()
 
 	peData_[kDepthBasedOutline] = new PEDepthBasedOutline();
 	peData_[kDepthBasedOutline]->Initialize();
+
+	peData_[kRadialBlur] =new PERadialBlur();
+	peData_[kRadialBlur]->Initialize();
+
 
 }
 
