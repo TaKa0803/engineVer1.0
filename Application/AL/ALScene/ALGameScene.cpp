@@ -232,12 +232,33 @@ void ALGameScene::Draw() {
 	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting,true);
 
 
+	int Count = 0;
 	switch (scene_) {
 	case ALGameScene::Game:
+		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kLightOutline, true);
+
+		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
+
+
+		for (auto& enemy : enemies_) {
+			if (enemy->GetDead()) {
+				Count++;
+			}
+		}
+		if (Count>=200) {
+			PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kRadialBlur, true);
+		}
 
 		UIUpdateDraw();
 		break;
 	case ALGameScene::Clear:
+		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDepthBasedOutline, true);
+
+		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGaussianFilter, true);
+
+
+		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
+
 
 		ClearUIUpdate();
 

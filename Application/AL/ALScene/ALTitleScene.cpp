@@ -2,6 +2,7 @@
 #include"TextureManager/TextureManager.h"
 #include"AudioManager/AudioManager.h"
 #include"ImGuiManager/ImGuiManager.h"
+#include"PostEffectManager/PostEffectManager.h"
 
 ALTitleScene::ALTitleScene() {
 	input_ = Input::GetInstance();
@@ -71,13 +72,16 @@ void ALTitleScene::Update() {
 
 void ALTitleScene::Draw() {
 	
-sprite_->Draw();
+	sprite_->Draw();
 
 	pressSp_->Draw();
 
 	BButtonSp_->Draw();
 
 	sceneC_->Draw();
+
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kLightOutline, true);
+
 	
 }
 
