@@ -137,9 +137,8 @@ private://メンバ変数
 
 	
 
-	ID3D12Resource* depthStencilResource;
-	ID3D12DescriptorHeap* dsvDescriptorHeap;
-	uint32_t descriptorSizeDSV;
+	//描画先のRTVとDSVを設定する
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
 
 
 

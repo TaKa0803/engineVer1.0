@@ -26,6 +26,8 @@ public:
 		kVinetting,
 		kSmoothing,
 		kGaussianFilter,
+		kLightOutline,
+		kDepthBasedOutline,
 		_countOfEffectType
 	};
 

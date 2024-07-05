@@ -4,6 +4,7 @@
 #include"RandomNum/RandomNum.h"
 #include"AudioManager/AudioManager.h"
 #include"RTVManager/RTVManager.h"
+#include"DSVManager/DSVManager.h"
 #include"SingleGameObjects/ObjectPSO.h"
 #include"DXC/DXCManager.h"
 #include"GameScene/GameScene.h"
@@ -173,6 +174,7 @@ void MainSystem::Finalize() {
 	instancingMM_->Finalize();
 	SRVM_->Finalize();
 	RTVManager::GetInstance()->Finalize();
+	DSVManager::GetInstance()->Finalize();
 	PostEffectManager::GetInstance()->Finalize();
 
 	textureManager_->Finalize();

@@ -5,6 +5,7 @@
 
 //#include"OffScreanPipeline/VignettingPSO.h"
 #include"RTVManager/RTVManager.h"
+#include"DSVManager/DSVManager.h"
 #include"PostEffectManager/PostEffectManager.h"
 #include<thread>
 #include<cassert>
@@ -255,20 +256,11 @@ void DirectXFunc::RTVInitialize()
 void DirectXFunc::DSVInitialize()
 {
 
-	//DSV用のヒープでディスクリプタの数は１。DSVはShader内で触るものではないので、ShaderVisibleはfalse
-	dsvDescriptorHeap = CreateDescriptorHeap(device.Get(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
-	descriptorSizeDSV = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
-#pragma region DSV
-	//DepthStencilTextureをウィンドウサイズで作成
-	depthStencilResource = CreateDepthStencilTextureResource(device.Get(), WindowApp::kClientWidth, WindowApp::kClientHeight);
-	//DSVの設定
-	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
-	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;	//Format基本的にはResourceに合わせる
-	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;	//2dTexture
+	DSVManager::GetInstance()->Initialize();
 
-	//DSVHEapの先頭にDSVを作る
-	device->CreateDepthStencilView(depthStencilResource, &dsvDesc, dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-#pragma endregion
+	// 描画先のRTVとDSVを設定する
+	dsvHandle = DSVManager::GetInstance()->GetDescriptorHandle(0);
+
 }
 
 void DirectXFunc::FenceInitialize()
@@ -297,27 +289,6 @@ void DirectXFunc::RenderTextureInitialize()
 void DirectXFunc::PreDraw()
 {
 
-	//	//バリア
-	//	D3D12_RESOURCE_BARRIER barrier_{};
-	//	//これから書き込むバックバッファのインデックスを取得
-	//	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
-	//#pragma region TransitionBarrierを張る
-	//	//Transitionbarrierの設定
-	//	////今回のバリアはTransition
-	//	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	//	////Noneにしておく
-	//	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	//	////バリアを張る対象のリソース、現在のバックバッファに対して行う
-	//	barrier_.Transition.pResource = renderTextureResource;
-	//	//barrier_.Transition.pResource = swapChainResources[backBufferIndex].Get();
-	//	////遷移前（現在）のResourceState
-	//	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-	//	////遷移後のResourceState
-	//	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	//	////TransitionBarrierを張る
-	//	commandList->ResourceBarrier(1, &barrier_);
-//#pragma endregion
-
 		//バリア
 	D3D12_RESOURCE_BARRIER barrier_{};
 	//これから書き込むバックバッファのインデックスを取得
@@ -341,7 +312,7 @@ void DirectXFunc::PreDraw()
 
 #pragma region RTVとDSVの設定
 	//描画先のRTVとDSVを設定する
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = GetCPUDescriptorHandle(dsvDescriptorHeap, descriptorSizeDSV, 0);
+
 	PostEffectManager* PEManager = PostEffectManager::GetInstance();
 	PEManager->SystemPreDraw(dsvHandle);
 	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
@@ -387,8 +358,6 @@ void DirectXFunc::PostDraw()
 	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
 
 #pragma region RTVとDSVの設定
-	//描画先のRTVとDSVを設定する
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = GetCPUDescriptorHandle(dsvDescriptorHeap, descriptorSizeDSV, 0);
 	commandList->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, &dsvHandle);
 #pragma endregion
 	//指定した色で画面全体をクリアする
@@ -485,10 +454,5 @@ void DirectXFunc::KickCommand()
 void DirectXFunc::Finalize()
 {
 	CloseHandle(fenceEvent);
-	
-	
-	depthStencilResource->Release();
-	dsvDescriptorHeap->Release();
-	
 }
 

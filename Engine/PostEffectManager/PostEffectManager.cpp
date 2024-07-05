@@ -3,6 +3,7 @@
 #include"SRVManager/SRVManager.h"
 #include"functions/function.h"
 #include"RTVManager/RTVManager.h"
+#include"DSVManager/DSVManager.h"
 
 #include"PostEffects/PEs/PEOffScreen.h"
 #include"PostEffects/PEs/PEGrayScale.h"
@@ -10,7 +11,8 @@
 #include"PostEffects/PEs/PEVignetting.h"
 #include"PostEffects/PEs/PESmoothing.h"
 #include"PostEffects/PEs/PEGaussianFilter.h"
-
+#include"PostEffects/PEs/PELightOutline.h"
+#include"PostEffects/PEs/PEDepthBasedOutline.h"
 
 #include<cassert>
 
@@ -122,6 +124,12 @@ void PostEffectManager::Initialize()
 	peData_[kGaussianFilter] = new PEGaussianFilter();
 	peData_[kGaussianFilter]->Initialize();
 
+	peData_[kLightOutline] = new PELightOutline();
+	peData_[kLightOutline]->Initialize();
+
+	peData_[kDepthBasedOutline] = new PEDepthBasedOutline();
+	peData_[kDepthBasedOutline]->Initialize();
+
 }
 
 void PostEffectManager::Finalize()
@@ -181,6 +189,18 @@ void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 	////TransitionBarrierを張る
 	DXF_->GetCMDList()->ResourceBarrier(1, &barrier_);
 
+	//depthのバリア設定
+	////Noneにしておく
+	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	////バリアを張る対象のリソース、現在のバックバッファに対して行う
+	barrier_.Transition.pResource = DSVManager::GetInstance()->GetdepthStancilResource();
+	////遷移前（現在）のResourceState
+	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+	////遷移後のResourceState
+	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	////TransitionBarrierを張る
+	DXF_->GetCMDList()->ResourceBarrier(1, &barrier_);
+
 #pragma region 描画先を指定して描画
 	//描画先の設定
 	DXF_->GetCMDList()->OMSetRenderTargets(1, &cHandle_[drawNum], false, &dsvHandle_);
@@ -203,6 +223,17 @@ void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 	DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(0, gHandle_[resourceNum_]);
 	DXF_->GetCMDList()->DrawInstanced(3, 1, 0, 0);
 #pragma endregion
+	//depthのバリア設定
+	////Noneにしておく
+	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	////バリアを張る対象のリソース、現在のバックバッファに対して行う
+	barrier_.Transition.pResource = DSVManager::GetInstance()->GetdepthStancilResource();
+	////遷移前（現在）のResourceState
+	barrier_.Transition.StateBefore =  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	////遷移後のResourceState
+	barrier_.Transition.StateAfter =D3D12_RESOURCE_STATE_DEPTH_WRITE;
+	////TransitionBarrierを張る
+	DXF_->GetCMDList()->ResourceBarrier(1, &barrier_);
 
 	////バリアを張る対象のリソース、現在のバックバッファに対して行う
 	barrier_.Transition.pResource = renderTexture_[resourceNum_];

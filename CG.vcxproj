@@ -135,6 +135,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3d\SkyBoxModel\SkyBoxModel.cpp" />
     <ClCompile Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.cpp" />
     <ClCompile Include="Engine\base\AudioManager\AudioManager.cpp" />
+    <ClCompile Include="Engine\base\DSVManager\DSVManager.cpp" />
     <ClCompile Include="Engine\base\DXC\DXCManager.cpp" />
     <ClCompile Include="Engine\base\RTVManager\RTVManager.cpp" />
     <ClCompile Include="Engine\Camera\Camera.cpp" />
@@ -166,8 +167,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Math\Quaternion.cpp" />
     <ClCompile Include="Engine\PostEffectManager\PostEffectManager.cpp" />
     <ClCompile Include="Engine\PostEffects\IPipelineStateObject.cpp" />
+    <ClCompile Include="Engine\PostEffects\PEs\PEDepthBasedOutline.cpp" />
     <ClCompile Include="Engine\PostEffects\PEs\PEGaussianFilter.cpp" />
     <ClCompile Include="Engine\PostEffects\PEs\PEGrayScale.cpp" />
+    <ClCompile Include="Engine\PostEffects\PEs\PELightOutline.cpp" />
     <ClCompile Include="Engine\PostEffects\PEs\PEOffScreen.cpp" />
     <ClCompile Include="Engine\PostEffects\PEs\PESepia.cpp" />
     <ClCompile Include="Engine\PostEffects\PEs\PESmoothing.cpp" />
@@ -226,6 +229,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="resources\shaders\PostEffect\DepthBasedOutline.PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="resources\shaders\PostEffect\GaussinanFilter.PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -233,6 +242,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="resources\shaders\PostEffect\GrayScale.PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\PostEffect\LightOutline.PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -322,6 +337,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.h" />
     <ClInclude Include="Engine\base\AudioManager\AudioManager.h" />
     <ClInclude Include="Engine\base\AudioManager\SoundData.h" />
+    <ClInclude Include="Engine\base\DSVManager\DSVManager.h" />
     <ClInclude Include="Engine\base\DXC\DXCManager.h" />
     <ClInclude Include="Engine\base\RTVManager\RTVManager.h" />
     <ClInclude Include="Engine\Camera\Camera.h" />
@@ -352,8 +368,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Math\Quaternion.h" />
     <ClInclude Include="Engine\PostEffectManager\PostEffectManager.h" />
     <ClInclude Include="Engine\PostEffects\IPipelineStateObject.h" />
+    <ClInclude Include="Engine\PostEffects\PEs\PEDepthBasedOutline.h" />
     <ClInclude Include="Engine\PostEffects\PEs\PEGaussianFilter.h" />
     <ClInclude Include="Engine\PostEffects\PEs\PEGrayScale.h" />
+    <ClInclude Include="Engine\PostEffects\PEs\PELightOutline.h" />
     <ClInclude Include="Engine\PostEffects\PEs\PEOffScreen.h" />
     <ClInclude Include="Engine\PostEffects\PEs\PESepia.h" />
     <ClInclude Include="Engine\PostEffects\PEs\PESmoothing.h" />
