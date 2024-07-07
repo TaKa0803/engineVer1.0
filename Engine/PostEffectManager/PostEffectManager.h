@@ -29,6 +29,7 @@ public:
 		kLightOutline,
 		kDepthBasedOutline,
 		kRadialBlur,
+		kDissolve,
 		_countOfEffectType
 	};
 
@@ -42,7 +43,7 @@ public:
 	/// <summary>
 	/// デバッグImGui描画
 	/// </summary>
-	void Debug(EffectType type);
+	void Debug();
 
 
 

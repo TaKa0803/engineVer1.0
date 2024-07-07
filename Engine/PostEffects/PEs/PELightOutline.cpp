@@ -189,11 +189,11 @@ void PELightOutline::Debug()
 #ifdef _DEBUG
 
 	bool enableColor = (bool)materialData_->enableColor;
-	ImGui::Begin("PEGaussianFilter");
-	ImGui::DragFloat("value", &materialData_->value, 0.1f);
-	ImGui::Checkbox("色の有効化", &enableColor);
-	ImGui::End();
-
+	if (ImGui::BeginMenu("LightBasedOutline")) {
+		ImGui::DragFloat("value", &materialData_->value, 0.1f);
+		ImGui::Checkbox("色の有効化", &enableColor);
+		ImGui::EndMenu();
+	}
 	materialData_->enableColor=(int32_t) enableColor;
 #endif // _DEBUG
 

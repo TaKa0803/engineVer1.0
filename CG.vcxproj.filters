@@ -24,6 +24,7 @@
     <FxCompile Include="resources\shaders\PostEffect\LightOutline.PS.hlsl" />
     <FxCompile Include="resources\shaders\PostEffect\DepthBasedOutline.PS.hlsl" />
     <FxCompile Include="resources\shaders\PostEffect\RadialBlur.PS.hlsl" />
+    <FxCompile Include="resources\shaders\PostEffect\Dissolve.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\AL\Plane\Plane.cpp" />
@@ -108,6 +109,7 @@
     <ClCompile Include="Engine\PostEffects\PEs\PEDepthBasedOutline.cpp" />
     <ClCompile Include="Engine\base\DSVManager\DSVManager.cpp" />
     <ClCompile Include="Engine\PostEffects\PEs\PERadialBlur.cpp" />
+    <ClCompile Include="Engine\PostEffects\PEs\PEDissolve.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -192,6 +194,7 @@
     <ClInclude Include="Engine\PostEffects\PEs\PEDepthBasedOutline.h" />
     <ClInclude Include="Engine\base\DSVManager\DSVManager.h" />
     <ClInclude Include="Engine\PostEffects\PEs\PERadialBlur.h" />
+    <ClInclude Include="Engine\PostEffects\PEs\PEDissolve.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

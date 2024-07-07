@@ -186,9 +186,10 @@ void PESepia::PreDraw()
 void PESepia::Debug()
 {
 #ifdef _DEBUG
-	ImGui::Begin("PESepia");
-	ImGui::SliderFloat("value", &materialData_->value, 0.0f, 1.0f);
-	ImGui::End();
+	if (ImGui::BeginMenu("PESepia")) {
+		ImGui::DragFloat("value", &materialData_->value, 0.01f);
+		ImGui::EndMenu();
+	}
 #endif // _DEBUG
 
 }

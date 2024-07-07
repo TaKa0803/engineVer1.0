@@ -185,9 +185,10 @@ void PESmoothing::PreDraw()
 void PESmoothing::Debug()
 {
 #ifdef _DEBUG
-	ImGui::Begin("PESmoothing");
+	if(ImGui::BeginMenu("PESmoothing")){
 	ImGui::SliderFloat("value", &materialData_->value, 0.0f, 1.0f);
-	ImGui::End();
+	ImGui::EndMenu();
+}
 #endif // _DEBUG
 }
 

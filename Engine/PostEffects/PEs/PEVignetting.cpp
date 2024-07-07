@@ -186,9 +186,10 @@ void PEVignetting::PreDraw()
 void PEVignetting::Debug()
 {
 #ifdef _DEBUG
-	ImGui::Begin("PEVignetting");
+	if(ImGui::BeginMenu("PEVignetting")){
 	ImGui::DragFloat("value", &materialData_->value, 0.1f);
-	ImGui::End();
+	ImGui::EndMenu();
+}
 #endif // _DEBUG
 }
 

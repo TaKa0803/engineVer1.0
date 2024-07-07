@@ -186,9 +186,10 @@ void PEGrayScale::PreDraw()
 void PEGrayScale::Debug()
 {
 #ifdef _DEBUG
-	ImGui::Begin("PEGrayScale");
-	ImGui::SliderFloat("value", &materialData_->value,0.0f,1.0f);
-	ImGui::End();
+	if (ImGui::BeginMenu("GrayScale")) {
+		ImGui::SliderFloat("value", &materialData_->value, 0.0f, 1.0f);
+		ImGui::EndMenu();
+	}
 #endif // _DEBUG
 
 }

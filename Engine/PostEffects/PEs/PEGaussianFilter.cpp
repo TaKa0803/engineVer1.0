@@ -1,10 +1,10 @@
 #include "PEGaussianFilter.h"
-#include<cassert>
+
 #include"Log/Log.h"
 #include"functions/function.h"
 #include"DXC/DXCManager.h"
 #include"ImGuiManager/ImGuiManager.h"
-
+#include<cassert>
 void PEGaussianFilter::Initialize()
 {
 	if (DXF_ == nullptr) {
@@ -185,9 +185,10 @@ void PEGaussianFilter::PreDraw()
 void PEGaussianFilter::Debug()
 {
 #ifdef _DEBUG
-	ImGui::Begin("PEGaussianFilter");
-	ImGui::SliderFloat("value", &materialData_->value, 0.0f, 1.0f);
-	ImGui::End();
+	if (ImGui::BeginMenu("GaussianFilter")) {
+		ImGui::SliderFloat("value", &materialData_->value, 0.0f, 1.0f);
+		ImGui::EndMenu();
+	}
 #endif // _DEBUG
 
 }

@@ -190,12 +190,13 @@ void PERadialBlur::PreDraw()
 void PERadialBlur::Debug()
 {
 #ifdef _DEBUG
-	ImGui::Begin("PERadialBlur");
+	if(ImGui::BeginMenu("PERadialBlur")){
 	ImGui::SliderFloat("value", &materialData_->value, 0.0f, 1.0f);
 	ImGui::DragFloat2("center", &materialData_->center.x);
 	ImGui::DragInt("サンプリング数", &materialData_->numSample);
-	ImGui::DragFloat("BlurWidth", &materialData_->blurWidth,0.01f);
-	ImGui::End();
+	ImGui::DragFloat("BlurWidth", &materialData_->blurWidth, 0.001f);
+	ImGui::EndMenu();
+}
 #endif // _DEBUG
 }
 

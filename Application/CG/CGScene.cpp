@@ -75,6 +75,9 @@ void CGScnene::Draw()
 {
 	skybox_->Draw();
 
+
+	
+
 	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
 
 	terrain->Draw();
@@ -85,14 +88,13 @@ void CGScnene::Draw()
 
 	InstancingModelManager::GetInstance()->DrawAllModel();
 
-	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kRadialBlur, true);
-
+PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDissolve, true);
 }
 
 void CGScnene::Debug()
 {
 
-	PostEffectManager::GetInstance()->Debug(PostEffectManager::kRadialBlur);
+	PostEffectManager::GetInstance()->Debug();
 	//PostEffectManager::GetInstance()->Debug(PostEffectManager::kVinetting);
 
 

@@ -14,6 +14,8 @@
 #include"PostEffects/PEs/PELightOutline.h"
 #include"PostEffects/PEs/PEDepthBasedOutline.h"
 #include"PostEffects/PEs/PERadialBlur.h"
+#include"PostEffects/PEs/PEDissolve.h"
+#include"ImGuiManager/ImGuiManager.h"
 
 #include<cassert>
 
@@ -131,9 +133,16 @@ void PostEffectManager::Initialize()
 	peData_[kDepthBasedOutline] = new PEDepthBasedOutline();
 	peData_[kDepthBasedOutline]->Initialize();
 
-	peData_[kRadialBlur] =new PERadialBlur();
+	peData_[kRadialBlur] = new PERadialBlur();
 	peData_[kRadialBlur]->Initialize();
 
+	peData_[kDissolve] = new PEDissolve();
+	peData_[kDissolve]->Initialize();
+
+	/*PEDissolve* d = dynamic_cast<PEDissolve*>(peData_[kDissolve]);
+	if (d) {
+
+	}*/
 
 }
 
@@ -146,7 +155,7 @@ void PostEffectManager::Finalize()
 	for (auto& data : peData_) {
 		data.second->Release();
 	}
-	
+
 }
 
 
@@ -234,9 +243,9 @@ void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 	////バリアを張る対象のリソース、現在のバックバッファに対して行う
 	barrier_.Transition.pResource = DSVManager::GetInstance()->GetdepthStancilResource();
 	////遷移前（現在）のResourceState
-	barrier_.Transition.StateBefore =  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	////遷移後のResourceState
-	barrier_.Transition.StateAfter =D3D12_RESOURCE_STATE_DEPTH_WRITE;
+	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
 	////TransitionBarrierを張る
 	DXF_->GetCMDList()->ResourceBarrier(1, &barrier_);
 
@@ -262,7 +271,7 @@ void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 			resourceNum_ = 0;
 		}
 
-		
+
 
 	}
 	else {
@@ -278,9 +287,21 @@ void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 	}
 }
 
-void PostEffectManager::Debug(EffectType type)
+void PostEffectManager::Debug()
 {
-	peData_[type]->Debug();
+#ifdef _DEBUG
+	ImGui::Begin("PostEffect");
+	ImGui::BeginChild("scloll");
+	for (auto& pe : peData_) {
+		pe.second->Debug();
+	}
+		
+	ImGui::EndChild();
+	ImGui::End();
+	//}
+
+#endif // _DEBUG
+
 }
 
 void PostEffectManager::PreSwapChainDraw()
@@ -308,9 +329,9 @@ void PostEffectManager::SwapChainDraw()
 
 	//RenderTextureをSwapchainに描画
 	//offScreen_->PreDraw();
-	
+
 	peData_[kNone]->PreDraw();
-	
+
 
 	DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(0, gHandle_[resourceNum_]);
 	DXF_->GetCMDList()->DrawInstanced(3, 1, 0, 0);
