@@ -1,11 +1,12 @@
-#include "PEGrayScale.h"
+#include "PERandom.h"
 #include"Log/Log.h"
 #include"functions/function.h"
 #include"DXC/DXCManager.h"
 #include"ImGuiManager/ImGuiManager.h"
+#include"RandomNum/RandomNum.h"
 #include<cassert>
 
-void PEGrayScale::Initialize()
+void PERandom::Initialize()
 {
 	if (DXF_ == nullptr) {
 		DXF_ = DirectXFunc::GetInstance();
@@ -76,7 +77,7 @@ void PEGrayScale::Initialize()
 
 #pragma endregion
 #pragma region InputLayoutの設定
-
+	//InputLayout
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = nullptr;
 	inputLayoutDesc.NumElements = 0;// _countof(inputElementDescs);
@@ -158,12 +159,13 @@ void PEGrayScale::Initialize()
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->value = 1.0f;
 
-	Log("Complete GrayScalePSO Initialized!\n");
+	Log("Complete PERandomPSO Initialized!\n");
 
 }
 
-void PEGrayScale::PreDraw()
+void PERandom::PreDraw()
 {
+	materialData_->time = RandomNumber::Get(-1.0f, 1.0f);
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	DXF_->GetCMDList()->SetGraphicsRootSignature(rootSignature_);
 	DXF_->GetCMDList()->SetPipelineState(psoState_);
@@ -171,18 +173,17 @@ void PEGrayScale::PreDraw()
 	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, materialResource_->GetGPUVirtualAddress());
 }
 
-void PEGrayScale::Debug()
+void PERandom::Debug()
 {
 #ifdef _DEBUG
-	if (ImGui::BeginMenu("GrayScale")) {
+	if (ImGui::BeginMenu("Random")) {
 		ImGui::SliderFloat("value", &materialData_->value, 0.0f, 1.0f);
 		ImGui::EndMenu();
 	}
 #endif // _DEBUG
-
 }
 
-void PEGrayScale::Release()
+void PERandom::Release()
 {
 	rootSignature_->Release();
 	psoState_->Release();

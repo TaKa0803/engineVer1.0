@@ -15,8 +15,9 @@
 #include"PostEffects/PEs/PEDepthBasedOutline.h"
 #include"PostEffects/PEs/PERadialBlur.h"
 #include"PostEffects/PEs/PEDissolve.h"
-#include"ImGuiManager/ImGuiManager.h"
+#include"PostEffects/PEs/PERandom.h"
 
+#include"ImGuiManager/ImGuiManager.h"
 #include<cassert>
 
 
@@ -138,6 +139,9 @@ void PostEffectManager::Initialize()
 
 	peData_[kDissolve] = new PEDissolve();
 	peData_[kDissolve]->Initialize();
+
+	peData_[kRandom] = new PERandom();
+	peData_[kRandom]->Initialize();
 
 	/*PEDissolve* d = dynamic_cast<PEDissolve*>(peData_[kDissolve]);
 	if (d) {

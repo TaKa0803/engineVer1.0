@@ -30,6 +30,7 @@ public:
 		kDepthBasedOutline,
 		kRadialBlur,
 		kDissolve,
+		kRandom,
 		_countOfEffectType
 	};
 
