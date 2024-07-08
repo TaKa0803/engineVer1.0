@@ -27,8 +27,12 @@ PixelShaderOutput main(VertexShaderOutput input)
         discard;
     }
     
+    float32_t edge = 1.0f - smoothstep(gMaterial.value, gMaterial.value+0.03f, mask);    
+    
     output.color = gTexture.Sample(gSampler, input.texcoord);
     
+    //Edgeぽいほど指定した色を加算
+    output.color.rgb += edge * float32_t3(1.0f, 0.4f, 0.3f);
     
     return output;
 }

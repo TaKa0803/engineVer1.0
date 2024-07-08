@@ -192,8 +192,8 @@ void PEDissolve::PreDraw()
 		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, dissolveTexture_);
 	}
 	else {
-		//DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, noice1_);
-		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, noice2_);
+		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, noice1_);
+		//DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, noice2_);
 	}
 }
 
