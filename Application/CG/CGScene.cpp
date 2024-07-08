@@ -88,7 +88,7 @@ void CGScnene::Draw()
 
 	InstancingModelManager::GetInstance()->DrawAllModel();
 
-PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kRandom, true);
+PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDissolve, true);
 }
 
 void CGScnene::Debug()

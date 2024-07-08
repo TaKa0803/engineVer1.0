@@ -29,9 +29,12 @@ private:
 
 	ID3D12Resource* materialResource_;
 
-	struct PEMaterialData {
+	struct PEMaterialData {	
+		Vector4 color1;
+		Vector4 color2;
 		float value;
 		float time;
+		float discardNum;
 	};
 
 public:

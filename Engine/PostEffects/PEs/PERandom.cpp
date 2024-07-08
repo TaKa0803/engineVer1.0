@@ -158,7 +158,9 @@ void PERandom::Initialize()
 	//書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->value = 1.0f;
-
+	materialData_->color1 = { 1,1,1,1 };
+	materialData_->color2 = { 0,0,0,0 };
+	materialData_->discardNum = 0;
 	Log("Complete PERandomPSO Initialized!\n");
 
 }
@@ -178,6 +180,9 @@ void PERandom::Debug()
 #ifdef _DEBUG
 	if (ImGui::BeginMenu("Random")) {
 		ImGui::SliderFloat("value", &materialData_->value, 0.0f, 1.0f);
+		ImGui::ColorEdit4("color1", &materialData_->color1.x);
+		ImGui::ColorEdit4("color2", &materialData_->color2.x);
+		ImGui::SliderFloat("除外", &materialData_->discardNum, 0.0f,1.0f);
 		ImGui::EndMenu();
 	}
 #endif // _DEBUG

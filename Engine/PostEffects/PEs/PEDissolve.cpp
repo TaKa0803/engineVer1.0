@@ -172,6 +172,8 @@ void PEDissolve::Initialize()
 	//書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->value = 0.5f;
+	materialData_->discardColor = { 1,1,1,0 };
+	materialData_->edgeColor = { 1.0f,0.4f,0.3f,1.0f };
 
 	noice1_ = TextureManager::LoadTex("resources/Texture/Systemresources/noise0.png").gpuHandle;
 	noice2_ = TextureManager::LoadTex("resources/Texture/Systemresources/noise1.png").gpuHandle;
@@ -202,6 +204,9 @@ void PEDissolve::Debug()
 #ifdef _DEBUG
 	if (ImGui::BeginMenu("Dissolve")) {
 		ImGui::SliderFloat("value", &materialData_->value, 0.0f, 1.0f);
+		ImGui::ColorEdit4("棄却色", &materialData_->discardColor.x);
+		ImGui::ColorEdit4("エッジ色", &materialData_->edgeColor.x);
+		ImGui::DragFloat("エッジ太さ", &materialData_->edgeValue, 0.01f);
 		ImGui::EndMenu();
 	}
 #endif // _DEBUG
