@@ -6,6 +6,8 @@ SamplerState gSampler : register(s0);
 struct Material
 {
     float32_t value;
+    float32_t darkness;
+    float32_t effective;
 };
 ConstantBuffer<Material> gMaterial : register(b0);
 
@@ -26,8 +28,8 @@ PixelShaderOutput main(VertexShaderOutput input)
     //correctだけで計算すると中心の最大値が0.0625で暗すぎるのでScaleを調整
     float vignette = correct.x * correct.y * gMaterial.value;
     //とりあえず0.8倍してみた
-    vignette = saturate(pow(vignette, 0.2f)) ;
+    vignette = saturate(pow(vignette, gMaterial.darkness)) ;
     
-    output.color.rgb *= vignette;
+    output.color.rgb *= lerp(float32_t3(1.0f, 1.0f, 1.0f), vignette, gMaterial.effective);
     return output;
 }

@@ -31,6 +31,8 @@ private:
 
 	struct PEMaterialData {
 		float value;
+		float darkness;
+		float effective;
 	};
 
 public:

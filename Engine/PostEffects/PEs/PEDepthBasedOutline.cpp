@@ -232,7 +232,7 @@ void PEDepthBasedOutline::Debug()
 #ifdef _DEBUG
 	bool enableColor = (bool)materialData_->enableColor;
 	if (ImGui::BeginMenu("DepthBasedOutline")) {
-		ImGui::DragFloat("value", &materialData_->value, 0.1f);
+		ImGui::DragFloat("value", &materialData_->value, 0.01f);
 		ImGui::Checkbox("色の有効化", &enableColor);
 		ImGui::EndMenu();
 	}

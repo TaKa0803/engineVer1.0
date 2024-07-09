@@ -170,7 +170,8 @@ void PEVignetting::Initialize()
 	//書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->value = 16.0f;
-
+	materialData_->darkness = 0.8f;
+	materialData_->effective = 1.0f;
 	Log("Complete VignettingPSO Initialized!\n");
 }
 
@@ -188,6 +189,8 @@ void PEVignetting::Debug()
 #ifdef _DEBUG
 	if(ImGui::BeginMenu("PEVignetting")){
 	ImGui::DragFloat("value", &materialData_->value, 0.1f);
+	ImGui::DragFloat("darkness", &materialData_->darkness, 0.01f);
+	ImGui::SliderFloat("effective", &materialData_->effective, 0.0f,1.0f);
 	ImGui::EndMenu();
 }
 #endif // _DEBUG

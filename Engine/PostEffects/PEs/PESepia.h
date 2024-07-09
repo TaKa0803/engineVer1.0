@@ -28,6 +28,7 @@ private:
 
 	struct PEMaterialData {
 		float value;
+		float effectiveValue;
 	};
 
 public:

@@ -142,6 +142,8 @@ void ALGameScene::Initialize() {
 
 void ALGameScene::Update() {
 
+	PostEffectManager::GetInstance()->Debug();
+
 	switch (scene_) {
 	case ALGameScene::Game:
 
@@ -273,6 +275,7 @@ void ALGameScene::Draw() {
 void ALGameScene::DebugWindows() {
 
 #ifdef _DEBUG
+	
 	//カメラのデバッグ表示
 	camera_->DrawDebugWindow("camera");
 
@@ -280,11 +283,13 @@ void ALGameScene::DebugWindows() {
 	player_->DebugWindow("player");
 
 	plane_->DebagWindow();
-#endif // _DEBUG
 
 	skillSp_->DrawDebugImGui("skill");
 	BButton_->DrawDebugImGui("BButton");
 	punchSp_->DrawDebugImGui("punch");
+
+#endif // _DEBUG
+
 }
 
 void ALGameScene::Collision() {

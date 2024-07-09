@@ -168,7 +168,7 @@ void PESepia::Initialize()
 	//マテリアルにデータを書き込む
 	//書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
-	materialData_->value = 16.0f;
+	materialData_->value = 1.0f;
 
 	Log("Complete SepiaPSO Initialized!\n");
 
@@ -188,6 +188,7 @@ void PESepia::Debug()
 #ifdef _DEBUG
 	if (ImGui::BeginMenu("PESepia")) {
 		ImGui::DragFloat("value", &materialData_->value, 0.01f);
+		ImGui::SliderFloat("影響度", &materialData_->effectiveValue, 0.0f,1.0f);
 		ImGui::EndMenu();
 	}
 #endif // _DEBUG

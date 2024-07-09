@@ -57,11 +57,11 @@ PixelShaderOutput main(VertexShaderOutput input)
     {
         for (int32_t y = 0; y < 3; ++y)
         {
-                //現在のtexcoord算出
+            //現在のtexcoord算出
             float32_t2 texcoord = input.texcoord + kIndex3x3[x][y] * uvStepSize;
                 //色に1/9かけてタス
             float32_t3 fetchColor = gTexture.Sample(gSampler, texcoord).rgb;
-            output.color.rgb += fetchColor * kKernel3x3[x][y];
+            output.color.rgb += fetchColor * kKernel3x3[x][y]*gMaterial.value;
         }
     }
     
