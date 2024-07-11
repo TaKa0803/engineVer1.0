@@ -6,20 +6,11 @@ struct TransformationMatrix
     float32_t4x4 World;
     float32_t4x4 WorldInverseTranspose;
 };
-
-ConstantBuffer<TransformationMatrix> gTransformationMatrix : register(b0);
-
 struct Well
 {
     float32_t4x4 skeletonSpaceMatrix;
     float32_t4x4 skeletonSpaceInverseTransposeMatrix;
 };
-
-StructuredBuffer<Well> gMatrixPalette : register(t0);
-
-
-
-
 
 struct VertexShaderInput
 {
@@ -29,12 +20,17 @@ struct VertexShaderInput
     float32_t4 weight : WEIGHT0;
     int32_t4 index : INDEX0;
 };
-
 struct Skinned
 {
     float32_t4 position;
     float32_t3 normal;
 };
+
+ConstantBuffer<TransformationMatrix> gTransformationMatrix : register(b0);
+
+StructuredBuffer<Well> gMatrixPalette : register(t0);
+
+
 
 Skinned Skinning(VertexShaderInput input)
 {

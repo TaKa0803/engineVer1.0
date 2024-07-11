@@ -1,11 +1,9 @@
 #include "InstancingPSO.h"
-
 #include"functions/function.h"
 #include"Log/Log.h"
+#include"DXC/DXCManager.h"
 
 #include<cassert>
-
-#include"DXC/DXCManager.h"
 
 InstancingPSO::InstancingPSO() {
 
