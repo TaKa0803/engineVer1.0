@@ -254,6 +254,7 @@ void AudioManager::StopAllSounds()
 
  void AudioManager::Stop(int num)
  {
+	 if()
 	 playAudioDatas_[num]->Stop();
 	 playAudioDatas_[num]->FlushSourceBuffers();
 	 playAudioDatas_[num]->DestroyVoice();

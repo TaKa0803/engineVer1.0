@@ -5,6 +5,8 @@
 #include"WorldTransform/WorldTransform.h"
 #include"SingleGameObjects/GameObject.h"
 #include"ColliderOBB/OBBCollider.h"
+#include"InstancingGameObject/InstancingGameObject.h"
+#include"SphereCollider/SphereCollider.h"
 
 class MapLoader {
 public:
@@ -23,11 +25,16 @@ public:
 	//データからモデルを生成
 	void CreateModel(int mapNum);
 
+	//座標取得
+	std::vector<Vector3>LoadObjectPosition(int mapNUm);
+
 	//読み込まれたマップ番号のマップを更新
 	void UpdateLevelData();
 
 	//マップ番号のマップを描画
 	void DrawLevelData();
+
+	Vector3 IsCollisionMap(SphereCollider* collider);
 
 	struct ColliderData
 	{
@@ -48,7 +55,7 @@ public:
 	};
 
 private:
-	void LoadModel(std::vector<ObjectData>d);
+	void LoadModel(const std::vector<ObjectData>&d);
 
 	int stageNum_;
 
@@ -58,7 +65,7 @@ private:
 	std::vector<Leveldata*>levelDatas_;
 
 	//<マップ番号、マップでのモデルデータ群>
-	std::map<int,std::vector<std::unique_ptr<GameObject>>>models_;
+	std::map<int,std::vector<std::unique_ptr<InstancingGameObject>>>models_;
 
 	std::vector<std::unique_ptr<OBBCollider>>colliders_;
 };

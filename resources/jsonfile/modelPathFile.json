@@ -14,10 +14,13 @@
     "AnimeCube": [ "AnimatedCube", "AnimatedCube.gltf" ],
     "sWalk": [ "walk", "sneakWalk.gltf" ],
     "walk": [ "walk", "walk.gltf" ],
-    "flag": [ "flag", "flag.gltf" ],
+    "flag": [ "moveflag", "flag.gltf" ],
+    "Flag": [ "Flag", "Flag.obj" ],
+    "Wall":  ["Wall","Wall.obj"],
     "Player": [ "Object", "player.gltf"]
   },
   "InstancingmodelPathFile": {
+    "Wall": [ "Wall", "Wall.obj" ,10],
     "weapon": [ "Weapon", "Weapon.obj", 64 ],
     "wall": [ "Stage", "Stage.obj", 5 ],
     "sphere": [ "SystemResources/sphere", "sphere.obj", 1000 ],
@@ -35,6 +38,6 @@
     "SkyDome": [ "Skydome", "Skydome.obj", 5 ],
     "Impact": [ "Impact", "Impact.obj", 100 ],
     "DZone": [ "dangerSphere", "dangerSphere.obj", 1000 ],
-    "AnimeCube": [ "AnimatedCube", "AnimatedCube.gltf",50000 ]
+    "AnimeCube": [ "AnimatedCube", "AnimatedCube.gltf", 50000 ]
   }
 }

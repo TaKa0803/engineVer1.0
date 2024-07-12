@@ -27,9 +27,9 @@ void LoadMap(nlohmann::json& deserialized, std::vector<MapLoader::ObjectData>& o
 
 			MapLoader::ObjectData& obData = objects.back();
 			//名前があったら追加
-			if (object.contains("name")) {
+			if (object.contains("file_name")) {
 				//ファイル名
-				obData.filename = object["name"];
+				obData.filename = object["file_name"];
 			}
 			//トランスフォーム値取得
 			nlohmann::json& transform = object["transform"];
@@ -51,7 +51,7 @@ void LoadMap(nlohmann::json& deserialized, std::vector<MapLoader::ObjectData>& o
 			if(object.contains("collider") ){
 				nlohmann::json& collider = object["collider"];
 
-				obData.collider.type = object["type"];
+				obData.collider.type = collider["type"];
 				//中心点
 				obData.collider.center.x = (float)collider["center"][0];
 				obData.collider.center.y = (float)collider["center"][2];
@@ -140,9 +140,24 @@ void MapLoader::CreateModel(int mapNum)
 	LoadModel(levelDatas_[mapNum]->objects);
 }
 
+std::vector<Vector3> MapLoader::LoadObjectPosition(int mapNum)
+{
+	std::vector<Vector3>ans;
+
+	for (auto& data : levelDatas_[mapNum]->objects) {
+		ans.emplace_back(data.transform.translate_);
+	}
+
+	return ans;
+}
+
 void MapLoader::UpdateLevelData()
 {
 	for (auto& data : models_[stageNum_]) {
+		data->Update();
+	}
+
+	for (auto& data : colliders_) {
 		data->Update();
 	}
 }
@@ -154,17 +169,41 @@ void MapLoader::DrawLevelData()
 	}
 }
 
-void MapLoader::LoadModel(std::vector<ObjectData>d)
+Vector3 MapLoader::IsCollisionMap(SphereCollider* collider)
+{
+	Vector3 ans{};
+
+	Vector3 backVec;
+	for (auto& cdata : colliders_) {
+		cdata->IsCollision(collider, backVec);
+		ans += backVec;
+	}
+
+	return ans;
+}
+
+void MapLoader::LoadModel(const std::vector<ObjectData>&d)
 {
 	//今は一番前の飲み読み込み
 	for (auto& data : d) {
-		std::unique_ptr<GameObject>obj = std::make_unique<GameObject>();
-		obj->Initialize("sphere");
+		std::unique_ptr<InstancingGameObject>obj = std::make_unique<InstancingGameObject>();
+		obj->Initialize(data.filename);
 		obj->world_ = data.transform;
+		
 
 		models_[stageNum_].push_back(std::move(obj));
 		if (data.child.size() != 0) {
 			LoadModel(data.child);
+		}
+
+		//こライダーデータ
+		if (data.collider.type == "BOX") {
+			std::unique_ptr<OBBCollider>newC = std::make_unique<OBBCollider>();
+			newC->Initialize("sphere");
+			newC->SetParent(&models_[stageNum_].back()->world_);
+			newC->Update();
+
+			colliders_.push_back(std::move(newC));
 		}
 	}
 }

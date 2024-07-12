@@ -7,6 +7,7 @@
 #include"AudioManager/AudioManager.h"
 #include"RandomNum/RandomNum.h"
 #include"PostEffectManager/PostEffectManager.h"
+#include"MapLoader/MapLoader.h"
 
 ALGameScene::ALGameScene() {
 	input_ = Input::GetInstance();
@@ -79,7 +80,8 @@ ALGameScene::ALGameScene() {
 
 	bgmClear_ = AudioManager::LoadSoundNum("clear");
 
-
+	MapLoader::GetInstance()->LoadLevelEditor("map", ".json");
+	MapLoader::GetInstance()->CreateModel(0);
 
 }
 
@@ -136,6 +138,7 @@ void ALGameScene::Initialize() {
 	AudioManager::GetInstance()->StopAllSounds();
 	AudioManager::PlaySoundData(bgmGame_, 0.08f);
 
+	
 }
 
 
@@ -185,6 +188,8 @@ void ALGameScene::Update() {
 			}
 		}
 
+		MapLoader::GetInstance()->UpdateLevelData();
+
 		Collision();
 
 		LimitUI();
@@ -205,8 +210,7 @@ void ALGameScene::Update() {
 		break;
 	}
 	camera_->Update();
-
-
+	
 	SceneChange();
 }
 
@@ -214,6 +218,8 @@ void ALGameScene::Draw() {
 
 	//地面
 	plane_->Draw();
+	MapLoader::GetInstance()->DrawLevelData();
+
 	//敵の旗
 	enemyPopManager_->Draw();
 
@@ -319,6 +325,9 @@ void ALGameScene::Collision() {
 			e1Num++;
 		}
 	
+		Vector3 backV = MapLoader::GetInstance()->IsCollisionMap(player_->GetCollider());
+		player_->OnCollisionBack(backV);
+		
 }
 
 void ALGameScene::SceneChange() {

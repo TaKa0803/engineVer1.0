@@ -18,7 +18,7 @@ CGScnene::CGScnene()
 
 	skybox_ = new SkyBoxModel("resources/Texture/CG/rostock_laage_airport_4k.dds");
 
-	MapLoader::GetInstance()->LoadLevelEditor("untitled",".json");
+	MapLoader::GetInstance()->LoadLevelEditor("map",".json");
 	MapLoader::GetInstance()->CreateModel(0);
 
 

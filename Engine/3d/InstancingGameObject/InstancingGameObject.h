@@ -6,12 +6,14 @@
 
 class InstancingGameObject {
 
-protected:
+public:
 	//モデルのタグ
 	std::string tag_;
 
 	//ワールド
 	EulerWorldTransform world_{};
+
+
 
 	//インスタンシングモデルマネージャー
 	InstancingModelManager* IMM_=nullptr;

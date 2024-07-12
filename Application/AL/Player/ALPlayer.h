@@ -41,6 +41,8 @@ public:
 
 	void SetCamera(Camera* camera) { camera_ = camera; }
 
+	//押し戻し
+	void OnCollisionBack(const Vector3& backV);
 
 	SphereCollider* GetCollider() { return collider_.get(); }
 

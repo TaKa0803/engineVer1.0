@@ -24,6 +24,8 @@ ALTitleScene::ALTitleScene() {
 	sceneC_->SetMaterialDataColor({ 0,0,0,1 });
 
 	titleSound_ = AudioManager::LoadSoundNum("title");
+	
+
 }
 
 ALTitleScene::~ALTitleScene() {

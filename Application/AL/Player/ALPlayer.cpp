@@ -213,6 +213,13 @@ void ALPlayer::DebugWindow(const char* name) {
 	collider_->SetRadius(cScale);
 }
 
+void ALPlayer::OnCollisionBack(const Vector3& backV)
+{
+	world_.translate_ -= backV;
+	world_.UpdateMatrix();
+	collider_->Update();
+}
+
 
 
 void ALPlayer::Move() {

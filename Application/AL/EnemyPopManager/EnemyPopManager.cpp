@@ -9,6 +9,7 @@
 #include"RandomNum/RandomNum.h"
 #include"TextureManager/TextureManager.h"
 
+
 EnemyPopManager::EnemyPopManager()
 {
 }
@@ -121,6 +122,8 @@ void EnemyPopManager::Initialzie() {
 	InstancingModelManager* IMM = InstancingModelManager::GetInstance();
 
 	IMM->SetTexture(flag_, TextureManager::white_);
+
+
 }
 
 void EnemyPopManager::Update() {
