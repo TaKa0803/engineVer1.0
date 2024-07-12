@@ -176,7 +176,7 @@ Vector3 MapLoader::IsCollisionMap(SphereCollider* collider)
 	Vector3 backVec;
 	for (auto& cdata : colliders_) {
 		cdata->IsCollision(collider, backVec);
-		ans += backVec;
+		ans = backVec;
 	}
 
 	return ans;
