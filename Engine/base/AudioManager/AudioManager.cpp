@@ -254,15 +254,16 @@ void AudioManager::StopAllSounds()
 
  void AudioManager::Stop(int num)
  {
-	 if()
-	 playAudioDatas_[num]->Stop();
-	 playAudioDatas_[num]->FlushSourceBuffers();
-	 playAudioDatas_[num]->DestroyVoice();
+	 if (playAudioDatas_[num] != nullptr) {
+		 playAudioDatas_[num]->Stop();
+		 playAudioDatas_[num]->FlushSourceBuffers();
+		 playAudioDatas_[num]->DestroyVoice();
 
-	 playAudioDatas_[num] = nullptr;
+		 playAudioDatas_[num] = nullptr;
 
-	 //キーとデータ削除
-	 playAudioDatas_.erase(num);
+		 //キーとデータ削除
+		 playAudioDatas_.erase(num);
+	 }
  }
 
 
