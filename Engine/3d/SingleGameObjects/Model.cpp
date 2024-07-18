@@ -21,8 +21,9 @@
 
 
 Model::~Model() {
-	skinCluster_.influenceResource->Release();
-	skinCluster_.paletteResource->Release();
+
+	modelData_.skinCluster.influenceResource->Release();
+	modelData_.skinCluster.paletteResource->Release();
 
 	indexResource_->Release();
 	vertexData_->Release();
@@ -98,11 +99,11 @@ void Model::UpdateAnimation()
 			//ボーンのあるモデルの場合
 			if (modelType_ == kSkinningGLTF) {
 				//animationの更新を行って骨ごとのローカル情報を更新
-				ApplyAnimation(skeleton_, modelData_.animation[animeNum_], animationTime_);
+				ApplyAnimation(modelData_.skeleton, modelData_.animation[animeNum_], animationTime_);
 				//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
-				Update(skeleton_);
+				Update(modelData_.skeleton);
 				//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
-				Update(skinCluster_, skeleton_);
+				Update(modelData_.skinCluster, modelData_.skeleton);
 			}
 			else {
 				//ないanimationモデルの場合
@@ -116,7 +117,7 @@ void Model::UpdateAnimation()
 		else {
 			animationTime_ = 0;
 			//animationの更新を行って骨ごとのローカル情報を更新
-			ApplyAnimation(skeleton_, modelData_.animation[animeNum_], animationTime_);
+			ApplyAnimation(modelData_.skeleton, modelData_.animation[animeNum_], animationTime_);
 		}
 	}
 
@@ -136,11 +137,11 @@ void Model::Initialize(
 
 	modelData_ = data;
 
-	skeleton_ = CreateSkeleton(modelData_.model.rootNode);
-	Handles handles = SRVManager::GetInstance()->CreateNewSRVHandles();
-	skinCluster_ = CreateSkinCluster(*DXF_->GetDevice(), skeleton_, modelData_.model, handles.cpu, handles.gpu);
+	modelData_.skeleton = CreateSkeleton(modelData_.model.rootNode);
+	
+	modelData_.skinCluster = CreateSkinCluster(*DXF_->GetDevice(), modelData_.skeleton, modelData_.model);
 	//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
-	Update(skinCluster_, skeleton_);
+	Update(modelData_.skinCluster, modelData_.skeleton);
 
 
 	//ジョイントのMの作成
@@ -317,7 +318,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 			if (drawJoint_) {
 				//ジョイントMの更新
 				int i = 0;
-				for (auto& jointW : skeleton_.joints) {
+				for (auto& jointW : modelData_.skeleton.joints) {
 					Matrix4x4 world = jointW.skeletonSpaceMatrix;
 
 					EulerWorldTransform newdata;
@@ -342,11 +343,11 @@ void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 		if (isAnime) {
 			D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
 			vertexBufferView_,					//VertexDataのView
-			skinCluster_.influenceBufferView	//InfluenceのVPV
+			modelData_.skinCluster.influenceBufferView	//InfluenceのVPV
 			};
 
 			DXF_->GetCMDList()->IASetVertexBuffers(0, 2, vbvs);
-			DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(7, skinCluster_.paletteSrvHandle.second);
+			DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(7, modelData_.skinCluster.paletteSrvHandle.second);
 		}
 		else {
 			//ない場合はいままで通り
@@ -425,7 +426,7 @@ void Model::ChangeAnimation(int animeNum, float count)
 
 			//各ジョイント位置保存
 			savedT.clear();
-			for (Joint& joint : skeleton_.joints) {
+			for (Joint& joint : modelData_.skeleton.joints) {
 
 				QuaterinionWorldTransform newd;
 				newd = joint.transform;

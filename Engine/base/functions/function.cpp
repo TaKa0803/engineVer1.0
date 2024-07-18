@@ -1,6 +1,6 @@
 #include"function.h"
-
 #include"Log/Log.h"
+#include"SRVManager/SRVManager.h"
 
 #include<cassert>
 #include<sstream>
@@ -191,17 +191,19 @@ Skeleton CreateSkeleton(const Node& node) {
 	return skeleton;
 }
 
-SkinCluster CreateSkinCluster(ID3D12Device& device, const Skeleton& skeleton, const ModelData& modelData, D3D12_CPU_DESCRIPTOR_HANDLE cHandle, D3D12_GPU_DESCRIPTOR_HANDLE gHandle) {
+SkinCluster CreateSkinCluster(ID3D12Device& device, const Skeleton& skeleton, const ModelData& modelData) {
 
 	SkinCluster skinCluster;
+
+	Handles handles = SRVManager::GetInstance()->CreateNewSRVHandles();
 #pragma region MatrixPaletteの作成
 	//palette用のResourceを確保
 	skinCluster.paletteResource = CreateBufferResource(&device, sizeof(WellForGPU) * skeleton.joints.size());
 	WellForGPU* mappedPalette = nullptr;
 	skinCluster.paletteResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedPalette));
 	skinCluster.mappedPalette = { mappedPalette,skeleton.joints.size() };
-	skinCluster.paletteSrvHandle.first = cHandle;
-	skinCluster.paletteSrvHandle.second = gHandle;
+	skinCluster.paletteSrvHandle.first = handles.cpu;
+	skinCluster.paletteSrvHandle.second = handles.gpu;
 
 	//palette用のSRVを作成StructuredBufferでアクセスできるように
 	D3D12_SHADER_RESOURCE_VIEW_DESC paletteSRVDesc{};

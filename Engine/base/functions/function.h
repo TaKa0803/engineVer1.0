@@ -29,7 +29,7 @@ void Update(SkinCluster& skinCluster, const Skeleton& skeleton);
 
 Skeleton CreateSkeleton(const Node& node);
 
-SkinCluster CreateSkinCluster(ID3D12Device& device, const Skeleton& skeleton, const ModelData& modelData, D3D12_CPU_DESCRIPTOR_HANDLE cHandle, D3D12_GPU_DESCRIPTOR_HANDLE gHandle);
+SkinCluster CreateSkinCluster(ID3D12Device& device, const Skeleton& skeleton, const ModelData& modelData);
 
 
 ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes);

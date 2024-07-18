@@ -173,7 +173,14 @@ struct ModelAllData
 {
 	ModelData model;
 	std::vector<Animation> animation;
+
+	//スケルトンデータ
+	Skeleton skeleton;
+	//スキンanimationデータ
+	SkinCluster skinCluster;
 };
+
+
 
 struct Material {
 	//色

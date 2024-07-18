@@ -288,8 +288,7 @@ void InstancingModel::Initialize(
 	modelData_ = modelData;
 
 	skeleton_ = CreateSkeleton(modelData_.model.rootNode);
-	Handles handles = SRVManager::GetInstance()->CreateNewSRVHandles();
-	skinCluster_ = CreateSkinCluster(*DXF_->GetDevice(), skeleton_, modelData_.model, handles.cpu, handles.gpu);
+	skinCluster_ = CreateSkinCluster(*DXF_->GetDevice(), skeleton_, modelData_.model);
 	//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
 	Update(skinCluster_, skeleton_);
 

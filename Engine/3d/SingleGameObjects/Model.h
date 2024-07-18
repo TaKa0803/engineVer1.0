@@ -138,12 +138,6 @@ private:
 	//モデルとanimationデータ
 	ModelAllData modelData_;
 
-	//スケルトンデータ
-	Skeleton skeleton_;
-	//スキンanimationデータ
-	SkinCluster skinCluster_;
-
-	
 	//ジョイントの描画データ
 	InstancingModelManager* jointM__;
 	std::string jointMtag_;
