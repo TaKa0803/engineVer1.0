@@ -27,6 +27,7 @@
     <FxCompile Include="resources\shaders\PostEffect\Dissolve.PS.hlsl" />
     <FxCompile Include="resources\shaders\PostEffect\Random.PS.hlsl" />
     <FxCompile Include="resources\shaders\ComputeShader\Skinning.CS.hlsl" />
+    <FxCompile Include="resources\shaders\PostEffect\HSVFIlter.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\AL\Plane\Plane.cpp" />
@@ -114,6 +115,7 @@
     <ClCompile Include="Engine\PostEffects\PEs\PEDissolve.cpp" />
     <ClCompile Include="Engine\PostEffects\PEs\PERandom.cpp" />
     <ClCompile Include="Engine\ComputeShaders\SkinningCS.cpp" />
+    <ClCompile Include="Engine\PostEffects\PEs\PEHSVFilter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -201,6 +203,7 @@
     <ClInclude Include="Engine\PostEffects\PEs\PEDissolve.h" />
     <ClInclude Include="Engine\PostEffects\PEs\PERandom.h" />
     <ClInclude Include="Engine\ComputeShaders\SkinningCS.h" />
+    <ClInclude Include="Engine\PostEffects\PEs\PEHSVFilter.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

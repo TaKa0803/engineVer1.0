@@ -31,6 +31,7 @@ public:
 		kRadialBlur,
 		kDissolve,
 		kRandom,
+		kHSV,
 		_countOfEffectType
 	};
 

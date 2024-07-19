@@ -16,6 +16,7 @@
 #include"PostEffects/PEs/PERadialBlur.h"
 #include"PostEffects/PEs/PEDissolve.h"
 #include"PostEffects/PEs/PERandom.h"
+#include"PostEffects/PEs/PEHSVFilter.h"
 
 #include"ImGuiManager/ImGuiManager.h"
 #include<cassert>
@@ -142,6 +143,9 @@ void PostEffectManager::Initialize()
 
 	peData_[kRandom] = new PERandom();
 	peData_[kRandom]->Initialize();
+
+	peData_[kHSV] = new PEHSVFilter();
+	peData_[kHSV]->Initialize();
 
 	/*PEDissolve* d = dynamic_cast<PEDissolve*>(peData_[kDissolve]);
 	if (d) {

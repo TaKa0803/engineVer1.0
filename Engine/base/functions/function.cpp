@@ -490,11 +490,11 @@ ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& 
 
 
 
-ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes) {
+ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes,D3D12_HEAP_PROPERTIES uploadHeapProperties) {
 
 #pragma region VertexResourceを生成する
 	//頂点リソース用のヒープの設定
-	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
+	
 	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;//UploadHeapを使う
 	//頂点リソースの設定
 	D3D12_RESOURCE_DESC vertexResorceDesc{};

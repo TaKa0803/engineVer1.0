@@ -1,11 +1,14 @@
-#include "PEGaussianFilter.h"
-
+#include "PEHSVFilter.h"
 #include"Log/Log.h"
 #include"functions/function.h"
 #include"DXC/DXCManager.h"
+#include"DSVManager/DSVManager.h"
 #include"ImGuiManager/ImGuiManager.h"
+#include"Camera/Camera.h"
 #include<cassert>
-void PEGaussianFilter::Initialize()
+
+
+void PEHSVFilter::Initialize()
 {
 	if (DXF_ == nullptr) {
 		DXF_ = DirectXFunc::GetInstance();
@@ -168,12 +171,14 @@ void PEGaussianFilter::Initialize()
 	//マテリアルにデータを書き込む
 	//書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
-	materialData_->value = 1.0f;
+	materialData_->value = 0.5f;
+	materialData_->saturation = 0.5f;
+	materialData_->value = 0.5f;
 
-	Log("Complete GaussianFilterPSO Initialized!\n");
+	Log("Complete HSVFilterPSO Initialized!\n");
 }
 
-void PEGaussianFilter::PreDraw()
+void PEHSVFilter::PreDraw()
 {
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	DXF_->GetCMDList()->SetGraphicsRootSignature(rootSignature_);
@@ -182,18 +187,19 @@ void PEGaussianFilter::PreDraw()
 	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, materialResource_->GetGPUVirtualAddress());
 }
 
-void PEGaussianFilter::Debug()
+void PEHSVFilter::Debug()
 {
 #ifdef _DEBUG
-	if (ImGui::BeginMenu("GaussianFilter")) {
-		ImGui::SliderFloat("value", &materialData_->value, 0.0f, 1.0f);
+	if (ImGui::BeginMenu("HSVFilter")) {
+		ImGui::SliderFloat("hue", &materialData_->hue, -1.0f, 1.0f);
+		ImGui::SliderFloat("saturation", &materialData_->saturation, -1.0f, 1.0f);
+		ImGui::SliderFloat("value", &materialData_->value, -1.0f, 1.0f);
 		ImGui::EndMenu();
 	}
 #endif // _DEBUG
-
 }
 
-void PEGaussianFilter::Release()
+void PEHSVFilter::Release()
 {
 	rootSignature_->Release();
 	psoState_->Release();

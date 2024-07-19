@@ -32,7 +32,7 @@ Skeleton CreateSkeleton(const Node& node);
 SkinCluster CreateSkinCluster(ID3D12Device& device, const Skeleton& skeleton, const ModelData& modelData);
 
 
-ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes);
+ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes, D3D12_HEAP_PROPERTIES uploadHeapProperties = D3D12_HEAP_PROPERTIES{});
 
 ID3D12DescriptorHeap* CreateDescriptorHeap(ID3D12Device* device, D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
 

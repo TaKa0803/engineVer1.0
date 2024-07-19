@@ -172,6 +172,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\PostEffects\PEs\PEDissolve.cpp" />
     <ClCompile Include="Engine\PostEffects\PEs\PEGaussianFilter.cpp" />
     <ClCompile Include="Engine\PostEffects\PEs\PEGrayScale.cpp" />
+    <ClCompile Include="Engine\PostEffects\PEs\PEHSVFilter.cpp" />
     <ClCompile Include="Engine\PostEffects\PEs\PELightOutline.cpp" />
     <ClCompile Include="Engine\PostEffects\PEs\PEOffScreen.cpp" />
     <ClCompile Include="Engine\PostEffects\PEs\PERadialBlur.cpp" />
@@ -260,6 +261,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="resources\shaders\PostEffect\GrayScale.PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\PostEffect\HSVFIlter.PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -403,6 +410,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\PostEffects\PEs\PEDissolve.h" />
     <ClInclude Include="Engine\PostEffects\PEs\PEGaussianFilter.h" />
     <ClInclude Include="Engine\PostEffects\PEs\PEGrayScale.h" />
+    <ClInclude Include="Engine\PostEffects\PEs\PEHSVFilter.h" />
     <ClInclude Include="Engine\PostEffects\PEs\PELightOutline.h" />
     <ClInclude Include="Engine\PostEffects\PEs\PEOffScreen.h" />
     <ClInclude Include="Engine\PostEffects\PEs\PERadialBlur.h" />
