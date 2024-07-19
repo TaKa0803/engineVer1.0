@@ -171,9 +171,9 @@ void PEHSVFilter::Initialize()
 	//マテリアルにデータを書き込む
 	//書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
-	materialData_->value = 0.5f;
-	materialData_->saturation = 0.5f;
-	materialData_->value = 0.5f;
+	materialData_->value = 0.0f;
+	materialData_->saturation = 0.0f;
+	materialData_->value = 0.0f;
 
 	Log("Complete HSVFilterPSO Initialized!\n");
 }

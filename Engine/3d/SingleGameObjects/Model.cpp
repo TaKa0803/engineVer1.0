@@ -45,22 +45,12 @@ Model* Model::CreateFromOBJ(const std::string& filePath)
 	ModelAllData modeltea = mManager->GetModelData(filePath);
 
 
-	//頂点データ
-	ID3D12Resource* vertexRtea = CreateBufferResource(DXF->GetDevice(), sizeof(VertexData) * modeltea.model.vertices.size());
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewtea{};
-	vertexBufferViewtea.BufferLocation = vertexRtea->GetGPUVirtualAddress();
-	vertexBufferViewtea.SizeInBytes = UINT(sizeof(VertexData) * modeltea.model.vertices.size());
-	vertexBufferViewtea.StrideInBytes = sizeof(VertexData);
-
-	VertexData* vertexDatatea = nullptr;
-	vertexRtea->Map(0, nullptr, reinterpret_cast<void**>(&vertexDatatea));
-	std::memcpy(vertexDatatea, modeltea.model.vertices.data(), sizeof(VertexData) * modeltea.model.vertices.size());
-
+	
 
 #pragma endregion
 
 	Model* model = new Model();
-	model->Initialize(modeltea, modeltea.model.material.textureFilePath, UINT(modeltea.model.vertices.size()), vertexRtea, vertexBufferViewtea);
+	model->Initialize(modeltea, modeltea.model.material.textureFilePath, UINT(modeltea.model.vertices.size()));
 
 
 	Log("Model " + filePath + " is Created!\n");
@@ -126,9 +116,7 @@ void Model::UpdateAnimation()
 void Model::Initialize(
 	ModelAllData data,
 	std::string name,
-	int point,
-	ID3D12Resource* vertexRtea,
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView
+	int point
 ) {
 
 	DXF_ = DirectXFunc::GetInstance();
@@ -149,10 +137,22 @@ void Model::Initialize(
 	jointMtag_ = "sphere";
 
 
+	//頂点データ
+	vertexData_ = CreateBufferResource(DXF_->GetDevice(), sizeof(VertexData) * modelData_.model.vertices.size());
+	vertexBufferView_.BufferLocation = vertexData_->GetGPUVirtualAddress();
+	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData_.model.vertices.size());
+	vertexBufferView_.StrideInBytes = sizeof(VertexData);
+
+	VertexData* vertexDatatea = nullptr;
+	vertexData_->Map(0, nullptr, reinterpret_cast<void**>(&vertexDatatea));
+	std::memcpy(vertexDatatea, modelData_.model.vertices.data(), sizeof(VertexData) * modelData_.model.vertices.size());
+
+
 	//各データ受け渡し
 	point_ = point;
-	vertexData_ = vertexRtea;
-	vertexBufferView_ = vertexBufferView;
+	
+	
+
 
 	//WVP用のリソースを作る。Matrix４ｘ４1つ分のサイズを用意する
 	wvpResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(WorldTransformation));

@@ -111,9 +111,7 @@ private:
 	void Initialize(
 		ModelAllData data,
 		std::string name,
-		int point,
-		ID3D12Resource* vertexRtea,
-		D3D12_VERTEX_BUFFER_VIEW vertexBufferView
+		int point
 	);
 
 	void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime);
