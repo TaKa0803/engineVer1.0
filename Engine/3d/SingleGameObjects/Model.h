@@ -11,12 +11,12 @@
 #include"SingleModelManager/ModelManager.h"
 #include"InstancingModelManager/InstancingModelManager.h"
 #include"LightManager/LightManager.h"
-
+#include"ComputeShaders/SkinningCS.h"
 
 class Model {
 public:
 
-
+	Model();
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
@@ -133,6 +133,9 @@ private:
 
 	ModelManager* modelM_;
 
+	//スキニング処理
+	std::unique_ptr<SkinningCS>skinningCS_;
+
 	//モデルとanimationデータ
 	ModelAllData modelData_;
 
@@ -153,10 +156,11 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
 
 	//vertexリソース
-	ID3D12Resource* vertexData_;
+	ID3D12Resource* vertexResource_;
 	//頂点バッファビューを作成する
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
+	VertexData* vertexData_ = nullptr;
 #pragma region 各追加送信データ
 	//ワールドデータリソース
 	ID3D12Resource* wvpResource_;

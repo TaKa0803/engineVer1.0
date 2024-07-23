@@ -22,7 +22,7 @@ SkinningCS::SkinningCS()
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 #pragma region RootParameter 
 	//RootParameter作成。PixelShaderのMAterialとVertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameters[6] = {};
+	D3D12_ROOT_PARAMETER rootParameters[5] = {};
 
 #pragma region palette
 	D3D12_DESCRIPTOR_RANGE descriptorRangePalette[1] = {};
@@ -68,9 +68,9 @@ SkinningCS::SkinningCS()
 
 #pragma region outputVertex
 	D3D12_DESCRIPTOR_RANGE descriptorRangeOutputVertex[1] = {};
-	descriptorRangeOutputVertex[0].BaseShaderRegister = 3;								//0から始まる
+	descriptorRangeOutputVertex[0].BaseShaderRegister = 0;								//0から始まる
 	descriptorRangeOutputVertex[0].NumDescriptors = 1;									//数
-	descriptorRangeOutputVertex[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;			//SRVを使う
+	descriptorRangeOutputVertex[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;			//UAVを使う
 	descriptorRangeOutputVertex[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//offsetを自動計算	
 
 	//PSのDescriptorTable
@@ -81,17 +81,12 @@ SkinningCS::SkinningCS()
 #pragma endregion
 
 #pragma region skinningInformation
-	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
-	descriptorRange[0].BaseShaderRegister = 4;								//0から始まる
-	descriptorRange[0].NumDescriptors = 1;									//数
-	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;			//SRVを使う
-	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//offsetを自動計算	
-
+	
 	//PSのDescriptorTable
-	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;		//DescriptorHeapを使う
-	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;					//PixelShaderで使う 
-	rootParameters[4].DescriptorTable.pDescriptorRanges = descriptorRange;				//tableの中身の配列を指定
-	rootParameters[4].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);	//tableで利用する
+	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
+	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;		//PixelShaderで使う
+	rootParameters[4].Descriptor.ShaderRegister = 0;						//レジスタ番号０とバインド
+
 #pragma endregion
 
 	descriptionRootSignature.pParameters = rootParameters;					//ルートパラメータ配列へのポインタ
@@ -128,7 +123,7 @@ SkinningCS::SkinningCS()
 #pragma region ShaderをCompileする
 	DXCManager* DXC = DXCManager::GetInstance();
 	//Shaderをコンパイルする
-	IDxcBlob* computeShaderBlob = CompileShader(csPass, L"vs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
+	IDxcBlob* computeShaderBlob = CompileShader(csPass, L"cs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
 	assert(computeShaderBlob != nullptr);
 #pragma endregion
 
@@ -162,10 +157,13 @@ SkinningCS::~SkinningCS()
 }
 
 
-void SkinningCS::Initialize(const ModelAllData& data,size_t jointsSize,size_t verticesSize)
+void SkinningCS::Initialize(const ModelAllData& data)
 {
 	//ポインタに情報設定
 	modelData_ = &data;
+
+	size_t jointsSize =modelData_->skeleton.joints.size();
+	size_t verticesSize = modelData_->model.vertices.size();;
 
 #pragma region 各シェーダデータ
 
@@ -228,14 +226,14 @@ void SkinningCS::Initialize(const ModelAllData& data,size_t jointsSize,size_t ve
 
 #pragma region OutputVertices
 	Handles ohandles = SRVManager::GetInstance()->CreateNewSRVHandles();
-	outputVerticesResource_.resource = CreateBufferResource(DXF_->GetDevice(), sizeof(VertexData) * verticesSize);
-	outputVerticesResource_.resource->Map(0, nullptr, reinterpret_cast<void**>(&influenceData_));
+	outputVerticesResource_.resource = CreateUAVBufferResource(DXF_->GetDevice(), sizeof(VertexData) * verticesSize);
+	outputVerticesResource_.resource->Map(0, nullptr, reinterpret_cast<void**>(&outputVerticesData_));
 	outputVerticesResource_.handle = ohandles;
 
 	D3D12_UNORDERED_ACCESS_VIEW_DESC oSRVDesc{};
 	oSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
 	oSRVDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
-	oSRVDesc.Buffer.FirstElement = verticesSize;
+	oSRVDesc.Buffer.FirstElement = 0;
 	oSRVDesc.Buffer.CounterOffsetInBytes = 0;
 	oSRVDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 	oSRVDesc.Buffer.NumElements = UINT(verticesSize);
@@ -245,12 +243,10 @@ void SkinningCS::Initialize(const ModelAllData& data,size_t jointsSize,size_t ve
 #pragma endregion
 
 #pragma region SkinningInfomation
-
-	
-
 	skinningInfoResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(SkinningInformation));
 	skinningInfoResource_->Map(0, nullptr, reinterpret_cast<void**>(&skinningInfoData_));
 	skinningInfoData_->numVertices = (int32_t)verticesSize;
+
 
 #pragma endregion
 
@@ -260,7 +256,7 @@ void SkinningCS::Initialize(const ModelAllData& data,size_t jointsSize,size_t ve
 
 }
 
-void SkinningCS::PreDraw()
+VertexData* SkinningCS::PreDraw()
 {
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
@@ -275,4 +271,6 @@ void SkinningCS::PreDraw()
 	cmd->SetGraphicsRootConstantBufferView(4, skinningInfoResource_->GetGPUVirtualAddress());
 
 	cmd->Dispatch(UINT(modelData_->model.vertices.size() + 1023) / 1024, 1, 1);
+
+	return outputVerticesData_;
 }

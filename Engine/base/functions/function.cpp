@@ -488,13 +488,44 @@ ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& 
 //}
 //
 
+ID3D12Resource* CreateUAVBufferResource(ID3D12Device* device, size_t sizeInBytes) {
+#pragma region VertexResourceを生成する
+	//頂点リソース用のヒープの設定
+	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
+	uploadHeapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+	
+	//頂点リソースの設定
+	D3D12_RESOURCE_DESC ResorceDesc{};
+	//バッファリソース。テクスチャの場合はまた別の設定をする
+	ResorceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	ResorceDesc.Width = sizeInBytes;
+	//バッファの場合はこれらは１にする決まり
+	ResorceDesc.Height = 1;
+	ResorceDesc.DepthOrArraySize = 1;
+	ResorceDesc.MipLevels = 1;
+	ResorceDesc.SampleDesc.Count = 1;
+	//バッファの場合はこれにする決まり
+	ResorceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
+	ResorceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+#pragma endregion
+	ID3D12Resource* vertexResource = nullptr;
+	HRESULT hr = device->CreateCommittedResource(
+		&uploadHeapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&ResorceDesc,
+		D3D12_RESOURCE_STATE_COMMON,
+		nullptr,
+		IID_PPV_ARGS(&vertexResource));
+	assert(SUCCEEDED(hr));
+	return vertexResource;
+}
 
-ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes,D3D12_HEAP_PROPERTIES uploadHeapProperties) {
+ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes) {
 
 #pragma region VertexResourceを生成する
 	//頂点リソース用のヒープの設定
-	
+	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
 	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;//UploadHeapを使う
 	//頂点リソースの設定
 	D3D12_RESOURCE_DESC vertexResorceDesc{};

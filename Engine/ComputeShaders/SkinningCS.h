@@ -17,13 +17,13 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(const ModelAllData& data, size_t jointsSize, size_t verticesSize);
+	void Initialize(const ModelAllData& data);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
 	/// <param name="commandList">コマンドリスト</param>
-	void PreDraw();
+	VertexData* PreDraw();
 
 private:
 
@@ -31,12 +31,7 @@ private:
 private:
 
 	//モデルとanimationデータ
-	const ModelAllData* modelData_;
-
-	//スケルトンデータ
-	Skeleton skeleton_;
-	//スキンanimationデータ
-	SkinCluster skinCluster_;
+	const ModelAllData* modelData_=nullptr;
 
 	struct SRVMaterialResource
 	{
@@ -44,9 +39,9 @@ private:
 		Handles handle;
 	};
 
-	DirectXFunc* DXF_;
+	DirectXFunc* DXF_=nullptr;
 
-	std::wstring csPass = L"resources/shaders/InstancingObject.VS.hlsl";
+	std::wstring csPass = L"resources/shaders/ComputeShader/Skinning.CS.hlsl";
 
 	//ルートシグネチャ
 	ID3D12RootSignature* rootSignature_ = nullptr;

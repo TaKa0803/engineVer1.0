@@ -20,13 +20,17 @@
 #pragma region モデル
 
 
+Model::Model()
+{
+}
+
 Model::~Model() {
 
 	modelData_.skinCluster.influenceResource->Release();
 	modelData_.skinCluster.paletteResource->Release();
 
 	indexResource_->Release();
-	vertexData_->Release();
+	vertexResource_->Release();
 	wvpResource_->Release();
 	materialResource_->Release();
 	directionalLightResource_->Release();
@@ -138,14 +142,13 @@ void Model::Initialize(
 
 
 	//頂点データ
-	vertexData_ = CreateBufferResource(DXF_->GetDevice(), sizeof(VertexData) * modelData_.model.vertices.size());
-	vertexBufferView_.BufferLocation = vertexData_->GetGPUVirtualAddress();
+	vertexResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(VertexData) * modelData_.model.vertices.size());
+	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData_.model.vertices.size());
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
-	VertexData* vertexDatatea = nullptr;
-	vertexData_->Map(0, nullptr, reinterpret_cast<void**>(&vertexDatatea));
-	std::memcpy(vertexDatatea, modelData_.model.vertices.data(), sizeof(VertexData) * modelData_.model.vertices.size());
+	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
+	std::memcpy(vertexData_, modelData_.model.vertices.data(), sizeof(VertexData) * modelData_.model.vertices.size());
 
 
 	//各データ受け渡し
@@ -245,8 +248,9 @@ void Model::Initialize(
 		modelType_ = kOBJModel;
 	}
 
-
-
+	//skinningCS_ = std::make_unique<SkinningCS>();
+	//skinningCS_->Initialize(modelData_);
+	//EndInitialize
 }
 
 void Model::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime)
