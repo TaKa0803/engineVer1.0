@@ -1,7 +1,8 @@
 #pragma once
-#include"PostEffects/IPipelineStateObject.h"
+#include"PostEffect/IPipelineStateObject.h"
+#include"struct.h"
 
-class PESepia : public IPipelineStateObject {
+class PEDepthBasedOutline : public IPipelineStateObject {
 
 public:
 
@@ -11,12 +12,15 @@ public:
 
 	void Debug()override;
 
+
 	void Release()override;
 private:
 
+
+
 	//パス
 	std::wstring vsPath = L"resources/shaders/PostEffect/CopyImage.VS.hlsl";
-	std::wstring psPath = L"resources/shaders/PostEffect/Sepia.PS.hlsl";
+	std::wstring psPath = L"resources/shaders/PostEffect/DepthBasedOutline.PS.hlsl";
 
 	//ルートシグネチャ
 	ID3D12RootSignature* rootSignature_;
@@ -26,9 +30,13 @@ private:
 
 	ID3D12Resource* materialResource_;
 
+	Handles handle;
+
 	struct PEMaterialData {
+		Matrix4x4 projectionInverse;
 		float value;
-		float effectiveValue;
+		int32_t enableColor;
+		
 	};
 
 public:

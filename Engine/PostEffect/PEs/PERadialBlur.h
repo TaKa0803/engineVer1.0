@@ -1,7 +1,8 @@
 #pragma once
-#include"PostEffects/IPipelineStateObject.h"
+#include"PostEffect/IPipelineStateObject.h"
+#include"Vector2.h"
 
-class PEHSVFilter : public IPipelineStateObject {
+class PERadialBlur : public IPipelineStateObject {
 
 public:
 
@@ -19,7 +20,7 @@ private:
 
 	//パス
 	std::wstring vsPath = L"resources/shaders/PostEffect/CopyImage.VS.hlsl";
-	std::wstring psPath = L"resources/shaders/PostEffect/HSVFilter.PS.hlsl";
+	std::wstring psPath = L"resources/shaders/PostEffect/RadialBlur.PS.hlsl";
 
 	//ルートシグネチャ
 	ID3D12RootSignature* rootSignature_;
@@ -30,8 +31,9 @@ private:
 	ID3D12Resource* materialResource_;
 
 	struct PEMaterialData {
-		float hue;
-		float saturation;
+		Vector2 center;
+		int32_t numSample;
+		float blurWidth;
 		float value;
 	};
 

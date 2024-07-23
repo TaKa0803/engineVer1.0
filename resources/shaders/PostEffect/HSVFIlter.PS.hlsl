@@ -8,6 +8,8 @@ struct Material
     float32_t hue;
     float32_t saturation;
     float32_t value;
+    
+    float32_t effective;
 };
 
 ConstantBuffer<Material> gMaterial : register(b0);
@@ -140,7 +142,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     
     float32_t3 rgb = HSVToRGB(hsv);
     
-    output.color.rgb = rgb;
+    output.color.rgb = lerp(texColor.rgb, rgb, gMaterial.effective);
     output.color.a = texColor.a;
     
     return output;

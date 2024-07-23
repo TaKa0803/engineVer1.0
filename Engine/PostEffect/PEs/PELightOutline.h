@@ -1,7 +1,7 @@
 #pragma once
-#include"PostEffects/IPipelineStateObject.h"
+#include"PostEffect/IPipelineStateObject.h"
 
-class PESmoothing : public IPipelineStateObject {
+class PELightOutline : public IPipelineStateObject {
 
 public:
 
@@ -15,9 +15,11 @@ public:
 	void Release()override;
 private:
 
+
+
 	//パス
 	std::wstring vsPath = L"resources/shaders/PostEffect/CopyImage.VS.hlsl";
-	std::wstring psPath = L"resources/shaders/PostEffect/Smoothing.PS.hlsl";
+	std::wstring psPath = L"resources/shaders/PostEffect/LightOutline.PS.hlsl";
 
 	//ルートシグネチャ
 	ID3D12RootSignature* rootSignature_;
@@ -29,6 +31,7 @@ private:
 
 	struct PEMaterialData {
 		float value;
+		int32_t enableColor;
 	};
 
 public:

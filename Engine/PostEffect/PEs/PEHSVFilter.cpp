@@ -174,7 +174,7 @@ void PEHSVFilter::Initialize()
 	materialData_->value = 0.0f;
 	materialData_->saturation = 0.0f;
 	materialData_->value = 0.0f;
-
+	materialData_->effective = 1.0f;
 	Log("Complete HSVFilterPSO Initialized!\n");
 }
 
@@ -194,6 +194,7 @@ void PEHSVFilter::Debug()
 		ImGui::SliderFloat("hue", &materialData_->hue, -1.0f, 1.0f);
 		ImGui::SliderFloat("saturation", &materialData_->saturation, -1.0f, 1.0f);
 		ImGui::SliderFloat("value", &materialData_->value, -1.0f, 1.0f);
+		ImGui::SliderFloat("Effective", &materialData_->effective, 0.0f, 1.0f);
 		ImGui::EndMenu();
 	}
 #endif // _DEBUG

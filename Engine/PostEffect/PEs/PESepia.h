@@ -1,7 +1,7 @@
 #pragma once
-#include"PostEffects/IPipelineStateObject.h"
+#include"PostEffect/IPipelineStateObject.h"
 
-class PEDissolve : public IPipelineStateObject {
+class PESepia : public IPipelineStateObject {
 
 public:
 
@@ -11,23 +11,12 @@ public:
 
 	void Debug()override;
 
-
 	void Release()override;
-
-	void SetDissolveTexture(const std::string& path);
 private:
-
-	bool isSetTexture_ = false;
-	//指定
-	D3D12_GPU_DESCRIPTOR_HANDLE dissolveTexture_;
-
-	D3D12_GPU_DESCRIPTOR_HANDLE noice1_;
-	D3D12_GPU_DESCRIPTOR_HANDLE noice2_;
-
 
 	//パス
 	std::wstring vsPath = L"resources/shaders/PostEffect/CopyImage.VS.hlsl";
-	std::wstring psPath = L"resources/shaders/PostEffect/Dissolve.PS.hlsl";
+	std::wstring psPath = L"resources/shaders/PostEffect/Sepia.PS.hlsl";
 
 	//ルートシグネチャ
 	ID3D12RootSignature* rootSignature_;
@@ -38,10 +27,8 @@ private:
 	ID3D12Resource* materialResource_;
 
 	struct PEMaterialData {
-		Vector4 discardColor;
-		Vector4 edgeColor;
-		float edgeValue;
 		float value;
+		float effectiveValue;
 	};
 
 public:
