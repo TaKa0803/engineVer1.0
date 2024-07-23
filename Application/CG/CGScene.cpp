@@ -3,7 +3,7 @@
 #include"ImGuiManager/ImGuiManager.h"
 #include"MapLoader/MapLoader.h"
 #include"LightManager/LightManager.h"
-#include"PostEffectManager/PostEffectManager.h"
+#include"PostEffect/PostEffectManager/PostEffectManager.h"
 
 CGScnene::CGScnene()
 {

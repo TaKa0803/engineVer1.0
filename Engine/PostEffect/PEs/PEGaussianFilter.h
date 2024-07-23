@@ -1,5 +1,5 @@
 #pragma once
-#include"PostEffects/IPipelineStateObject.h"
+#include"PostEffect/IPipelineStateObject.h"
 
 class PEGaussianFilter : public IPipelineStateObject {
 
@@ -14,8 +14,6 @@ public:
 
 	void Release()override;
 private:
-
-
 
 	//パス
 	std::wstring vsPath = L"resources/shaders/PostEffect/CopyImage.VS.hlsl";

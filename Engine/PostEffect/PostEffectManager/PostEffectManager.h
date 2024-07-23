@@ -1,7 +1,7 @@
 #pragma once
 #include"Vector4.h"
 #include"DirectXFunc/DirectXFunc.h"
-#include"PostEffects/IPipelineStateObject.h"
+#include"PostEffect/IPipelineStateObject.h"
 
 #include<d3d12.h>
 #include<stdint.h>
