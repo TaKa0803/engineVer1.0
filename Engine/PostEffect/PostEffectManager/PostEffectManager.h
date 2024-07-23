@@ -47,8 +47,7 @@ public:
 	/// </summary>
 	void Debug();
 
-
-
+	
 	/// <summary>
 	/// 初期化（システム
 	/// </summary>

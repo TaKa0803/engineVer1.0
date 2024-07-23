@@ -12,6 +12,10 @@ void PEDissolve::Initialize()
 		DXF_ = DirectXFunc::GetInstance();
 	}
 
+	
+
+	
+
 #pragma region RootSignatureを生成する
 
 	//RootSignatureの作成

@@ -7,6 +7,7 @@
 #include"Camera/Camera.h"
 #include<cassert>
 
+PEHSVFilter::PEMaterialData* PEHSVFilter::materialData_ = nullptr;
 
 void PEHSVFilter::Initialize()
 {

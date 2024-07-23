@@ -37,6 +37,10 @@ private:
 
 	ID3D12Resource* materialResource_;
 
+	
+
+public:
+
 	struct PEMaterialData {
 		Vector4 discardColor;
 		Vector4 edgeColor;
@@ -44,7 +48,6 @@ private:
 		float value;
 	};
 
-public:
 
 	PEMaterialData* materialData_;
 };

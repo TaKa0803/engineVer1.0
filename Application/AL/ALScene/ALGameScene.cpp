@@ -6,8 +6,11 @@
 #include"TextureManager/TextureManager.h"
 #include"AudioManager/AudioManager.h"
 #include"RandomNum/RandomNum.h"
-#include"PostEffectManager/PostEffectManager.h"
+#include"PostEffect/PostEffectManager/PostEffectManager.h"
 #include"MapLoader/MapLoader.h"
+#include"PostEffect/PEs/PEHSVFilter.h"
+#include"PostEffect/PEs/PEVignetting.h"
+
 
 ALGameScene::ALGameScene() {
 	input_ = Input::GetInstance();
@@ -83,6 +86,7 @@ ALGameScene::ALGameScene() {
 	MapLoader::GetInstance()->LoadLevelEditor("map", ".json");
 	MapLoader::GetInstance()->CreateModel(0);
 
+
 }
 
 ALGameScene::~ALGameScene() {
@@ -138,7 +142,11 @@ void ALGameScene::Initialize() {
 	AudioManager::GetInstance()->StopAllSounds();
 	AudioManager::PlaySoundData(bgmGame_, 0.08f);
 
-	
+	PEHSVFilter::materialData_->effective = 1.0f;
+	PEHSVFilter::materialData_->saturation = 0.3f;
+
+	PEVignetting::materialData_->darkness = 0.3f;
+
 }
 
 
@@ -246,6 +254,8 @@ void ALGameScene::Draw() {
 		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kLightOutline, true);
 
 		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
+
+		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kHSV, true);
 
 
 		for (auto& enemy : enemies_) {

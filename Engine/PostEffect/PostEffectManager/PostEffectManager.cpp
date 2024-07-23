@@ -154,11 +154,12 @@ void PostEffectManager::Initialize()
 
 }
 
+
+
 void PostEffectManager::Finalize()
 {
 	renderTexture_[0]->Release();
 	renderTexture_[1]->Release();
-
 
 	for (auto& data : peData_) {
 		data.second->Release();
@@ -166,10 +167,8 @@ void PostEffectManager::Finalize()
 
 }
 
-
 void PostEffectManager::SystemPreDraw(D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle)
 {
-
 	dsvHandle_ = dsvHandle;
 
 	isEffectReqeat_ = true;
@@ -311,6 +310,8 @@ void PostEffectManager::Debug()
 #endif // _DEBUG
 
 }
+
+
 
 void PostEffectManager::PreSwapChainDraw()
 {

@@ -37,5 +37,5 @@ private:
 
 public:
 
-	PEMaterialData* materialData_;
+	static PEMaterialData* materialData_;
 };

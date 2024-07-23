@@ -1,6 +1,7 @@
 #pragma once
 #include"DirectXFunc/DirectXFunc.h"
 
+
 class IPipelineStateObject {
 
 protected:

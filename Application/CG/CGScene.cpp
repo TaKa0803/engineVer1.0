@@ -4,6 +4,7 @@
 #include"MapLoader/MapLoader.h"
 #include"LightManager/LightManager.h"
 #include"PostEffect/PostEffectManager/PostEffectManager.h"
+#include"PostEffect/PEs/PEHSVFilter.h"
 
 CGScnene::CGScnene()
 {
@@ -21,7 +22,8 @@ CGScnene::CGScnene()
 	MapLoader::GetInstance()->LoadLevelEditor("map",".json");
 	MapLoader::GetInstance()->CreateModel(0);
 
-
+	PEHSVFilter::materialData_->effective = 0.5f;
+	
 }
 
 CGScnene::~CGScnene() { 
@@ -66,6 +68,8 @@ void CGScnene::Update()
 
 	LightManager::GetInstance()->SetPLight(pointLight_);
 	LightManager::GetInstance()->SetDLight(dLight_);
+	
+
 	
 }
 

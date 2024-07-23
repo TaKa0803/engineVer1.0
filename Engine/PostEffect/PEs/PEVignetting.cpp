@@ -5,6 +5,7 @@
 #include"DXC/DXCManager.h"
 #include"ImGuiManager/ImGuiManager.h"
 
+PEVignetting::PEMaterialData* PEVignetting::materialData_ = nullptr;
 
 void PEVignetting::Initialize()
 {

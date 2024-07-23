@@ -15,8 +15,6 @@ public:
 	void Release()override;
 private:
 
-
-
 	//パス
 	std::wstring vsPath = L"resources/shaders/PostEffect/CopyImage.VS.hlsl";
 	std::wstring psPath = L"resources/shaders/PostEffect/HSVFilter.PS.hlsl";
@@ -38,5 +36,5 @@ private:
 
 public:
 
-	PEMaterialData* materialData_;
+	static PEMaterialData* materialData_;
 };
