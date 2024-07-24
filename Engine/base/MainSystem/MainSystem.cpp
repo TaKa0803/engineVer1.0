@@ -9,7 +9,7 @@
 #include"DXC/DXCManager.h"
 #include"GameScene/GameScene.h"
 #include"SpriteManager/SpriteManager.h"
-#include"PostEffectManager/PostEffectManager.h"
+#include"PostEffect/PostEffectManager/PostEffectManager.h"
 
 MainSystem* MainSystem::GetInstance() {
 	static MainSystem instance;

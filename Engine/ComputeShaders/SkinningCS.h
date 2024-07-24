@@ -23,7 +23,7 @@ public:
 	/// 描画
 	/// </summary>
 	/// <param name="commandList">コマンドリスト</param>
-	VertexData* PreDraw();
+	D3D12_VERTEX_BUFFER_VIEW PreDraw();
 
 private:
 
@@ -61,7 +61,9 @@ private:
 	std::span<VertexInfluence> influenceData_;
 
 	SRVMaterialResource outputVerticesResource_;
-	VertexData* outputVerticesData_ = nullptr;
+	D3D12_VERTEX_BUFFER_VIEW vbv_;
+
+	//VertexData* outputVerticesData_ = nullptr;
 
 	struct SkinningInformation
 	{

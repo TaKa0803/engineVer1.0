@@ -36,6 +36,8 @@ Model::~Model() {
 	directionalLightResource_->Release();
 	cameraResource_->Release();
 	pointlightResource_->Release();
+
+	skinningCS_.reset();
 }
 
 
@@ -248,8 +250,8 @@ void Model::Initialize(
 		modelType_ = kOBJModel;
 	}
 
-	//skinningCS_ = std::make_unique<SkinningCS>();
-	//skinningCS_->Initialize(modelData_);
+	skinningCS_ = std::make_unique<SkinningCS>();
+	skinningCS_->Initialize(modelData_);
 	//EndInitialize
 }
 

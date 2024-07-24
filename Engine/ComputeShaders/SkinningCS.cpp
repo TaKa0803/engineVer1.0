@@ -153,7 +153,12 @@ SkinningCS::~SkinningCS()
 	graphicsPipelineState_->Release();
 	graphicsPipelineState_ = nullptr;
 
+	wellResource_.resource->Release();
 
+	vertexResource_.resource->Release();
+	influenceResource_.resource->Release();
+	outputVerticesResource_.resource->Release();
+	skinningInfoResource_->Release();
 }
 
 
@@ -225,21 +230,27 @@ void SkinningCS::Initialize(const ModelAllData& data)
 #pragma endregion
 
 #pragma region OutputVertices
-	Handles ohandles = SRVManager::GetInstance()->CreateNewSRVHandles();
+	
+	//Handles ohandles = SRVManager::GetInstance()->CreateNewSRVHandles();
 	outputVerticesResource_.resource = CreateUAVBufferResource(DXF_->GetDevice(), sizeof(VertexData) * verticesSize);
-	outputVerticesResource_.resource->Map(0, nullptr, reinterpret_cast<void**>(&outputVerticesData_));
-	outputVerticesResource_.handle = ohandles;
+	
+	vbv_.BufferLocation = outputVerticesResource_.resource->GetGPUVirtualAddress();
+	vbv_.SizeInBytes = UINT(sizeof(VertexData) * verticesSize);
+	vbv_.StrideInBytes = sizeof(VertexData);
 
-	D3D12_UNORDERED_ACCESS_VIEW_DESC oSRVDesc{};
-	oSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
-	oSRVDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
-	oSRVDesc.Buffer.FirstElement = 0;
-	oSRVDesc.Buffer.CounterOffsetInBytes = 0;
-	oSRVDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
-	oSRVDesc.Buffer.NumElements = UINT(verticesSize);
-	oSRVDesc.Buffer.StructureByteStride = sizeof(VertexData);
+	//outputVerticesResource_.handle = ohandles;
 
-	DXF_->GetDevice()->CreateUnorderedAccessView(outputVerticesResource_.resource,nullptr, &oSRVDesc, outputVerticesResource_.handle.cpu);
+
+	//D3D12_UNORDERED_ACCESS_VIEW_DESC oSRVDesc{};
+	//oSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
+	//oSRVDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+	//oSRVDesc.Buffer.FirstElement = 0;
+	//oSRVDesc.Buffer.CounterOffsetInBytes = 0;
+	//oSRVDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
+	//oSRVDesc.Buffer.NumElements = UINT(verticesSize);
+	//oSRVDesc.Buffer.StructureByteStride = sizeof(VertexData);
+
+	//DXF_->GetDevice()->CreateUnorderedAccessView(outputVerticesResource_.resource,nullptr, &oSRVDesc, outputVerticesResource_.handle.cpu);
 #pragma endregion
 
 #pragma region SkinningInfomation
@@ -256,7 +267,7 @@ void SkinningCS::Initialize(const ModelAllData& data)
 
 }
 
-VertexData* SkinningCS::PreDraw()
+D3D12_VERTEX_BUFFER_VIEW SkinningCS::PreDraw()
 {
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
@@ -272,5 +283,5 @@ VertexData* SkinningCS::PreDraw()
 
 	cmd->Dispatch(UINT(modelData_->model.vertices.size() + 1023) / 1024, 1, 1);
 
-	return outputVerticesData_;
+	return vbv_;
 }
