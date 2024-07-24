@@ -41,7 +41,7 @@ private:
 	ID3D12DescriptorHeap* rtvDescriptorHeap_;
 	uint32_t descriptorSizeRTV_;
 
-	uint32_t RTVNum_;
+	uint32_t RTVNum_=0;
 
 	const uint32_t maxRTVSize_ = 6;
 };

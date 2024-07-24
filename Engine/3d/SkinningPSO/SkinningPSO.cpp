@@ -49,7 +49,7 @@ void SkinningPSO::Initialize()
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 #pragma region RootParameter 
 	//RootParameter作成。PixelShaderのMAterialとVertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameters[8] = {};
+	D3D12_ROOT_PARAMETER rootParameters[7] = {};
 	//materialData
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;		//PixelShaderで使う
@@ -107,19 +107,7 @@ void SkinningPSO::Initialize()
 	rootParameters[6].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange4Map);	//tableで利用する
 #pragma endregion
 
-#pragma region 
-	D3D12_DESCRIPTOR_RANGE descriptorRangeForSkinning[1] = {};
-	descriptorRangeForSkinning[0].BaseShaderRegister = 0;
-	descriptorRangeForSkinning[0].NumDescriptors = 1;
-	descriptorRangeForSkinning[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRangeForSkinning[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	//VSのDescriptorTable
-	rootParameters[7].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;		//CBVを使う
-	rootParameters[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;	//VertexShaderで使う
-	rootParameters[7].DescriptorTable.pDescriptorRanges = descriptorRangeForSkinning;
-	rootParameters[7].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForSkinning);
-#pragma endregion
 
 
 
@@ -196,7 +184,7 @@ void SkinningPSO::Initialize()
 	DXCManager* DXC = DXCManager::GetInstance();
 
 	//Shaderをコンパイルする
-	IDxcBlob* vertexShaderBlob = CompileShader(L"resources/shaders/SkinningObject3D.VS.hlsl", L"vs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
+	IDxcBlob* vertexShaderBlob = CompileShader(L"resources/shaders/Object3d.VS.hlsl", L"vs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
 	assert(vertexShaderBlob != nullptr);
 
 	IDxcBlob* pixelShaderBlob = CompileShader(L"resources/shaders/SkinningObject3D.PS.hlsl", L"ps_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());

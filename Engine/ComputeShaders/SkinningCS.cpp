@@ -3,6 +3,7 @@
 #include"Log/Log.h"
 #include"DXC/DXCManager.h"
 #include"SRVManager/SRVManager.h"
+#include"UAVManager/UAVManager.h"
 
 #include<cassert>
 
@@ -81,11 +82,11 @@ SkinningCS::SkinningCS()
 #pragma endregion
 
 #pragma region skinningInformation
-	
+
 	//PSのDescriptorTable
-	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
+	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;			//CBVを使う
 	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;		//PixelShaderで使う
-	rootParameters[4].Descriptor.ShaderRegister = 0;						//レジスタ番号０とバインド
+	rootParameters[4].Descriptor.ShaderRegister = 0;							//レジスタ番号０とバインド
 
 #pragma endregion
 
@@ -153,10 +154,10 @@ SkinningCS::~SkinningCS()
 	graphicsPipelineState_->Release();
 	graphicsPipelineState_ = nullptr;
 
-	wellResource_.resource->Release();
-
+	//	wellResource_.resource->Release();
+	//influenceResource_.resource->Release();
 	vertexResource_.resource->Release();
-	influenceResource_.resource->Release();
+
 	outputVerticesResource_.resource->Release();
 	skinningInfoResource_->Release();
 }
@@ -167,35 +168,36 @@ void SkinningCS::Initialize(const ModelAllData& data)
 	//ポインタに情報設定
 	modelData_ = &data;
 
-	size_t jointsSize =modelData_->skeleton.joints.size();
+	size_t jointsSize = modelData_->skeleton.joints.size();
 	size_t verticesSize = modelData_->model.vertices.size();;
 
 #pragma region 各シェーダデータ
 
 
 #pragma region WellPalette
-	WellForGPU* wData = nullptr;
-	Handles handles = SRVManager::GetInstance()->CreateNewSRVHandles();
-	wellResource_.resource = CreateBufferResource(DXF_->GetDevice(), sizeof(WellForGPU) * jointsSize);
-	wellResource_.resource->Map(0, nullptr, reinterpret_cast<void**>(&wData));
-	wellPalette_ = { wData , jointsSize };
-	wellResource_.handle = handles;
+	//WellForGPU* wData = nullptr;
+	//Handles handles = SRVManager::GetInstance()->CreateNewSRVHandles();
+	//wellResource_.resource = CreateBufferResource(DXF_->GetDevice(), sizeof(WellForGPU) * jointsSize);
+	//wellResource_.resource->Map(0, nullptr, reinterpret_cast<void**>(&wData));
+	//wellPalette_ = { wData , jointsSize };
+	//wellResource_.handle = handles;
 
-	D3D12_SHADER_RESOURCE_VIEW_DESC pSRVDesc{};
-	pSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
-	pSRVDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	pSRVDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
-	pSRVDesc.Buffer.FirstElement = 0;
-	pSRVDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-	pSRVDesc.Buffer.NumElements = UINT(jointsSize);
-	pSRVDesc.Buffer.StructureByteStride = sizeof(WellForGPU);
-
-	DXF_->GetDevice()->CreateShaderResourceView(wellResource_.resource, &pSRVDesc, wellResource_.handle.cpu);
+	//D3D12_SHADER_RESOURCE_VIEW_DESC pSRVDesc{};
+	//pSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
+	//pSRVDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	//pSRVDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+	//pSRVDesc.Buffer.FirstElement = 0;
+	//pSRVDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+	//pSRVDesc.Buffer.NumElements = UINT(jointsSize);
+	//pSRVDesc.Buffer.StructureByteStride = sizeof(WellForGPU);
+	//DXF_->GetDevice()->CreateShaderResourceView(wellResource_.resource, &pSRVDesc, wellResource_.handle.cpu);
 #pragma endregion
 #pragma region Vertex
 	Handles vhandles = SRVManager::GetInstance()->CreateNewSRVHandles();
 	vertexResource_.resource = CreateBufferResource(DXF_->GetDevice(), sizeof(VertexData) * verticesSize);
 	vertexResource_.resource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
+	std::memcpy(vertexData_, data.model.vertices.data(), sizeof(VertexData) * data.model.vertices.size());
+
 	vertexResource_.handle = vhandles;
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC vSRVDesc{};
@@ -209,48 +211,39 @@ void SkinningCS::Initialize(const ModelAllData& data)
 
 	DXF_->GetDevice()->CreateShaderResourceView(vertexResource_.resource, &vSRVDesc, vertexResource_.handle.cpu);
 #pragma endregion
-#pragma region Influence
-	VertexInfluence* vertexInfluence = nullptr;
-	Handles ihandles = SRVManager::GetInstance()->CreateNewSRVHandles();
-	influenceResource_.resource = CreateBufferResource(DXF_->GetDevice(), sizeof(VertexInfluence) * verticesSize);
-	influenceResource_.resource->Map(0, nullptr, reinterpret_cast<void**>(&vertexInfluence));
-	influenceData_ = { vertexInfluence,verticesSize };
-	influenceResource_.handle = ihandles;
-
-	D3D12_SHADER_RESOURCE_VIEW_DESC iSRVDesc{};
-	iSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
-	iSRVDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	iSRVDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
-	iSRVDesc.Buffer.FirstElement = 0;
-	iSRVDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-	iSRVDesc.Buffer.NumElements = UINT(verticesSize);
-	iSRVDesc.Buffer.StructureByteStride = sizeof(VertexInfluence);
-
-	DXF_->GetDevice()->CreateShaderResourceView(influenceResource_.resource, &iSRVDesc, influenceResource_.handle.cpu);
-#pragma endregion
+	//#pragma region Influence
+	//	VertexInfluence* vertexInfluence = nullptr;
+	//	
+	//	influenceResource_.resource = CreateBufferResource(DXF_->GetDevice(), sizeof(VertexInfluence) * verticesSize);
+	//	influenceResource_.resource->Map(0, nullptr, reinterpret_cast<void**>(&vertexInfluence));
+	//	influenceData_ = { vertexInfluence,verticesSize };
+	//	influenceResource_.handle = ihandles;
+	//
+	//	
+	//#pragma endregion
 
 #pragma region OutputVertices
-	
-	//Handles ohandles = SRVManager::GetInstance()->CreateNewSRVHandles();
+
+
 	outputVerticesResource_.resource = CreateUAVBufferResource(DXF_->GetDevice(), sizeof(VertexData) * verticesSize);
-	
+
 	vbv_.BufferLocation = outputVerticesResource_.resource->GetGPUVirtualAddress();
 	vbv_.SizeInBytes = UINT(sizeof(VertexData) * verticesSize);
 	vbv_.StrideInBytes = sizeof(VertexData);
 
-	//outputVerticesResource_.handle = ohandles;
+	Handles ohandles = SRVManager::GetInstance()->CreateNewSRVHandles();
+	outputVerticesResource_.handle = ohandles;
 
+	D3D12_UNORDERED_ACCESS_VIEW_DESC oUAVDesc{};
+	oUAVDesc.Format = DXGI_FORMAT_UNKNOWN;
+	oUAVDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+	oUAVDesc.Buffer.FirstElement = 0;
+	oUAVDesc.Buffer.NumElements = UINT(verticesSize);
+	oUAVDesc.Buffer.CounterOffsetInBytes = 0;
+	oUAVDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
+	oUAVDesc.Buffer.StructureByteStride = sizeof(VertexData);
 
-	//D3D12_UNORDERED_ACCESS_VIEW_DESC oSRVDesc{};
-	//oSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
-	//oSRVDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
-	//oSRVDesc.Buffer.FirstElement = 0;
-	//oSRVDesc.Buffer.CounterOffsetInBytes = 0;
-	//oSRVDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
-	//oSRVDesc.Buffer.NumElements = UINT(verticesSize);
-	//oSRVDesc.Buffer.StructureByteStride = sizeof(VertexData);
-
-	//DXF_->GetDevice()->CreateUnorderedAccessView(outputVerticesResource_.resource,nullptr, &oSRVDesc, outputVerticesResource_.handle.cpu);
+	DXF_->GetDevice()->CreateUnorderedAccessView(outputVerticesResource_.resource, nullptr, &oUAVDesc, outputVerticesResource_.handle.cpu);
 #pragma endregion
 
 #pragma region SkinningInfomation
@@ -275,13 +268,42 @@ D3D12_VERTEX_BUFFER_VIEW SkinningCS::PreDraw()
 	cmd->SetComputeRootSignature(rootSignature_);
 	cmd->SetPipelineState(graphicsPipelineState_);
 
-	cmd->SetComputeRootDescriptorTable(0, wellResource_.handle.gpu);
+	cmd->SetComputeRootDescriptorTable(0, modelData_->skinCluster.paletteSrvHandle.second);
 	cmd->SetComputeRootDescriptorTable(1, vertexResource_.handle.gpu);
-	cmd->SetComputeRootDescriptorTable(2, influenceResource_.handle.gpu);
+	cmd->SetComputeRootDescriptorTable(2, modelData_->skinCluster.influenceSrvHandle.second);
 	cmd->SetComputeRootDescriptorTable(3, outputVerticesResource_.handle.gpu);
-	cmd->SetGraphicsRootConstantBufferView(4, skinningInfoResource_->GetGPUVirtualAddress());
+	cmd->SetComputeRootConstantBufferView(4, skinningInfoResource_->GetGPUVirtualAddress());
+
 
 	cmd->Dispatch(UINT(modelData_->model.vertices.size() + 1023) / 1024, 1, 1);
 
+	// リソースバリアの設定
+	D3D12_RESOURCE_BARRIER barrier = {};
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = outputVerticesResource_.resource;  // 頂点バッファリソースへのポインタ
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
+	//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
+	// コマンドリストにバリアを設定
+	cmd->ResourceBarrier(1, &barrier);
+
 	return vbv_;
+}
+
+void SkinningCS::PostDraw()
+{
+	// リソースバリアの設定
+	D3D12_RESOURCE_BARRIER barrier = {};
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = outputVerticesResource_.resource;  // 頂点バッファリソースへのポインタ
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
+	//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
+	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
+	// コマンドリストにバリアを設定
+	cmd->ResourceBarrier(1, &barrier);
 }

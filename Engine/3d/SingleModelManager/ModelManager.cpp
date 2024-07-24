@@ -124,12 +124,14 @@ ModelAllData ModelManager::GetModelData(const std::string& filename) {
 }
 void ModelManager::PreDraw(bool isHaveAnimation, BlendMode blendMode,FillMode fillMode)
 {
-	if(isHaveAnimation){
-		ModelManager::GetInstance()->SkinningGrarphics_->PreDraw(fillMode, blendMode);
-	}
-	else {
-		ModelManager::GetInstance()->grarphics_->PreDraw(fillMode, blendMode);
-	}
+	//if(isHaveAnimation){
+	//	ModelManager::GetInstance()->SkinningGrarphics_->PreDraw(fillMode, blendMode);
+	//}
+	//else {
+	//	ModelManager::GetInstance()->grarphics_->PreDraw(fillMode, blendMode);
+	//}
+
+	ModelManager::GetInstance()->grarphics_->PreDraw(fillMode, blendMode);
 }
 #pragma endregion
 

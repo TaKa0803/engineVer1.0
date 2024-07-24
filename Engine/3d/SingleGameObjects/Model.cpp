@@ -293,6 +293,25 @@ void Model::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float
 void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 {
 
+	//animationのあるモデルなら
+	if (modelType_ == kSkinningGLTF) {
+
+		if (drawJoint_) {
+			//ジョイントMの更新
+			int i = 0;
+			for (auto& jointW : modelData_.skeleton.joints) {
+				Matrix4x4 world = jointW.skeletonSpaceMatrix;
+
+				EulerWorldTransform newdata;
+				newdata.matWorld_ = world * wvpData_->World;
+
+				jointM__->SetData(jointMtag_, newdata, { 1,1,1,1 });
+
+				i++;
+			}
+		}
+	}
+
 	if (drawModel_) {
 		//各データ確認用においてるだけ
 		//modelData_;
@@ -316,51 +335,32 @@ void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 			wvpData_->WorldInverseTranspose = Inverse(Transpose(worldMatrix));
 
 		}
+		
+		//オブジェクト以外ならスキニング処理
+		if (modelType_ ==kSkinningGLTF) {
+			vertexBufferView_ = skinningCS_->PreDraw();
+		}
 		bool isAnime = false;
-		//animationのあるモデルなら
-		if (modelType_ == kSkinningGLTF) {
-			isAnime = true;
-
-			if (drawJoint_) {
-				//ジョイントMの更新
-				int i = 0;
-				for (auto& jointW : modelData_.skeleton.joints) {
-					Matrix4x4 world = jointW.skeletonSpaceMatrix;
-
-					EulerWorldTransform newdata;
-					newdata.matWorld_ = world * wvpData_->World;
-
-					jointM__->SetData(jointMtag_, newdata, { 1,1,1,1 });
-
-					i++;
-				}
-			}
-
-
-		}
-		else {
-
-		}
-
 		//描画準備
 		ModelManager::PreDraw(isAnime, blendMode_, fillMode_);
 
+		
 		//animationがある場合vertexBufferViewを二つ用意
-		if (isAnime) {
-			D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
-			vertexBufferView_,					//VertexDataのView
-			modelData_.skinCluster.influenceBufferView	//InfluenceのVPV
-			};
+		//if (isAnime) {
+		//	D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
+		//	vertexBufferView_,					//VertexDataのView
+		//	modelData_.skinCluster.influenceBufferView	//InfluenceのVPV
+		//	};
 
-			DXF_->GetCMDList()->IASetVertexBuffers(0, 2, vbvs);
-			DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(7, modelData_.skinCluster.paletteSrvHandle.second);
-		}
-		else {
-			//ない場合はいままで通り
-			DXF_->GetCMDList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
-		}
+		//	DXF_->GetCMDList()->IASetVertexBuffers(0, 2, vbvs);
+		//	//DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(7, modelData_.skinCluster.paletteSrvHandle.second);
+		//}
+		//else {
+		//	//ない場合はいままで通り
+		//	
+		//}
 
-
+		DXF_->GetCMDList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
 		cameraData_->worldPosition = camera->GetMainCamera().GetMatWorldTranslate();
 
@@ -404,6 +404,8 @@ void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 		//描画！		
 		DXF_->GetCMDList()->DrawIndexedInstanced(static_cast<UINT>(modelData_.model.indices.size()), 1, 0, 0, 0);
 	}
+
+	skinningCS_->PostDraw();
 }
 
 

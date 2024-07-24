@@ -25,6 +25,7 @@ public:
 	/// <param name="commandList">コマンドリスト</param>
 	D3D12_VERTEX_BUFFER_VIEW PreDraw();
 
+	void PostDraw();
 private:
 
 
@@ -51,14 +52,14 @@ private:
 
 	bool isInitialize_ = false;
 
-	SRVMaterialResource wellResource_;
-	std::span<WellForGPU> wellPalette_;
+	//SRVMaterialResource wellResource_;
+	//std::span<WellForGPU> wellPalette_;
 
 	SRVMaterialResource vertexResource_;
 	VertexData* vertexData_ = nullptr;
 
-	SRVMaterialResource influenceResource_;
-	std::span<VertexInfluence> influenceData_;
+	//SRVMaterialResource influenceResource_;
+	//std::span<VertexInfluence> influenceData_;
 
 	SRVMaterialResource outputVerticesResource_;
 	D3D12_VERTEX_BUFFER_VIEW vbv_;

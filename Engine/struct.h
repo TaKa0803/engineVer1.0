@@ -161,8 +161,8 @@ struct SkinCluster {
 	std::vector<Matrix4x4>inverseBindPoseMatrices;
 
 	ID3D12Resource*influenceResource;
-	D3D12_VERTEX_BUFFER_VIEW influenceBufferView;
 	std::span<VertexInfluence>mapedInfluence;
+	std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE>influenceSrvHandle;
 
 	ID3D12Resource*paletteResource;
 	std::span<WellForGPU>mappedPalette;

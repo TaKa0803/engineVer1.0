@@ -10,6 +10,7 @@
 #include"GameScene/GameScene.h"
 #include"SpriteManager/SpriteManager.h"
 #include"PostEffect/PostEffectManager/PostEffectManager.h"
+#include"UAVManager/UAVManager.h"
 
 MainSystem* MainSystem::GetInstance() {
 	static MainSystem instance;
@@ -48,6 +49,7 @@ void MainSystem::Initializes() {
 
 	//SRVインスタンス取得
 	SRVM_ = SRVManager::GetInstance();
+	UAVManager::GetInstance()->Initialize();
 
 	//RTVManager::GetInstance()->Initialize();
 
@@ -173,6 +175,7 @@ void MainSystem::Finalize() {
 	///開放処理
 	instancingMM_->Finalize();
 	SRVM_->Finalize();
+	UAVManager::GetInstance()->Finalize();
 	RTVManager::GetInstance()->Finalize();
 	DSVManager::GetInstance()->Finalize();
 	PostEffectManager::GetInstance()->Finalize();

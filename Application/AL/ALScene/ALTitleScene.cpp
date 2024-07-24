@@ -2,7 +2,7 @@
 #include"TextureManager/TextureManager.h"
 #include"AudioManager/AudioManager.h"
 #include"ImGuiManager/ImGuiManager.h"
-#include"PostEffectManager/PostEffectManager.h"
+#include"PostEffect/PostEffectManager/PostEffectManager.h"
 
 ALTitleScene::ALTitleScene() {
 	input_ = Input::GetInstance();
