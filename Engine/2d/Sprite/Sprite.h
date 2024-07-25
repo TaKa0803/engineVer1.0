@@ -6,7 +6,6 @@
 #include"Math/Vector2.h"
 #include<wrl.h>
 
-#include"ParticleEmiter/ParticleEmiter.h"
 
 #include"WorldTransform/WorldTransform.h"
 
