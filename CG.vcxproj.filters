@@ -28,6 +28,8 @@
     <FxCompile Include="resources\shaders\PostEffect\Random.PS.hlsl" />
     <FxCompile Include="resources\shaders\ComputeShader\Skinning.CS.hlsl" />
     <FxCompile Include="resources\shaders\PostEffect\HSVFIlter.PS.hlsl" />
+    <FxCompile Include="resources\shaders\ComputeShader\Particle.CS.hlsl" />
+    <FxCompile Include="resources\shaders\ComputeShader\InitializeParticle.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\AL\Plane\Plane.cpp" />
@@ -114,7 +116,9 @@
     <ClCompile Include="Engine\ComputeShaders\SkinningCS.cpp" />
     <ClCompile Include="Engine\PostEffect\PEs\PEHSVFilter.cpp" />
     <ClCompile Include="Engine\base\UAVManager\UAVManager.cpp" />
-    <ClCompile Include="Engine\Particle\Particle.cpp" />
+    <ClCompile Include="Engine\ParticleCS\ParticleCS.cpp" />
+    <ClCompile Include="Engine\ParticleCS\Particle\ParticleManager.cpp" />
+    <ClCompile Include="Engine\ParticleCS\Particle\ParticlePSO\ParticlePSO.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -201,7 +205,10 @@
     <ClInclude Include="Engine\ComputeShaders\SkinningCS.h" />
     <ClInclude Include="Engine\PostEffect\PEs\PEHSVFilter.h" />
     <ClInclude Include="Engine\base\UAVManager\UAVManager.h" />
-    <ClInclude Include="Engine\Particle\Particle.h" />
+    <ClInclude Include="Engine\ParticleCS\ParticleCS.h" />
+    <ClInclude Include="Engine\ParticleCS\Particle\ParticleManager.h" />
+    <ClInclude Include="Engine\ParticleCS\Particle\ParticlePSO\ParticlePSO.h" />
+    <ClInclude Include="Engine\ParticleCS\Particle\ParticleData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

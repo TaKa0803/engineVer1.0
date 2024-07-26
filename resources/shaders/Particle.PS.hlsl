@@ -7,13 +7,9 @@ SamplerState gSampler : register(s0);
 struct Material {
     float32_t4 color;
     
-    int32_t enableLighting;
-    
     float32_t4x4 uvTransform;
     
     int32_t enableTexture;
-    
-    int32_t enableHalfLambert;
     
     float32_t discardNum;
     
@@ -33,15 +29,13 @@ PixelShaderOutput main(VertexShaderOutput input) {
     float32_t4 textureColor = gTexture.Sample(gSampler, transformedUV.xy);
    
     
-    
     if (gMaterial.enableTexture != 0) {
     }
     else {
         textureColor = gMaterial.color;
     }
     
-    
-   
+
     output.color.rgb = gMaterial.color.rgb * textureColor.rgb * input.color.rgb;
     output.color.a = gMaterial.color.a * textureColor.a * input.color.a;
     

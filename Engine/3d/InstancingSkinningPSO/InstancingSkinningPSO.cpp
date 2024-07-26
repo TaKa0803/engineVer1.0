@@ -31,10 +31,7 @@ InstancingSkinningPSO::~InstancingSkinningPSO()
 
 void InstancingSkinningPSO::Initialize()
 {
-	if (isInitialize_) {
-		return;
-	}
-	isInitialize_ = true;
+
 
 	DXF_ = DirectXFunc::GetInstance();
 #pragma region RootSignatureを生成する

@@ -70,17 +70,12 @@ Sprite* Sprite::Create(int texture, const Vector2 size, const Vector2 Rect, cons
 
 	
 	ID3D12Resource* indexResourceSprite;
-
 	D3D12_INDEX_BUFFER_VIEW indexBufferViewSprite{};
-
 
 #pragma region VertexResourceとVertexBufferViewを用意
 	//Sprite用の頂点リソースを作る
 	vertexResource = CreateBufferResource(DXF->GetDevice(), sizeof(VertexData) * 4);
-
-
 #pragma endregion
-
 #pragma region 頂点データを設定する
 	VertexData* vertexDataSprite = nullptr;
 	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataSprite));

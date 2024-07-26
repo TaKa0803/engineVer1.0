@@ -164,7 +164,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3d\SingleGameObjects\Model.cpp" />
     <ClCompile Include="Engine\Math\Vector4.cpp" />
     <ClCompile Include="Engine\Math\Quaternion.cpp" />
-    <ClCompile Include="Engine\Particle\Particle.cpp" />
+    <ClCompile Include="Engine\ParticleCS\ParticleCS.cpp" />
+    <ClCompile Include="Engine\ParticleCS\Particle\ParticleManager.cpp" />
+    <ClCompile Include="Engine\ParticleCS\Particle\ParticlePSO\ParticlePSO.cpp" />
     <ClCompile Include="Engine\PostEffect\PostEffectManager\PostEffectManager.cpp" />
     <ClCompile Include="Engine\PostEffect\IPipelineStateObject.cpp" />
     <ClCompile Include="Engine\PostEffect\PEs\PEDepthBasedOutline.cpp" />
@@ -197,6 +199,22 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3d\SkinningPSO\SkinningPSO.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="resources\shaders\ComputeShader\InitializeParticle.CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\ComputeShader\Particle.CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="resources\shaders\ComputeShader\Skinning.CS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
@@ -401,7 +419,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\3d\SingleModelManager\ModelManager.h" />
     <ClInclude Include="Engine\3d\SingleGameObjects\Model.h" />
     <ClInclude Include="Engine\Math\Quaternion.h" />
-    <ClInclude Include="Engine\Particle\Particle.h" />
+    <ClInclude Include="Engine\ParticleCS\ParticleCS.h" />
+    <ClInclude Include="Engine\ParticleCS\Particle\ParticleManager.h" />
+    <ClInclude Include="Engine\ParticleCS\Particle\ParticleData.h" />
+    <ClInclude Include="Engine\ParticleCS\Particle\ParticlePSO\ParticlePSO.h" />
     <ClInclude Include="Engine\PostEffect\PostEffectManager\PostEffectManager.h" />
     <ClInclude Include="Engine\PostEffect\IPipelineStateObject.h" />
     <ClInclude Include="Engine\PostEffect\PEs\PEDepthBasedOutline.h" />
