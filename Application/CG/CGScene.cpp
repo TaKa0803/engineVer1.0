@@ -24,6 +24,8 @@ CGScnene::CGScnene()
 
 	PEHSVFilter::materialData_->effective = 0.5f;
 	
+	particleManager_ = std::make_unique<ParticleManager>();
+	particleManager_->Initialize(TextureManager::LoadTex("resources/Texture/AL/skill.png").texNum);
 }
 
 CGScnene::~CGScnene() { 
@@ -93,6 +95,8 @@ void CGScnene::Draw()
 	InstancingModelManager::GetInstance()->DrawAllModel();
 
 	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kHSV, true);
+
+	particleManager_->Draw();
 
 	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDissolve, true);
 }

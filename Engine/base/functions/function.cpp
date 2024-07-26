@@ -12,6 +12,8 @@
 #include<assimp/scene.h>
 #include<assimp/postprocess.h>
 
+
+
 Vector3 CalculateValue(const std::vector<KayframeVector3>& keyframes, float time) {
 	assert(!keyframes.empty());
 	if (keyframes.size() == 1 || time <= keyframes[0].time) {

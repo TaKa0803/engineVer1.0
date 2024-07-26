@@ -1,6 +1,8 @@
 #pragma once
 #include"Matrix.h"
 #include"Vector4.h"
+#include"struct.h"
+
 
 struct Particle {
 	Vector3 translate;

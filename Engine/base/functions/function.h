@@ -9,6 +9,7 @@
 #include"struct.h"
 #include"Quaternion.h"
 
+
 Vector3 CalculateValue(const std::vector<KayframeVector3>& keyframes, float time);
 
 Quaternion CalculateValue(const std::vector<KayframeQuaternion>& keyframes, float time);

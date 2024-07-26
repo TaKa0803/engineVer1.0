@@ -11,7 +11,7 @@ void UAVManager::Initialize()
 {
 	DXF_ = DirectXFunc::GetInstance();
 	
-	uavDescriptorHeap_ = CreateDescriptorHeap(DXF_->GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, maxUAVSize_,false);
+	uavDescriptorHeap_ = CreateDescriptorHeap(DXF_->GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, maxUAVSize_,true);
 	descriptorSizeUAV_ = DXF_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 }
 

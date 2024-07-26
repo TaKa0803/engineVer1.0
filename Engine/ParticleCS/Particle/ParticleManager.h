@@ -1,8 +1,22 @@
 #pragma once
 #include"Vector2.h"
+#include"Vector4.h"
+#include"Matrix.h"
 #include"ParticleData.h"
 #include"ParticlePSO/ParticlePSO.h"
 #include"DirectXFunc/DirectXFunc.h"
+#include"ParticleCS/ParticleCS.h"
+#include"ParticleCS/ParticleInitialize.h"
+
+#include<stdint.h>
+
+struct ParticleMaterialData
+{
+	Vector4 color;
+	Matrix4x4 uvTransform;
+	int32_t enableTex;
+	float discardNum;
+};
 
 class ParticleManager {
 
@@ -14,12 +28,11 @@ public:
 	void Initialize(int tex);
 
 	//データ更新処理
-	void Update();
+
 
 	//描画
 	void Draw();
 
-	void SetData(const Particle& data);
 private:
 
 	DirectXFunc* DXF_;
@@ -30,7 +43,12 @@ private:
 
 	D3D12_GPU_DESCRIPTOR_HANDLE texture_;
 
+	std::unique_ptr<ParticleInitializeCS> particleInitializeCS_;
+	std::unique_ptr<ParticleCS>particleUpdateCS_;
 
+	D3D12_GPU_DESCRIPTOR_HANDLE initializeGPUData_;
+
+#pragma region リソース関係
 	ID3D12Resource* vertexResource_;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 
@@ -38,22 +56,17 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 
 
-	ID3D12Resource* wvpResource_;
+	ID3D12Resource* particleResource_;
 	Particle* particleData_ = nullptr;
 	D3D12_GPU_DESCRIPTOR_HANDLE wvpHandles_;
 
 	ID3D12Resource* perResource_;
 	PerView* perViewData_ = nullptr;
 
-	struct MaterialData
-	{
-		Vector4 color;
-		Matrix4x4 uvTransform;
-		int32_t enableTex;
-		float discardNum;
-	};
-
 	ID3D12Resource* materialResource_;
-	MaterialData* materialData_=nullptr;
+	ParticleMaterialData* materialData_=nullptr;
+#pragma endregion
+
+
 
 };

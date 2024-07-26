@@ -1,6 +1,7 @@
 #include "ParticlePSO.h"
 #include"Log/Log.h"
 #include"DXC/DXCManager.h"
+#include"functions/function.h"
 
 #include<cassert>
 
@@ -20,23 +21,6 @@ ParticlePSO::~ParticlePSO()
 }
 
 
-D3D12_ROOT_PARAMETER SetParameterData(int32_t shaderRegister, D3D12_SHADER_VISIBILITY shaderVisiblity, D3D12_DESCRIPTOR_RANGE_TYPE desRangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV) {
-	D3D12_ROOT_PARAMETER result;
-	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
-	descriptorRange[0].BaseShaderRegister = shaderRegister;
-	descriptorRange[0].NumDescriptors = 1;
-	descriptorRange[0].RangeType = desRangeType;
-	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-	//VSのDescriptorTable
-	result.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;		//CBVを使う
-	result.ShaderVisibility = shaderVisiblity;	//PixelShaderで使う
-	result.DescriptorTable.pDescriptorRanges = descriptorRange;
-	result.DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
-
-	return result;
-}
-
 void ParticlePSO::Initialize()
 {
 
@@ -52,7 +36,17 @@ void ParticlePSO::Initialize()
 	D3D12_ROOT_PARAMETER rootParameters[4] = {};
 
 	//worldデータ群
-	rootParameters[0] = SetParameterData(0, D3D12_SHADER_VISIBILITY_VERTEX);
+	D3D12_DESCRIPTOR_RANGE descriptorRangeForWorld[1] = {};
+	descriptorRangeForWorld[0].BaseShaderRegister = 0;
+	descriptorRangeForWorld[0].NumDescriptors = 1;
+	descriptorRangeForWorld[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descriptorRangeForWorld[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	//VSのDescriptorTable
+	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;		//CBVを使う
+	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;	//PixelShaderで使う
+	rootParameters[0].DescriptorTable.pDescriptorRanges = descriptorRangeForWorld;
+	rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForWorld);
 
 	//PerView
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
@@ -65,7 +59,19 @@ void ParticlePSO::Initialize()
 	rootParameters[2].Descriptor.ShaderRegister = 0;						//レジスタ番号０とバインド
 
 	//画像
-	rootParameters[3] = SetParameterData(0, D3D12_SHADER_VISIBILITY_PIXEL);
+#pragma region Worldデータをsrv管理
+	D3D12_DESCRIPTOR_RANGE descriptorRangeForTexture[1] = {};
+	descriptorRangeForTexture[0].BaseShaderRegister = 0;
+	descriptorRangeForTexture[0].NumDescriptors = 1;
+	descriptorRangeForTexture[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descriptorRangeForTexture[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	//VSのDescriptorTable
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;		//CBVを使う
+	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;	//PixelShaderで使う
+	rootParameters[3].DescriptorTable.pDescriptorRanges = descriptorRangeForTexture;
+	rootParameters[3].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForTexture);
+#pragma endregion
 
 	descriptionRootSignature.pParameters = rootParameters;					//ルートパラメータ配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);		//配列の長さ

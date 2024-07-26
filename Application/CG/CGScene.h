@@ -5,6 +5,7 @@
 #include"Camera/Camera.h"
 #include"SingleGameObjects/GameObject.h"
 #include"SkyBoxModel/SkyBoxModel.h"
+#include"ParticleCS/Particle/ParticleManager.h"
 
 class CGScnene : public IScene {
 
@@ -39,4 +40,6 @@ private:
 	DirectionalLight dLight_;
 
 	int ball;
+
+	std::unique_ptr<ParticleManager>particleManager_;
 };

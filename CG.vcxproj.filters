@@ -119,6 +119,7 @@
     <ClCompile Include="Engine\ParticleCS\ParticleCS.cpp" />
     <ClCompile Include="Engine\ParticleCS\Particle\ParticleManager.cpp" />
     <ClCompile Include="Engine\ParticleCS\Particle\ParticlePSO\ParticlePSO.cpp" />
+    <ClCompile Include="Engine\ParticleCS\ParticleInitialize.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -209,6 +210,7 @@
     <ClInclude Include="Engine\ParticleCS\Particle\ParticleManager.h" />
     <ClInclude Include="Engine\ParticleCS\Particle\ParticlePSO\ParticlePSO.h" />
     <ClInclude Include="Engine\ParticleCS\Particle\ParticleData.h" />
+    <ClInclude Include="Engine\ParticleCS\ParticleInitialize.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />
