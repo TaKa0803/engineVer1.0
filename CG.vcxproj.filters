@@ -11,9 +11,6 @@
     <FxCompile Include="resources\shaders\Sprite.VS.hlsl" />
     <FxCompile Include="resources\shaders\PostEffect\CopyImage.PS.hlsl" />
     <FxCompile Include="resources\shaders\PostEffect\CopyImage.VS.hlsl" />
-    <FxCompile Include="resources\shaders\SkinningObject3D.VS.hlsl" />
-    <FxCompile Include="resources\shaders\SkinningObject3D.PS.hlsl" />
-    <FxCompile Include="resources\shaders\Vignette.PS.hlsl" />
     <FxCompile Include="resources\shaders\SkyBox.VS.hlsl" />
     <FxCompile Include="resources\shaders\SkyBox.PS.hlsl" />
     <FxCompile Include="resources\shaders\PostEffect\GrayScale.PS.hlsl" />
@@ -100,7 +97,6 @@
     <ClCompile Include="Engine\LightManager\LightManager.cpp" />
     <ClCompile Include="Engine\PostEffect\PostEffectManager\PostEffectManager.cpp" />
     <ClCompile Include="Engine\base\RTVManager\RTVManager.cpp" />
-    <ClCompile Include="Engine\PostEffect\IPipelineStateObject.cpp" />
     <ClCompile Include="Engine\PostEffect\PEs\PEGrayScale.cpp" />
     <ClCompile Include="Engine\PostEffect\PEs\PESepia.cpp" />
     <ClCompile Include="Engine\PostEffect\PEs\PEVignetting.cpp" />
@@ -223,7 +219,6 @@
     <None Include="resources\shaders\Particle.hlsli" />
     <None Include="resources\shaders\Sprite.hlsli" />
     <None Include="resources\shaders\PostEffect\CopyImage.hlsli" />
-    <None Include="resources\shaders\SkinningObject3D.hlsli" />
     <None Include="resources\shaders\SkyBox.hlsli" />
   </ItemGroup>
   <ItemGroup>

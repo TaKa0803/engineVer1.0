@@ -21,6 +21,22 @@ ParticlePSO::~ParticlePSO()
 }
 
 
+ void SetSRV_UAVRootParameter(D3D12_ROOT_PARAMETER& result,int32_t registerNum, D3D12_SHADER_VISIBILITY visibility, D3D12_DESCRIPTOR_RANGE_TYPE rangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV) {
+	
+	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
+	descriptorRange[0].BaseShaderRegister = registerNum;
+	descriptorRange[0].NumDescriptors = 1;
+	descriptorRange[0].RangeType = rangeType;
+	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	//VSのDescriptorTable
+	result.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;		//CBVを使う
+	result.ShaderVisibility = visibility;	//PixelShaderで使う
+	result.DescriptorTable.pDescriptorRanges = descriptorRange;
+	result.DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
+
+}
+
 void ParticlePSO::Initialize()
 {
 
@@ -47,6 +63,8 @@ void ParticlePSO::Initialize()
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;	//PixelShaderで使う
 	rootParameters[0].DescriptorTable.pDescriptorRanges = descriptorRangeForWorld;
 	rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForWorld);
+
+	//SetSRV_UAVRootParameter(rootParameters[0], 1, D3D12_SHADER_VISIBILITY_VERTEX);
 
 	//PerView
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う

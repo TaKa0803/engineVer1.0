@@ -79,22 +79,23 @@ void CGScnene::Update()
 
 void CGScnene::Draw()
 {
-	skybox_->Draw();
-
-
-	
+	skybox_->Draw();	
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
 
 	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
 
 	terrain->Draw();
 
+	
 	object->Draw();
 
 	MapLoader::GetInstance()->DrawLevelData();
 
 	InstancingModelManager::GetInstance()->DrawAllModel();
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDepthBasedOutline, true);
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDissolve, true);
 
-	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kHSV, true);
 
 	particleManager_->Draw();
 

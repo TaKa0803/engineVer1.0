@@ -341,7 +341,6 @@ void PostEffectManager::SwapChainDraw()
 
 	peData_[kNone]->PreDraw();
 
-
 	DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(0, gHandle_[resourceNum_]);
 	DXF_->GetCMDList()->DrawInstanced(3, 1, 0, 0);
 

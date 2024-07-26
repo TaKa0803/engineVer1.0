@@ -9,7 +9,6 @@ protected:
 	DirectXFunc* DXF_ = nullptr;
 
 public:
-
 	
 	virtual void Initialize() = 0;
 	virtual void PreDraw() = 0;;
