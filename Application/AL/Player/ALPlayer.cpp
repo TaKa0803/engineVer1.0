@@ -136,6 +136,8 @@ void ALPlayer::Initialize() {
 	shadow->SetScale(1.5f);
 
 	impactE_->Initialize();
+	
+	model_->animationRoopSecond_ = 5.0f;
 }
 
 void ALPlayer::Update() {
@@ -254,10 +256,12 @@ void ALPlayer::Move() {
 void ALPlayer::ModelRoop(const Vector3& velo)
 {
 	if (velo.x == 0 && velo.y == 0 && velo.z == 0) {
-		model_->ChangeAnimation(3, 39);
+		model_->ChangeAnimation(3, 15);
+		model_->animationRoopSecond_ = 1.0f;
 	}
 	else {
 		model_->ChangeAnimation(4, 30);
+		model_->animationRoopSecond_ = 10.0f;
 	}
 
 }
@@ -275,6 +279,8 @@ void ALPlayer::InitializeMove() {
 
 	model_->ChangeAnimation(3, 0);
 	model_->SetAnimationRoop(true);
+	model_->animationRoopSecond_ = 5.0;
+
 	moveState_ = StopS;
 	roopCount_ = 0;
 }
@@ -284,6 +290,7 @@ void ALPlayer::InitializeATK() {
 
 	model_->ChangeAnimation(0, 5);
 	model_->SetAnimationRoop(false);
+	model_->animationRoopSecond_ = 10.0;
 
 	nowATKState_ = kATK1;
 

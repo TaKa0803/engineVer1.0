@@ -127,6 +127,12 @@ public:
 	BlendMode  blendMode_ = BlendMode::kNormal;
 
 	Material* materialData_ = nullptr;
+
+	//アニメーションフラグ
+	bool isAnimationActive_ = false;
+	//animationの一周までの秒数
+	float animationRoopSecond_ = 1.0f;
+
 private:
 
 	DirectXFunc* DXF_;
@@ -185,12 +191,11 @@ private:
 
 
 #pragma region アニメーション関係
-	//アニメーションフラグ
-	bool isAnimationActive_ = false;
+
+
 	//アニメーションカウント
 	float animationTime_ = 0.0f;
-	//animationの一周までの秒数
-	float animationRoopSecond_ = 1.0f;
+
 
 	//アニメーションをループするか
 	bool isAnimeRoop_ = true;
