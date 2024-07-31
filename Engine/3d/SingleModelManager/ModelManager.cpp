@@ -23,9 +23,7 @@ void ModelManager::Initialize()
 {
 	//PSOの初期化
 	grarphics_ = new ObjectPSO();
-	SkinningGrarphics_ = new SkinningPSO();
 	grarphics_->Initialize();
-	SkinningGrarphics_->Initialize();
 }
 
 void ModelManager::LoadAllModels() {
@@ -90,8 +88,6 @@ void ModelManager::Finalize()
 	delete grarphics_;
 	grarphics_ = nullptr;
 
-	delete SkinningGrarphics_;
-	SkinningGrarphics_ = nullptr;
 }
 
 ModelAllData ModelManager::GetModelData(const std::string& filename) {
@@ -124,12 +120,6 @@ ModelAllData ModelManager::GetModelData(const std::string& filename) {
 }
 void ModelManager::PreDraw(bool isHaveAnimation, BlendMode blendMode,FillMode fillMode)
 {
-	//if(isHaveAnimation){
-	//	ModelManager::GetInstance()->SkinningGrarphics_->PreDraw(fillMode, blendMode);
-	//}
-	//else {
-	//	ModelManager::GetInstance()->grarphics_->PreDraw(fillMode, blendMode);
-	//}
 
 	ModelManager::GetInstance()->grarphics_->PreDraw(fillMode, blendMode);
 }

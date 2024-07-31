@@ -90,7 +90,6 @@
     <ClCompile Include="Application\GameScene\GameScene.cpp" />
     <ClCompile Include="Engine\2d\SpriteManager\SpriteManager.cpp" />
     <ClCompile Include="Engine\2d\SpritePSO\SpritePSO.cpp" />
-    <ClCompile Include="Engine\3d\SkinningPSO\SkinningPSO.cpp" />
     <ClCompile Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.cpp" />
     <ClCompile Include="Engine\3d\SkyBoxModel\SkyBoxModel.cpp" />
     <ClCompile Include="Engine\MapLoader\MapLoader.cpp" />
@@ -179,7 +178,6 @@
     <ClInclude Include="Application\GameScene\GameScene.h" />
     <ClInclude Include="Engine\2d\SpriteManager\SpriteManager.h" />
     <ClInclude Include="Engine\2d\SpritePSO\SpritePSO.h" />
-    <ClInclude Include="Engine\3d\SkinningPSO\SkinningPSO.h" />
     <ClInclude Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.h" />
     <ClInclude Include="Engine\3d\SkyBoxModel\SkyBoxModel.h" />
     <ClInclude Include="Engine\MapLoader\MapLoader.h" />

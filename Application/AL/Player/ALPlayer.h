@@ -49,7 +49,7 @@ public:
 	int GetConboCount() { return ATKConboCount; }
 
 	bool IsPlayerATK() {
-		if (state_ == State::ATK) { return true; }
+		if (behavior_ == State::ATK) { return true; }
 		return false;
 	}
 private://メンバ関数
@@ -71,15 +71,15 @@ private://メンバ関数
 	};
 
 	//プレイヤーの状態
-	State state_ = State::Move;
+	State behavior_ = State::Move;
 	//状態リクエスト
-	std::optional<State>stateRequest_ = std::nullopt;
+	std::optional<State>behaviorRequest_ = std::nullopt;
 
 	//状態ごとの初期化テーブル
-	static void (ALPlayer::* StateInitialize[])();
+	static void (ALPlayer::* BehaviorInitialize[])();
 
 	//状態ごとの更新テーブル
-	static void (ALPlayer::* StateUpdate[])();
+	static void (ALPlayer::* BehaviorUpdate[])();
 
 
 	void InitializeMove();

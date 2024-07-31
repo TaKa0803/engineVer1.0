@@ -539,17 +539,20 @@ void ALGameScene::ClearUIUpdate() {
 
 		int num2 = count2 % 10;
 
-		if (num2 != 0.0f) {
+		if (Count>=10) {
 
 			num10_->SetTVTranslate({ ((float)num2 / 10.0f) - 0.1f ,0 });
 
+			if (Count >= 100) {
+				int count3 = (int)(Count - (num1 + num2 * 10)) / 100;
 
-			int count3 = (int)(Count - num1 - num2) / 100;
+				int num3 = count3 % 10;
 
-			int num3 = count3 % 100;
-
-			num100_->SetTVTranslate({ ((float)num3 / 10.0f) - 0.1f ,0 });
-
+				num100_->SetTVTranslate({ ((float)num3 / 10.0f) - 0.1f ,0 });
+			}
+			else {
+				num100_->SetTVTranslate({ 0.9f, 0 });
+			}
 		}
 		else {
 			num100_->SetTVTranslate({0.9f, 0 });

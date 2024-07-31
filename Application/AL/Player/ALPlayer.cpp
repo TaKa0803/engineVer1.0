@@ -143,43 +143,38 @@ void ALPlayer::Initialize() {
 void ALPlayer::Update() {
 
 	//状態の初期化処理
-	if (stateRequest_) {
-		state_ = stateRequest_.value();
-		stateRequest_ = std::nullopt;
+	if (behaviorRequest_) {
+		behavior_ = behaviorRequest_.value();
+		behaviorRequest_ = std::nullopt;
 
 		//実際の初期化処理
-		(this->*StateInitialize[(int)state_])();
+		(this->*BehaviorInitialize[(int)behavior_])();
 	}
 
 	//状態の更新
-	(this->*StateUpdate[(int)state_])();
+	(this->*BehaviorUpdate[(int)behavior_])();
 
-	//行列更新
 
+	//更新
 	world_.UpdateMatrix();
-
-	int Index = 0;
-	
 	model_->UpdateAnimation();
 	collider_->Update();
-
 	shadow->Update();
-
 	impactE_->Update();
 }
 
-void (ALPlayer::* ALPlayer::StateInitialize[])() = {
-	&ALPlayer::InitializeMove,
-	&ALPlayer::InitializeATK,
-	&ALPlayer::InitializeHitAction,
-	&ALPlayer::InitializeSpecialATK
+void (ALPlayer::* ALPlayer::BehaviorInitialize[])() = {
+	&ALPlayer::InitializeMove,		//移動
+	&ALPlayer::InitializeATK,		//攻撃
+	&ALPlayer::InitializeHitAction,	//被攻撃
+	&ALPlayer::InitializeSpecialATK	//特殊攻撃
 };
 
-void (ALPlayer::* ALPlayer::StateUpdate[])() = {
-	&ALPlayer::UpdateMove,
-	&ALPlayer::UpdateATK,
-	&ALPlayer::UpdateHitAction,
-	&ALPlayer::InitializeSpecialATK
+void (ALPlayer::* ALPlayer::BehaviorUpdate[])() = {
+	&ALPlayer::UpdateMove,			//移動
+	&ALPlayer::UpdateATK,			//攻撃
+	&ALPlayer::UpdateHitAction,		//被攻撃
+	&ALPlayer::InitializeSpecialATK	//特殊攻撃
 };
 
 void ALPlayer::Draw() {
@@ -347,7 +342,7 @@ void ALPlayer::UpdateMove() {
 	}
 
 	if (isATK) {
-		stateRequest_ = State::ATK;
+		behaviorRequest_ = State::ATK;
 	}
 
 }
@@ -487,7 +482,7 @@ void ALPlayer::UpdateATK() {
 			}
 			else {
 				//移動状態に変更
-				stateRequest_ = State::Move;
+				behaviorRequest_ = State::Move;
 				ATKConboCount = 0;
 			}
 #pragma endregion

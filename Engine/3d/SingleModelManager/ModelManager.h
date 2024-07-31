@@ -7,7 +7,6 @@
 #include"WorldTransform/WorldTransform.h"
 #include"DirectXFunc/DirectXFunc.h"
 #include"SingleGameObjects/ObjectPSO.h"
-#include"SkinningPSO/SkinningPSO.h"
 #include"struct.h"
 
 
@@ -55,7 +54,6 @@ public:
 private:
 
 	//各モデル描画用のPSO
-	SkinningPSO* SkinningGrarphics_ = nullptr;
 	ObjectPSO* grarphics_ = nullptr;
 
 
