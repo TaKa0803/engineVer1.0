@@ -8,9 +8,11 @@ class GameObject {
 
 protected:
 
-	Model* model_ = nullptr;
+	
 
 public:
+
+	Model* model_ = nullptr;
 
 	EulerWorldTransform world_;
 

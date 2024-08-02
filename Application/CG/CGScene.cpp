@@ -82,7 +82,7 @@ void CGScnene::Draw()
 	skybox_->Draw();	
 	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
 
-	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
 
 	terrain->Draw();
 

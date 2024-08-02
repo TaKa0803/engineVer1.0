@@ -103,6 +103,8 @@ public:
 	/// <param name="tag">モデルタグ</param>
 	/// <param name="isEnable">正否</param>
 	void SetEnableShader(const std::string& tag, bool isEnable);
+
+	void SetEnableEnviomentMap(const std::string& tag, bool isEnable, float num = 1.0f);
 private:
 
 	InstancingPSO* pso_;

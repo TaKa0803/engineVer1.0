@@ -8,11 +8,8 @@ public:
 	ParticleInitializeCS();
 	~ParticleInitializeCS();
 
-	void Initialize();
+	void Initialize(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle);
 
-	D3D12_GPU_DESCRIPTOR_HANDLE PreDraw();
-
-	void PostDraw();
 
 private:
 
@@ -27,7 +24,6 @@ private:
 	ID3D12PipelineState* graphicsPipelineState_ = nullptr;
 
 	size_t maxDataNum_ = 1024;
-	ID3D12Resource* particleResource_=nullptr;
-	Handles particleSRVHandle_;
-	Handles particleHandle_;
+
+
 };

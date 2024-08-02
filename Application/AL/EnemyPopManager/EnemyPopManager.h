@@ -99,4 +99,7 @@ private:
 	std::vector<EulerWorldTransform>flagWorlds_;
 
 	std::vector<std::unique_ptr<GameObject>>flagModel_;
+
+	std::vector<std::unique_ptr<GameObject>>poleModel_;
+
 };

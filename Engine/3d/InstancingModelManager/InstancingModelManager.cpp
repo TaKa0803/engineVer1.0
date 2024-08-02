@@ -255,3 +255,8 @@ void InstancingModelManager::SetEnableShader(const std::string& tag, bool isEnab
 {
 	modelDatas_[tag]->SetEnableShader(isEnable);
 }
+
+void InstancingModelManager::SetEnableEnviomentMap(const std::string& tag, bool isEnable, float num)
+{
+	modelDatas_[tag]->SetEnableEnviomentMap(isEnable, num);
+}

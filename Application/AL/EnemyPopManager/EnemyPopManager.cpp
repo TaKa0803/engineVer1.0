@@ -106,6 +106,17 @@ void EnemyPopManager::LoadPopdata() {
 		//値をもとに末尾に直接構築
 		flagModel_.push_back(std::move(newdata));
 
+		std::unique_ptr<GameObject>newdataaa = std::make_unique<GameObject>();
+		newdataaa->Initialize("Flag");
+		newdataaa->world_.translate_ = popData.areaPosition;
+		//newdataaa->world_.translate_.y += 6.0f;
+		newdataaa->model_->materialData_->enableEnvironmentMap = true;
+		newdataaa->model_->materialData_->enviromentCoefficient = 0.1f;
+		newdataaa->model_->materialData_->shininess = 0;
+		//値をもとに末尾に直接構築
+		poleModel_.push_back(std::move(newdataaa));
+
+
 		//もう使わない
 		//newdata.reset();
 
@@ -123,7 +134,7 @@ void EnemyPopManager::Initialzie() {
 
 	IMM->SetTexture(flag_, TextureManager::white_);
 
-
+	IMM->SetEnableEnviomentMap(flag_,true);
 }
 
 void EnemyPopManager::Update() {
@@ -135,6 +146,7 @@ void EnemyPopManager::Update() {
 			world.UpdateMatrix();
 
 			flagModel_[Index]->Update();
+			poleModel_[Index]->Update();
 		}
 		Index++;
 	}
@@ -147,8 +159,8 @@ void EnemyPopManager::Draw() {
 	for (auto& world : flagWorlds_) {
 		world.UpdateMatrix();
 		if (popDatas_[Index].maxAreaPopCount < popDatas_[Index].maxAreaPop) {
-			IMM->SetData(flag_, world);
-
+			//IMM->SetData(flag_, world);
+			poleModel_[Index]->Draw(TextureManager::white_);
 			flagModel_[Index]->Draw(TextureManager::white_);
 		}
 		Index++;

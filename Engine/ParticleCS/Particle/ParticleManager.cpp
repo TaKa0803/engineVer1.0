@@ -3,13 +3,15 @@
 #include"SingleModelManager/ModelManager.h"
 #include"functions/function.h"
 #include"SRVManager/SRVManager.h"
+#include"UAVManager/UAVManager.h"
 #include"Camera/Camera.h"
+#include<numbers>
 
 ParticleManager::ParticleManager()
 {
 	DXF_ = DirectXFunc::GetInstance();
 
-	modelData_=ModelManager::GetInstance()->GetModelData("plane").model;
+	modelData_=ModelManager::GetInstance()->GetModelData("z+Plane").model;
 
 	//頂点データ
 	
@@ -37,20 +39,71 @@ ParticleManager::ParticleManager()
 	const int particleNum = 1024;
 
 
-	particleResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(Particle) * particleNum);
-	particleResource_->Map(0, nullptr, reinterpret_cast<void**>(&particleData_));
+	particleResource_ = CreateUAVBufferResource(DXF_->GetDevice(), sizeof(Particle) * particleNum);
 	
+#pragma region UAVのHandle生成
+	UAVHandle_ = UAVManager::GetInstance()->GetDescriptorHandle();
+
+	D3D12_UNORDERED_ACCESS_VIEW_DESC oUAVDesc{};
+	oUAVDesc.Format = DXGI_FORMAT_UNKNOWN;
+	oUAVDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+	oUAVDesc.Buffer.FirstElement = 0;
+	oUAVDesc.Buffer.NumElements = UINT(maxDataNum_);
+	oUAVDesc.Buffer.CounterOffsetInBytes = 0;
+	oUAVDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
+	oUAVDesc.Buffer.StructureByteStride = sizeof(Particle);
+
+	DXF_->GetDevice()->CreateUnorderedAccessView(particleResource_, nullptr, &oUAVDesc, UAVHandle_.cpu);
+
+#pragma endregion
+
+
+#pragma region SRVのHandle生成
 	D3D12_SHADER_RESOURCE_VIEW_DESC instancingDesc{};
 	instancingDesc.Format = DXGI_FORMAT_UNKNOWN;
 	instancingDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	instancingDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
 	instancingDesc.Buffer.FirstElement = 0;
 	instancingDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-	instancingDesc.Buffer.NumElements = particleNum;
+	instancingDesc.Buffer.NumElements = UINT(maxDataNum_);
 	instancingDesc.Buffer.StructureByteStride = sizeof(Particle);
 
-	wvpHandles_ = SRVManager::CreateSRV(particleResource_, instancingDesc).gpu;
+	SRVHandle_ = SRVManager::CreateSRV(particleResource_, instancingDesc);
+#pragma endregion
 	
+
+	freeCounterResource_ = CreateUAVBufferResource(DXF_->GetDevice(), sizeof(int32_t) * 1);
+
+#pragma region UAVのHandle生成
+	counterUAVHandle_ = UAVManager::GetInstance()->GetDescriptorHandle();
+
+	D3D12_UNORDERED_ACCESS_VIEW_DESC fUAVDesc{};
+	fUAVDesc.Format = DXGI_FORMAT_UNKNOWN;
+	fUAVDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+	fUAVDesc.Buffer.FirstElement = 0;
+	fUAVDesc.Buffer.NumElements = UINT(1);
+	fUAVDesc.Buffer.CounterOffsetInBytes = 0;
+	fUAVDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
+	fUAVDesc.Buffer.StructureByteStride = sizeof(int32_t);
+
+	DXF_->GetDevice()->CreateUnorderedAccessView(freeCounterResource_, nullptr, &fUAVDesc, counterUAVHandle_.cpu);
+
+#pragma endregion
+
+
+#pragma region SRVのHandle生成
+	D3D12_SHADER_RESOURCE_VIEW_DESC instancingDesccount{};
+	instancingDesccount.Format = DXGI_FORMAT_UNKNOWN;
+	instancingDesccount.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	instancingDesccount.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+	instancingDesccount.Buffer.FirstElement = 0;
+	instancingDesccount.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+	instancingDesccount.Buffer.NumElements = UINT(1);
+	instancingDesccount.Buffer.StructureByteStride = sizeof(int32_t);
+
+	counterSRVHandle_ = SRVManager::CreateSRV(freeCounterResource_, instancingDesccount);
+#pragma endregion
+
 	perResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(PerView));
 	perResource_->Map(0, nullptr, reinterpret_cast<void**>(&perViewData_));
 	perViewData_->viewProjection = MakeIdentity4x4();
@@ -63,6 +116,9 @@ ParticleManager::ParticleManager()
 	materialData_->enableTex = true;
 	materialData_->discardNum = 0.0f;
 
+
+	
+
 	pso_ = std::make_unique<ParticlePSO>();
 	pso_->Initialize();
 
@@ -70,7 +126,7 @@ ParticleManager::ParticleManager()
 	
 	particleUpdateCS_ = std::make_unique<ParticleCS>();
 	
-
+	emiterCS_ = std::make_unique<ParticleEmiterCS>();
 
 }
 
@@ -81,14 +137,21 @@ ParticleManager::~ParticleManager()
 	particleResource_->Release();
 	perResource_->Release();
 	materialResource_->Release();
+	freeCounterResource_->Release();
+	
 }
 
 void ParticleManager::Initialize(int tex)
 {
 	//画像取得
 	texture_ = SRVManager::GetInstance()->GetTextureDescriptorHandle(tex);
-	particleInitializeCS_->Initialize();
-	particleUpdateCS_->Initialize();
+	particleInitializeCS_->Initialize(UAVHandle_.gpu,counterUAVHandle_.gpu);
+	
+	emiterCS_->Initialize();
+}
+
+void ParticleManager::Update()
+{
 
 
 }
@@ -96,26 +159,55 @@ void ParticleManager::Initialize(int tex)
 void ParticleManager::Draw()
 {
 
-	initializeGPUData_ = particleInitializeCS_->PreDraw();
 
 
 #pragma region 各データいれる
 	
-
-
 #pragma region PerView
+
+	Matrix4x4 backToFrontM = MakeRotateYMatrix(std::numbers::pi_v<float>);
+	Matrix4x4 billM = backToFrontM * Camera::GetInstance()->GetMainCamera().matWorld_;
+	billM.m[3][0] = 0.0f;
+	billM.m[3][1] = 0.0f;
+	billM.m[3][2] = 0.0f;
+
 	perViewData_->viewProjection = Camera::GetInstance()->GetViewProjectionMatrix();
-	perViewData_->billboardMatrix=MakeIdentity4x4();
+	perViewData_->billboardMatrix = billM;;
 #pragma endregion
 
-
 #pragma endregion
-
-
-
-	pso_->PreDraw();
-
 	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
+	D3D12_RESOURCE_BARRIER ubarrier = {};
+
+	ubarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+	ubarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	ubarrier.UAV.pResource = particleResource_;
+	cmd->ResourceBarrier(1, &ubarrier);
+	emiterCS_->PreDraw(UAVHandle_.gpu,UAVHandle_.gpu);
+	ubarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+	ubarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	ubarrier.UAV.pResource = particleResource_;
+	cmd->ResourceBarrier(1, &ubarrier);
+
+	// リソースバリアの設定
+	D3D12_RESOURCE_BARRIER barrier = {};
+
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = particleResource_;  // 頂点バッファリソースへのポインタ
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE;
+	//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
+	// コマンドリストにバリアを設定
+	cmd->ResourceBarrier(1, &barrier);
+
+
+	pso_->PreDraw(BlendMode::kAdd);
+
+	
+	ID3D12DescriptorHeap* des[] = { SRVManager::GetInstance()->GetSRV()};
+	cmd->SetDescriptorHeaps(1, des);
 
 	cmd->IASetVertexBuffers(0, 1, &vertexBufferView_);
 	cmd->IASetIndexBuffer(&indexBufferView_);//IBVを設定
@@ -123,7 +215,7 @@ void ParticleManager::Draw()
 	cmd->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 
-	cmd->SetGraphicsRootDescriptorTable(0, initializeGPUData_);
+	cmd->SetGraphicsRootDescriptorTable(0, SRVHandle_.gpu);
 	cmd->SetGraphicsRootConstantBufferView(1, perResource_->GetGPUVirtualAddress());
 	cmd->SetGraphicsRootConstantBufferView(2, materialResource_->GetGPUVirtualAddress());
 
@@ -131,6 +223,15 @@ void ParticleManager::Draw()
 	
 	cmd->DrawIndexedInstanced(static_cast<UINT>(modelData_.indices.size()), 1024, 0, 0, 0);
 
+	// リソースバリアの設定
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = particleResource_;  // 頂点バッファリソースへのポインタ
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE;
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
+	//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 
-	particleInitializeCS_->PostDraw();
+	// コマンドリストにバリアを設定
+	cmd->ResourceBarrier(1, &barrier);
+
 }

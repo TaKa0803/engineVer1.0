@@ -344,21 +344,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 		//描画準備
 		ModelManager::PreDraw(isAnime, blendMode_, fillMode_);
 
-		
-		//animationがある場合vertexBufferViewを二つ用意
-		//if (isAnime) {
-		//	D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
-		//	vertexBufferView_,					//VertexDataのView
-		//	modelData_.skinCluster.influenceBufferView	//InfluenceのVPV
-		//	};
-
-		//	DXF_->GetCMDList()->IASetVertexBuffers(0, 2, vbvs);
-		//	//DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(7, modelData_.skinCluster.paletteSrvHandle.second);
-		//}
-		//else {
-		//	//ない場合はいままで通り
-		//	
-		//}
+	
 
 		DXF_->GetCMDList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 

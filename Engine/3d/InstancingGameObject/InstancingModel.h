@@ -101,6 +101,8 @@ public:
 	void SetTexture(int tex) { setTexture_ = tex; }
 
 	void SetEnableTexture(bool isEnable) { materialData_->enableTexture = isEnable; }
+
+	void SetEnableEnviomentMap(bool enable, float num) { materialData_->enableEnvironmentMap = enable; materialData_->enviromentCoefficient = num; }
 #pragma endregion
 
 	/// <summary>

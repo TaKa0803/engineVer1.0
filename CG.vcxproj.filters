@@ -27,6 +27,7 @@
     <FxCompile Include="resources\shaders\PostEffect\HSVFIlter.PS.hlsl" />
     <FxCompile Include="resources\shaders\ComputeShader\Particle.CS.hlsl" />
     <FxCompile Include="resources\shaders\ComputeShader\InitializeParticle.CS.hlsl" />
+    <FxCompile Include="resources\shaders\ComputeShader\ParticleEmiter.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\AL\Plane\Plane.cpp" />
@@ -115,6 +116,7 @@
     <ClCompile Include="Engine\ParticleCS\Particle\ParticleManager.cpp" />
     <ClCompile Include="Engine\ParticleCS\Particle\ParticlePSO\ParticlePSO.cpp" />
     <ClCompile Include="Engine\ParticleCS\ParticleInitialize.cpp" />
+    <ClCompile Include="Engine\ParticleCS\Emiter\ParticleEmiterCS.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -205,6 +207,7 @@
     <ClInclude Include="Engine\ParticleCS\Particle\ParticlePSO\ParticlePSO.h" />
     <ClInclude Include="Engine\ParticleCS\Particle\ParticleData.h" />
     <ClInclude Include="Engine\ParticleCS\ParticleInitialize.h" />
+    <ClInclude Include="Engine\ParticleCS\Emiter\ParticleEmiterCS.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

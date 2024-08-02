@@ -1,4 +1,4 @@
-#include "ParticleCS.h"
+#include "ParticleEmiterCS.h"
 #include"Log/Log.h"
 #include"DXC/DXCManager.h"
 #include"functions/function.h"
@@ -8,9 +8,7 @@
 
 #include<cassert>
 
-
-
-ParticleCS::ParticleCS()
+ParticleEmiterCS::ParticleEmiterCS()
 {
 	DXF_ = DirectXFunc::GetInstance();
 #pragma region RootSignatureを生成する
@@ -21,7 +19,7 @@ ParticleCS::ParticleCS()
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 #pragma region RootParameter 
 	//RootParameter作成。PixelShaderのMAterialとVertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameters[2] = {};
+	D3D12_ROOT_PARAMETER rootParameters[4] = {};
 
 #pragma region Particle
 	D3D12_DESCRIPTOR_RANGE descriptorRangeForParticle[1] = {};
@@ -36,11 +34,30 @@ ParticleCS::ParticleCS()
 	rootParameters[0].DescriptorTable.pDescriptorRanges = descriptorRangeForParticle;
 	rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForParticle);
 #pragma endregion
-	//PerView
+
+	//エミッタデータ
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;		//すべてで使う
 	rootParameters[1].Descriptor.ShaderRegister = 0;						//レジスタ番号０とバインド
 
+	//PerFrame
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;		//すべてで使う
+	rootParameters[2].Descriptor.ShaderRegister = 1;						//レジスタ番号０とバインド
+
+
+	//Particle
+	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
+	descriptorRange[0].BaseShaderRegister = 1;								//0から始まる
+	descriptorRange[0].NumDescriptors = 1;									//数
+	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;			//UAVを使う
+	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//offsetを自動計算	
+
+	//PSのDescriptorTable
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;;		//DescriptorHeapを使う
+	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;					//PixelShaderで使う 
+	rootParameters[3].DescriptorTable.pDescriptorRanges = descriptorRange;				//tableの中身の配列を指定
+	rootParameters[3].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);	//tableで利用する
 #pragma endregion
 
 	descriptionRootSignature.pParameters = rootParameters;					//ルートパラメータ配列へのポインタ
@@ -81,35 +98,53 @@ ParticleCS::ParticleCS()
 	assert(SUCCEEDED(hr));
 #pragma endregion
 
-	particleResource_ = CreateUAVBufferResource(DXF_->GetDevice(), sizeof(Particle) * maxDataCount_);
 
-#pragma region Per関係
-	perResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(PerView));
-	perResource_->Map(0, nullptr, reinterpret_cast<void**>(&perData_));
-	perData_->billboardMatrix = MakeIdentity4x4();
-	perData_->viewProjection = MakeIdentity4x4();
-	perData_->deltaTime = 1.0f / 60.0f;
-#pragma endregion
+	emiterResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(EmiterSphere));
+	emiterResource_->Map(0, nullptr, reinterpret_cast<void**>(&emiterData_));
+	emiterData_->count = 5;
+	emiterData_->frequency = 0.5f;
+	emiterData_->frequencyTime = 0.0f;
+	emiterData_->translate = Vector3(0.0f, 0.0f, 0.0f);
+	emiterData_->radius = 1.0f;
+	emiterData_->emit = 0;
 
-	Log("Complete Particle Compute Shader Initialize!\n");
+	perFrameResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(PerFrame));
+	perFrameResource_->Map(0, nullptr, reinterpret_cast<void**>(&perFrameData_));
+	perFrameData_->time = 0;
+	perFrameData_->deltaTime = 1.0f / 60.0f;
 }
 
-ParticleCS::~ParticleCS()
+ParticleEmiterCS::~ParticleEmiterCS()
 {
 	rootSignature_->Release();
 	graphicsPipelineState_->Release();
-
-	particleResource_->Release();
-	perResource_->Release();
+	emiterResource_->Release();
+	perFrameResource_->Release();
 }
 
-void ParticleCS::Initialize()
+void ParticleEmiterCS::Initialize()
 {
-
 }
 
-void ParticleCS::PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle)
+void ParticleEmiterCS::PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle)
 {
+
+	//仮でデルタタイム直
+	float deltaTime = 1.0f / 60.0f;
+
+	//エミッター更新
+	emiterData_->frequencyTime += deltaTime;
+	perFrameData_->time++;
+
+	//差出間隔を上回ったら射出許可を出して時間を調整
+	if (emiterData_->frequency <= emiterData_->frequencyTime) {
+		emiterData_->frequencyTime -= emiterData_->frequency;
+		emiterData_->emit = 1;
+	}
+	else {
+		emiterData_->emit = 0;
+	}
+
 	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
 
 	ID3D12DescriptorHeap* des[] = { UAVManager::GetInstance()->GetDescriptorHeap() };
@@ -117,40 +152,13 @@ void ParticleCS::PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle)
 	cmd->SetDescriptorHeaps(1, des);
 	cmd->SetComputeRootSignature(rootSignature_);
 	cmd->SetPipelineState(graphicsPipelineState_);
-	
+
 	cmd->SetComputeRootDescriptorTable(0, handle);
-	cmd->SetComputeRootConstantBufferView(1, perResource_->GetGPUVirtualAddress());
+	cmd->SetComputeRootConstantBufferView(1, emiterResource_->GetGPUVirtualAddress());
+	cmd->SetComputeRootConstantBufferView(2, perFrameResource_->GetGPUVirtualAddress());
+	cmd->SetComputeRootDescriptorTable(3, chandle);
 
-	cmd->Dispatch(1024, 1, 1);
-
-	////// リソースバリアの設定
-	//D3D12_RESOURCE_BARRIER barrier = {};
-	//barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	//barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	//barrier.Transition.pResource = particleResource_;  // 頂点バッファリソースへのポインタ
-	//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-	//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE;
-	////barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	//// コマンドリストにバリアを設定
-	//cmd->ResourceBarrier(1, &barrier);
-
-	
-}
-
-void ParticleCS::PostDraw()
-{
-	// リソースバリアの設定
-	D3D12_RESOURCE_BARRIER barrier = {};
-	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = particleResource_;  // 頂点バッファリソースへのポインタ
-	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE;
-	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-	//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-
-	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
-	// コマンドリストにバリアを設定
-	cmd->ResourceBarrier(1, &barrier);
+	cmd->Dispatch(1, 1, 1);
 }
 
 

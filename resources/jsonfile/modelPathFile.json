@@ -16,8 +16,9 @@
     "walk": [ "walk", "walk.gltf" ],
     "flag": [ "moveflag", "flag.gltf" ],
     "Flag": [ "Flag", "Flag.obj" ],
-    "Wall":  ["Wall","Wall.obj"],
-    "Player": [ "Object", "player.gltf"]
+    "Wall": [ "Wall", "Wall.obj" ],
+    "Player": [ "Object", "player.gltf" ],
+    "z+Plane": [ "SystemResources/normalZ+Plane", "normalZ+Plane.obj" ]
   },
   "InstancingmodelPathFile": {
     "Wall": [ "Wall", "Wall.obj" ,10],

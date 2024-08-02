@@ -3,6 +3,20 @@
 #include"Vector4.h"
 #include"struct.h"
 
+struct PerFrame {
+	float time;
+	float deltaTime;
+};
+
+struct EmiterSphere {
+	Vector3 translate;
+	float radius;
+	uint32_t  count;
+	float frequency;
+	float frequencyTime;
+	uint32_t emit; //射出許可
+
+};
 
 struct Particle {
 	Vector3 translate;
@@ -16,4 +30,5 @@ struct Particle {
 struct PerView {
 	Matrix4x4 viewProjection;
 	Matrix4x4 billboardMatrix;
+	float deltaTime;
 };

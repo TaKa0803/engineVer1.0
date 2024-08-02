@@ -12,8 +12,9 @@ public:
 
 	void Initialize();
 
-	void PreDraw();
+	void PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle);
 
+	void PostDraw();
 private:
 
 	DirectXFunc* DXF_ = nullptr;
@@ -31,9 +32,6 @@ private:
 
 	//シェーダデータ(Particle
 	ID3D12Resource* particleResource_=nullptr;
-	D3D12_VERTEX_BUFFER_VIEW vbv_;
-	Particle* particleData_ = nullptr;
-	D3D12_GPU_DESCRIPTOR_HANDLE particleHandle;
 
 	//Perリソース
 	ID3D12Resource* perResource_=nullptr;
