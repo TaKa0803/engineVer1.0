@@ -86,6 +86,7 @@ ALGameScene::ALGameScene() {
 	MapLoader::GetInstance()->LoadLevelEditor("map", ".json");
 	MapLoader::GetInstance()->CreateModel(0);
 
+	peM_ = std::make_unique<ParticleManager>();
 
 }
 
@@ -147,6 +148,7 @@ void ALGameScene::Initialize() {
 
 	PEVignetting::materialData_->darkness = 0.3f;
 
+	peM_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
 }
 
 
@@ -154,7 +156,8 @@ void ALGameScene::Initialize() {
 void ALGameScene::Update() {
 
 	PostEffectManager::GetInstance()->Debug();
-
+	
+	peM_->Update();
 	switch (scene_) {
 	case ALGameScene::Game:
 
@@ -245,7 +248,10 @@ void ALGameScene::Draw() {
 	//インスタンシングのモデルを全描画
 	InstancingModelManager::GetInstance()->DrawAllModel();
 
+	peM_->Draw();
+
 	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting,true);
+
 
 
 	int Count = 0;
@@ -285,6 +291,7 @@ void ALGameScene::Draw() {
 	default:
 		break;
 	}
+
 	sceneC_->Draw();
 }
 
@@ -318,6 +325,7 @@ void ALGameScene::Collision() {
 				if (player_->IsPlayerATK()) {
 					if (enemy->Collision(player_->GetCollider())) {
 						ShakeStart(3);
+						peM_->SpawnE(enemy->GetWorld().GetMatWorldTranslate());
 					}
 				}
 				enemy->OshiDashi(player_->GetCollider());

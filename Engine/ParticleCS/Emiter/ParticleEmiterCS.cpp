@@ -19,7 +19,7 @@ ParticleEmiterCS::ParticleEmiterCS()
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 #pragma region RootParameter 
 	//RootParameter作成。PixelShaderのMAterialとVertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameters[4] = {};
+	D3D12_ROOT_PARAMETER rootParameters[5] = {};
 
 #pragma region Particle
 	D3D12_DESCRIPTOR_RANGE descriptorRangeForParticle[1] = {};
@@ -58,6 +58,21 @@ ParticleEmiterCS::ParticleEmiterCS()
 	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;					//PixelShaderで使う 
 	rootParameters[3].DescriptorTable.pDescriptorRanges = descriptorRange;				//tableの中身の配列を指定
 	rootParameters[3].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);	//tableで利用する
+
+
+	//list
+	D3D12_DESCRIPTOR_RANGE descriptorRangeList[1] = {};
+	descriptorRangeList[0].BaseShaderRegister = 2;								//0から始まる
+	descriptorRangeList[0].NumDescriptors = 1;									//数
+	descriptorRangeList[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;			//UAVを使う
+	descriptorRangeList[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//offsetを自動計算	
+
+	//PSのDescriptorTable
+	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;;		//DescriptorHeapを使う
+	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;					//PixelShaderで使う 
+	rootParameters[4].DescriptorTable.pDescriptorRanges = descriptorRangeList;				//tableの中身の配列を指定
+	rootParameters[4].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeList);	//tableで利用する
+
 #pragma endregion
 
 	descriptionRootSignature.pParameters = rootParameters;					//ルートパラメータ配列へのポインタ
@@ -101,7 +116,7 @@ ParticleEmiterCS::ParticleEmiterCS()
 
 	emiterResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(EmiterSphere));
 	emiterResource_->Map(0, nullptr, reinterpret_cast<void**>(&emiterData_));
-	emiterData_->count = 5;
+	emiterData_->count = 100;
 	emiterData_->frequency = 0.5f;
 	emiterData_->frequencyTime = 0.0f;
 	emiterData_->translate = Vector3(0.0f, 0.0f, 0.0f);
@@ -126,24 +141,38 @@ void ParticleEmiterCS::Initialize()
 {
 }
 
-void ParticleEmiterCS::PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle)
+void ParticleEmiterCS::Update()
 {
 
-	//仮でデルタタイム直
-	float deltaTime = 1.0f / 60.0f;
-
-	//エミッター更新
-	emiterData_->frequencyTime += deltaTime;
 	perFrameData_->time++;
 
-	//差出間隔を上回ったら射出許可を出して時間を調整
-	if (emiterData_->frequency <= emiterData_->frequencyTime) {
-		emiterData_->frequencyTime -= emiterData_->frequency;
-		emiterData_->emit = 1;
+
+	if (!onlyImpact) {
+		//仮でデルタタイム直
+		float deltaTime = 1.0f / 60.0f;
+
+		//エミッター更新
+		emiterData_->frequencyTime += deltaTime;
+		
+		//差出間隔を上回ったら射出許可を出して時間を調整
+		if (emiterData_->frequency <= emiterData_->frequencyTime) {
+			emiterData_->frequencyTime -= emiterData_->frequency;
+			emiterData_->emit = 1;
+		}
+		else {
+			emiterData_->emit = 0;
+		}
 	}
 	else {
 		emiterData_->emit = 0;
 	}
+
+}
+
+void ParticleEmiterCS::PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhandle)
+{
+
+
 
 	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
 
@@ -157,8 +186,10 @@ void ParticleEmiterCS::PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DES
 	cmd->SetComputeRootConstantBufferView(1, emiterResource_->GetGPUVirtualAddress());
 	cmd->SetComputeRootConstantBufferView(2, perFrameResource_->GetGPUVirtualAddress());
 	cmd->SetComputeRootDescriptorTable(3, chandle);
+	cmd->SetComputeRootDescriptorTable(4, listhandle);
 
 	cmd->Dispatch(1, 1, 1);
+
 }
 
 

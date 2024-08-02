@@ -25,7 +25,7 @@ CGScnene::CGScnene()
 	PEHSVFilter::materialData_->effective = 0.5f;
 	
 	particleManager_ = std::make_unique<ParticleManager>();
-	particleManager_->Initialize(TextureManager::LoadTex("resources/Texture/AL/skill.png").texNum);
+	particleManager_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
 }
 
 CGScnene::~CGScnene() { 
@@ -50,6 +50,7 @@ void CGScnene::Initialize()
 
 	pointLight_ = PointLight();
 
+	
 }
 
 void CGScnene::Update()
@@ -71,8 +72,12 @@ void CGScnene::Update()
 	LightManager::GetInstance()->SetPLight(pointLight_);
 	LightManager::GetInstance()->SetDLight(dLight_);
 	
-
+	particleManager_->Update();
 	
+
+	if (input_->PushKey(DIK_SPACE)) {
+		particleManager_->SpawnE({0,0,0});
+	} 
 }
 
 

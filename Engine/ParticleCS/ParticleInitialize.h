@@ -8,7 +8,7 @@ public:
 	ParticleInitializeCS();
 	~ParticleInitializeCS();
 
-	void Initialize(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle);
+	void Initialize(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhandle);
 
 
 private:

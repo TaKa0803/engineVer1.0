@@ -14,6 +14,8 @@
 #include"AL/EnemyPopManager/EnemyPopManager.h"
 #include"Sprite/Sprite.h"
 #include"AL/BrokenBody/BrokenBody.h"
+#include"ParticleCS/Particle/ParticleManager.h"
+
 
 
 class ALGameScene : public IScene {
@@ -148,4 +150,6 @@ private:
 	int cameraShakeCount_=0;
 	Vector2 shakenum = {0,0};
 	Vector3 tempP_;
+
+	std::unique_ptr<ParticleManager>peM_;
 };

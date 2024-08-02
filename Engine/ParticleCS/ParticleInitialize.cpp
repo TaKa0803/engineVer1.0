@@ -18,7 +18,7 @@ ParticleInitializeCS::ParticleInitializeCS()
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 #pragma region RootParameter 
 	//RootParameter作成。PixelShaderのMAterialとVertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameters[2] = {};
+	D3D12_ROOT_PARAMETER rootParameters[3] = {};
 
 	//Particle
 	D3D12_DESCRIPTOR_RANGE descriptorRangeParticle[1] = {};
@@ -34,7 +34,7 @@ ParticleInitializeCS::ParticleInitializeCS()
 	rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeParticle);	//tableで利用する
 
 
-	//Particle
+	//Index
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
 	descriptorRange[0].BaseShaderRegister = 1;								//0から始まる
 	descriptorRange[0].NumDescriptors = 1;									//数
@@ -46,6 +46,21 @@ ParticleInitializeCS::ParticleInitializeCS()
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;					//PixelShaderで使う 
 	rootParameters[1].DescriptorTable.pDescriptorRanges = descriptorRange;				//tableの中身の配列を指定
 	rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);	//tableで利用する
+
+
+	//list
+	D3D12_DESCRIPTOR_RANGE descriptorRangeList[1] = {};
+	descriptorRangeList[0].BaseShaderRegister = 2;								//0から始まる
+	descriptorRangeList[0].NumDescriptors = 1;									//数
+	descriptorRangeList[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;			//UAVを使う
+	descriptorRangeList[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//offsetを自動計算	
+
+	//PSのDescriptorTable
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;;		//DescriptorHeapを使う
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;					//PixelShaderで使う 
+	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRangeList;				//tableの中身の配列を指定
+	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeList);	//tableで利用する
+
 
 #pragma endregion
 
@@ -99,7 +114,7 @@ ParticleInitializeCS::~ParticleInitializeCS()
 	graphicsPipelineState_->Release();
 }
 
-void ParticleInitializeCS::Initialize(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle)
+void ParticleInitializeCS::Initialize(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhandle)
 {
 	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
 
@@ -111,6 +126,8 @@ void ParticleInitializeCS::Initialize(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_
 
 	cmd->SetComputeRootDescriptorTable(0, handle);
 	cmd->SetComputeRootDescriptorTable(1, chandle);
+	cmd->SetComputeRootDescriptorTable(2, listhandle);
+
 
 	cmd->Dispatch(1024, 1, 1);
 }

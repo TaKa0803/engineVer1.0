@@ -26,7 +26,9 @@ struct PerFrame
 };
 
 RWStructuredBuffer<Particle> gParticle : register(u0);
-RWStructuredBuffer<int32_t> gFreeCounter : register(u1);
+RWStructuredBuffer<int32_t> gFreeListIndex : register(u1);
+RWStructuredBuffer<uint32_t> gFreeList : register(u2);
+
 ConstantBuffer<Emiter> gEmiter : register(b0);
 ConstantBuffer<PerFrame> gPerFrame : register(b1);
 
@@ -81,19 +83,34 @@ void main(uint3 DTid : SV_DispatchThreadID)
         
         for (uint32_t countIndex = 0; countIndex < gEmiter.count; ++countIndex)
         {
-            uint32_t particleIndex;
-            InterlockedAdd(gFreeCounter[0], 1, particleIndex);
+            int32_t freeListIndex;
+            InterlockedAdd(gFreeListIndex[0], -1, freeListIndex);
             
             //
-            if (particleIndex < kMaxParticles)
+            if (0<=freeListIndex && freeListIndex < kMaxParticles)
             {
-                float32_t scale = generator.Generate1d();
                 
+                uint32_t particleIndex = gFreeList[freeListIndex];
+                
+                float32_t scale = generator.Generate1d();
                 gParticle[particleIndex].scale = float32_t3(scale, scale, scale);
-                gParticle[particleIndex].translate = generator.Generate3d() * (gEmiter.radius - gEmiter.radius / 2.0f);
-                gParticle[particleIndex].velocity = generator.Generate3d() * 2 - 1;
-                gParticle[particleIndex].color.rgb = generator.Generate3d();
+                gParticle[particleIndex].translate = gEmiter.translate + generator.Generate3d() * (gEmiter.radius - gEmiter.radius / 2.0f);
+                gParticle[particleIndex].velocity = (generator.Generate3d() * 2.0f - 1.0f)/2.0f;
+                //gParticle[particleIndex].color.rgb = generator.Generate3d();
+                gParticle[particleIndex].color.rgb = float32_t3(1.0f, 0.0f, 0.0f);
                 gParticle[particleIndex].color.a = 1.0f;
+                
+                gParticle[particleIndex].lifeTime = generator.Generate1d();
+
+                gParticle[particleIndex].currentTime = 0;
+                
+
+            }
+            else
+            {
+                //発生されられなかったので減らした分元に戻す
+                InterlockedAdd(gFreeListIndex[0], 1);
+                break;
             }
         }
 

@@ -34,6 +34,7 @@ public:
 	//描画
 	void Draw();
 
+	void SpawnE(const Vector3&pos);
 private:
 
 	DirectXFunc* DXF_;
@@ -49,8 +50,7 @@ private:
 	std::unique_ptr<ParticleEmiterCS>emiterCS_;
 
 	size_t maxDataNum_ = 1024;
-	Handles SRVHandle_;
-	Handles UAVHandle_;
+
 #pragma region リソース関係
 	ID3D12Resource* vertexResource_;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
@@ -59,8 +59,13 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 
 	ID3D12Resource* particleResource_;
+	Handles SRVHandle_;
+	Handles UAVHandle_;
 
-	ID3D12Resource* freeCounterResource_;
+	ID3D12Resource* freeListResource_;
+	Handles listUAVHandle_;
+
+	ID3D12Resource* freeListIndexResource_;
 	Handles counterSRVHandle_;
 	Handles counterUAVHandle_;
 

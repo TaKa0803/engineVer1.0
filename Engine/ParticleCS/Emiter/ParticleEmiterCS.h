@@ -14,9 +14,13 @@ public:
 
 	void Initialize();
 
+	void Update();
 
-	void PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle);
+	void PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhand);
 
+	void SetOnlyImpact(bool flag) { onlyImpact = flag; };
+
+	void Emit(const Vector3& pos) { emiterData_->emit = 1; emiterData_->translate = pos; }
 private:
 
 	DirectXFunc* DXF_ = nullptr;
@@ -38,4 +42,6 @@ private:
 
 	ID3D12Resource* perFrameResource_;
 	PerFrame* perFrameData_ = nullptr;
+
+	bool onlyImpact = false;
 };
