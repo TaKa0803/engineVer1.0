@@ -80,21 +80,20 @@ void CGScnene::Update()
 void CGScnene::Draw()
 {
 	skybox_->Draw();	
-	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
+	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
+	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
 
-	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
-
-	terrain->Draw();
+	//terrain->Draw();
 
 	
-	object->Draw();
+	//object->Draw();
 
-	MapLoader::GetInstance()->DrawLevelData();
+	//MapLoader::GetInstance()->DrawLevelData();
 
-	InstancingModelManager::GetInstance()->DrawAllModel();
-	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDepthBasedOutline, true);
-	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
-	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDissolve, true);
+	//InstancingModelManager::GetInstance()->DrawAllModel();
+	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDepthBasedOutline, true);
+	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
+	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDissolve, true);
 
 
 	particleManager_->Draw();

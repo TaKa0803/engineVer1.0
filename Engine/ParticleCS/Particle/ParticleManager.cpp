@@ -179,11 +179,9 @@ void ParticleManager::Draw()
 	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
 	D3D12_RESOURCE_BARRIER ubarrier = {};
 
-	ubarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
-	ubarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	ubarrier.UAV.pResource = particleResource_;
-	cmd->ResourceBarrier(1, &ubarrier);
-	emiterCS_->PreDraw(UAVHandle_.gpu,UAVHandle_.gpu);
+
+	emiterCS_->PreDraw(UAVHandle_.gpu,counterUAVHandle_.gpu);
+
 	ubarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
 	ubarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 	ubarrier.UAV.pResource = particleResource_;
@@ -191,7 +189,6 @@ void ParticleManager::Draw()
 
 	// リソースバリアの設定
 	D3D12_RESOURCE_BARRIER barrier = {};
-
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 	barrier.Transition.pResource = particleResource_;  // 頂点バッファリソースへのポインタ
