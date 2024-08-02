@@ -81,17 +81,8 @@ ParticleCS::ParticleCS()
 	assert(SUCCEEDED(hr));
 #pragma endregion
 
-	particleResource_ = CreateUAVBufferResource(DXF_->GetDevice(), sizeof(Particle) * maxDataCount_);
 
-#pragma region Per関係
-	perResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(PerView));
-	perResource_->Map(0, nullptr, reinterpret_cast<void**>(&perData_));
-	perData_->billboardMatrix = MakeIdentity4x4();
-	perData_->viewProjection = MakeIdentity4x4();
-	perData_->deltaTime = 1.0f / 60.0f;
-#pragma endregion
-
-	Log("Complete Particle Compute Shader Initialize!\n");
+	Log("Complete ParticleUpdate ComputeShader Initialize!\n");
 }
 
 ParticleCS::~ParticleCS()
@@ -99,8 +90,7 @@ ParticleCS::~ParticleCS()
 	rootSignature_->Release();
 	graphicsPipelineState_->Release();
 
-	particleResource_->Release();
-	perResource_->Release();
+
 }
 
 void ParticleCS::Initialize()
@@ -108,7 +98,7 @@ void ParticleCS::Initialize()
 
 }
 
-void ParticleCS::PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle)
+void ParticleCS::PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_VIRTUAL_ADDRESS adress)
 {
 	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
 
@@ -119,38 +109,12 @@ void ParticleCS::PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle)
 	cmd->SetPipelineState(graphicsPipelineState_);
 	
 	cmd->SetComputeRootDescriptorTable(0, handle);
-	cmd->SetComputeRootConstantBufferView(1, perResource_->GetGPUVirtualAddress());
+	cmd->SetComputeRootConstantBufferView(1, adress);
 
 	cmd->Dispatch(1024, 1, 1);
-
-	////// リソースバリアの設定
-	//D3D12_RESOURCE_BARRIER barrier = {};
-	//barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	//barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	//barrier.Transition.pResource = particleResource_;  // 頂点バッファリソースへのポインタ
-	//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-	//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE;
-	////barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	//// コマンドリストにバリアを設定
-	//cmd->ResourceBarrier(1, &barrier);
-
 	
 }
 
-void ParticleCS::PostDraw()
-{
-	// リソースバリアの設定
-	D3D12_RESOURCE_BARRIER barrier = {};
-	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = particleResource_;  // 頂点バッファリソースへのポインタ
-	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE;
-	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-	//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 
-	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
-	// コマンドリストにバリアを設定
-	cmd->ResourceBarrier(1, &barrier);
-}
 
 

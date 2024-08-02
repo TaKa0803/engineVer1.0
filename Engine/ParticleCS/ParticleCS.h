@@ -12,9 +12,8 @@ public:
 
 	void Initialize();
 
-	void PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle);
+	void PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_VIRTUAL_ADDRESS adress);
 
-	void PostDraw();
 private:
 
 	DirectXFunc* DXF_ = nullptr;
@@ -30,11 +29,6 @@ private:
 	//パーティクル最大数
 	size_t maxDataCount_ = 1024;
 
-	//シェーダデータ(Particle
-	ID3D12Resource* particleResource_=nullptr;
 
-	//Perリソース
-	ID3D12Resource* perResource_=nullptr;
-	PerView* perData_ = nullptr;
 	
 };

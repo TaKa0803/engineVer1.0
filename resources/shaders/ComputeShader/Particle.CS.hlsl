@@ -32,9 +32,10 @@ void main( uint32_t3 DTid : SV_DispatchThreadID )
         //alphaが0の時はないものとみなして更新しない
         if (gParticle[particleIndex].color.a != 0)
         {
-            //gParticle[particleIndex].translate += gParticle[particleIndex].velocity;
-            //gParticle[particleIndex].currentTime = gPerView.deltaTime;
+            gParticle[particleIndex].translate += gParticle[particleIndex].velocity;
+            gParticle[particleIndex].currentTime += gPerView.deltaTime;
             //float32_t alpha = 1.0f - (gParticle[particleIndex].currentTime / gParticle[particleIndex].lifeTime);
+            //gParticle[particleIndex].color.a = saturate(alpha);
             
         }
     }

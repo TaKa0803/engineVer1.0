@@ -123,10 +123,11 @@ ParticleManager::ParticleManager()
 	pso_->Initialize();
 
 	particleInitializeCS_ = std::make_unique<ParticleInitializeCS>();
-	
+
+	emiterCS_ = std::make_unique<ParticleEmiterCS>();
+
 	particleUpdateCS_ = std::make_unique<ParticleCS>();
 	
-	emiterCS_ = std::make_unique<ParticleEmiterCS>();
 
 }
 
@@ -186,6 +187,10 @@ void ParticleManager::Draw()
 	ubarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 	ubarrier.UAV.pResource = particleResource_;
 	cmd->ResourceBarrier(1, &ubarrier);
+
+	particleUpdateCS_->PreDraw(UAVHandle_.gpu, perResource_->GetGPUVirtualAddress());
+
+
 
 	// リソースバリアの設定
 	D3D12_RESOURCE_BARRIER barrier = {};

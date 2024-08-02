@@ -66,9 +66,6 @@ class RandomGenerator
     }
 };
 
-
-
-
 static const uint32_t kMaxParticles = 1024;
 
 [numthreads(1, 1, 1)]
@@ -93,7 +90,8 @@ void main(uint3 DTid : SV_DispatchThreadID)
                 float32_t scale = generator.Generate1d();
                 
                 gParticle[particleIndex].scale = float32_t3(scale, scale, scale);
-                gParticle[particleIndex].translate = generator.Generate3d() * 10-5;
+                gParticle[particleIndex].translate = generator.Generate3d() * (gEmiter.radius - gEmiter.radius / 2.0f);
+                gParticle[particleIndex].velocity = generator.Generate3d() * 2 - 1;
                 gParticle[particleIndex].color.rgb = generator.Generate3d();
                 gParticle[particleIndex].color.a = 1.0f;
             }
