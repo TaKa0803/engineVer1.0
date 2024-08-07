@@ -1,6 +1,6 @@
 #pragma once
 #include"DirectXFunc/DirectXFunc.h"
-#include"Particle/ParticleData.h"
+#include"ParticleData/ParticleData.h"
 #include"struct.h"
 
 class ParticleInitializeCS {

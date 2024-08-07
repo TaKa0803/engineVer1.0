@@ -1,7 +1,7 @@
 #pragma once
 #include"Vector3.h"
 #include"DirectXFunc/DirectXFunc.h"
-#include"ParticleCS/Particle/ParticleData.h"
+#include"ParticleData/ParticleData.h"
 #include<cstdint>
 
 

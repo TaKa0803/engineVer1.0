@@ -14,7 +14,7 @@
 #include"AL/EnemyPopManager/EnemyPopManager.h"
 #include"Sprite/Sprite.h"
 #include"AL/BrokenBody/BrokenBody.h"
-#include"ParticleCS/Particle/ParticleManager.h"
+#include"ParticleData/ParticleManager.h"
 
 
 

@@ -1,4 +1,4 @@
-#include "ParticleCS.h"
+#include "ParticleUpdateCS.h"
 #include"Log/Log.h"
 #include"DXC/DXCManager.h"
 #include"functions/function.h"
@@ -10,7 +10,7 @@
 
 
 
-ParticleCS::ParticleCS()
+ParticleUpdateCS::ParticleUpdateCS()
 {
 	DXF_ = DirectXFunc::GetInstance();
 #pragma region RootSignatureを生成する
@@ -112,7 +112,7 @@ ParticleCS::ParticleCS()
 	Log("Complete ParticleUpdate ComputeShader Initialize!\n");
 }
 
-ParticleCS::~ParticleCS()
+ParticleUpdateCS::~ParticleUpdateCS()
 {
 	rootSignature_->Release();
 	graphicsPipelineState_->Release();
@@ -120,12 +120,12 @@ ParticleCS::~ParticleCS()
 
 }
 
-void ParticleCS::Initialize()
+void ParticleUpdateCS::Initialize()
 {
 
 }
 
-void ParticleCS::PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_VIRTUAL_ADDRESS adress, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhandle)
+void ParticleUpdateCS::PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_VIRTUAL_ADDRESS adress, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhandle)
 {
 	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
 

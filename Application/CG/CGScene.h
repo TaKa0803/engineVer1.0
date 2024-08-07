@@ -5,7 +5,7 @@
 #include"Camera/Camera.h"
 #include"SingleGameObjects/GameObject.h"
 #include"SkyBoxModel/SkyBoxModel.h"
-#include"ParticleCS/Particle/ParticleManager.h"
+#include"ParticleData/ParticleManager.h"
 
 class CGScnene : public IScene {
 

@@ -5,9 +5,9 @@
 #include"ParticleData.h"
 #include"ParticlePSO/ParticlePSO.h"
 #include"DirectXFunc/DirectXFunc.h"
-#include"ParticleCS/ParticleCS.h"
-#include"ParticleCS/ParticleInitialize.h"
-#include"ParticleCS/Emiter/ParticleEmiterCS.h"
+#include"ParticleData/Update/ParticleCS.h"
+#include"ParticleData/Initialize/ParticleInitialize.h"
+#include"ParticleData/Emiter/ParticleEmiterCS.h"
 
 #include<stdint.h>
 
@@ -46,7 +46,7 @@ private:
 	D3D12_GPU_DESCRIPTOR_HANDLE texture_;
 
 	std::unique_ptr<ParticleInitializeCS> particleInitializeCS_;
-	std::unique_ptr<ParticleCS>particleUpdateCS_;
+	std::unique_ptr<ParticleUpdateCS>particleUpdateCS_;
 	std::unique_ptr<ParticleEmiterCS>emiterCS_;
 
 	size_t maxDataNum_ = 1024;

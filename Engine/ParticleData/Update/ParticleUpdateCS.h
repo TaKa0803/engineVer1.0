@@ -2,13 +2,13 @@
 #include"Vector4.h"
 #include"Matrix.h"
 #include"DirectXFunc/DirectXFunc.h"
-#include"ParticleCS/Particle/ParticleData.h"
+#include"ParticleData/ParticleData.h"
 
 
-class ParticleCS {
+class ParticleUpdateCS {
 public:
-	ParticleCS();
-	~ParticleCS();
+	ParticleUpdateCS();
+	~ParticleUpdateCS();
 
 	void Initialize();
 

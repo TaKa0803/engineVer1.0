@@ -146,7 +146,7 @@ ParticleManager::ParticleManager()
 
 	emiterCS_ = std::make_unique<ParticleEmiterCS>();
 
-	particleUpdateCS_ = std::make_unique<ParticleCS>();
+	particleUpdateCS_ = std::make_unique<ParticleUpdateCS>();
 
 
 }

@@ -112,11 +112,11 @@
     <ClCompile Include="Engine\ComputeShaders\SkinningCS.cpp" />
     <ClCompile Include="Engine\PostEffect\PEs\PEHSVFilter.cpp" />
     <ClCompile Include="Engine\base\UAVManager\UAVManager.cpp" />
-    <ClCompile Include="Engine\ParticleCS\ParticleCS.cpp" />
-    <ClCompile Include="Engine\ParticleCS\Particle\ParticleManager.cpp" />
-    <ClCompile Include="Engine\ParticleCS\Particle\ParticlePSO\ParticlePSO.cpp" />
-    <ClCompile Include="Engine\ParticleCS\ParticleInitialize.cpp" />
-    <ClCompile Include="Engine\ParticleCS\Emiter\ParticleEmiterCS.cpp" />
+    <ClCompile Include="Engine\ParticleData\Update\ParticleUpdateCS.cpp" />
+    <ClCompile Include="Engine\ParticleData\ParticleManager.cpp" />
+    <ClCompile Include="Engine\ParticleData\ParticlePSO\ParticlePSO.cpp" />
+    <ClCompile Include="Engine\ParticleData\Initialize\ParticleInitialize.cpp" />
+    <ClCompile Include="Engine\ParticleData\Emiter\ParticleEmiterCS.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -202,12 +202,12 @@
     <ClInclude Include="Engine\ComputeShaders\SkinningCS.h" />
     <ClInclude Include="Engine\PostEffect\PEs\PEHSVFilter.h" />
     <ClInclude Include="Engine\base\UAVManager\UAVManager.h" />
-    <ClInclude Include="Engine\ParticleCS\ParticleCS.h" />
-    <ClInclude Include="Engine\ParticleCS\Particle\ParticleManager.h" />
-    <ClInclude Include="Engine\ParticleCS\Particle\ParticlePSO\ParticlePSO.h" />
-    <ClInclude Include="Engine\ParticleCS\Particle\ParticleData.h" />
-    <ClInclude Include="Engine\ParticleCS\ParticleInitialize.h" />
-    <ClInclude Include="Engine\ParticleCS\Emiter\ParticleEmiterCS.h" />
+    <ClInclude Include="Engine\ParticleData\Update\ParticleUpdateCS.h" />
+    <ClInclude Include="Engine\ParticleData\ParticleManager.h" />
+    <ClInclude Include="Engine\ParticleData\ParticlePSO\ParticlePSO.h" />
+    <ClInclude Include="Engine\ParticleData\ParticleData.h" />
+    <ClInclude Include="Engine\ParticleData\Initialize\ParticleInitialize.h" />
+    <ClInclude Include="Engine\ParticleData\Emiter\ParticleEmiterCS.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />
