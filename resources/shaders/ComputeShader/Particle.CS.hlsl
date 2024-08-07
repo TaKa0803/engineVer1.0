@@ -1,6 +1,7 @@
 
 struct Particle
 {
+    int32_t isActive;
     float32_t3 translate;
     float32_t3 scale;
     float32_t  lifeTime;
@@ -32,8 +33,8 @@ void main( uint32_t3 DTid : SV_DispatchThreadID )
     
     if (particleIndex < kMaxParticles)
     {
-        //alphaが0の時はないものとみなして更新しない
-        if (gParticle[particleIndex].color.a != 0)
+        //Activeではないものは処理しない
+        if (gParticle[particleIndex].isActive!=0)
         {
             gParticle[particleIndex].translate += gParticle[particleIndex].velocity;
             gParticle[particleIndex].currentTime += gPerView.deltaTime;
@@ -43,9 +44,13 @@ void main( uint32_t3 DTid : SV_DispatchThreadID )
             
             if (gParticle[particleIndex].color.a == 0)
             {
+                //有効フラグOFFとスケールを０
+                gParticle[particleIndex].isActive = 0;
                 gParticle[particleIndex].scale = float32_t3(0.0f, 0.0f, 0.0f);
                 int32_t freeListIndex;
                 InterlockedAdd(gFreeListIndex[0], 1, freeListIndex);
+                
+                
                 
                 //最新のFreeListIndexの場所に死んだParticleのIndexを設定する
                 if ((freeListIndex + 1) < kMaxParticles)

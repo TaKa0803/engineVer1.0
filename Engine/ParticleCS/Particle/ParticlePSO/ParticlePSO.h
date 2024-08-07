@@ -19,8 +19,8 @@ public:
 private:
 	DirectXFunc* DXF_=nullptr;
 
-	std::wstring vsPass = L"resources/shaders/Particle.VS.hlsl";
-	std::wstring psPass = L"resources/shaders/Particle.PS.hlsl";
+	std::wstring vsPass = L"resources/shaders/Particles/Particle.VS.hlsl";
+	std::wstring psPass = L"resources/shaders/Particles/Particle.PS.hlsl";
 
 	//ルートシグネチャ
 	ID3D12RootSignature* rootSignature_ = nullptr;

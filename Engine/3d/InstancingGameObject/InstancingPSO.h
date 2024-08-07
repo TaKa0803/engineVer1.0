@@ -34,8 +34,8 @@ private:
 
 	DirectXFunc* DXF_;
 
-	std::wstring vsPass = L"resources/shaders/InstancingObject.VS.hlsl";
-	std::wstring psPass = L"resources/shaders/InstancingObject.PS.hlsl";
+	std::wstring vsPass = L"resources/shaders/Models/InstancingObject.VS.hlsl";
+	std::wstring psPass = L"resources/shaders/Models/InstancingObject.PS.hlsl";
 
 	//ルートシグネチャ
 	ID3D12RootSignature* rootSignature_ = nullptr;

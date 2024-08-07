@@ -1,6 +1,7 @@
 
 struct Particle
 {
+    int32_t isActive;
     float32_t3 translate;
     float32_t3 scale;
     float32_t lifeTime;
@@ -75,7 +76,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
 {
     
     
-    
+    //発生処理フラグがONの時
     if (gEmiter.emit != 0)
     {
         RandomGenerator generator;
@@ -104,7 +105,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
 
                 gParticle[particleIndex].currentTime = 0;
                 
-
+                gParticle[particleIndex].isActive = 1;
             }
             else
             {

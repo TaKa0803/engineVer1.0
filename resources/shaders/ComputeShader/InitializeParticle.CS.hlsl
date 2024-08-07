@@ -1,5 +1,6 @@
 struct Particle
 {
+    int32_t isActive;
     float32_t3 translate;
     float32_t3 scale;
     float32_t lifeTime;

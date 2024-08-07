@@ -269,6 +269,5 @@ void ParticleManager::Draw()
 
 void ParticleManager::SpawnE(const Vector3& pos)
 {
-
 	emiterCS_->Emit(pos);
 }

@@ -19,6 +19,7 @@ struct EmiterSphere {
 };
 
 struct Particle {
+	int32_t isActive;
 	Vector3 translate;
 	Vector3 scale;
 	float lifeTime;

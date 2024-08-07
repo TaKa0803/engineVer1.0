@@ -186,10 +186,10 @@ void ObjectPSO::Initialize() {
 	DXCManager* DXC = DXCManager::GetInstance();
 
 	//Shaderをコンパイルする
-	IDxcBlob* vertexShaderBlob = CompileShader(L"resources/shaders/Object3d.VS.hlsl", L"vs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
+	IDxcBlob* vertexShaderBlob = CompileShader(L"resources/shaders/Models/Object3d.VS.hlsl", L"vs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
 	assert(vertexShaderBlob != nullptr);
 
-	IDxcBlob* pixelShaderBlob = CompileShader(L"resources/shaders/Object3d.PS.hlsl", L"ps_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
+	IDxcBlob* pixelShaderBlob = CompileShader(L"resources/shaders/Models/Object3d.PS.hlsl", L"ps_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
 	assert(pixelShaderBlob != nullptr);
 #pragma endregion
 #pragma region DepthStencilStateの設定を行う
