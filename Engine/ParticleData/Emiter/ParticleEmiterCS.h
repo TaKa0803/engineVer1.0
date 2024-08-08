@@ -9,22 +9,24 @@
 class ParticleEmiterCS {
 public:
 
+	//各生成処理
 	ParticleEmiterCS();
+	//解放処理
 	~ParticleEmiterCS();
 
-	void Initialize();
+	//初期化処理
+	void Initialize(D3D12_GPU_VIRTUAL_ADDRESS emiterDataAddress,EmiterSphere* emiterData);
 
-	void Update();
+	//更新処理
+	void Update(bool onlyImpact);
 
-	void PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhand);
+	//CSの処理実行
+	void Dispatch(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhand);
 
-	void SetOnlyImpact(bool flag) { onlyImpact = flag; };
-
-	void Emit(const Vector3& pos) { emiterData_->emit = 1; emiterData_->translate = pos; }
 private:
 
 	DirectXFunc* DXF_ = nullptr;
-
+	//CSのパス
 	std::wstring csPass = L"resources/shaders/ComputeShader/ParticleEmiter.CS.hlsl";
 
 	//ルートシグネチャ
@@ -36,12 +38,10 @@ private:
 	//パーティクル最大数
 	size_t maxDataCount_ = 1024;
 
-	ID3D12Resource* emiterResource_;
+	D3D12_GPU_VIRTUAL_ADDRESS emiterDataAddress_;
 	EmiterSphere* emiterData_ = nullptr;
-
 
 	ID3D12Resource* perFrameResource_;
 	PerFrame* perFrameData_ = nullptr;
 
-	bool onlyImpact = false;
 };

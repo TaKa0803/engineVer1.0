@@ -7,6 +7,8 @@
 #include"Camera/Camera.h"
 #include<numbers>
 
+
+
 ParticleManager::ParticleManager()
 {
 	DXF_ = DirectXFunc::GetInstance();
@@ -137,7 +139,14 @@ ParticleManager::ParticleManager()
 	materialData_->discardNum = 0.0f;
 
 
-
+	emiterResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(EmiterSphere));
+	emiterResource_->Map(0, nullptr, reinterpret_cast<void**>(&emiterData_));
+	emiterData_->count = 100;
+	emiterData_->frequency = 0.5f;
+	emiterData_->frequencyTime = 0.0f;
+	emiterData_->translate = Vector3(0.0f, 0.0f, 0.0f);
+	emiterData_->radius = 1.0f;
+	emiterData_->emit = 0;
 
 	pso_ = std::make_unique<ParticlePSO>();
 	pso_->Initialize();
@@ -158,6 +167,7 @@ ParticleManager::~ParticleManager()
 	particleResource_->Release();
 	perResource_->Release();
 	materialResource_->Release();
+	emiterResource_->Release();
 	freeListResource_->Release();
 	freeListIndexResource_->Release();
 
@@ -169,8 +179,7 @@ void ParticleManager::Initialize(int tex)
 	texture_ = SRVManager::GetInstance()->GetTextureDescriptorHandle(tex);
 	particleInitializeCS_->Initialize(UAVHandle_.gpu, counterUAVHandle_.gpu, listUAVHandle_.gpu);
 
-	emiterCS_->Initialize();
-	emiterCS_->SetOnlyImpact(true);
+	emiterCS_->Initialize(emiterResource_->GetGPUVirtualAddress(),emiterData_);
 }
 
 void ParticleManager::Update()
@@ -188,8 +197,8 @@ void ParticleManager::Update()
 	perViewData_->deltaTime = 1.0f / 60.0f;
 #pragma endregion
 
-	emiterCS_->Update();
-
+	emiterCS_->Update(onlyImpact_);
+	
 
 }
 
@@ -205,7 +214,7 @@ void ParticleManager::Draw()
 #pragma endregion
 	
 
-	emiterCS_->PreDraw(UAVHandle_.gpu, counterUAVHandle_.gpu, listUAVHandle_.gpu);
+	emiterCS_->Dispatch(UAVHandle_.gpu, counterUAVHandle_.gpu, listUAVHandle_.gpu);
 	
 	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
 	D3D12_RESOURCE_BARRIER ubarrier = {};
@@ -269,5 +278,5 @@ void ParticleManager::Draw()
 
 void ParticleManager::SpawnE(const Vector3& pos)
 {
-	emiterCS_->Emit(pos);
+	emiterData_->emit = 1;
 }

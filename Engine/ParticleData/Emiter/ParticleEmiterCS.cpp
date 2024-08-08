@@ -114,14 +114,7 @@ ParticleEmiterCS::ParticleEmiterCS()
 #pragma endregion
 
 
-	emiterResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(EmiterSphere));
-	emiterResource_->Map(0, nullptr, reinterpret_cast<void**>(&emiterData_));
-	emiterData_->count = 100;
-	emiterData_->frequency = 0.5f;
-	emiterData_->frequencyTime = 0.0f;
-	emiterData_->translate = Vector3(0.0f, 0.0f, 0.0f);
-	emiterData_->radius = 1.0f;
-	emiterData_->emit = 0;
+
 
 	perFrameResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(PerFrame));
 	perFrameResource_->Map(0, nullptr, reinterpret_cast<void**>(&perFrameData_));
@@ -133,15 +126,17 @@ ParticleEmiterCS::~ParticleEmiterCS()
 {
 	rootSignature_->Release();
 	graphicsPipelineState_->Release();
-	emiterResource_->Release();
 	perFrameResource_->Release();
 }
 
-void ParticleEmiterCS::Initialize()
+void ParticleEmiterCS::Initialize(D3D12_GPU_VIRTUAL_ADDRESS emiterDataAddress,EmiterSphere* emiterData)
 {
+	emiterDataAddress_ = emiterDataAddress;
+	//ポインタを共用
+	emiterData_ = emiterData;
 }
 
-void ParticleEmiterCS::Update()
+void ParticleEmiterCS::Update(bool onlyImpact)
 {
 
 	perFrameData_->time++;
@@ -169,7 +164,7 @@ void ParticleEmiterCS::Update()
 
 }
 
-void ParticleEmiterCS::PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhandle)
+void ParticleEmiterCS::Dispatch(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhandle)
 {
 
 
@@ -183,7 +178,7 @@ void ParticleEmiterCS::PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DES
 	cmd->SetPipelineState(graphicsPipelineState_);
 
 	cmd->SetComputeRootDescriptorTable(0, handle);
-	cmd->SetComputeRootConstantBufferView(1, emiterResource_->GetGPUVirtualAddress());
+	cmd->SetComputeRootConstantBufferView(1, emiterDataAddress_);
 	cmd->SetComputeRootConstantBufferView(2, perFrameResource_->GetGPUVirtualAddress());
 	cmd->SetComputeRootDescriptorTable(3, chandle);
 	cmd->SetComputeRootDescriptorTable(4, listhandle);

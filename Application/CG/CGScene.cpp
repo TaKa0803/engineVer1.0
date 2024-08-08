@@ -50,7 +50,7 @@ void CGScnene::Initialize()
 
 	pointLight_ = PointLight();
 
-	
+	particleManager_->SetOnlyImpact(true);
 }
 
 void CGScnene::Update()

@@ -5,7 +5,7 @@
 #include"ParticleData.h"
 #include"ParticlePSO/ParticlePSO.h"
 #include"DirectXFunc/DirectXFunc.h"
-#include"ParticleData/Update/ParticleCS.h"
+#include"ParticleData/Update/ParticleUpdateCS.h"
 #include"ParticleData/Initialize/ParticleInitialize.h"
 #include"ParticleData/Emiter/ParticleEmiterCS.h"
 
@@ -35,6 +35,8 @@ public:
 	void Draw();
 
 	void SpawnE(const Vector3&pos);
+
+	void SetOnlyImpact(bool onlyImpact) { onlyImpact_ = onlyImpact; }
 private:
 
 	DirectXFunc* DXF_;
@@ -75,9 +77,12 @@ private:
 	ID3D12Resource* materialResource_;
 	ParticleMaterialData* materialData_=nullptr;
 
+	ID3D12Resource* emiterResource_;
+	EmiterSphere* emiterData_ = nullptr;
 
 #pragma endregion
 
 
+	bool onlyImpact_ = false;
 
 };
