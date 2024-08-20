@@ -56,6 +56,7 @@ void CGScnene::Initialize()
 void CGScnene::Update()
 {
 	Debug();
+	particleManager_->Debug("particle");
 
 	Vector3 move = input_->GetAllArrowKey();
 	move.y = input_->GetWASD().z;
@@ -78,6 +79,7 @@ void CGScnene::Update()
 	if (input_->PushKey(DIK_SPACE)) {
 		particleManager_->SpawnE({0,0,0});
 	} 
+
 }
 
 
@@ -96,7 +98,7 @@ void CGScnene::Draw()
 	//MapLoader::GetInstance()->DrawLevelData();
 
 	//InstancingModelManager::GetInstance()->DrawAllModel();
-	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDepthBasedOutline, true);
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDepthBasedOutline, true);
 	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
 	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDissolve, true);
 

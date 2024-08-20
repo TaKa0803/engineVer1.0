@@ -34,6 +34,9 @@ public:
 	//描画
 	void Draw();
 
+	//デバッグ
+	void Debug(const std::string name);
+
 	void SpawnE(const Vector3&pos);
 
 	void SetOnlyImpact(bool onlyImpact) { onlyImpact_ = onlyImpact; }

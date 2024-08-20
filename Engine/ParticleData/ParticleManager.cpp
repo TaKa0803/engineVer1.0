@@ -5,9 +5,8 @@
 #include"SRVManager/SRVManager.h"
 #include"UAVManager/UAVManager.h"
 #include"Camera/Camera.h"
+#include"ImGuiManager/ImGuiManager.h"
 #include<numbers>
-
-
 
 ParticleManager::ParticleManager()
 {
@@ -141,11 +140,17 @@ ParticleManager::ParticleManager()
 
 	emiterResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(EmiterSphere));
 	emiterResource_->Map(0, nullptr, reinterpret_cast<void**>(&emiterData_));
-	emiterData_->count = 100;
+	emiterData_->radius = { 0.0f,1.0f };
+	emiterData_->count = {100 ,100 };
+
+	emiterData_->speed = { 0.0f,1.0f };
+	emiterData_->veloX = { -1.0f,1.0f };
+	emiterData_->veloY = { -1.0f,1.0f };
+	emiterData_->veloZ = { -1.0f,1.0f };
 	emiterData_->frequency = 0.5f;
 	emiterData_->frequencyTime = 0.0f;
 	emiterData_->translate = Vector3(0.0f, 0.0f, 0.0f);
-	emiterData_->radius = 1.0f;
+
 	emiterData_->emit = 0;
 
 	pso_ = std::make_unique<ParticlePSO>();
@@ -200,22 +205,8 @@ void ParticleManager::Update()
 	emiterCS_->Update(onlyImpact_);
 	
 
-}
-
-void ParticleManager::Draw()
-{
-
-
-
-#pragma region 各データいれる
-
-
-
-#pragma endregion
-	
-
 	emiterCS_->Dispatch(UAVHandle_.gpu, counterUAVHandle_.gpu, listUAVHandle_.gpu);
-	
+
 	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
 	D3D12_RESOURCE_BARRIER ubarrier = {};
 	ubarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
@@ -224,6 +215,14 @@ void ParticleManager::Draw()
 	cmd->ResourceBarrier(1, &ubarrier);
 
 	particleUpdateCS_->PreDraw(UAVHandle_.gpu, perResource_->GetGPUVirtualAddress(), counterUAVHandle_.gpu, listUAVHandle_.gpu);
+
+}
+
+void ParticleManager::Draw()
+{
+	
+	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
+	D3D12_RESOURCE_BARRIER ubarrier = {};
 
 	ubarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
 	ubarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
@@ -276,7 +275,36 @@ void ParticleManager::Draw()
 
 }
 
+void ParticleManager::Debug(const std::string name)
+{
+#ifdef _DEBUG
+
+
+
+	ImGui::Begin(name.c_str());
+	ImGui::DragFloat3("座標", &emiterData_->translate.x, 0.01f);
+	ImGui::DragFloat2("最小/最大:出現半径", &emiterData_->radius.x, 0.01f);
+	ImGui::DragFloat2("最小/最大:一度の生成量", &emiterData_->count.x,0.01f);
+
+	ImGui::DragFloat2("最小/最大:速度", &emiterData_->speed.x, 0.01f);
+	ImGui::DragFloat2("最小/最大:X軸の飛翔方向", &emiterData_->veloX.x, 0.01f);
+	ImGui::DragFloat2("最小/最大:Y軸の飛翔方向", &emiterData_->veloY.x, 0.01f);
+	ImGui::DragFloat2("最小/最大:Z軸の飛翔方向", &emiterData_->veloZ.x, 0.01f);
+
+	ImGui::Text("Flag %d", emiterData_->emit);
+
+	ImGui::Checkbox("onlyInput", &onlyImpact_);
+
+	ImGui::DragFloat("生成間隔(秒)", &emiterData_->frequency, 0.01f);
+
+	ImGui::End();
+
+#endif // _DEBUG
+
+}
+
 void ParticleManager::SpawnE(const Vector3& pos)
 {
+	emiterData_->translate = pos;
 	emiterData_->emit = 1;
 }

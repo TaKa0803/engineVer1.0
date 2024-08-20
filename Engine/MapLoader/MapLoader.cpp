@@ -2,6 +2,7 @@
 #include"Log/Log.h"
 #include<fstream>
 #include<json.hpp>
+#include<iostream>
 #include<cassert>
 #include"Camera/Camera.h"
 MapLoader* MapLoader::GetInstance()
@@ -65,6 +66,25 @@ void LoadMap(nlohmann::json& deserialized, std::vector<MapLoader::ObjectData>& o
 			if (object.contains("children")) {
 				nlohmann::json& child = object["children"];
 				LoadMap(object, obData.child, "children");
+			}
+
+			//オブジェクトタグ走査
+			for (auto it = object.begin(); it != object.end();++it) {
+				
+				std::string prop = it.key();
+				//Float型単品ならその型群に
+				if (object[prop].is_number_float()) {
+					//データ登録処理
+					obData.floatValue_[prop] = it.value();
+				}
+				else if(object[prop].is_array()&&object[prop].size()==1) {
+					Vector2 newd = { object[prop][0],object[prop][1] };
+					obData.v2Value_[prop] = newd;
+				}
+				else if (object[prop].is_array() && object[prop].size() == 2) {
+					Vector3 newd = { object[prop][0],object[prop][1],object[prop][2] };
+					obData.v3Value_[prop] = newd;
+				}
 			}
 		}
 	}
@@ -180,6 +200,72 @@ Vector3 MapLoader::IsCollisionMap(SphereCollider* collider)
 	}
 
 	return ans;
+}
+
+std::optional<float> MapLoader::GetObjectFloatValue(const std::string filename, const std::string valueName)
+{
+	for (auto& object : levelDatas_[stageNum_]->objects) {
+		if (object.filename == filename) {
+
+			auto it = object.floatValue_.find(valueName);
+			if (it != object.floatValue_.end()) {
+				//キーが存在する場合
+				return it->second;
+			}
+			else {
+				//データが見つからない！
+				assert(false);
+				return std::nullopt;
+			}
+		}
+	}
+	//データが見つからない！
+	assert(false);
+	return std::nullopt;
+}
+
+std::optional<Vector2> MapLoader::GetObjectVec2Value(const std::string filename, const std::string valueName)
+{
+	for (auto& object : levelDatas_[stageNum_]->objects) {
+		if (object.filename == filename) {
+
+			auto it = object.v2Value_.find(valueName);
+			if (it != object.v2Value_.end()) {
+				//キーが存在する場合
+				return it->second;
+			}
+			else {
+				//データが見つからない！
+				assert(false);
+				return std::nullopt;
+			}
+		}
+	}
+	//データが見つからない！
+	assert(false);
+	return std::nullopt;
+}
+
+std::optional<Vector3> MapLoader::GetObjectVec3Value(const std::string filename, const std::string valueName)
+{
+	for (auto& object : levelDatas_[stageNum_]->objects) {
+		if (object.filename == filename) {
+
+			auto it = object.v3Value_.find(valueName);
+			if (it != object.v3Value_.end()) {
+				//キーが存在する場合
+				return it->second;
+			}
+			else {
+				//データが見つからない！
+				assert(false);
+				return std::nullopt;
+			}
+		}
+	}
+	//データが見つからない！
+	assert(false);
+	return std::nullopt;
 }
 
 void MapLoader::LoadModel(const std::vector<ObjectData>&d)

@@ -8,16 +8,30 @@ struct Particle
     float32_t3 velocity;
     float32_t currentTime;
     float32_t4 color;
+    
+
 };
 
 struct Emiter
 {
+   
     float32_t3 translate;
-    float32_t radius;
-    uint32_t count;
+    
+    float32_t2 radius; //最小最大サイズ;
+    float32_t2 count; //最小、最大発生量
+    
+    float32_t2 speed; //最小、最大速度
+    float32_t2 veloX; //最小最大Xベクトル量
+    float32_t2 veloY; //最小最大Yベクトル量
+    float32_t2 veloZ; //最小最大Zベクトル量
+    
+    
+    float32_t emit;
     float32_t frequency;
     float32_t frequencyTime;
-    uint32_t emit;
+    
+    
+
 };
 
 struct PerFrame
@@ -82,7 +96,10 @@ void main(uint3 DTid : SV_DispatchThreadID)
         RandomGenerator generator;
         generator.seed = (DTid + gPerFrame.time) * gPerFrame.time;
         
-        for (uint32_t countIndex = 0; countIndex < gEmiter.count; ++countIndex)
+        //乱数の量生成
+        float32_t spawncount = lerp(gEmiter.count.x, gEmiter.count.y, generator.seed.x);
+        
+        for (uint32_t countIndex = 0; countIndex < gEmiter.count.x; ++countIndex)
         {
             int32_t freeListIndex;
             InterlockedAdd(gFreeListIndex[0], -1, freeListIndex);
@@ -91,20 +108,39 @@ void main(uint3 DTid : SV_DispatchThreadID)
             if (0<=freeListIndex && freeListIndex < kMaxParticles)
             {
                 
+                //発生させるパーティクルの番号取得
                 uint32_t particleIndex = gFreeList[freeListIndex];
                 
                 float32_t scale = generator.Generate1d();
                 gParticle[particleIndex].scale = float32_t3(scale, scale, scale);
-                gParticle[particleIndex].translate = gEmiter.translate + generator.Generate3d() * (gEmiter.radius - gEmiter.radius / 2.0f);
-                gParticle[particleIndex].velocity = (generator.Generate3d() * 2.0f - 1.0f)/2.0f;
+                
+                //乱数取得
+                float32_t randNum = generator.Generate1d();
+                
+                //出現中心座標+乱数分の場所に出現
+                gParticle[particleIndex].translate = gEmiter.translate + lerp(gEmiter.radius.x,gEmiter.radius.y,randNum);
+                
+                randNum = generator.Generate1d();
+                float32_t vx = lerp(gEmiter.veloX.x, gEmiter.veloX.y, randNum);
+                
+                randNum = generator.Generate1d();
+                float32_t vy = lerp(gEmiter.veloY.x, gEmiter.veloY.y, randNum);
+                
+                randNum = generator.Generate1d();
+                float32_t vz = lerp(gEmiter.veloZ.x, gEmiter.veloZ.y, randNum);
+                
+                
+                randNum = generator.Generate1d();
+                gParticle[particleIndex].velocity = normalize(float32_t3(vx, vy, vz)) * lerp(gEmiter.speed.x,gEmiter.speed.y,randNum);
                 //gParticle[particleIndex].color.rgb = generator.Generate3d();
                 gParticle[particleIndex].color.rgb = float32_t3(1.0f, 0.0f, 0.0f);
                 gParticle[particleIndex].color.a = 1.0f;
                 
-                gParticle[particleIndex].lifeTime = generator.Generate1d();
-
+                //生存時間
+                gParticle[particleIndex].lifeTime = 1;
+                //生存時間かうんと
                 gParticle[particleIndex].currentTime = 0;
-                
+                //使用フラグON
                 gParticle[particleIndex].isActive = 1;
             }
             else

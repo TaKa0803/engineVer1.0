@@ -31,8 +31,7 @@ void main( uint32_t3 DTid : SV_DispatchThreadID )
 {
     uint32_t particleIndex = DTid.x;
     
-    if (particleIndex < kMaxParticles)
-    {
+    if (particleIndex < kMaxParticles) {
         //Activeではないものは処理しない
         if (gParticle[particleIndex].isActive!=0)
         {

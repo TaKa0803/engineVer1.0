@@ -36,6 +36,16 @@ public:
 
 	Vector3 IsCollisionMap(SphereCollider* collider);
 
+	//objectのカスタムデータ取得
+	std::optional<float> GetObjectFloatValue(const std::string filename, const std::string valueName);
+
+	//objectのカスタムデータ取得
+	std::optional<Vector2> GetObjectVec2Value(const std::string filename, const std::string valueName);
+	
+	//objectのカスタムデータ取得
+	std::optional<Vector3> GetObjectVec3Value(const std::string filename, const std::string valueName);
+
+
 	struct ColliderData
 	{
 		std::string type;
@@ -48,6 +58,10 @@ public:
 		EulerWorldTransform transform;
 		ColliderData collider;
 		std::vector<ObjectData>child;
+		std::map<std::string, float>floatValue_;
+		std::map<std::string, Vector2>v2Value_;
+		std::map<std::string, Vector3>v3Value_;
+
 	};
 
 	struct Leveldata {

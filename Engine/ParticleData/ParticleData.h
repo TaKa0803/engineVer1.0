@@ -1,6 +1,7 @@
 #pragma once
 #include"Matrix.h"
 #include"Vector4.h"
+#include"Vector2.h"
 #include"struct.h"
 
 struct PerFrame {
@@ -10,12 +11,36 @@ struct PerFrame {
 
 //円範囲のエミッター
 struct EmiterSphere {
+
+
 	Vector3 translate;		//生成中心座標
-	float radius;			//生成範囲
-	uint32_t  count;		//生成間隔
-	float frequency;
-	float frequencyTime;
-	uint32_t emit;			//射出許可
+
+	float pad;
+
+	Vector2 radius;			//生成範囲
+	
+
+	Vector2 count;			//生成量
+
+
+	Vector2 speed;			//最小最大速度
+
+	Vector2 veloX;			//
+
+
+	Vector2 veloY;
+
+
+	Vector2 veloZ;
+
+	float emit;			//射出許可
+
+	float frequency;		//生成間隔
+	
+	float frequencyTime;	//生成時間カウント
+
+
+
 
 };
 
