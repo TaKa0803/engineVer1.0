@@ -98,14 +98,14 @@ void CGScnene::Draw()
 	//MapLoader::GetInstance()->DrawLevelData();
 
 	//InstancingModelManager::GetInstance()->DrawAllModel();
-	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDepthBasedOutline, true);
+	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kHSV, true);
 	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
 	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDissolve, true);
 
 
 	particleManager_->Draw();
 
-	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDissolve, true);
+	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kHSV, true);
 }
 
 void CGScnene::Debug()

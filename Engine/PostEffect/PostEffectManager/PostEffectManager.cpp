@@ -232,6 +232,7 @@ void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 	if (isEffectReqeat_) {
 		DXF_->GetCMDList()->ClearRenderTargetView(cHandle_[drawNum], &kRenderTClearValue.x, 0, nullptr);
 	}
+
 	//RenderTextureをSwapchainに描画
 	//offScreen_->materialData_->type = (int)type;
 	//offScreen_->PreDraw();
@@ -282,15 +283,13 @@ void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 
 	}
 	else {
+		//重ね掛けフラグをなくす
 		isEffectReqeat_ = false;
-		//描画先の設定
-		DXF_->GetCMDList()->OMSetRenderTargets(1, &cHandle_[resourceNum_], false, &dsvHandle_);
 
-		//指定した色で画面全体をクリアする
-		//指定した深度で画面全体をクリアする
-		//DXF_->GetCMDList()->ClearDepthStencilView(dsvHandle_, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-		DXF_->GetCMDList()->ClearRenderTargetView(cHandle_[resourceNum_], &kRenderTClearValue.x, 0, nullptr);
-
+		//リソースの切り替え処理を行わない
+		//リソース番号のRenderをクリアする
+		DXF_->GetCMDList()->ClearRenderTargetView(cHandle_[drawNum], &kRenderTClearValue.x, 0, nullptr);
+		//リソース番号のRenderを
 	}
 }
 

@@ -73,7 +73,7 @@ private:
 	//後続演出フラグ
 	bool isEffectReqeat_ = false;
 
-	const Vector4 kRenderTClearValue{ 0.0f,0.0f,0.0f,1.0f };
+	const Vector4 kRenderTClearValue{ 0.0f,0.0f,0.0f,0.0f };
 
 	uint32_t resourceNum_ = 0;
 	
