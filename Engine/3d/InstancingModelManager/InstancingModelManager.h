@@ -53,6 +53,7 @@ public:
 	/// <returns></returns>
 	float GetAlpha(const std::string& tag);
 
+	InstancingPSO* GetPSO() { return pso_; };
 public:
 
 	/// <summary>

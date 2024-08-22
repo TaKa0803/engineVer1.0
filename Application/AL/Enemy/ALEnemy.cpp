@@ -6,7 +6,7 @@
 #include"AL/BrokenBody/BrokenBody.h"
 
 void ALEnemy::Initialize(const Vector3& position, const EulerWorldTransform* playerWorld) {
-	InstancingGameObject::Initialize("player");
+	InstancingGameObject::Initialize("sWalk");
 
 
 	//model_->IsEnableTexture(false);
@@ -281,9 +281,11 @@ void ALEnemy::Draw() {
 	int IndexX = 0;
 	for (auto& world : mWorlds) {
 		world.UpdateMatrix();
-		IMM_->SetData(tags[IndexX], world);
+		//IMM_->SetData(tags[IndexX], world);
 		IndexX++;
 	}
+
+	InstancingGameObject::Draw();
 
 	shadow->Draw();
 	//collider_->Draw();

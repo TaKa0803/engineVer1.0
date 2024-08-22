@@ -17,9 +17,8 @@
 InstancingModel::~InstancingModel() {
 
 
-	skinCluster_.influenceResource->Release();
-	skinCluster_.paletteResource->Release();
-
+	modelData_.skinCluster.influenceResource->Release();
+	modelData_.skinCluster.paletteResource->Release();
 
 	indexResource_->Release();
 	vertexResource_->Release();	
@@ -42,16 +41,7 @@ InstancingModel* InstancingModel::CreateFromOBJ(const std::string& directory, co
 	ModelAllData modeltea = LoadModelFile(directory, filePath);
 
 
-	//頂点データ
-	ID3D12Resource* vertexRtea = CreateBufferResource(DXF->GetDevice(), sizeof(VertexData) * modeltea.model.vertices.size());
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewtea{};
-	vertexBufferViewtea.BufferLocation = vertexRtea->GetGPUVirtualAddress();
-	vertexBufferViewtea.SizeInBytes = UINT(sizeof(VertexData) * modeltea.model.vertices.size());
-	vertexBufferViewtea.StrideInBytes = sizeof(VertexData);
 
-	VertexData* vertexDatatea = nullptr;
-	vertexRtea->Map(0, nullptr, reinterpret_cast<void**>(&vertexDatatea));
-	std::memcpy(vertexDatatea, modeltea.model.vertices.data(), sizeof(VertexData) * modeltea.model.vertices.size());
 
 
 
@@ -60,7 +50,7 @@ InstancingModel* InstancingModel::CreateFromOBJ(const std::string& directory, co
 
 
 	InstancingModel* model = new InstancingModel();
-	model->Initialize(modeltea, modeltea.model.material.textureFilePath, UINT(modeltea.model.vertices.size()), instancingNum, vertexRtea, vertexBufferViewtea);
+	model->Initialize(modeltea, modeltea.model.material.textureFilePath, UINT(modeltea.model.vertices.size()), instancingNum);
 
 
 
@@ -69,11 +59,9 @@ InstancingModel* InstancingModel::CreateFromOBJ(const std::string& directory, co
 	return model;
 }
 
-void InstancingModel::PreUpdate() {
-	instancingDatas_.clear();
-}
 
-void InstancingModel::AddWorld(const EulerWorldTransform& world, const Vector4& color) {
+
+void InstancingModel::AddInstancingData(const EulerWorldTransform& world, const Vector4& color) {
 	//データをコピー
 	InstancingData worl = { world,color };
 
@@ -83,8 +71,8 @@ void InstancingModel::AddWorld(const EulerWorldTransform& world, const Vector4& 
 
 }
 
-void InstancingModel::Draw(int texture) {
-
+void InstancingModel::UpdateAnimation()
+{
 	if (modelType_ != kOBJModel) {
 		if (isAnimationActive_) {
 			animationTime += animationRoopSecond_ / 60.0f;
@@ -98,13 +86,12 @@ void InstancingModel::Draw(int texture) {
 
 			//ボーンのあるモデルの場合
 			if (modelType_ == kSkinningGLTF) {
-				assert(false);
 				//animationの更新を行って骨ごとのローカル情報を更新
-				ApplyAnimation(skeleton_, modelData_.animation[animeNum_], animationTime);
+				ApplyAnimation(modelData_.skeleton, modelData_.animation[animeNum_], animationTime);
 				//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
-				Update(skeleton_);
+				Update(modelData_.skeleton);
 				//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
-				Update(skinCluster_, skeleton_);
+				Update(modelData_.skinCluster, modelData_.skeleton);
 			}
 			else {
 				//ないanimationモデルの場合
@@ -118,30 +105,42 @@ void InstancingModel::Draw(int texture) {
 		else {
 			animationTime = 0;
 			//animationの更新を行って骨ごとのローカル情報を更新
-			ApplyAnimation(skeleton_, modelData_.animation[animeNum_], animationTime);
+			ApplyAnimation(modelData_.skeleton, modelData_.animation[animeNum_], animationTime);
 		}
 	}
+}
+
+void InstancingModel::Draw(int texture) {
+
+	UpdateAnimation();
+
+
 	Camera* camera = Camera::GetInstance();
 
-	materialData_->uvTransform = uvWorld_.UpdateMatrix();
 
 	int index = 0;
 	for (auto& data : instancingDatas_) {
 	
+		data->world.UpdateMatrix();
 		Matrix4x4 WVP = data->world.matWorld_ * camera->GetViewProjectionMatrix();;
 
 		//ボーンアニメーション以外は動く
 		if (modelType_ == kAnimationGLTF) {
 			wvpData_[index].WVP = localM_ * WVP;
 			wvpData_[index].World = localM_ * data->world.matWorld_;
+			wvpData_[index].WorldInverseTranspose = Inverse(Transpose(wvpData_[index].World));
 			
 		}
 		else {
 			wvpData_[index].WVP = WVP;
 			wvpData_[index].World = data->world.matWorld_;
+			wvpData_[index].WorldInverseTranspose = Inverse(Transpose(data->world.matWorld_));
 		}
-		wvpData_[index].WorldInverseTranspose = Inverse(Transpose(wvpData_[index].World));
+		
+
+
 		wvpData_[index].color = data->color;
+
 
 		bool isAnime = false;
 		//animationのあるモデルなら
@@ -151,7 +150,7 @@ void InstancingModel::Draw(int texture) {
 			if (drawJoint_) {
 				//ジョイントMの更新
 				int i = 0;
-				for (auto& jointW : skeleton_.joints) {
+				for (auto& jointW : modelData_.skeleton.joints) {
 					Matrix4x4 world = jointW.skeletonSpaceMatrix;
 
 					EulerWorldTransform newdata;
@@ -189,22 +188,34 @@ void InstancingModel::Draw(int texture) {
 
 
 
-	cameraData_->worldPosition = camera->GetMainCamera().GetMatWorldTranslate();
-
-	PointLight pl= LightManager::GetInstance()->GetPLight();
-	DirectionalLight dl = LightManager::GetInstance()->GetDLight();
-
-	pointLightData_->color = pl.color;
-	pointLightData_->decay = pl.decay;
-	pointLightData_->intensity = pl.intensity;
-	pointLightData_->position = pl.position;
-	pointLightData_->radius = pl.radius;
-
-	directionalLightData_->color = dl.color;
-	directionalLightData_->direction = dl.direction;
-	directionalLightData_->intensity = dl.intensity;
 
 	if (index > 0) {
+
+		materialData_->uvTransform = uvWorld_.UpdateMatrix();
+
+		cameraData_->worldPosition = camera->GetMainCamera().GetMatWorldTranslate();
+
+		PointLight pl = LightManager::GetInstance()->GetPLight();
+		DirectionalLight dl = LightManager::GetInstance()->GetDLight();
+
+		pointLightData_->color = pl.color;
+		pointLightData_->decay = pl.decay;
+		pointLightData_->intensity = pl.intensity;
+		pointLightData_->position = pl.position;
+		pointLightData_->radius = pl.radius;
+
+		directionalLightData_->color = dl.color;
+		directionalLightData_->direction = dl.direction;
+		directionalLightData_->intensity = dl.intensity;
+
+
+		//オブジェクト以外ならスキニング処理
+		if (modelType_ == kSkinningGLTF) {
+			vertexBufferView_ = skinningCS_->PreDraw();
+		}
+
+		//ルートシグネチャとパイプライン
+		IMM_->GetPSO()->PreDraw(fillMode_, blendMode_);
 
 		uvWorld_.UpdateMatrix();
 		materialData_->uvTransform = uvWorld_.matWorld_;
@@ -247,6 +258,9 @@ void InstancingModel::Draw(int texture) {
 		//DXF_->GetCMDList()->DrawInstanced(point_, index, 0, 0);
 		//描画！		
 		DXF_->GetCMDList()->DrawIndexedInstanced(static_cast<UINT>(modelData_.model.indices.size()), index, 0, 0, 0);
+
+
+		skinningCS_->PostDraw();
 	}
 
 	//追加されたデータ削除
@@ -279,18 +293,19 @@ void InstancingModel::Initialize(
 	ModelAllData modelData,
 	std::string name,
 	int point,
-	int instancingNum,
-	ID3D12Resource* vertexRtea,
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView) {
+	int instancingNum
+	) {
 
 	DXF_ = DirectXFunc::GetInstance();
 
 	modelData_ = modelData;
 
-	skeleton_ = CreateSkeleton(modelData_.model.rootNode);
-	skinCluster_ = CreateSkinCluster(*DXF_->GetDevice(), skeleton_, modelData_.model);
+	modelData_.skeleton = CreateSkeleton(modelData_.model.rootNode);
+	modelData_.skinCluster = CreateSkinCluster(*DXF_->GetDevice(), modelData_.skeleton, modelData_.model);
 	//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
-	Update(skinCluster_, skeleton_);
+	Update(modelData_.skinCluster,modelData_.skeleton);
+
+
 
 	//ジョイントのMの作成
 	IMM_ = InstancingModelManager::GetInstance();
@@ -299,8 +314,7 @@ void InstancingModel::Initialize(
 	//各データ受け渡し
 	point_ = point;
 	instancingNum_ = instancingNum;
-	vertexResource_ = vertexRtea;
-	vertexBufferView_ = vertexBufferView;
+	
 
 	//WVP用のリソースを作る。Matrix４ｘ４1つ分のサイズを用意する
 	wvpResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(WorldTransformation) * instancingNum);
@@ -314,6 +328,18 @@ void InstancingModel::Initialize(
 		wvpData_[index].WorldInverseTranspose = MakeIdentity4x4();
 		wvpData_[index].color = { 1,1,1,1 };
 	}
+
+
+	//頂点データ
+	vertexResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(VertexData) * point);
+	
+	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
+	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * point);
+	vertexBufferView_.StrideInBytes = sizeof(VertexData);
+
+	VertexData* vertexDatatea = nullptr;
+	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexDatatea));
+	std::memcpy(vertexDatatea, modelData_.model.vertices.data(), sizeof(VertexData) * point);
 
 	//インデックス
 	indexResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(uint32_t) * modelData_.model.indices.size());
@@ -402,7 +428,6 @@ void InstancingModel::Initialize(
 	if (modelData_.animation.size() != 0) {
 		if (modelData_.model.skinClusterData.size() != 0) {
 			modelType_ = kSkinningGLTF;
-			assert(false);
 		}
 		else {
 			modelType_ = kAnimationGLTF;
@@ -412,7 +437,8 @@ void InstancingModel::Initialize(
 		modelType_ = kOBJModel;
 	}
 
-
+	skinningCS_ = std::make_unique<SkinningCS>();
+	skinningCS_->Initialize(modelData_);
 
 
 }

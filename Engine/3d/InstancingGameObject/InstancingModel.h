@@ -6,6 +6,7 @@
 
 #include"DirectXFunc/DirectXFunc.h"
 #include"InstancingGameObject/InstancingPSO.h"
+#include"ComputeShaders/SkinningCS.h"
 
 #include"Math/Vector2.h"
 #include"Math/Matrix.h"
@@ -36,16 +37,18 @@ public:
 
 public:
 
-	/// <summary>
-	/// 更新前処理
-	/// </summary>
-	void PreUpdate();
 
 	/// <summary>
-	/// ワールドを追加
+	/// インスタンシング描画での非共通データを追加する
 	/// </summary>
-	/// <param name="world"></param>
-	void AddWorld(const EulerWorldTransform& world,const Vector4&color={1,1,1,1});
+	/// <param name="world">world座標</param>
+	/// <param name="color">色</param>
+	void AddInstancingData(const EulerWorldTransform& world,const Vector4&color={1,1,1,1});
+
+	/// <summary>
+	/// アニメーション更新処理
+	/// </summary>
+	void UpdateAnimation();
 
 	/// <summary>
 	/// 描画
@@ -124,14 +127,19 @@ public:
 private:
 
 
-	//初期化
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name="modelData">モデルデータ</param>
+	/// <param name="name"></param>
+	/// <param name="point">頂点数</param>
+	/// <param name="instancingNum">インスタンシング数</param>
+	/// <param name=""></param>
 	void Initialize(
 		ModelAllData modelData,
 		std::string name,
 		int point,
-		int instancingNum,
-		ID3D12Resource* vertexRtea,
-		D3D12_VERTEX_BUFFER_VIEW vertexBufferView
+		int instancingNum
 	);
 
 	void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime);
@@ -153,10 +161,8 @@ private:
 	//モデルデータ
 	ModelAllData modelData_;
 
-	//スケルトンデータ
-	Skeleton skeleton_;
-	//スキンanimationデータ
-	SkinCluster skinCluster_;
+	//スキニング処理
+	std::unique_ptr<SkinningCS>skinningCS_;
 
 	//ジョイントの描画データ
 	InstancingModelManager* IMM_;

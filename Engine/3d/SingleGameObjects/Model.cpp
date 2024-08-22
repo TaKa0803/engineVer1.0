@@ -69,8 +69,10 @@ void Model::UpdateAnimation()
 
 	//OBJではない
 	if (modelType_ != kOBJModel) {
+		//アニメーションフラグON
 		if (isAnimationActive_) {
 			animationTime_ += animationRoopSecond_ / 60.0f;
+			//アニメーションループフラグON
 			if (isAnimeRoop_) {
 				animationTime_ = std::fmod(animationTime_, modelData_.animation[animeNum_].duration);//最後まで行ったら最初からリピート再生
 			}

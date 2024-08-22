@@ -108,7 +108,7 @@ void InstancingModelManager::DrawAllModel() {
 
 	for (auto& model : modelDatas_) {
 		if (model.second->GetWorldNum() != 0) {
-			pso_->PreDraw(model.second->fillMode_, model.second->blendMode_);
+			//pso_->PreDraw(model.second->fillMode_, model.second->blendMode_);
 			model.second->Draw();
 		}
 	}
@@ -173,7 +173,7 @@ void InstancingModelManager::SetData(const std::string& tag, const EulerWorldTra
 	//	}
 	//}
 
-	modelDatas_[tag]->AddWorld(world,color);
+	modelDatas_[tag]->AddInstancingData(world,color);
 
 }
 
