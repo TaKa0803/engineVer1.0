@@ -21,13 +21,14 @@
     "z+Plane": [ "SystemResources/normalZ+Plane", "normalZ+Plane.obj" ]
   },
   "InstancingmodelPathFile": {
-    "Wall": [ "Wall", "Wall.obj", 10 ],
+
+    "Wall": [ "Wall", "Wall.obj", 100 ],
     "weapon": [ "Weapon", "Weapon.obj", 64 ],
     "wall": [ "Stage", "Stage.obj", 5 ],
     "sphere": [ "SystemResources/sphere", "sphere.obj", 1000 ],
     "z+Plane": [ "SystemResources/normalZ+Plane", "normalZ+Plane.obj", 1000 ],
     "box": [ "ALPlayer", "ALPlayer.obj", 1000 ],
-    "plane": [ "plane", "plane.obj", 1 ],
+    "plane": [ "plane", "plane.obj", 10 ],
     "player": [ "player", "player.obj", 100 ],
     "Head": [ "Object/Head", "Head.obj", 1000 ],
     "LArm": [ "Object/LArm", "LArm.obj", 1000 ],
@@ -40,6 +41,6 @@
     "Impact": [ "Impact", "Impact.obj", 100 ],
     "DZone": [ "dangerSphere", "dangerSphere.obj", 1000 ],
     "AnimeCube": [ "AnimatedCube", "AnimatedCube.gltf", 50000 ],
-    "sWalk": [ "walk", "sneakWalk.gltf",1000 ]
+    "sWalk": [ "walk", "sneakWalk.gltf", 1000 ]
   }
 }

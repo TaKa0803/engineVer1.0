@@ -4,6 +4,7 @@
 #include<json.hpp>
 #include<iostream>
 #include<cassert>
+#include<numbers>
 #include"Camera/Camera.h"
 MapLoader* MapLoader::GetInstance()
 {
@@ -14,6 +15,10 @@ MapLoader* MapLoader::GetInstance()
 void MapLoader::Initialize()
 {
 	levelDatas_.clear();
+}
+
+float Dig2Rad(float dig) {
+	return dig * ((float)std::numbers::pi / 180);
 }
 
 void LoadMap(nlohmann::json& deserialized, std::vector<MapLoader::ObjectData>& objects, std::string tag) {
@@ -39,9 +44,12 @@ void LoadMap(nlohmann::json& deserialized, std::vector<MapLoader::ObjectData>& o
 			obData.transform.translate_.y = (float)transform["translation"][2];
 			obData.transform.translate_.z = (float)transform["translation"][1];
 			//回転
-			obData.transform.rotate_.x = -(float)transform["rotation"][0];
-			obData.transform.rotate_.y = -(float)transform["rotation"][2];
-			obData.transform.rotate_.z = -(float)transform["rotation"][1];
+			obData.transform.rotate_.x = Dig2Rad( - (float)transform["rotation"][0]);
+			obData.transform.rotate_.y = Dig2Rad( - (float)transform["rotation"][2]);
+			obData.transform.rotate_.z = Dig2Rad( - (float)transform["rotation"][1]);
+
+			
+
 			//スケーリング
 			obData.transform.scale_.x = (float)transform["scaling"][0];
 			obData.transform.scale_.y = (float)transform["scaling"][2];
@@ -129,26 +137,7 @@ void MapLoader::LoadLevelEditor(const std::string& filename, const std::string& 
 
 	LoadMap(deserialized, leveldata->objects, "objects");
 
-	//for (nlohmann::json& object : deserialized["objects"]) {
-	//	assert(object.contains("type"));
 
-
-	//	//種別を取得
-	//	std::string type = object["type"].get<std::string>();
-
-	//	if (type.compare("MESH") == 0) {
-	//		//要素追加
-	//		leveldata->objects.emplace_back(MapLoader::ObjectData{});
-	//		
-
-
-
-	//		//追加した要素を参照して読み込み
-	//		//LoadObjectData(object,leveldata->objects.back());
-	//	}
-
-	//	//オブジェクト走査を再帰関数にまとめ再帰呼び出しする
-	//}
 
 	levelDatas_.emplace_back(leveldata);
 }

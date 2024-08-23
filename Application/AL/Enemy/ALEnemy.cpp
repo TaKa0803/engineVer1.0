@@ -6,7 +6,7 @@
 #include"AL/BrokenBody/BrokenBody.h"
 
 void ALEnemy::Initialize(const Vector3& position, const EulerWorldTransform* playerWorld) {
-	InstancingGameObject::Initialize("sWalk");
+	InstancingGameObject::Initialize("player");
 
 
 	//model_->IsEnableTexture(false);

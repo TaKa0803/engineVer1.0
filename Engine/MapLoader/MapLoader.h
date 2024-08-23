@@ -36,14 +36,6 @@ public:
 
 	Vector3 IsCollisionMap(SphereCollider* collider);
 
-	//objectのカスタムデータ取得
-	std::optional<float> GetObjectFloatValue(const std::string filename, const std::string valueName);
-
-	//objectのカスタムデータ取得
-	std::optional<Vector2> GetObjectVec2Value(const std::string filename, const std::string valueName);
-	
-	//objectのカスタムデータ取得
-	std::optional<Vector3> GetObjectVec3Value(const std::string filename, const std::string valueName);
 
 
 	struct ColliderData
@@ -71,6 +63,17 @@ public:
 private:
 	void LoadModel(const std::vector<ObjectData>&d);
 
+	//objectのカスタムデータ取得
+	std::optional<float> GetObjectFloatValue(const std::string filename, const std::string valueName);
+
+	//objectのカスタムデータ取得
+	std::optional<Vector2> GetObjectVec2Value(const std::string filename, const std::string valueName);
+
+	//objectのカスタムデータ取得
+	std::optional<Vector3> GetObjectVec3Value(const std::string filename, const std::string valueName);
+
+
+	//現在のステージ番号
 	int stageNum_;
 
 	//ベースフォルダまでのパス

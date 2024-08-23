@@ -19,7 +19,7 @@ CGScnene::CGScnene()
 
 	skybox_ = new SkyBoxModel("resources/Texture/CG/rostock_laage_airport_4k.dds");
 
-	MapLoader::GetInstance()->LoadLevelEditor("map",".json");
+	MapLoader::GetInstance()->LoadLevelEditor("untitled",".json");
 	MapLoader::GetInstance()->CreateModel(0);
 
 	PEHSVFilter::materialData_->effective = 0.5f;
@@ -95,9 +95,9 @@ void CGScnene::Draw()
 	
 	//object->Draw();
 
-	//MapLoader::GetInstance()->DrawLevelData();
+	MapLoader::GetInstance()->DrawLevelData();
 
-	//InstancingModelManager::GetInstance()->DrawAllModel();
+	InstancingModelManager::GetInstance()->DrawAllModel();
 	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kHSV, true);
 	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
 	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDissolve, true);
