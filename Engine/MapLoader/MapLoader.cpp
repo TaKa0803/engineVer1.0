@@ -21,17 +21,21 @@ float Dig2Rad(float dig) {
 	return dig * ((float)std::numbers::pi / 180);
 }
 
-void LoadMap(nlohmann::json& deserialized, std::vector<MapLoader::ObjectData>& objects, std::string tag) {
+void LoadMap(nlohmann::json& deserialized, std::vector<ObjectData>& objects, std::string tag) {
 	for (nlohmann::json& object : deserialized[tag]) {
 		assert(object.contains("type"));
 		//種別を取得
 		std::string type = object["type"].get<std::string>();
+
+
 		//MESHがある場合
 		if (type.compare("MESH") == 0) {
+			
 			//要素追加
-			objects.emplace_back(MapLoader::ObjectData{});
+			objects.emplace_back(ObjectData{});
+			ObjectData& obData = objects.back();
 
-			MapLoader::ObjectData& obData = objects.back();
+
 			//名前があったら追加
 			if (object.contains("file_name")) {
 				//ファイル名
@@ -71,15 +75,30 @@ void LoadMap(nlohmann::json& deserialized, std::vector<MapLoader::ObjectData>& o
 				obData.collider.size.z = (float)collider["size"][1];
 			}
 
-			if (object.contains("children")) {
-				nlohmann::json& child = object["children"];
-				LoadMap(object, obData.child, "children");
-			}
+
 
 			//オブジェクトタグ走査
 			for (auto it = object.begin(); it != object.end();++it) {
-				
+
 				std::string prop = it.key();
+
+				if (prop == "collider" || prop == "file_name" || prop == "transform") {
+					continue;
+				}
+
+
+
+				//トランスフォーム値取得
+				nlohmann::json& transform = object["transform"];
+				//平行移動
+				obData.transform.translate_.x = (float)transform["translation"][0];
+				obData.transform.translate_.y = (float)transform["translation"][2];
+				obData.transform.translate_.z = (float)transform["translation"][1];
+				//回転
+				obData.transform.rotate_.x = Dig2Rad(-(float)transform["rotation"][0]);
+				obData.transform.rotate_.y = Dig2Rad(-(float)transform["rotation"][2]);
+				obData.transform.rotate_.z = Dig2Rad(-(float)transform["rotation"][1]);
+
 				//Float型単品ならその型群に
 				if (object[prop].is_number_float()) {
 					//データ登録処理
@@ -94,10 +113,64 @@ void LoadMap(nlohmann::json& deserialized, std::vector<MapLoader::ObjectData>& o
 					obData.v3Value_[prop] = newd;
 				}
 			}
+
+
+			if (object.contains("children")) {
+				nlohmann::json& child = object["children"];
+				LoadMap(object, obData.child, "children");
+			}
 		}
+		
+		
 	}
 }
 
+void LoadItem(nlohmann::json& deserialized, std::vector<Itemdata>& objects, std::string tag) {
+	for (nlohmann::json& object : deserialized[tag]) {
+		assert(object.contains("type"));
+		//種別を取得
+		std::string type = object["type"].get<std::string>();
+
+		if (type.compare("SpawnPoint")==0) {
+
+			
+
+			//要素追加
+			objects.emplace_back(Itemdata{});
+			Itemdata& itData = objects.back();
+
+			//名前があったら追加
+			if (object.contains("file_name")) {
+				//ファイル名
+				itData.itemname = object["file_name"];
+			}
+
+			//オブジェクトタグ走査
+			for (auto it = object.begin(); it != object.end(); ++it) {
+
+				std::string prop = it.key();
+
+				if (prop == "collider" || prop == "file_name" || prop == "transform") {
+					continue;
+				}
+
+				//Float型単品ならその型群に
+				if (object[prop].is_number_float()) {
+					//データ登録処理
+					itData.floatValue_[prop] = it.value();
+				}
+				else if (object[prop].is_array() && object[prop].size() == 1) {
+					Vector2 newd = { object[prop][0],object[prop][1] };
+					itData.v2Value_[prop] = newd;
+				}
+				else if (object[prop].is_array() && object[prop].size() == 2) {
+					Vector3 newd = { object[prop][0],object[prop][1],object[prop][2] };
+					itData.v3Value_[prop] = newd;
+				}
+			}
+		}
+	}
+}
 
 void MapLoader::LoadLevelEditor(const std::string& filename, const std::string& kExtension)
 {
@@ -136,7 +209,7 @@ void MapLoader::LoadLevelEditor(const std::string& filename, const std::string& 
 
 
 	LoadMap(deserialized, leveldata->objects, "objects");
-
+	LoadItem(deserialized, leveldata->items, "objects");
 
 
 	levelDatas_.emplace_back(leveldata);

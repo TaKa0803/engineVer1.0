@@ -343,8 +343,8 @@
             "name": "ICO球.001",
             "transform": {
                 "translation": [
-                    80.83470916748047,
-                    39.91612243652344,
+                    -78.42598724365234,
+                    104.52722930908203,
                     0.0
                 ],
                 "rotation": [
@@ -358,7 +358,11 @@
                     1.0
                 ]
             },
-            "file_name": "EnemySpawn"
+            "file_name": "EnemySpawn",
+            "PopAreaSize": 30.0,
+            "PangeWithPopStarting": 80.0,
+            "PopInterval": 5.0,
+            "maxAreaPopCount": 50.0
         },
         {
             "type": "MESH",
@@ -432,11 +436,11 @@
         },
         {
             "type": "SpawnPoint",
-            "name": "ICO球.002",
+            "name": "ICO球.006",
             "transform": {
                 "translation": [
-                    80.83470916748047,
-                    112.83334350585938,
+                    -76.15892791748047,
+                    171.40538024902344,
                     0.0
                 ],
                 "rotation": [
@@ -451,6 +455,32 @@
                 ]
             },
             "file_name": "EnemySpawn"
+        },
+        {
+            "type": "SpawnPoint",
+            "name": "ICO球.002",
+            "transform": {
+                "translation": [
+                    80.83470916748047,
+                    108.49457550048828,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "EnemySpawn",
+            "PopAreaSize": 30.0,
+            "PangeWithPopStarting": 80.0,
+            "PopInterval": 5.0,
+            "maxAreaPopCount": 50.0
         },
         {
             "type": "SpawnPoint",
@@ -458,7 +488,7 @@
             "transform": {
                 "translation": [
                     80.83470916748047,
-                    167.67959594726562,
+                    172.53890991210938,
                     0.0
                 ],
                 "rotation": [
@@ -472,15 +502,19 @@
                     1.0
                 ]
             },
-            "file_name": "EnemySpawn"
+            "file_name": "EnemySpawn",
+            "PopAreaSize": 30.0,
+            "PangeWithPopStarting": 80.0,
+            "PopInterval": 5.0,
+            "maxAreaPopCount": 50.0
         },
         {
             "type": "SpawnPoint",
             "name": "ICO球.004",
             "transform": {
                 "translation": [
-                    -79.67205047607422,
-                    112.83334350585938,
+                    0.9209747314453125,
+                    39.91612243652344,
                     0.0
                 ],
                 "rotation": [
@@ -494,15 +528,19 @@
                     1.0
                 ]
             },
-            "file_name": "EnemySpawn"
+            "file_name": "EnemySpawn",
+            "PopAreaSize": 30.0,
+            "PangeWithPopStarting": 80.0,
+            "PopInterval": 5.0,
+            "maxAreaPopCount": 50.0
         },
         {
             "type": "SpawnPoint",
             "name": "ICO球.005",
             "transform": {
                 "translation": [
-                    -80.7590103149414,
-                    167.67959594726562,
+                    -77.8592300415039,
+                    39.91612243652344,
                     0.0
                 ],
                 "rotation": [
@@ -516,11 +554,41 @@
                     1.0
                 ]
             },
-            "file_name": "EnemySpawn"
+            "file_name": "EnemySpawn",
+            "PopAreaSize": 30.0,
+            "PangeWithPopStarting": 80.0,
+            "PopInterval": 5.0,
+            "maxAreaPopCount": 50.0
         },
         {
             "type": "SpawnPoint",
-            "name": "ICO球.006",
+            "name": "ICO球.007",
+            "transform": {
+                "translation": [
+                    1.4877395629882812,
+                    175.93951416015625,
+                    31.172025680541992
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "EnemySpawn",
+            "PopAreaSize": 30.0,
+            "PangeWithPopStarting": 80.0,
+            "PopInterval": 5.0,
+            "maxAreaPopCount": 50.0
+        },
+        {
+            "type": "SpawnPoint",
+            "name": "ICO球.008",
             "transform": {
                 "translation": [
                     80.83470916748047,
@@ -538,73 +606,11 @@
                     1.0
                 ]
             },
-            "file_name": "EnemySpawn"
-        },
-        {
-            "type": "SpawnPoint",
-            "name": "ICO球.007",
-            "transform": {
-                "translation": [
-                    -80.03435516357422,
-                    39.91612243652344,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "EnemySpawn"
-        },
-        {
-            "type": "SpawnPoint",
-            "name": "ICO球.008",
-            "transform": {
-                "translation": [
-                    0.400177001953125,
-                    179.77073669433594,
-                    30.086214065551758
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "EnemySpawn"
-        },
-        {
-            "type": "SpawnPoint",
-            "name": "ICO球.009",
-            "transform": {
-                "translation": [
-                    0.40018463134765625,
-                    39.91612243652344,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "EnemySpawn"
+            "file_name": "EnemySpawn",
+            "PopAreaSize": 30.0,
+            "PangeWithPopStarting": 80.0,
+            "PopInterval": 5.0,
+            "maxAreaPopCount": 50.0
         }
     ]
 }

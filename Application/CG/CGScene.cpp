@@ -70,6 +70,8 @@ void CGScnene::Update()
 
 	MapLoader::GetInstance()->UpdateLevelData();
 
+	Leveldata* data = MapLoader::GetInstance()->GetLevelData();
+
 	LightManager::GetInstance()->SetPLight(pointLight_);
 	LightManager::GetInstance()->SetDLight(dLight_);
 	

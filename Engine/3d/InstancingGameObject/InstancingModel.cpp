@@ -141,7 +141,6 @@ void InstancingModel::Draw(int texture) {
 
 		wvpData_[index].color = data->color;
 
-
 		bool isAnime = false;
 		//animationのあるモデルなら
 		if (modelType_ == kSkinningGLTF) {

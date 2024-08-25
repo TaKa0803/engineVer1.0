@@ -8,6 +8,38 @@
 #include"InstancingGameObject/InstancingGameObject.h"
 #include"SphereCollider/SphereCollider.h"
 
+
+struct ColliderData
+{
+	std::string type;
+	Vector3 center;
+	Vector3 size;
+};
+
+struct ObjectData {
+	std::string filename;
+	EulerWorldTransform transform;
+	ColliderData collider;
+	std::vector<ObjectData>child;
+	std::map<std::string, float>floatValue_;
+	std::map<std::string, Vector2>v2Value_;
+	std::map<std::string, Vector3>v3Value_;
+
+};
+
+struct Itemdata {
+	std::string itemname;
+	EulerWorldTransform transform;
+	std::map<std::string, float>floatValue_;
+	std::map<std::string, Vector2>v2Value_;
+	std::map<std::string, Vector3>v3Value_;
+};
+
+struct Leveldata {
+	std::vector<ObjectData>objects;
+	std::vector<Itemdata>items;
+};
+
 class MapLoader {
 public:
 	static MapLoader* GetInstance();
@@ -37,28 +69,8 @@ public:
 	Vector3 IsCollisionMap(SphereCollider* collider);
 
 
+	Leveldata* GetLevelData() { return levelDatas_[stageNum_]; };
 
-	struct ColliderData
-	{
-		std::string type;
-		Vector3 center;
-		Vector3 size;
-	};
-
-	struct ObjectData {
-		std::string filename;
-		EulerWorldTransform transform;
-		ColliderData collider;
-		std::vector<ObjectData>child;
-		std::map<std::string, float>floatValue_;
-		std::map<std::string, Vector2>v2Value_;
-		std::map<std::string, Vector3>v3Value_;
-
-	};
-
-	struct Leveldata {
-		std::vector<ObjectData>objects;
-	};
 
 private:
 	void LoadModel(const std::vector<ObjectData>&d);
