@@ -154,6 +154,17 @@ void LoadItem(nlohmann::json& deserialized, std::vector<Itemdata>& objects, std:
 					continue;
 				}
 
+				//トランスフォーム値取得
+				nlohmann::json& transform = object["transform"];
+				//平行移動
+				itData.transform.translate_.x = (float)transform["translation"][0];
+				itData.transform.translate_.y = (float)transform["translation"][2];
+				itData.transform.translate_.z = (float)transform["translation"][1];
+				//回転
+				itData.transform.rotate_.x = Dig2Rad(-(float)transform["rotation"][0]);
+				itData.transform.rotate_.y = Dig2Rad(-(float)transform["rotation"][2]);
+				itData.transform.rotate_.z = Dig2Rad(-(float)transform["rotation"][1]);
+
 				//Float型単品ならその型群に
 				if (object[prop].is_number_float()) {
 					//データ登録処理

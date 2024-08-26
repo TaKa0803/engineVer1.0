@@ -95,8 +95,9 @@ void EnemyPopManager::LoadPopdata() {
 	int Index = 0;
 	for (auto& popData : popDatas_) {
 		//スポーン地点の座標指定
-		flagWorlds_[Index].translate_ = popData.areaPosition;
-
+		EulerWorldTransform newW;
+		newW.translate_ = popData.areaPosition;
+		flagWorlds_.push_back(newW);
 
 		//旗も追加
 		std::unique_ptr<GameObject>newdata = std::make_unique<GameObject>();
@@ -121,6 +122,61 @@ void EnemyPopManager::LoadPopdata() {
 		//newdata.reset();
 
 		Index++;
+	}
+}
+
+void EnemyPopManager::LoadMapItem(const std::string& tag, Leveldata* datas)
+{
+	//データのサイズ分メモリ確保
+	popDatas_.reserve(datas->items.size());
+	flagWorlds_.reserve(popDatas_.size());
+
+	//読み込まれたデータから出現データ作成
+	int Index = 0;
+	for (auto& data : datas->items) {
+		//タグと同じ値の時入植
+		if (data.itemname == tag) {
+			PopData newData;
+			//各値設定
+			newData.areaPosition = data.transform.translate_;
+			newData.areaName = data.itemname;
+			newData.popAreaSize = data.floatValue_[itemNames[(int)INE::POPAREASIZE]];
+			newData.PopStartingArea = data.floatValue_[itemNames[(int)INE::RANGEPOPSTART]];
+			newData.PopInterval = data.floatValue_[itemNames[(int)INE::POPINTERVAL]];
+			newData.maxAreaPop = data.floatValue_[itemNames[(int)INE::MAXAREAPOP]];
+
+
+			//スポーン地点の座標指定
+			EulerWorldTransform newW;
+			newW.translate_ = newData.areaPosition;
+			flagWorlds_.push_back(newW);
+
+			//旗も追加
+			std::unique_ptr<GameObject>newdata = std::make_unique<GameObject>();
+			newdata->Initialize("flag");
+			newdata->world_.translate_ = newData.areaPosition;
+			newdata->world_.translate_.y += 6.0f;
+			//値をもとに末尾に直接構築
+			flagModel_.push_back(std::move(newdata));
+
+			std::unique_ptr<GameObject>newdataaa = std::make_unique<GameObject>();
+			newdataaa->Initialize("Flag");
+			newdataaa->world_.translate_ = newData.areaPosition;
+			//newdataaa->world_.translate_.y += 6.0f;
+			newdataaa->model_->materialData_->enableEnvironmentMap = true;
+			newdataaa->model_->materialData_->enviromentCoefficient = 0.1f;
+			newdataaa->model_->materialData_->shininess = 0;
+			//値をもとに末尾に直接構築
+			poleModel_.push_back(std::move(newdataaa));
+
+			//データ群に追加
+			popDatas_.push_back(newData);
+
+			//指定タグ分数増加
+			Index++;
+		}
+
+		
 	}
 }
 

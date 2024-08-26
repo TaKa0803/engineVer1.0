@@ -4,6 +4,7 @@
 
 #include"Math/Vector3.h"
 #include"AL/Enemy/ALEnemy.h"
+#include"MapLoader/MapLoader.h"
 
 struct PopData {
 	std::string areaName;//出現エリアの名前
@@ -11,8 +12,9 @@ struct PopData {
 	float popAreaSize;//出現エリアのサイズ
 	float PopStartingArea;//出現処理をする範囲
 	float PopInterval;//出現間隔
-	float PopIntervalCount = 0;
 	float maxAreaPop;//エリアでの最大出現数
+
+	float PopIntervalCount = 0;
 	float maxAreaPopCount = 0;
 };
 
@@ -30,6 +32,8 @@ public:
 	/// jsonファイル読み込み
 	/// </summary>
 	void LoadPopdata();
+
+	void LoadMapItem(const std::string& tag,Leveldata* data);
 
 	void Initialzie();
 

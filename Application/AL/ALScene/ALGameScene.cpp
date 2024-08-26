@@ -20,8 +20,11 @@ ALGameScene::ALGameScene() {
 
 	plane_ = std::make_unique<Plane>();
 
+	MapLoader::GetInstance()->LoadLevelEditor("untitled", ".json");
+	MapLoader::GetInstance()->CreateModel(0);
+
 	enemyPopManager_ = std::make_unique<EnemyPopManager>();
-	enemyPopManager_->LoadPopdata();
+	enemyPopManager_->LoadMapItem("EnemySpawn", MapLoader::GetInstance()->GetLevelData());
 
 	
 
@@ -83,8 +86,7 @@ ALGameScene::ALGameScene() {
 
 	bgmClear_ = AudioManager::LoadSoundNum("clear");
 
-	MapLoader::GetInstance()->LoadLevelEditor("map", ".json");
-	MapLoader::GetInstance()->CreateModel(0);
+
 
 	peM_ = std::make_unique<ParticleManager>();
 
