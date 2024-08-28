@@ -1,6 +1,7 @@
+
 #include"Vector3.h"
 #include<math.h>
-
+#include<cassert>
 
 // クロス積
 Vector3 Cross(const Vector3& v1, const Vector3& v2) {
@@ -12,12 +13,21 @@ Vector3 Vector3::SetNormalize() {
 
 	float length = sqrtf(x * x + y * y + z * z);
 	if (length != 0) {
-		Vector3 num = *this /= length;
-		x = num.x;
-		y = num.y;
-		z = num.z;
+		*this /= length;
 	}
 	return *this;
+}
+
+Vector3 Vector3::GetNormalizeNum()
+{
+	float length = sqrtf(x * x + y * y + z * z);
+	if (length != 0) {
+		Vector3 num = *this / length;
+		return num;
+	}
+	else {
+		return { x,y,z };
+	}
 }
 
 float Vector3::GetLength() {

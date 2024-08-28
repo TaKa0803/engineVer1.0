@@ -6,6 +6,7 @@
 #include<cassert>
 #include<numbers>
 #include"Camera/Camera.h"
+#include"ImGuiManager/ImGuiManager.h"
 MapLoader* MapLoader::GetInstance()
 {
 	static MapLoader ins;
@@ -253,12 +254,29 @@ void MapLoader::UpdateLevelData()
 	for (auto& data : colliders_) {
 		data->Update();
 	}
+
+#ifdef _DEBUG
+	ImGui::Begin("maploader");
+	ImGui::Checkbox("drawM", &isDraw_);
+	ImGui::Checkbox("drawC", &isDrawC_);
+
+	ImGui::End();
+#endif // _DEBUG
+
 }
 
 void MapLoader::DrawLevelData()
 {
-	for (auto& data : models_[stageNum_]) {
-		data->Draw();
+	if (isDraw_) {
+		for (auto& data : models_[stageNum_]) {
+			data->Draw();
+		}
+	}
+
+	if (isDrawC_) {
+		for (auto& data : colliders_) {
+			data->Draw();
+		}
 	}
 }
 
@@ -269,7 +287,7 @@ Vector3 MapLoader::IsCollisionMap(SphereCollider* collider)
 	Vector3 backVec;
 	for (auto& cdata : colliders_) {
 		cdata->IsCollision(collider, backVec);
-		ans = backVec;
+		ans += backVec;
 	}
 
 	return ans;

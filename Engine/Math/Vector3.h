@@ -33,7 +33,11 @@ public:
 #pragma endregion
 public:
 #pragma region 計算して反映
+	//正規化して返却
 	Vector3 SetNormalize();
+
+	//正規化した値を返す（値は変化しない
+	Vector3 GetNormalizeNum();
 
 	float GetLength();
 

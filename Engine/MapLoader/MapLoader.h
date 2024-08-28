@@ -97,4 +97,7 @@ private:
 	std::map<int,std::vector<std::unique_ptr<InstancingGameObject>>>models_;
 
 	std::vector<std::unique_ptr<OBBCollider>>colliders_;
+
+	bool isDraw_ = true;
+	bool isDrawC_ = true;
 };

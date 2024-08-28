@@ -55,4 +55,6 @@ private:
 
 	//エフェクト
 	std::string eTag_ = "box";
+
+	float spd_ = 0.5;
 };

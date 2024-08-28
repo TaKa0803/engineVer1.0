@@ -35,6 +35,7 @@ float GetAllScaleZ(const EulerWorldTransform& world);
 //親も合わせた拡縮取得
 Vector3 GetAllScale(const EulerWorldTransform& world);
 
+Vector3 GetClosestPoint(const Vector3& p, const Vector3& min, const Vector3& max);
 
 //AABBと円
 bool InCollision(const AABB& a, const Sphere& s, Vector3& v);

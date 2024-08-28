@@ -80,31 +80,34 @@ Vector3 GetAllScale(const EulerWorldTransform& world) {
 
 #pragma endregion
 
+Vector3 GetClosestPoint(const Vector3& p, const Vector3& min, const Vector3& max) {
+	return{
+	std::clamp(p.x,min.x,max.x),
+	std::clamp(p.y,min.y,max.y),
+	std::clamp(p.z,min.z,max.z)
+	};
+}
 
-
-//AABBと円
+//AABBと円の当たり判定処理(重なっているか否か
 bool InCollision(const AABB& a, const Sphere& s, Vector3& v) {
 	//最近接点を求める
-	Vector3 closestPoint{ std::clamp(s.center.x,a.minV.x,a.maxV.x),
-	std::clamp(s.center.y,a.minV.y,a.maxV.y),
-	std::clamp(s.center.z,a.minV.z,a.maxV.z)
-	};
+	Vector3 closestPoint = GetClosestPoint(s.center, a.minV, a.maxV);
 	Sphere S{
 		.center = closestPoint,
 		.radius = 0.01f,
 	};
 
-	//
-	Vector3 V = closestPoint - s.center;
-
 	//最近接点と球の中心との距離を求める
+	Vector3 V = closestPoint - s.center;
  	float dis = Length(V);
+	//最近接点をわたす
+	v = closestPoint;
 	//距離が半径よりも小さければ衝突
-	if (dis <= s.radius) { 
-		//最近接点をわたす
-		v = closestPoint;
+	if (dis < s.radius) { 
+
 		return true;
 	}
+
 	return false;
 }
 

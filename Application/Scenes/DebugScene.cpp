@@ -44,7 +44,15 @@ void DebugScene::Initialize()
 
 	sw1.translate_ = { 5,0,0 };
 	sw2.translate_ = { -5,0,0 };
+	obbw.scale_.x = 10;
 
+	sw1.UpdateMatrix();
+	sw2.UpdateMatrix();
+	obbw.UpdateMatrix();
+
+	sp1->Update();
+	sp2->Update();
+	obb->Update();
 
 	EffectExp_->Initialize();
 
@@ -57,12 +65,12 @@ void DebugScene::Update()
 	camera_->Update();
 
 
-	Vector3 move = input_->GetAllArrowKey();
+	Vector3 move = input_->GetAllArrowKey()*spd_;
 
-	sw1.translate_.x += move.x*0.1f;
-	sw1.translate_.y += move.z*0.1f;
+	sw1.translate_.x += move.x;
+	sw1.translate_.y += move.z;
 
-
+	obbw.rotate_.z += 0.01f;
 
 	sw1.UpdateMatrix();
 	sw2.UpdateMatrix();
@@ -73,57 +81,57 @@ void DebugScene::Update()
 	obb->Update();
 
 
-	if (input_->TriggerKey(DIK_SPACE)) {
+	//if (input_->TriggerKey(DIK_SPACE)) {
 
-		EffectData newData;
+	//	EffectData newData;
 
-		newData.tag = eTag_;
+	//	newData.tag = eTag_;
 
-		for (int i = 0; i < 10; ++i) {
+	//	for (int i = 0; i < 10; ++i) {
 
-			moveData movedata;
+	//		moveData movedata;
 
-			movedata.world = { 0,2,0 };
-			movedata.world.scale_ = { 0.2f,0.2f ,0.2f };
-			movedata.velo = {
-				RandomNumber::Get(-1,1),
-				RandomNumber::Get(-1,1),
-				RandomNumber::Get(-1,1)
-			};
+	//		movedata.world = { 0,2,0 };
+	//		movedata.world.scale_ = { 0.2f,0.2f ,0.2f };
+	//		movedata.velo = {
+	//			RandomNumber::Get(-1,1),
+	//			RandomNumber::Get(-1,1),
+	//			RandomNumber::Get(-1,1)
+	//		};
 
-			movedata.velo.SetNormalize();
-			movedata.velo *= 1.0f;
+	//		movedata.velo.SetNormalize();
+	//		movedata.velo *= 1.0f;
 
-			movedata.acce = { 0,-0.1f,0 };
+	//		movedata.acce = { 0,-0.1f,0 };
 
-			movedata.maxDeadCount = 60;
+	//		movedata.maxDeadCount = 60;
 
-			newData.mData.push_back(movedata);
+	//		newData.mData.push_back(movedata);
 
-		}
-		EffectExp_->AddEffectData(newData);
-	}
+	//	}
+	//	EffectExp_->AddEffectData(newData);
+	//}
 
-	EffectExp_->Update();
+	//EffectExp_->Update();
 
 
 	Vector3 backV;
-	if (obb->IsCollision(sp1.get(), backV)) {
-		sw1.translate_ -= backV;
-		sw1.UpdateMatrix();
-		sp1->Update();
-	}
-	if (obb->IsCollision(sp2.get(), backV)) {
-		sw2.translate_ -= backV;
-		sw2.UpdateMatrix();
-		sp2->Update();
-	}
-
-	if (sp1->IsCollision(sp2.get(), backV)) {
+	if (obb->IsCollision(sp1.get(), backV,10)) {
 		sw1.translate_ += backV;
 		sw1.UpdateMatrix();
 		sp1->Update();
 	}
+	//if (obb->IsCollision(sp2.get(), backV)) {
+	//	sw2.translate_ -= backV;
+	//	sw2.UpdateMatrix();
+	//	sp2->Update();
+	//}
+
+	//if (sp1->IsCollision(sp2.get(), backV)) {
+	//	sw1.translate_ += backV;
+	//	sw1.UpdateMatrix();
+	//	sp1->Update();
+	//}
 
 
 #pragma region スプライト
@@ -140,6 +148,7 @@ void DebugScene::Update()
 
 	ImGui::Begin("入力チェック");
 	ImGui::Text("入力 X,Y : %4.1f,%4.1f", move.x, move.z);
+	ImGui::DragFloat("spd", &spd_,0.01f);
 	ImGui::End();
 }
 
@@ -156,7 +165,7 @@ void DebugScene::Draw()
 
 	InstancingModelManager::GetInstance()->DrawAllModel();
 
-	splite_->Draw();
+	//splite_->Draw();
 }
 
 void DebugScene::Debug()
@@ -166,6 +175,6 @@ void DebugScene::Debug()
 	sw1.DrawDebug("s1");
 	sw2.DrawDebug("s2");
 	obbw.DrawDebug("obb");
-
+	obb->Debug("obbC");
 }
 

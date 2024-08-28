@@ -59,7 +59,7 @@ public:
 	float GetRadius() { return radius_; }
 
 	//ローカル平行移動取得
-	Vector3 GetTranslate() { return world_.translate_; }
+	//Vector3 GetTranslate() { return world_.translate_; }
 
 	//コライダータグ取得
 	std::string GetTag()const { return colliderTag_; }
@@ -67,7 +67,9 @@ public:
 	//ワールド取得
 	EulerWorldTransform GetWorld()const { return world_; }
 
-	
+	//過去ワールド取得
+	EulerWorldTransform GetPreWorld()const { return preWorld_; }
+
 private:
 
 	//半径

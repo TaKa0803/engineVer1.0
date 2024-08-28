@@ -49,7 +49,7 @@ public:
 	/// <param name="collider">コライダーのポインタ</param>
 	/// <param name="backVec">押し出し量</param>
 	/// <returns>押し出し量を渡し、当たったか否か判定</returns>
-	bool IsCollision(SphereCollider*collider,Vector3&backVec);
+	bool IsCollision(SphereCollider*collider,Vector3&backVec,int division=1);
 
 	//線との当たり判定
 	bool IsCollision(const Segment& seg);
@@ -132,4 +132,6 @@ private:
 	//worldの逆行列
 	Matrix4x4 inverseM_;
 	AABB aabb_;
+
+	float getDot = 0.0f;
 };

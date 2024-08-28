@@ -10,7 +10,7 @@ void OBBCollider::Initialize(const std::string& tag, const EulerWorldTransform& 
 	//インスタンシングの初期化
 	InstancingGameObject::Initialize("box");
 	//親子関係設定
-	world_.parent_=(&parent);
+	world_.parent_ = (&parent);
 	//コライダーのタグ設定
 	colliderTag_ = tag;
 
@@ -68,6 +68,42 @@ void OBBCollider::Update()
 	world_.UpdateMatrix();
 
 
+
+
+}
+
+void OBBCollider::Draw()
+{
+#ifdef _DEBUG
+	if (isDraw_) {
+		InstancingModelManager::GetInstance()->SetData(tag_, world_, color_);
+	}
+#endif // _DEBUG
+}
+
+void OBBCollider::Debug(const char* name)
+{
+
+#ifdef _DEBUG
+	ImGui::Begin(name);
+	ImGui::DragFloat3("trans", &world_.translate_.x, 0.10f);
+	ImGui::DragFloat3("rotation", &world_.rotate_.x, 0.01f);
+	ImGui::DragFloat3("scale", &world_.scale_.x, 0.01f);
+
+	ImGui::ColorEdit4("hit color", &hitColor.x);
+	ImGui::Checkbox("isDraw", &isDraw_);
+	ImGui::Text("dot : %f", getDot);
+	ImGui::End();
+#endif // _DEBUG
+
+
+}
+
+bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int division)
+{
+	if (division < 1) {
+		division = 1;
+	}
 #pragma region OBBのワールド行列をスケールなしで作成
 	//回転量取得
 	Vector3 rotate = GetAllRotate(world_);
@@ -91,120 +127,122 @@ void OBBCollider::Update()
 	aabb_ = { .minV = -size,.maxV = size };
 #pragma endregion
 
-}
+	float addNum =  1.0f/division;
+	float t = 0;
 
-void OBBCollider::Draw()
-{
-#ifdef _DEBUG
-	if (isDraw_) {
-		InstancingModelManager::GetInstance()->SetData(tag_, world_,color_);
-	}
-#endif // _DEBUG
-}
+	Vector3 preCWorld = collider->GetPreWorld().GetMatWorldTranslate();
+	Vector3 CWorld = collider->GetWorld().GetMatWorldTranslate();
 
-void OBBCollider::Debug(const char* name)
-{
-
-#ifdef _DEBUG
-	ImGui::Begin(name);
-	ImGui::DragFloat3("trans", &world_.translate_.x, 0.10f);
-	ImGui::DragFloat3("rotation", &world_.rotate_.x, 0.01f);
-	ImGui::DragFloat3("scale", &world_.scale_.x, 0.01f);
-
-	ImGui::ColorEdit4("hit color", &hitColor.x);
-	ImGui::Checkbox("isDraw", &isDraw_);
-	ImGui::End();
-#endif // _DEBUG
+	//ローカル変換
+	preCWorld = Transform(preCWorld, inverseM_);
+	CWorld = Transform(CWorld, inverseM_);
 
 
-}
+	while (true) {
 
-bool OBBCollider::IsCollision(SphereCollider* collider,Vector3& backVec)
-{
+		//過去地点から現在地点まで段階的に探査する
+		Vector3 spehrePos = Esing(preCWorld, CWorld, t);
 
-	//スフィアコライダーの座標をOBBのローカル空間に出る
-	Vector3 sphereLocal = Transform(collider->GetWorld().GetMatWorldTranslate(), inverseM_);
-	
-	
-	//Sphere取得
-	Sphere sphere = { sphereLocal,collider->GetRadius()};
-
-	//当たり判定
-	Vector3 saikin{};
-	if (InCollision(aabb_, sphere, saikin)) {
+		//スフィアコライダーの座標をOBBのローカル空間に出る
+		//Vector3 sphereLocal = Transform(spehrePos, inverseM_);
 
 
-		//OBBLocalPosCange
-		saikin = Transform(saikin, OBBM_);
+		//Sphere取得
+		Sphere sphere = {spehrePos,collider->GetRadius() };
 
-		//mosionajiiti
-		if (world_.GetMatWorldTranslate() == saikin) {
-			//スフィアコライダーの座標をOBBのローカル空間に出る
-			sphereLocal = Transform(preWorld_.GetMatWorldTranslate(), inverseM_);
-			//Sphere取得
-			sphere = { sphereLocal,collider->GetRadius()};
-			InCollision(aabb_, sphere, saikin);
+		//当たり判定
+		Vector3 saikin{};
+		if (InCollision(aabb_, sphere, saikin)) {
 
-			saikin = Transform(saikin, OBBM_);
 
-			Vector3 velo = preWorld_.GetMatWorldTranslate() - saikin;
-			velo.SetNormalize();
-			velo *= collider->GetRadius();
+			//OBBのローカル座標からworld座標に変換
+			//saikin = Transform(saikin, OBBM_);
 
-			backVec = velo;
 
-		}
-		else {
 			///押し出しベクトルを利用して計算
 			//最近接点から円の中心点への向きベクトルを算出
-			Vector3 velo = collider->GetWorld().GetMatWorldTranslate() - saikin;
+			//Vector3 velo = spehrePos - saikin;
 			//正規化
 
-			Vector3 norVe = velo;
-			norVe.SetNormalize();
+			//Vector3 norVe = velo;
+			//norVe.SetNormalize();
 			//半径分伸ばす
-			norVe *= collider->GetRadius();
-
+			//norVe *= collider->GetRadius();
 			//渡す
-			backVec = norVe - velo;
+			//backVec = norVe - velo;
 
-			
+			//すべてローカル内処理
+			//最近接点から過去位置に向けての向きベクトルを取得
+			Vector3 closestP2PreP = spehrePos - saikin;
+			closestP2PreP.SetNormalize();
+
+			//最近接点と現在位置との向きを求める
+			Vector3 closestP2NowP = CWorld - saikin;
+
+			//内積を求める
+			float dot = closestP2PreP * closestP2NowP.GetNormalizeNum();
+			getDot = dot;
+
+			//長さを求める
+			//終点の最近接点を求める
+			Vector3 nowCP = GetClosestPoint(CWorld, aabb_.minV, aabb_.maxV);
+			//最近接点と終点の距離
+			float lengthEndP = (CWorld - nowCP).GetLength();
+
+			//最大押し出し量を求める
+			Vector3 backV = closestP2PreP * collider->GetRadius();
+			//最近接点から移動位置までのベクトルを求める
+			Vector3 diffV = closestP2PreP * lengthEndP;
+
+			//ある程度同じ方向を向いてる場合
+			if (dot >= 0) {
+				//最大押し出し量に押し出し量
+				backVec = backV - diffV;
+			}
+			else {
+				backVec = backV + diffV;
+			}
+
+			//worldに変換
+			backVec = Transform(backVec,OBBM_);
+
+			////最近接点描画
+			EulerWorldTransform sWo;
+			sWo.translate_ = Transform(saikin,OBBM_);
+			sWo.scale_ = { 0.1f,0.1f,0.1f };
+			sWo.UpdateMatrix();
+			IMM_->SetData("sphere", sWo);
+			//ヒットカラー処理
+			SetColor(true);
+			collider->SetColor(true);
+
+			//backVec *= -1;
+			return true;
+
+
+
 		}
 
+		t += addNum;
 
-		////最近接点描画
-		EulerWorldTransform sWo;
-		sWo.translate_ = saikin;
-		sWo.scale_ = { 0.1f,0.1f,0.1f };
-		sWo.UpdateMatrix();
-		IMM_->SetData("sphere", sWo);
-
-		SetColor(true);
-
-		collider->SetColor(true);
-
-		backVec *= -1;
-		return true;
+		if (t > 1.0f) {
+			//最近接点描画
+			//OBBLocalPosCange
+			saikin = Transform(saikin, OBBM_);
+			EulerWorldTransform sWo;
+			sWo.translate_ = saikin;
+			sWo.scale_ = { 0.1f,0.1f,0.1f };
+			sWo.UpdateMatrix();
+			IMM_->SetData("sphere", sWo);
 
 
+			//色の変更
+			SetColor(false);
+			collider->SetColor(false);
 
+			return false;
+		}
 	}
-	else {
-		//最近接点描画
-		EulerWorldTransform sWo;
-		sWo.translate_ = Transform(saikin, OBBM_);
-		sWo.scale_ = { 0.1f,0.1f,0.1f };
-		sWo.UpdateMatrix();
-		IMM_->SetData("sphere", sWo);
-
-
-		//色の変更
-		SetColor(false);
-		collider->SetColor(false);
-
-		return false;
-	}
-	 
 }
 
 bool OBBCollider::IsCollision(const Segment& seg) {
@@ -213,7 +251,7 @@ bool OBBCollider::IsCollision(const Segment& seg) {
 
 	//各OBBローカル上に作成
 	Vector3 localOri = Transform(seg.origin, inverseM_);
-	Vector3 localEnd = Transform(seg.origin+seg.diff, inverseM_);
+	Vector3 localEnd = Transform(seg.origin + seg.diff, inverseM_);
 
 	//セグメント取得
 	Segment lSeg = { localOri,localEnd - localOri };
