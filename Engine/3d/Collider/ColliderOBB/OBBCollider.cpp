@@ -154,7 +154,28 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 		Vector3 saikin{};
 		if (InCollision(aabb_, sphere, saikin)) {
 
+			//値が同じ場合の処理
+			if (spehrePos == saikin) {
+				//過去位置に向けてのベクトル算出
+				Vector3 CP2EndP = preCWorld - saikin;
+				//半径の長さ分押し戻す
+				CP2EndP = CP2EndP.GetNormalizeNum() * collider->GetRadius();
 
+				//worldに修正したものを渡す
+				backVec = Transform(CP2EndP, OBBM_);
+
+				////最近接点描画
+				EulerWorldTransform sWo;
+				sWo.translate_ = Transform(saikin, OBBM_);
+				sWo.scale_ = { 0.1f,0.1f,0.1f };
+				sWo.UpdateMatrix();
+				IMM_->SetData("sphere", sWo);
+				//ヒットカラー処理
+				SetColor(true);
+				collider->SetColor(true);
+
+				return true;
+			}
 			//OBBのローカル座標からworld座標に変換
 			//saikin = Transform(saikin, OBBM_);
 
@@ -176,16 +197,21 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 			Vector3 closestP2PreP = spehrePos - saikin;
 			closestP2PreP.SetNormalize();
 
+			//終点の最近接点を求める
+			Vector3 nowCP = GetClosestPoint(CWorld, aabb_.minV, aabb_.maxV);
 			//最近接点と現在位置との向きを求める
-			Vector3 closestP2NowP = CWorld - saikin;
+			Vector3 closestP2NowP = CWorld - nowCP;
+
+			//もし終点がBox内の場合
+			if (closestP2NowP == Vector3{0, 0, 0}) {
+				//ここで速度過多による貫通処理を書く
+			}
 
 			//内積を求める
 			float dot = closestP2PreP * closestP2NowP.GetNormalizeNum();
 			getDot = dot;
 
 			//長さを求める
-			//終点の最近接点を求める
-			Vector3 nowCP = GetClosestPoint(CWorld, aabb_.minV, aabb_.maxV);
 			//最近接点と終点の距離
 			float lengthEndP = (CWorld - nowCP).GetLength();
 
@@ -216,7 +242,6 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 			SetColor(true);
 			collider->SetColor(true);
 
-			//backVec *= -1;
 			return true;
 
 

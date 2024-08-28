@@ -70,7 +70,7 @@ void DebugScene::Update()
 	sw1.translate_.x += move.x;
 	sw1.translate_.y += move.z;
 
-	obbw.rotate_.z += 0.01f;
+	//obbw.rotate_.z += 0.01f;
 
 	sw1.UpdateMatrix();
 	sw2.UpdateMatrix();
@@ -116,7 +116,7 @@ void DebugScene::Update()
 
 
 	Vector3 backV;
-	if (obb->IsCollision(sp1.get(), backV,10)) {
+	if (obb->IsCollision(sp1.get(), backV,(int)spd_)) {
 		sw1.translate_ += backV;
 		sw1.UpdateMatrix();
 		sp1->Update();
