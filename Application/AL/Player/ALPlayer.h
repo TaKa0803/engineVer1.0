@@ -123,6 +123,9 @@ private:
 	//移動速度
 	float spd_ = 0.5f;
 
+	//落下速度
+	float fallSpd_ = 0.01f;
+
 	//ループアニメーション管理
 	bool isRoopStart = false;
 

@@ -10,7 +10,7 @@
 #include"MapLoader/MapLoader.h"
 #include"PostEffect/PEs/PEHSVFilter.h"
 #include"PostEffect/PEs/PEVignetting.h"
-
+#include"ColliderOBB/OBBCollider.h"
 
 ALGameScene::ALGameScene() {
 	input_ = Input::GetInstance();
@@ -22,6 +22,13 @@ ALGameScene::ALGameScene() {
 
 	MapLoader::GetInstance()->LoadLevelEditor("untitled", ".json");
 	MapLoader::GetInstance()->CreateModel(0);
+	std::vector<std::unique_ptr<OBBCollider>>& datas=MapLoader::GetInstance()->GetColliderData();
+
+	for (auto& data : datas) {
+		if (data->colliderTag_ == "plane c") {
+			data->isActive_ = false;
+		}
+	}
 
 	enemyPopManager_ = std::make_unique<EnemyPopManager>();
 	enemyPopManager_->LoadMapItem("EnemySpawn", MapLoader::GetInstance()->GetLevelData());
@@ -345,8 +352,25 @@ void ALGameScene::Collision() {
 			e1Num++;
 		}
 	
-		Vector3 backV = MapLoader::GetInstance()->IsCollisionMap(player_->GetCollider());
-		player_->OnCollisionBack(backV);
+		//あたらなくなるまで処理
+		//bool ishit = true;
+		//while (ishit) {
+			Vector3 backV ;
+			if (MapLoader::GetInstance()->IsCollisionMap(player_->GetCollider(), backV)) {
+				//if (backV == Vector3{0, 0, 0}) {
+				//	ishit = false;
+				//}
+				//else {
+					player_->OnCollisionBack(backV);
+				//}
+			}
+			//else {
+			//	ishit = false;
+			//}
+
+		//}
+
+		
 		
 }
 

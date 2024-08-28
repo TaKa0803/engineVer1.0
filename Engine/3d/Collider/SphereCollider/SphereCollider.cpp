@@ -238,6 +238,7 @@ void SphereCollider::Debug(const char* name) {
 	cName = cName + " collider";
 
 	if (ImGui::BeginMenu(cName.c_str())) {
+		world_.DrawDebug(cName.c_str());
 		ImGui::DragFloat("alpha", &alpha_, 0.01f);
 		ImGui::DragFloat("radius", &radius_, 0.1f);
 		ImGui::Checkbox("isDrawAll", &isDraw_);

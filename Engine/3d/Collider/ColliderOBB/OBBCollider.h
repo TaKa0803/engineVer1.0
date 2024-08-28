@@ -97,12 +97,18 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	const Matrix4x4& GetInverseWorldM()const { return inverseM_; }
-private:
+
+	//有効フラグ
+	bool isActive_ = true;
 	//コライダータグ
 	std::string colliderTag_;
+private:
+
 
 	//すべての描画フラグ
 	static bool isDraw_;
+
+
 
 	Quaternion rotation_ = {};
 

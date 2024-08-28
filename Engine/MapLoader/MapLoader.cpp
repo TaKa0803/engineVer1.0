@@ -275,19 +275,24 @@ void MapLoader::DrawLevelData()
 
 	if (isDrawC_) {
 		for (auto& data : colliders_) {
-			data->Draw();
+			if (data->isActive_) {
+				data->Draw();
+			}
 		}
 	}
 }
 
-Vector3 MapLoader::IsCollisionMap(SphereCollider* collider)
+bool MapLoader::IsCollisionMap(SphereCollider* collider,Vector3& backV)
 {
-	Vector3 ans{};
+
+	bool ans = false;
 
 	Vector3 backVec;
 	for (auto& cdata : colliders_) {
-		cdata->IsCollision(collider, backVec);
-		ans += backVec;
+		if (cdata->isActive_&&cdata->IsCollision(collider, backVec, 5)) {
+			backV += backVec;
+			ans= true;
+		}
 	}
 
 	return ans;
@@ -376,10 +381,9 @@ void MapLoader::LoadModel(const std::vector<ObjectData>&d)
 		//こライダーデータ
 		if (data.collider.type == "BOX") {
 			std::unique_ptr<OBBCollider>newC = std::make_unique<OBBCollider>();
-			newC->Initialize("sphere");
+			newC->Initialize(data.filename+" c");
 			newC->SetParent(&models_[stageNum_].back()->world_);
 			newC->Update();
-
 			colliders_.push_back(std::move(newC));
 		}
 	}

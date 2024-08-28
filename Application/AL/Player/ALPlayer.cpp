@@ -84,6 +84,7 @@ ALPlayer::ALPlayer() {
 	collider_ = std::make_unique<SphereCollider>();
 	collider_->Initialize("player", world_);
 	collider_->SetRadius(1.5f);
+	collider_->SetTranslate({ 0,1.4f,0 });
 
 	//攻撃データの初期化
 	LoadATKDatas();
@@ -117,7 +118,8 @@ ALPlayer::~ALPlayer() {
 void ALPlayer::Initialize() {
 	//中身データ初期化
 	world_.Initialize();
-
+	world_.translate_.z = 2;
+	world_.UpdateMatrix();
 
 	model_->ChangeAnimation(3,0);
 
@@ -138,6 +140,8 @@ void ALPlayer::Initialize() {
 	impactE_->Initialize();
 	
 	model_->animationRoopSecond_ = 5.0f;
+
+	collider_->Update();
 }
 
 void ALPlayer::Update() {
@@ -190,7 +194,7 @@ void ALPlayer::Draw() {
 
 	impactE_->Draw();
 
-	//collider_->Draw();
+	collider_->Draw();
 }
 
 void ALPlayer::DebugWindow(const char* name) {
@@ -198,8 +202,11 @@ void ALPlayer::DebugWindow(const char* name) {
 	float cScale = collider_->GetRadius();
 
 	ImGui::Begin(name);
-	world_.DrawDebug(name);
+	ImGui::DragFloat("spd", &spd_, 0.01f);
+	ImGui::DragFloat("fall spd", &fallSpd_, 0.01f);
 
+	world_.DrawDebug(name);
+	collider_->Debug(name);
 	model_->DebugParameter(name);
 
 	ImGui::DragFloat("collider scale", &cScale, 0.1f, 1, 10);
@@ -212,7 +219,7 @@ void ALPlayer::DebugWindow(const char* name) {
 
 void ALPlayer::OnCollisionBack(const Vector3& backV)
 {
-	world_.translate_ -= backV;
+	world_.translate_ += backV;
 	world_.UpdateMatrix();
 	collider_->Update();
 }
@@ -236,7 +243,7 @@ void ALPlayer::Move() {
 	//カメラ方向に向ける
 	move = TransformNormal(move, camera_->GetMainCamera().matWorld_);
 
-	move.y = 0;
+	move.y = -0.0f;
 
 	if (move != Vector3(0, 0, 0)) {
 		world_.rotate_.y = GetYRotate({ move.x,move.z })+((float)std::numbers::pi);
@@ -244,6 +251,11 @@ void ALPlayer::Move() {
 	//加算
 	world_.translate_ += move;
 
+	world_.translate_.y -= fallSpd_;
+
+	if (world_.translate_.y < 0) {
+		world_.translate_.y = 0;
+	}
 
 	ModelRoop(move);
 }

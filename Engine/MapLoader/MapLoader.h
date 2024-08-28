@@ -2,6 +2,7 @@
 #include<string>
 #include<list>
 #include<vector>
+
 #include"WorldTransform/WorldTransform.h"
 #include"SingleGameObjects/GameObject.h"
 #include"ColliderOBB/OBBCollider.h"
@@ -66,12 +67,12 @@ public:
 	//マップ番号のマップを描画
 	void DrawLevelData();
 
-	Vector3 IsCollisionMap(SphereCollider* collider);
+	bool IsCollisionMap(SphereCollider* collider,Vector3&backV );
 
 
 	Leveldata* GetLevelData() { return levelDatas_[stageNum_]; };
 
-
+	std::vector<std::unique_ptr<OBBCollider>>& GetColliderData() { return colliders_; }
 private:
 	void LoadModel(const std::vector<ObjectData>&d);
 

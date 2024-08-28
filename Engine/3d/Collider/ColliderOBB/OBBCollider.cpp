@@ -113,7 +113,7 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 	//座標行列
 	Matrix4x4 translateM = MakeTranslateMatrix(world_.GetMatWorldTranslate());
 	//スケールは使わない（sizeで使う
-	Matrix4x4 scaleM = MakeIdentity4x4();
+	Matrix4x4 scaleM = MakeScaleMatrix({ 1,1,1 });
 	//OBBのworld行列生成
 	OBBM_ = scaleM * (rotateM * translateM);
 
@@ -130,12 +130,10 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 	float addNum =  1.0f/division;
 	float t = 0;
 
+	//ワールド座標
 	Vector3 preCWorld = collider->GetPreWorld().GetMatWorldTranslate();
+	//ワールド座標
 	Vector3 CWorld = collider->GetWorld().GetMatWorldTranslate();
-
-	//ローカル変換
-	preCWorld = Transform(preCWorld, inverseM_);
-	CWorld = Transform(CWorld, inverseM_);
 
 
 	while (true) {
@@ -143,19 +141,21 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 		//過去地点から現在地点まで段階的に探査する
 		Vector3 spehrePos = Esing(preCWorld, CWorld, t);
 
-		//スフィアコライダーの座標をOBBのローカル空間に出る
-		//Vector3 sphereLocal = Transform(spehrePos, inverseM_);
+		//スフィアコライダーの座標をOBBのローカル空間にする
+		Vector3 sphereLocal = Transform(spehrePos, inverseM_);
 
+		//Sphere作成
+		Sphere sphere = {sphereLocal,collider->GetRadius() };
 
-		//Sphere取得
-		Sphere sphere = {spehrePos,collider->GetRadius() };
-
-		//当たり判定
+		//当たり判定処理
 		Vector3 saikin{};
 		if (InCollision(aabb_, sphere, saikin)) {
 
+			//ワールド空間に修正
+			saikin = Transform(saikin, OBBM_);
+
 			//値が同じ場合の処理
-			if (spehrePos == saikin) {
+			if (sphereLocal == saikin) {
 				//過去位置に向けてのベクトル算出
 				Vector3 CP2EndP = preCWorld - saikin;
 				//半径の長さ分押し戻す
@@ -176,29 +176,18 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 
 				return true;
 			}
-			//OBBのローカル座標からworld座標に変換
-			//saikin = Transform(saikin, OBBM_);
 
-
-			///押し出しベクトルを利用して計算
-			//最近接点から円の中心点への向きベクトルを算出
-			//Vector3 velo = spehrePos - saikin;
-			//正規化
-
-			//Vector3 norVe = velo;
-			//norVe.SetNormalize();
-			//半径分伸ばす
-			//norVe *= collider->GetRadius();
-			//渡す
-			//backVec = norVe - velo;
-
-			//すべてローカル内処理
 			//最近接点から過去位置に向けての向きベクトルを取得
 			Vector3 closestP2PreP = spehrePos - saikin;
 			closestP2PreP.SetNormalize();
 
+			//OBBローカルのCWorld
+			Vector3 loCW = Transform(CWorld, inverseM_);
 			//終点の最近接点を求める
-			Vector3 nowCP = GetClosestPoint(CWorld, aabb_.minV, aabb_.maxV);
+			Vector3 nowCP = GetClosestPoint(loCW, aabb_.minV, aabb_.maxV);
+
+			//ワールド座標系に修正
+			nowCP = Transform(nowCP, OBBM_);
 			//最近接点と現在位置との向きを求める
 			Vector3 closestP2NowP = CWorld - nowCP;
 
@@ -230,11 +219,11 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 			}
 
 			//worldに変換
-			backVec = Transform(backVec,OBBM_);
+			//backVec = Transform(backVec,OBBM_);
 
 			////最近接点描画
 			EulerWorldTransform sWo;
-			sWo.translate_ = Transform(saikin,OBBM_);
+			sWo.translate_ = saikin;
 			sWo.scale_ = { 0.1f,0.1f,0.1f };
 			sWo.UpdateMatrix();
 			IMM_->SetData("sphere", sWo);
