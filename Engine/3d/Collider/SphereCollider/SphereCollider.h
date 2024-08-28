@@ -11,6 +11,7 @@ public:
 	//
 	SphereCollider();
 
+	//親のサイズのみ非参照につき注意。サイズ変更はradius
 	void Initialize(const std::string& tag,const EulerWorldTransform& parent);
 
 	void Initialize(const std::string& tag);
@@ -71,6 +72,8 @@ public:
 	EulerWorldTransform GetPreWorld()const { return preWorld_; }
 
 private:
+
+	const EulerWorldTransform* parent_;
 
 	//半径
 	float radius_=1.0f;

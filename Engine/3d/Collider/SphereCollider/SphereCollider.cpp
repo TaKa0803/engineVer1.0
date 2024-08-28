@@ -15,7 +15,8 @@ SphereCollider::SphereCollider() {
 void SphereCollider::Initialize(const std::string& tag, const EulerWorldTransform& world) {
 	InstancingGameObject::Initialize("sphere");
 
-	world_.parent_ = (&world);
+	//parent_ = (&world);
+	world_.parent_ = &world;
 
 	colliderTag_ = tag;
 
@@ -45,9 +46,14 @@ void SphereCollider::Initialize(const std::string& tag)
 void SphereCollider::Update() {
 	preWorld_ = world_;
 
+
+	
 	world_.UpdateMatrix();
 
-
+	
+	radius_ = GetAllScaleX(world_);
+	//サイズを無視した
+	
 }
 
 void SphereCollider::Draw() {
