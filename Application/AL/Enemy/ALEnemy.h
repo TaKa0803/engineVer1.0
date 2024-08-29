@@ -19,13 +19,13 @@ public:
 	/// </summary>
 	void Update();
 
-	//行列のみ更新
-	void UpdateMatrix();
-
 	bool Collision(SphereCollider* collider);
 
 	//osimodosi
 	Vector3 OshiDashi(SphereCollider* collider);
+
+	//押し戻し処理
+	void PushBack(const Vector3& backV);
 
 	/// <summary>
 	/// 
@@ -41,6 +41,10 @@ public:
 	void AddTranslate(const Vector3& translate) { world_.translate_ += translate; }
 
 	SphereCollider* GetCollider() { return collider_.get(); }
+private:
+
+	void FallUpdate();
+
 private:
 	//プレイヤーのワールド
 	const EulerWorldTransform* playerWorld_;
@@ -109,6 +113,9 @@ private:
 	//移動速度
 	float moveSPD_ = 0.5f;
 
+	//落下速度
+	float fallspd_ = 0.1f;
+	float addFallspd_ = 0;
 
 	//ugokanakunarukyori
 	float stopRange_ = 10.0f;

@@ -104,6 +104,7 @@ public:
 	std::string colliderTag_;
 private:
 
+	void DrawClosestP(const Vector3& pos);
 
 	//すべての描画フラグ
 	static bool isDraw_;

@@ -81,7 +81,7 @@ private:
 	std::string itemNames[5] = {
 		"position",
 		"PopAreaSize",
-		"RangeWithPopStarting",
+		"PangeWithPopStarting",
 		"PopInterval",
 		"maxAreaPopCount"
 	};
@@ -93,7 +93,7 @@ private:
 	//プレイヤーの座標
 	const  EulerWorldTransform* playerWorld_ = nullptr;
 
-	float spawnHeight = 1.5f;
+	float spawnHeight = 0.0f;
 
 	//モデルにアクセスするタグ
 	std::string flag_ = "Flag";

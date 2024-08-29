@@ -364,6 +364,8 @@ std::optional<Vector3> MapLoader::GetObjectVec3Value(const std::string filename,
 	return std::nullopt;
 }
 
+
+
 void MapLoader::LoadModel(const std::vector<ObjectData>&d)
 {
 	//今は一番前の飲み読み込み

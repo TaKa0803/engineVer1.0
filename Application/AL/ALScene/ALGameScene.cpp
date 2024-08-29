@@ -22,18 +22,19 @@ ALGameScene::ALGameScene() {
 
 	MapLoader::GetInstance()->LoadLevelEditor("untitled", ".json");
 	MapLoader::GetInstance()->CreateModel(0);
-	std::vector<std::unique_ptr<OBBCollider>>& datas=MapLoader::GetInstance()->GetColliderData();
+	std::vector<std::unique_ptr<OBBCollider>>& datas = MapLoader::GetInstance()->GetColliderData();
 
 	for (auto& data : datas) {
 		if (data->colliderTag_ == "plane c") {
 			data->isActive_ = false;
+			continue;
 		}
 	}
 
 	enemyPopManager_ = std::make_unique<EnemyPopManager>();
 	enemyPopManager_->LoadMapItem("EnemySpawn", MapLoader::GetInstance()->GetLevelData());
 
-	
+
 
 	//インスタンシングの複数モデルが同じ画像利用の時の対応
 	InstancingModelManager* IMM = InstancingModelManager::GetInstance();
@@ -165,7 +166,7 @@ void ALGameScene::Initialize() {
 void ALGameScene::Update() {
 
 	PostEffectManager::GetInstance()->Debug();
-	
+
 	peM_->Update();
 	switch (scene_) {
 	case ALGameScene::Game:
@@ -194,8 +195,8 @@ void ALGameScene::Update() {
 
 		CameraShake();
 
-		
-		
+
+
 		enemyPopManager_->Update();
 		//敵の生成処理
 		if (std::unique_ptr<ALEnemy>newEnemy = enemyPopManager_->PopEnemy()) {
@@ -230,7 +231,7 @@ void ALGameScene::Update() {
 		break;
 	}
 	camera_->Update();
-	
+
 	SceneChange();
 }
 
@@ -259,7 +260,7 @@ void ALGameScene::Draw() {
 
 	peM_->Draw();
 
-	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting,true);
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
 
 
 
@@ -278,7 +279,7 @@ void ALGameScene::Draw() {
 				Count++;
 			}
 		}
-		if (Count>=200) {
+		if (Count >= 200) {
 			PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kRadialBlur, true);
 		}
 
@@ -295,7 +296,7 @@ void ALGameScene::Draw() {
 
 		ClearUIUpdate();
 
-		
+
 		break;
 	default:
 		break;
@@ -307,7 +308,7 @@ void ALGameScene::Draw() {
 void ALGameScene::DebugWindows() {
 
 #ifdef _DEBUG
-	
+
 	//カメラのデバッグ表示
 	camera_->DrawDebugWindow("camera");
 
@@ -327,51 +328,53 @@ void ALGameScene::DebugWindows() {
 void ALGameScene::Collision() {
 
 
-	
+
 	int e1Num = 0;
-		for (auto& enemy : enemies_) {
-			if (!enemy->GetDead()) {
-				if (player_->IsPlayerATK()) {
-					if (enemy->Collision(player_->GetCollider())) {
-						ShakeStart(3);
-						peM_->SpawnE(enemy->GetWorld().GetMatWorldTranslate());
-					}
-				}
-				enemy->OshiDashi(player_->GetCollider());
+	for (auto& enemy : enemies_) {
+		if (!enemy->GetDead()) {
 
-				//敵同士の当たり判定
-				int e2Num = 0;
-				for (auto& enemy2 : enemies_) {
-					if (!enemy2->GetDead()&&!enemy2->isHit() && e1Num != e2Num) {
-						Vector3 backV = enemy->OshiDashi(enemy2->GetCollider());
-						enemy2->AddTranslate(-backV);
-					}
-					e2Num++;
+			//プレイヤーの攻撃ヒット処理
+			if (player_->IsPlayerATK()) {
+				if (enemy->Collision(player_->GetCollider())) {
+					ShakeStart(3);
+					peM_->SpawnE(enemy->GetWorld().GetMatWorldTranslate());
 				}
 			}
-			e1Num++;
+
+			enemy->OshiDashi(player_->GetCollider());
+
+			//敵同士の当たり判定
+			int e2Num = 0;
+			for (auto& enemy2 : enemies_) {
+				if (!enemy2->GetDead() && !enemy2->isHit() && e1Num != e2Num) {
+					Vector3 backV = enemy->OshiDashi(enemy2->GetCollider());
+					enemy2->AddTranslate(-backV);
+				}
+				e2Num++;
+			}
 		}
-	
-		//あたらなくなるまで処理
-		//bool ishit = true;
-		//while (ishit) {
-			Vector3 backV ;
-			if (MapLoader::GetInstance()->IsCollisionMap(player_->GetCollider(), backV)) {
-				//if (backV == Vector3{0, 0, 0}) {
-				//	ishit = false;
-				//}
-				//else {
-					player_->OnCollisionBack(backV);
-				//}
-			}
-			//else {
-			//	ishit = false;
-			//}
 
-		//}
+		//マップの押し出し
+		Vector3 backV;
+		if (MapLoader::GetInstance()->IsCollisionMap(enemy->GetCollider(), backV)) {
+			enemy->PushBack(backV);
+		}
 
-		
-		
+		e1Num++;
+	}
+
+	//あたらなくなるまで処理
+
+	Vector3 backV;
+	if (MapLoader::GetInstance()->IsCollisionMap(player_->GetCollider(), backV)) {
+
+		player_->OnCollisionBack(backV);
+
+	}
+
+
+
+
 }
 
 void ALGameScene::SceneChange() {
@@ -385,13 +388,13 @@ void ALGameScene::SceneChange() {
 
 		}
 
-		
+
 		//デバッグ用シーンチェンジ
 #ifdef _DEBUG
 		if (input_->TriggerKey(DIK_P)) {
 			scene_ = Clear;
-			
-			
+
+
 		}
 #endif // _DEBUG
 
@@ -421,7 +424,7 @@ void ALGameScene::SceneChange() {
 		if (sceneXhangeCount_++ >= maxSceneChangeCount_) {
 			sceneC_->SetColorAlpha(1);
 			sceneNo = ALTITLE;
-		
+
 		}
 	}
 	else {
@@ -573,7 +576,7 @@ void ALGameScene::ClearUIUpdate() {
 
 		int num2 = count2 % 10;
 
-		if (Count>=10) {
+		if (Count >= 10) {
 
 			num10_->SetTVTranslate({ ((float)num2 / 10.0f) - 0.1f ,0 });
 
@@ -589,7 +592,7 @@ void ALGameScene::ClearUIUpdate() {
 			}
 		}
 		else {
-			num100_->SetTVTranslate({0.9f, 0 });
+			num100_->SetTVTranslate({ 0.9f, 0 });
 			num10_->SetTVTranslate({ 0.9f, 0 });
 		}
 
@@ -655,12 +658,12 @@ void ALGameScene::LimitUI() {
 void ALGameScene::ShakeStart(int count)
 {
 	if (!isShake_) {
-		tempP_ = {0,0,0};
+		tempP_ = { 0,0,0 };
 		isShake_ = true;
 	}
-	
+
 	cameraShakeCount_ += count;
-	
+
 }
 
 void ALGameScene::CameraShake()

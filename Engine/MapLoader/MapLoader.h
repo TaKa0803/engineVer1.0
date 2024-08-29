@@ -67,6 +67,7 @@ public:
 	//マップ番号のマップを描画
 	void DrawLevelData();
 
+	//マップ全体との当たり判定処理
 	bool IsCollisionMap(SphereCollider* collider,Vector3&backV );
 
 
@@ -85,6 +86,9 @@ private:
 	//objectのカスタムデータ取得
 	std::optional<Vector3> GetObjectVec3Value(const std::string filename, const std::string valueName);
 
+
+
+private:
 
 	//現在のステージ番号
 	int stageNum_;

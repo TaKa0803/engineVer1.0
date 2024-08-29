@@ -222,6 +222,11 @@ void ALPlayer::OnCollisionBack(const Vector3& backV)
 	world_.translate_ += backV;
 	world_.UpdateMatrix();
 	collider_->Update();
+
+	//高さに関する処理が行われた場合落下速度を初期化
+	if (backV.y != 0) {
+		addFallSpd_ = 0;
+	}
 }
 
 
@@ -243,7 +248,7 @@ void ALPlayer::Move() {
 	//カメラ方向に向ける
 	move = TransformNormal(move, camera_->GetMainCamera().matWorld_);
 
-	move.y = -0.0f;
+	move.y = 0.0f;
 
 	if (move != Vector3(0, 0, 0)) {
 		world_.rotate_.y = GetYRotate({ move.x,move.z })+((float)std::numbers::pi);
@@ -251,10 +256,14 @@ void ALPlayer::Move() {
 	//加算
 	world_.translate_ += move;
 
-	world_.translate_.y -= fallSpd_;
+	//落下速度の処理
+	addFallSpd_ -= fallSpd_;
+
+	world_.translate_.y += addFallSpd_;
 
 	if (world_.translate_.y < 0) {
 		world_.translate_.y = 0;
+		addFallSpd_ = 0;
 	}
 
 	ModelRoop(move);

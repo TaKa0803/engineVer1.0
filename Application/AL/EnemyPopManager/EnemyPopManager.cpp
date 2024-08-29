@@ -235,7 +235,7 @@ std::unique_ptr<ALEnemy> EnemyPopManager::PopEnemy() {
 			if (popdata.PopIntervalCount-- <= 0 && popdata.maxAreaPopCount < popdata.maxAreaPop) {
 
 				//出現エリアとの距離測定
-				float length = Length(playerWorld_->translate_ - popdata.areaPosition);
+				float length = Length(playerWorld_->GetMatWorldTranslate() - popdata.areaPosition);
 
 				//エリア内で出現
 				if (length <= popdata.PopStartingArea) {

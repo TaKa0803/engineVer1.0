@@ -124,7 +124,10 @@ private:
 	float spd_ = 0.5f;
 
 	//落下速度
-	float fallSpd_ = 0.01f;
+	float fallSpd_ = 0.5f;
+
+	//加算式落下加速度
+	float addFallSpd_ = 0;
 
 	//ループアニメーション管理
 	bool isRoopStart = false;

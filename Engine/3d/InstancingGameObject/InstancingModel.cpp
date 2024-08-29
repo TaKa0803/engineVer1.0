@@ -180,7 +180,10 @@ void InstancingModel::Draw(int texture) {
 		index++;
 	}
 
+	
+
 	if (index > instancingNum_) {
+		tag_;
 		//indexが初期作成量よりおおい
 		assert(false);
 	}

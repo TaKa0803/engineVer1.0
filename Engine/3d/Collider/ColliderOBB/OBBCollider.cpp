@@ -44,31 +44,11 @@ void OBBCollider::Initialize(const std::string& tag)
 
 void OBBCollider::Update()
 {
+	//過去の位置を保存
 	preWorld_ = world_;
-	/*Matrix4x4 rotateXM = MakeRotateAxisAngle({ 1,0,0 }, rotation_.x);
-	Matrix4x4 rotateYM = MakeRotateAxisAngle({ 0,1,0 }, rotation_.y);
-	Matrix4x4 rotateZM = MakeRotateAxisAngle({ 0,0,1 }, rotation_.z);
 
-	Matrix4x4 rotateM = rotateXM * (rotateYM * rotateZM);
-
-	Matrix4x4 scaleM = MakeScaleMatrix(world_.scale_);
-
-	Matrix4x4 tlansM = MakeTranslateMatrix(world_.translate_);
-
-	Matrix4x4 worldM = scaleM * (rotateM * tlansM);
-
-	if (&world_.GetParent() != nullptr) {
-		Matrix4x4 pare = world_.parent_->matWorld_;
-		world_.matWorld_ =  worldM * pare;
-	}
-	else {
-		world_.matWorld_ = worldM;
-	}*/
-
+	//ワールドデータを更新
 	world_.UpdateMatrix();
-
-
-
 
 }
 
@@ -165,11 +145,8 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 				backVec = Transform(CP2EndP, OBBM_);
 
 				////最近接点描画
-				EulerWorldTransform sWo;
-				sWo.translate_ = Transform(saikin, OBBM_);
-				sWo.scale_ = { 0.1f,0.1f,0.1f };
-				sWo.UpdateMatrix();
-				IMM_->SetData("sphere", sWo);
+				//DrawClosestP(Transform(saikin, OBBM_));
+
 				//ヒットカラー処理
 				SetColor(true);
 				collider->SetColor(true);
@@ -218,15 +195,10 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 				backVec = backV + diffV;
 			}
 
-			//worldに変換
-			//backVec = Transform(backVec,OBBM_);
 
 			////最近接点描画
-			EulerWorldTransform sWo;
-			sWo.translate_ = saikin;
-			sWo.scale_ = { 0.1f,0.1f,0.1f };
-			sWo.UpdateMatrix();
-			IMM_->SetData("sphere", sWo);
+			//DrawClosestP(Transform(saikin, OBBM_));
+
 			//ヒットカラー処理
 			SetColor(true);
 			collider->SetColor(true);
@@ -242,12 +214,7 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 		if (t > 1.0f) {
 			//最近接点描画
 			//OBBLocalPosCange
-			saikin = Transform(saikin, OBBM_);
-			EulerWorldTransform sWo;
-			sWo.translate_ = saikin;
-			sWo.scale_ = { 0.1f,0.1f,0.1f };
-			sWo.UpdateMatrix();
-			IMM_->SetData("sphere", sWo);
+			//DrawClosestP(Transform(saikin, OBBM_));
 
 
 			//色の変更
@@ -282,6 +249,15 @@ void OBBCollider::SetColor(bool hit)
 	else {
 		color_ = normalColor;
 	}
+}
+
+void OBBCollider::DrawClosestP(const Vector3& pos)
+{
+	EulerWorldTransform sWo;
+	sWo.translate_ = pos;
+	sWo.scale_ = { 0.1f,0.1f,0.1f };
+	sWo.UpdateMatrix();
+	IMM_->SetData("sphere", sWo);
 }
 
 void OBBCollider::UpdateMatrix()

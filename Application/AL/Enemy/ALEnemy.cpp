@@ -6,8 +6,10 @@
 #include"AL/BrokenBody/BrokenBody.h"
 
 void ALEnemy::Initialize(const Vector3& position, const EulerWorldTransform* playerWorld) {
-	InstancingGameObject::Initialize("player");
-
+	InstancingGameObject::Initialize("Player");
+	
+	IMM_->SetTexture(tag_,TextureManager::white_);
+	
 
 	//model_->IsEnableTexture(false);
 	//model_->SetBlendMode(BlendMode::kNone);
@@ -40,6 +42,7 @@ void ALEnemy::Initialize(const Vector3& position, const EulerWorldTransform* pla
 	collider_ = std::make_unique<SphereCollider>();
 	collider_->Initialize("ene", world_);
 	collider_->SetRadius(1.5f);
+	collider_->SetTranslate({ 0,1.5f,0 });
 
 
 	walkData_.RoopFrame = 10;
@@ -75,13 +78,18 @@ void ALEnemy::Update() {
 
 	isHit_ = false;
 
+	FallUpdate();
+
 	if (state_ == Normal) {
 		//pk
 		Vector3 p_eVelo = playerWorld_->GetMatWorldTranslate() - world_.GetMatWorldTranslate();
+		//高さを考慮しない
+		p_eVelo.y = 0;
 
-		float p_eLength = Length(playerWorld_->GetMatWorldTranslate() - world_.GetMatWorldTranslate());
 
-		//hanigai
+		float p_eLength = p_eVelo.GetLength();
+
+		//プレイヤーが追従範囲内の時
 		if (p_eLength > stopRange_ && p_eLength < serchRange_) {
 
 			//プレイヤーの方向に移動
@@ -90,15 +98,16 @@ void ALEnemy::Update() {
 			//ノーマライズ
 			moveVelo.SetNormalize();
 			//移動領分書ける
-			moveVelo *= moveSPD_;
-			//割る
-			moveVelo /= maxSPDFrame;
+			moveVelo *= moveSPD_/maxSPDFrame;
+
+
 			//速度に追加
 			velocity_ += moveVelo;
 			//速度ベクトルの量を取得
 			float veloSPD = velocity_.GetLength();
 			//プレイヤーへの向きベクトルに書ける
 			velocity_ = p_eVelo.SetNormalize() * veloSPD;
+
 
 			//最大速度に達していたら移動量もどす
 			float spd = Length(velocity_);
@@ -108,10 +117,16 @@ void ALEnemy::Update() {
 			}
 
 			//Yいらない
-			velocity_.y = 0;
+			//velocity_.y = 0;
 
 			//加算処理
 			world_.translate_ += velocity_;
+
+
+			//落下限界処理
+			if (world_.translate_.y < 0) {
+				world_.translate_.y = 0;
+			}
 
 			//muki
 			if (moveVelo != Vector3(0, 0, 0)) {
@@ -270,9 +285,22 @@ Vector3 ALEnemy::OshiDashi(SphereCollider* collider)
 		backVec /= 2;
 		world_.translate_ += backVec;
 
+		if (backVec.y != 0) {
+			addFallspd_ = 0;
+		}
 	}
 
 	return backVec;
+}
+
+void ALEnemy::PushBack(const Vector3& backV)
+{
+	world_.translate_ += backV;
+	world_.UpdateMatrix();
+
+	if (backV.y != 0) {
+		addFallspd_ = 0;
+	}
 }
 
 void ALEnemy::Draw() {
@@ -288,5 +316,16 @@ void ALEnemy::Draw() {
 	InstancingGameObject::Draw();
 
 	shadow->Draw();
-	//collider_->Draw();
+	collider_->Draw();
+}
+
+void ALEnemy::FallUpdate()
+{
+	addFallspd_ -= fallspd_;
+	world_.translate_.y += addFallspd_;
+
+	if (world_.translate_.y < 0) {
+		world_.translate_.y = 0;
+		addFallspd_ = 0;
+	}
 }
