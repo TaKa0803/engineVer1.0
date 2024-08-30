@@ -5,11 +5,13 @@
 #include"AudioManager/AudioManager.h"
 #include"AL/BrokenBody/BrokenBody.h"
 
+#include<numbers>
+
 void ALEnemy::Initialize(const Vector3& position, const EulerWorldTransform* playerWorld) {
 	InstancingGameObject::Initialize("Player");
-	
-	IMM_->SetTexture(tag_,TextureManager::white_);
-	
+
+	IMM_->SetTexture(tag_, TextureManager::white_);
+
 
 	//model_->IsEnableTexture(false);
 	//model_->SetBlendMode(BlendMode::kNone);
@@ -25,7 +27,7 @@ void ALEnemy::Initialize(const Vector3& position, const EulerWorldTransform* pla
 
 	shadow = std::make_unique<InstancingGameObject>();
 	shadow->Initialize("DZone");
-	
+
 	shadow->SetColor({ 0,0,0,1 });
 	shadow->SetTranslate({ world_.translate_.x,0,world_.translate_.z });
 	shadow->SetScale(1.5f);
@@ -74,69 +76,36 @@ void ALEnemy::Initialize(const Vector3& position, const EulerWorldTransform* pla
 	breakSound_ = AudioManager::LoadSoundNum("break");
 }
 
+void (ALEnemy::* ALEnemy::BehaviorInitialize[])() = {
+	&ALEnemy::StayInitialize,
+	&ALEnemy::FollowInitialize,
+	&ALEnemy::HitInitialize
+};
+
+void (ALEnemy::* ALEnemy::BehaviorUpdate[])() = {
+	&ALEnemy::StayUpdate,
+	&ALEnemy::FollowUpdate,
+	&ALEnemy::HitUpdate
+};
+
 void ALEnemy::Update() {
 
 	isHit_ = false;
 
 	FallUpdate();
 
-	if (state_ == Normal) {
-		//pk
-		Vector3 p_eVelo = playerWorld_->GetMatWorldTranslate() - world_.GetMatWorldTranslate();
-		//高さを考慮しない
-		p_eVelo.y = 0;
+	//状態の初期化処理
+	if (behaviorRequest_) {
+		behavior_ = behaviorRequest_.value();
+		behaviorRequest_ = std::nullopt;
 
+		//実際の初期化処理
+		(this->*BehaviorInitialize[(int)behavior_])();
+	}
 
-		float p_eLength = p_eVelo.GetLength();
+	//状態の更新
+	(this->*BehaviorUpdate[(int)behavior_])();
 
-		//プレイヤーが追従範囲内の時
-		if (p_eLength > stopRange_ && p_eLength < serchRange_) {
-
-			//プレイヤーの方向に移動
-			Vector3 moveVelo{};
-			moveVelo = p_eVelo;
-			//ノーマライズ
-			moveVelo.SetNormalize();
-			//移動領分書ける
-			moveVelo *= moveSPD_/maxSPDFrame;
-
-
-			//速度に追加
-			velocity_ += moveVelo;
-			//速度ベクトルの量を取得
-			float veloSPD = velocity_.GetLength();
-			//プレイヤーへの向きベクトルに書ける
-			velocity_ = p_eVelo.SetNormalize() * veloSPD;
-
-
-			//最大速度に達していたら移動量もどす
-			float spd = Length(velocity_);
-			if (spd > moveSPD_) {
-				velocity_.SetNormalize();
-				velocity_ *= moveSPD_;
-			}
-
-			//Yいらない
-			//velocity_.y = 0;
-
-			//加算処理
-			world_.translate_ += velocity_;
-
-
-			//落下限界処理
-			if (world_.translate_.y < 0) {
-				world_.translate_.y = 0;
-			}
-
-			//muki
-			if (moveVelo != Vector3(0, 0, 0)) {
-				world_.rotate_.y = GetYRotate({ moveVelo.x,moveVelo.z });
-			}
-
-		}
-		else {
-			velocity_.SetZero();
-		}
 
 #pragma region モデルアニメーション
 		//ベクトル量ゼロでアニメーション
@@ -191,39 +160,8 @@ void ALEnemy::Update() {
 
 #pragma endregion
 
-	}
 
-	//ヒット時モーション
-	if (state_ == Hit) {
 
-		velocity_ += acce;
-
-		world_.translate_ += velocity_;
-
-		world_.rotate_.x -= 0.5f;
-
-		//高さがゼロ以下
-		if (world_.translate_.y <= tHeight) {
-
-			//HPがあるなら復帰
-			if (HP_ > 0) {
-				world_.translate_.y = tHeight;
-				world_.rotate_.x = 0;
-				state_ = Normal;
-				velocity_.SetZero();
-
-			}
-			else {
-				isDead_ = true;
-				BrokenBody* BB = BrokenBody::GetInstance();
-				BB->EffectOccurred(world_, 10);
-
-				//音発生
-				AudioManager::PlaySoundData(breakSound_, 0.2f);
-			}
-
-		}
-	}
 
 
 	//InstancingGameObject::Update();
@@ -234,8 +172,6 @@ void ALEnemy::Update() {
 		world.UpdateMatrix();
 		IndexX++;
 	}
-
-
 
 	collider_->Update();
 
@@ -250,7 +186,7 @@ bool ALEnemy::Collision(SphereCollider* collider) {
 	Vector3 backVec;
 	if (collider_->IsCollision(collider, backVec)) {
 
-		state_ = Hit;
+		behavior_ = Hit;
 
 		velocity_ = hitVelo;
 
@@ -268,6 +204,8 @@ bool ALEnemy::Collision(SphereCollider* collider) {
 		velocity_.z = direc.z;
 
 		HP_--;
+
+		behaviorRequest_ = Hit;
 
 		return true;
 	}
@@ -318,6 +256,120 @@ void ALEnemy::Draw() {
 	shadow->Draw();
 	collider_->Draw();
 }
+
+#pragma region 各状態の初期化と更新
+
+void ALEnemy::StayInitialize()
+{
+	velocity_.SetZero();
+}
+
+void ALEnemy::FollowInitialize()
+{
+}
+
+void ALEnemy::HitInitialize()
+{
+}
+
+void ALEnemy::StayUpdate()
+{
+	//pk
+	Vector3 p_eVelo = playerWorld_->GetMatWorldTranslate() - world_.GetMatWorldTranslate();
+	//高さを考慮しない
+	p_eVelo.y = 0;
+
+
+	float p_eLength = p_eVelo.GetLength();
+
+	//プレイヤーが追従範囲内の時
+	if (p_eLength > stopRange_ && p_eLength < serchRange_) {
+		behaviorRequest_ = Follow;
+	}
+}
+
+void ALEnemy::FollowUpdate()
+{
+	//プレイヤー方向の向き
+	Vector3 p_eVelo = playerWorld_->GetMatWorldTranslate() - world_.GetMatWorldTranslate();
+	//高さを考慮しない
+	p_eVelo.y = 0;
+
+	float p_eLength = p_eVelo.GetLength();
+
+	//プレイヤーが追従範囲内の時
+	if (p_eLength > stopRange_ && p_eLength < serchRange_) {
+
+		//プレイヤーの方向に移動
+		Vector3 moveVelo{};
+		moveVelo = p_eVelo;
+		//ノーマライズ
+		moveVelo.SetNormalize();
+		//移動領分書ける
+		moveVelo *= moveSPD_ / maxSPDFrame;
+
+
+		//速度に追加
+		velocity_ += moveVelo;
+		//速度ベクトルの量を取得
+		float veloSPD = velocity_.GetLength();
+		//プレイヤーへの向きベクトルに書ける
+		velocity_ = p_eVelo.SetNormalize() * veloSPD;
+
+
+		//最大速度に達していたら移動量もどす
+		float spd = Length(velocity_);
+		if (spd > moveSPD_) {
+			velocity_.SetNormalize();
+			velocity_ *= moveSPD_;
+		}
+
+		//加算処理
+		world_.translate_ += velocity_;
+
+		//向きの処理
+		if (moveVelo != Vector3(0, 0, 0)) {
+			world_.rotate_.y = GetYRotate({ moveVelo.x,moveVelo.z })+(float)std::numbers::pi;
+		}
+	}
+	else {
+		behaviorRequest_ = Stay;
+	}
+}
+
+void ALEnemy::HitUpdate()
+{
+	velocity_ += acce;
+
+	world_.translate_ += velocity_;
+
+	world_.rotate_.x -= 0.5f;
+
+	//高さがゼロ以下
+	if (world_.translate_.y <= tHeight) {
+
+		//HPがあるなら復帰
+		if (HP_ > 0) {
+			world_.translate_.y = tHeight;
+			world_.rotate_.x = 0;
+			behavior_ = Stay;
+			velocity_.SetZero();
+
+		}
+		else {
+			//死亡処理
+			isDead_ = true;
+			BrokenBody* BB = BrokenBody::GetInstance();
+			BB->EffectOccurred(world_, 10);
+
+			//音発生
+			AudioManager::PlaySoundData(breakSound_, 0.2f);
+		}
+
+	}
+}
+#pragma endregion
+
 
 void ALEnemy::FallUpdate()
 {

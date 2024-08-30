@@ -42,7 +42,20 @@ public:
 
 	SphereCollider* GetCollider() { return collider_.get(); }
 private:
+	void StayInitialize();
+	void FollowInitialize();
+	void HitInitialize();
 
+	void StayUpdate();
+	void FollowUpdate();
+	void HitUpdate();
+
+	//状態ごとの初期化テーブル
+	static void (ALEnemy::* BehaviorInitialize[])();
+	//状態ごとの更新テーブル
+	static void (ALEnemy::* BehaviorUpdate[])();
+
+	//落下処理
 	void FallUpdate();
 
 private:
@@ -123,14 +136,16 @@ private:
 	//探知距離
 	float serchRange_ = 30.0f;
 
-
+	//行動状態
 	enum State {
-		Normal,
-		Hit
+		Stay,	//通常
+		Follow, //追従
+		Hit		//攻撃ヒット
 	};
 
-	State state_ = Normal;
-
+	State behavior_ = Stay;
+	//状態リクエスト
+	std::optional<State>behaviorRequest_ = std::nullopt;
 
 	const Vector3 hitVelo = { 0,1.5f,0 };
 	//加速度
