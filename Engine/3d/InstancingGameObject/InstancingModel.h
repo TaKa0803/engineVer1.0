@@ -43,7 +43,7 @@ public:
 	/// </summary>
 	/// <param name="world">world座標</param>
 	/// <param name="color">色</param>
-	void AddInstancingData(const EulerWorldTransform& world,const Vector4&color={1,1,1,1});
+	void AddInstancingData(const EulerWorldTransform& world,int animenum,const Vector4&color={1,1,1,1});
 
 	void UpdateAnimationCount();
 
@@ -125,7 +125,7 @@ public:
 /// <summary>
 /// worldの数取得
 /// </summary>
-	const float GetWorldNum() { return (float)instancingDatas_.size(); }
+	const float GetWorldNum();
 private:
 
 
@@ -233,8 +233,9 @@ private:
 		EulerWorldTransform world;
 		Vector4 color;
 	};
-	//ワールド群
-	std::vector<std::unique_ptr<InstancingData>>instancingDatas_;
+
+	//アニメーションデータごとのデータ
+	std::map<int,std::vector<InstancingData>>instancingDatas_;
 #pragma endregion
 
 	

@@ -251,7 +251,7 @@ void ALEnemy::Draw() {
 		IndexX++;
 	}
 
-	InstancingGameObject::Draw();
+	InstancingGameObject::Draw(3);
 
 	shadow->Draw();
 	collider_->Draw();

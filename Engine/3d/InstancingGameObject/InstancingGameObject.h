@@ -53,7 +53,7 @@ public:
 	/// </summary>
 	virtual void Update();
 
-	virtual void Draw();
+	virtual void Draw(int anime=0);
 
 	virtual void Debug(const char*name);
 };

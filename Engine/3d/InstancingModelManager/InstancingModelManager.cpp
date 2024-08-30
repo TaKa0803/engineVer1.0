@@ -108,7 +108,6 @@ void InstancingModelManager::DrawAllModel() {
 
 	for (auto& model : modelDatas_) {
 		if (model.second->GetWorldNum() != 0) {
-			//pso_->PreDraw(model.second->fillMode_, model.second->blendMode_);
 			model.second->Draw();
 		}
 	}
@@ -117,63 +116,52 @@ void InstancingModelManager::DrawAllModel() {
 
 bool InstancingModelManager::SerchTag(const std::string& tag) {
 
-	//タグ検索
-	//for (auto& model : modeldatas_) {
-	//	//タグが一致した場合
-	//	if(model->GetTag() == tag){
-	//		return true;
-	//	}
-	//}
-
-	if (modelDatas_[tag] != nullptr) {
+	//タグをチェック
+	if (modelDatas_.find(tag) != modelDatas_.end()) {
 		return true;
 	}
+	else {
+		return false;
+	}
 
-	//見つからないのでエラー
-	//assert(false);
-	return false;
 }
 
 void InstancingModelManager::Debug(const std::string& tag,const char*name)
 {
-	if (modelDatas_[tag] != nullptr) {
+	//データがあるかチェック
+	if (modelDatas_.find(tag) != modelDatas_.end()) {
 		modelDatas_[tag]->Debug(name);
-		return;
 	}
-	//タグがない
-	assert(false);
+	else {
+		//見つからない
+		assert(false);
+	}
+
 }
 
 float InstancingModelManager::GetAlpha(const std::string& tag)
 {
-	////タグのモデルデータ探索
-	//for (auto& model : modeldatas_) {
-	//	//タグを発見
-	//	if (model->GetTag() == tag) {
-	//		//ワールドを追加
-	//		return model->GetMaterialData()->color.w;
-	//	}
-	//}
 
-	return modelDatas_[tag]->GetColor().w;
+	if (modelDatas_.find(tag) != modelDatas_.end()) {
+		return modelDatas_[tag]->GetColor().w;
+	}
+	else {
+		//データが見つからない
+		assert(false);
+	}
 
-	//タグ未発見
-	//assert(false);
-	//return 0;
+	return 0;
 }
 
 void InstancingModelManager::SetData(const std::string& tag, const EulerWorldTransform& world, int animeNum,const Vector4&color ) {
 
-	////タグのモデルデータ探索
-	//for (auto& model : modeldatas_) {
-	//	//タグを発見
-	//	if (model->GetTag() == tag) {
-	//		//ワールドを追加
-	//		model->AddWorld(world);
-	//	}
-	//}
-
-	modelDatas_[tag]->AddInstancingData(world,color);
+	if (modelDatas_.find(tag) != modelDatas_.end()) {
+		modelDatas_[tag]->AddInstancingData(world,animeNum, color);
+	}
+	else {
+		//タグミスによるエラー処理
+		assert(false);
+	}
 
 }
 
