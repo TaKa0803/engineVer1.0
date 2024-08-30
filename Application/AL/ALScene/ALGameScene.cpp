@@ -238,7 +238,7 @@ void ALGameScene::Update() {
 void ALGameScene::Draw() {
 
 	//地面
-	plane_->Draw();
+	//plane_->Draw();
 	MapLoader::GetInstance()->DrawLevelData();
 
 	//敵の旗

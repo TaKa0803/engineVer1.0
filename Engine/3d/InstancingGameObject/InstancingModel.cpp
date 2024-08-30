@@ -71,7 +71,7 @@ void InstancingModel::AddInstancingData(const EulerWorldTransform& world, const 
 
 }
 
-void InstancingModel::UpdateAnimation()
+void InstancingModel::UpdateAnimationCount()
 {
 	if (modelType_ != kOBJModel) {
 		if (isAnimationActive_) {
@@ -83,11 +83,20 @@ void InstancingModel::UpdateAnimation()
 					animationTime += modelData_.animation[animeNum_].duration;
 				}
 			}
+		}
+	}
+}
+
+void InstancingModel::UpdateAnimationBone(int animenum)
+{
+
+	if (modelType_ != kOBJModel) {
+		if (isAnimationActive_) {
 
 			//ボーンのあるモデルの場合
 			if (modelType_ == kSkinningGLTF) {
 				//animationの更新を行って骨ごとのローカル情報を更新
-				ApplyAnimation(modelData_.skeleton, modelData_.animation[animeNum_], animationTime);
+				ApplyAnimation(modelData_.skeleton, modelData_.animation[animenum], animationTime);
 				//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
 				Update(modelData_.skeleton);
 				//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
@@ -95,7 +104,7 @@ void InstancingModel::UpdateAnimation()
 			}
 			else {
 				//ないanimationモデルの場合
-				NodeAnimation& rootNodeAnimation = modelData_.animation[animeNum_].nodeAnimations[modelData_.model.rootNode.name];
+				NodeAnimation& rootNodeAnimation = modelData_.animation[animenum].nodeAnimations[modelData_.model.rootNode.name];
 				Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
 				Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
 				Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
@@ -105,14 +114,16 @@ void InstancingModel::UpdateAnimation()
 		else {
 			animationTime = 0;
 			//animationの更新を行って骨ごとのローカル情報を更新
-			ApplyAnimation(modelData_.skeleton, modelData_.animation[animeNum_], animationTime);
+			ApplyAnimation(modelData_.skeleton, modelData_.animation[animenum], animationTime);
 		}
 	}
 }
 
 void InstancingModel::Draw(int texture) {
 
-	UpdateAnimation();
+	UpdateAnimationCount();
+
+	UpdateAnimationBone(animeNum_);
 
 
 	Camera* camera = Camera::GetInstance();
@@ -136,16 +147,11 @@ void InstancingModel::Draw(int texture) {
 			wvpData_[index].World = data->world.matWorld_;
 			wvpData_[index].WorldInverseTranspose = Inverse(Transpose(data->world.matWorld_));
 		}
-		
-
 
 		wvpData_[index].color = data->color;
 
-		bool isAnime = false;
 		//animationのあるモデルなら
 		if (modelType_ == kSkinningGLTF) {
-			isAnime = true;
-
 			if (drawJoint_) {
 				//ジョイントMの更新
 				int i = 0;
@@ -155,7 +161,7 @@ void InstancingModel::Draw(int texture) {
 					EulerWorldTransform newdata;
 					newdata.matWorld_ = world;
 
-					IMM_->SetData(jointMtag_, newdata, { 1,1,1,1 });
+					IMM_->SetData(jointMtag_, newdata, 0,{ 1,1,1,1 });
 
 					i++;
 				}
@@ -163,19 +169,6 @@ void InstancingModel::Draw(int texture) {
 
 
 		}
-
-		/*if (modelData_.animation.size() == 0) {
-			worldM = data->world.matWorld_;
-			WVP = worldM * viewProjection;
-		}
-		else {
-			worldM = data->world.matWorld_;
-
-			WVP = worldM * viewProjection;
-		}
-		wvpData_[index].WVP = WVP;
-		wvpData_[index].World = worldM;
-		wvpData_[index].color = data->color;*/
 
 		index++;
 	}

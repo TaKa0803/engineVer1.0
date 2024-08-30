@@ -307,7 +307,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 				EulerWorldTransform newdata;
 				newdata.matWorld_ = world * wvpData_->World;
 
-				jointM__->SetData(jointMtag_, newdata, { 1,1,1,1 });
+				jointM__->SetData(jointMtag_, newdata,0, { 1,1,1,1 });
 
 				i++;
 			}
@@ -496,7 +496,7 @@ void Model::DebugParameter(const char* name)
 		ImGui::Checkbox("animeActive", &isAnimationActive_);
 		ImGui::Checkbox("animeRoop", &isAnimeRoop_);
 		ImGui::DragFloat("Roop second", &animationRoopSecond_, 0.1f);
-		ImGui::SliderInt("AnimeNum", &anum, 0, (int)(modelData_.animation.size() - 2));
+		ImGui::SliderInt("AnimeNum", &anum, 0, (int)(modelData_.animation.size()));
 
 		ImGui::Text("Blinn Phong Reflection");
 		ImGui::DragFloat("Shininess", &shininess);

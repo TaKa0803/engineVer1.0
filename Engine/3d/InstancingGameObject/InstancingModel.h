@@ -45,10 +45,12 @@ public:
 	/// <param name="color">色</param>
 	void AddInstancingData(const EulerWorldTransform& world,const Vector4&color={1,1,1,1});
 
+	void UpdateAnimationCount();
+
 	/// <summary>
 	/// アニメーション更新処理
 	/// </summary>
-	void UpdateAnimation();
+	void UpdateAnimationBone(int animeNum);
 
 	/// <summary>
 	/// 描画

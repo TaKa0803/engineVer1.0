@@ -87,10 +87,10 @@ void DZoneEffect::Draw()
 
 
 		if (data.isSphere) {
-			IMM_->SetData(sphere, data.world, data.color);
+			IMM_->SetData(sphere, data.world,0, data.color);
 		}
 		else {
-			IMM_->SetData(box, data.world, data.color);
+			IMM_->SetData(box, data.world,0, data.color);
 		}
 
 	}

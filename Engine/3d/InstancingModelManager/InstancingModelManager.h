@@ -19,7 +19,10 @@ private:
 	const InstancingModelManager& operator=(const InstancingModelManager& o) = delete;
 
 public:
-
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name="loadAllModel"></param>
 	void Initialize(bool loadAllModel=true);
 
 	/// <summary>
@@ -61,7 +64,7 @@ public:
 	/// </summary>
 	/// <param name="tag">モデルタグ名</param>
 	/// <param name="world">ワールドトランスフォーム</param>
-	void SetData(const std::string& tag, const EulerWorldTransform& world,const Vector4&color={1,1,1,1});
+	void SetData(const std::string& tag, const EulerWorldTransform& world,int animeNum=0,const Vector4&color={1,1,1,1});
 
 	/// <summary>
 	/// タグのモデルに画像を設定

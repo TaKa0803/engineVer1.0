@@ -60,6 +60,8 @@ std::vector<Animation> LoadAnimationFile(const std::string& directoryPath, const
 		return ans;
 	}
 
+	ans.reserve(scene->mNumAnimations);
+
 	for (uint32_t i = 0; i < scene->mNumAnimations; i++) {
 		aiAnimation* animationAssimp = scene->mAnimations[i];//最初のアニメーションのみ読み込み
 		Animation  result;

@@ -29,7 +29,7 @@ void InstancingGameObject::Update() {
 void InstancingGameObject::Draw()
 {
 	//タグに対応したモデルにワールド追加
-	IMM_->SetData(tag_, world_, color_);
+	IMM_->SetData(tag_, world_, 0,color_);
 }
 
 void InstancingGameObject::Debug(const char* name)

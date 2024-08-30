@@ -162,7 +162,7 @@ float InstancingModelManager::GetAlpha(const std::string& tag)
 	//return 0;
 }
 
-void InstancingModelManager::SetData(const std::string& tag, const EulerWorldTransform& world,const Vector4&color ) {
+void InstancingModelManager::SetData(const std::string& tag, const EulerWorldTransform& world, int animeNum,const Vector4&color ) {
 
 	////タグのモデルデータ探索
 	//for (auto& model : modeldatas_) {

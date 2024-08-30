@@ -11,7 +11,7 @@ void ALEnemy::Initialize(const Vector3& position, const EulerWorldTransform* pla
 	InstancingGameObject::Initialize("Player");
 
 	IMM_->SetTexture(tag_, TextureManager::white_);
-
+	color_ = { 1.0f,0.0f,0.0f,1.0f };
 
 	//model_->IsEnableTexture(false);
 	//model_->SetBlendMode(BlendMode::kNone);
