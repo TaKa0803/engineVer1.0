@@ -68,48 +68,6 @@ private:
 	std::unique_ptr<InstancingGameObject>shadow;
 #pragma endregion
 
-#pragma region モデル関係
-	//モデルの数
-	static const int modelNum_ = 5;
-
-	//タグ軍
-	std::string tags[modelNum_] = {
-		"Head",
-		"LArm",
-		"RArm",
-		"LFoot",
-		"RFoot"
-	};
-
-	enum Parts {
-		HEAD,
-		LARM,
-		RARM,
-		LFOOT,
-		RFOOT
-	};
-
-	EulerWorldTransform mWorlds[modelNum_] = {};
-
-
-	//歩くアニメーション
-	ModelAnimeParts walkData_;
-
-	//止まったモーション
-	ModelAnimeParts stopData_;
-
-	ModelAnimeParts nowRoop_;
-
-	int roopCount_ = 0;
-
-	enum MoveState {
-		StopS,
-		MoveS,
-		NoneS
-	};
-
-	MoveState moveState_ = NoneS;
-#pragma endregion
 
 	std::string a3tag_ = "PlayerM3";
 	std::string a4tag_ = "PlayerM4";

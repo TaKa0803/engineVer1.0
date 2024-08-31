@@ -37,48 +37,13 @@ void ALEnemy::Initialize(const Vector3& position, const EulerWorldTransform* pla
 
 	shadow->SetColor({ 0,0,0,1 });
 	shadow->SetTranslate({ world_.translate_.x,0,world_.translate_.z });
-	shadow->SetScale(1.5f);
-
-	mWorlds[HEAD].parent_ = (&world_);
-	mWorlds[LARM].parent_ = (&mWorlds[HEAD]);
-	mWorlds[RARM].parent_ = (&mWorlds[HEAD]);
-	mWorlds[LFOOT].parent_ = (&mWorlds[HEAD]);
-	mWorlds[RFOOT].parent_ = (&mWorlds[HEAD]);
-
-	mWorlds[LFOOT].translate_ = { -0.5f,-0.8f,0 };
-	mWorlds[RFOOT].translate_ = { 0.5f,-0.8f,0 };
+	shadow->SetScale(1.5f);	
 
 	collider_ = std::make_unique<SphereCollider>();
 	collider_->Initialize("ene", world_);
 	collider_->SetRadius(1.5f);
 	collider_->SetTranslate({ 0,1.5f,0 });
 
-
-	walkData_.RoopFrame = 10;
-	walkData_.stPartsWorlds[HEAD].rotate_ = { 0.1f,0.0f,0.0f };
-	walkData_.stPartsWorlds[LARM].rotate_ = { 0.0f,0.0f,-0.2f };
-	walkData_.stPartsWorlds[RARM].rotate_ = { 0.0f,0.0f,0.2f };
-	walkData_.stPartsWorlds[LFOOT].rotate_ = { -0.46f,0.0f,0.0f };
-	walkData_.stPartsWorlds[RFOOT].rotate_ = { 0.2f,0.0f,0.0f };
-
-	walkData_.edPartsWorlds[HEAD].rotate_ = { 0.1f,0.0f,0.0f };
-	walkData_.edPartsWorlds[LARM].rotate_ = { 0.0f,0.0f,0.2f };
-	walkData_.edPartsWorlds[RARM].rotate_ = { 0.0f,0.0f,-0.2f };
-	walkData_.edPartsWorlds[LFOOT].rotate_ = { 0.2f,0.0f,0.0f };
-	walkData_.edPartsWorlds[RFOOT].rotate_ = { -0.46f,0.0f,0.0f };
-
-	stopData_.RoopFrame = 60;
-	stopData_.stPartsWorlds[HEAD].rotate_ = { -0.2f,0.0f,0.0f };
-	stopData_.stPartsWorlds[LARM].rotate_ = { 0.0f,0.0f,0.2f };
-	stopData_.stPartsWorlds[RARM].rotate_ = { 0.0f,0.0f,-0.2f };
-	stopData_.stPartsWorlds[LFOOT].rotate_ = { 0.23f,0.0f,0.0f };
-	stopData_.stPartsWorlds[RFOOT].rotate_ = { 0.23f,0.0f,0.0f };
-
-	stopData_.edPartsWorlds[HEAD].rotate_ = { 0.05f,0.0f,0.0f };
-	stopData_.edPartsWorlds[LARM].rotate_ = { 0.0f,0.0f,0.3f };
-	stopData_.edPartsWorlds[RARM].rotate_ = { 0.0f,0.0f,-0.3f };
-	stopData_.edPartsWorlds[LFOOT].rotate_ = { -0.05f,0.0f,0.0f };
-	stopData_.edPartsWorlds[RFOOT].rotate_ = { -0.05f,0.0f,0.0f };
 
 	breakSound_ = AudioManager::LoadSoundNum("break");
 }
@@ -113,69 +78,8 @@ void ALEnemy::Update() {
 	//状態の更新
 	(this->*BehaviorUpdate[(int)behavior_])();
 
-
-#pragma region モデルアニメーション
-		//ベクトル量ゼロでアニメーション
-		if (velocity_ == Vector3(0, 0, 0)) {
-
-			if (moveState_ != StopS) {
-				moveState_ = StopS;
-
-				nowRoop_ = stopData_;
-				std::swap(nowRoop_.stPartsWorlds, nowRoop_.edPartsWorlds);
-				roopCount_ = 0;
-			}
-		}
-		else {
-
-			if (moveState_ != MoveS) {
-				moveState_ = MoveS;
-				roopCount_ = 0;
-				nowRoop_ = walkData_;
-			}
-
-
-		}
-
-
-
-		//ループ
-
-		roopCount_++;
-
-		float t = (float)roopCount_ / (float)nowRoop_.RoopFrame;
-
-
-		int Index = 0;
-		for (auto& world : mWorlds) {
-			world.rotate_ = Esing(nowRoop_.stPartsWorlds[Index].rotate_, nowRoop_.edPartsWorlds[Index].rotate_, t);
-			Index++;
-		}
-
-		//条件達成
-		if (roopCount_ >= nowRoop_.RoopFrame) {
-			t = 1;
-			int Index = 0;
-			for (auto& world : mWorlds) {
-				world.rotate_ = Esing(nowRoop_.stPartsWorlds[Index].rotate_, nowRoop_.edPartsWorlds[Index].rotate_, t);
-				Index++;
-			}
-			roopCount_ = 0;
-			//値の入れ替え
-			std::swap(nowRoop_.stPartsWorlds, nowRoop_.edPartsWorlds);
-		}
-
-#pragma endregion
-
-
 	//InstancingGameObject::Update();
 	world_.UpdateMatrix();
-
-	int IndexX = 0;
-	for (auto& world : mWorlds) {
-		world.UpdateMatrix();
-		IndexX++;
-	}
 
 	collider_->Update();
 
@@ -248,23 +152,13 @@ void ALEnemy::PushBack(const Vector3& backV)
 void ALEnemy::Draw() {
 
 	world_.UpdateMatrix();
-	int IndexX = 0;
-	for (auto& world : mWorlds) {
-		world.UpdateMatrix();
-		//IMM_->SetData(tags[IndexX], world);
-		IndexX++;
-	}
-
 
 	if (behaviorRequest_ == Stay || behavior_ == Stay) {
-		//InstancingGameObject::Draw(3);
-
 		//タグに対応したモデルにワールド追加
 		IMM_->SetData(a3tag_, world_, 3, color_);
 	}
 	else{
-		//InstancingGameObject::Draw(4);
-				//タグに対応したモデルにワールド追加
+		//タグに対応したモデルにワールド追加
 		IMM_->SetData(a4tag_, world_, 3, color_);
 	}
 	shadow->Draw();
@@ -295,7 +189,6 @@ void ALEnemy::StayUpdate()
 	Vector3 p_eVelo = playerWorld_->GetMatWorldTranslate() - world_.GetMatWorldTranslate();
 	//高さを考慮しない
 	p_eVelo.y = 0;
-
 
 	float p_eLength = p_eVelo.GetLength();
 
