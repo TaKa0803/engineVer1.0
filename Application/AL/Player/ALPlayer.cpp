@@ -155,6 +155,14 @@ void ALPlayer::Update() {
 		(this->*BehaviorInitialize[(int)behavior_])();
 	}
 
+	//落下の処理
+	addFallSpd_ -= fallSpd_;
+	world_.translate_.y += addFallSpd_;
+	if (world_.translate_.y < 0) {
+		world_.translate_.y = 0;
+		addFallSpd_ = 0;
+	}
+
 	//状態の更新
 	(this->*BehaviorUpdate[(int)behavior_])();
 
@@ -256,15 +264,7 @@ void ALPlayer::Move() {
 	//加算
 	world_.translate_ += move;
 
-	//落下速度の処理
-	addFallSpd_ -= fallSpd_;
 
-	world_.translate_.y += addFallSpd_;
-
-	if (world_.translate_.y < 0) {
-		world_.translate_.y = 0;
-		addFallSpd_ = 0;
-	}
 
 	ModelRoop(move);
 }

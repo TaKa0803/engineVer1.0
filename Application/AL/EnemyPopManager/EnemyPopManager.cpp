@@ -176,7 +176,7 @@ void EnemyPopManager::LoadMapItem(const std::string& tag, Leveldata* datas)
 			Index++;
 		}
 
-		
+
 	}
 }
 
@@ -190,7 +190,7 @@ void EnemyPopManager::Initialzie() {
 
 	IMM->SetTexture(flag_, TextureManager::white_);
 
-	IMM->SetEnableEnviomentMap(flag_,true);
+	IMM->SetEnableEnviomentMap(flag_, true);
 }
 
 void EnemyPopManager::Update() {
@@ -248,7 +248,7 @@ std::unique_ptr<ALEnemy> EnemyPopManager::PopEnemy() {
 					//出現座標作成
 					Vector3 newPos{
 						popdata.areaPosition.x + rNum->Get(-area,area),
-						spawnHeight,
+						popdata.areaPosition.y + spawnHeight,
 						popdata.areaPosition.z + rNum->Get(-area,area),
 					};
 
