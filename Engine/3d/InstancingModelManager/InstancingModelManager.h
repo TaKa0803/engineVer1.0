@@ -108,7 +108,17 @@ public:
 	/// <param name="isEnable">正否</param>
 	void SetEnableShader(const std::string& tag, bool isEnable);
 
+	/// <summary>
+	/// 環境マップの有無
+	/// </summary>
+	/// <param name="tag"></param>
+	/// <param name="isEnable"></param>
+	/// <param name="num"></param>
 	void SetEnableEnviomentMap(const std::string& tag, bool isEnable, float num = 1.0f);
+
+	void SetAnimationRoopFrame(const std::string& tag,float sec,bool animeLoop=true);
+
+	void SetAnimeNum(const std::string& tag, int num);
 private:
 
 	InstancingPSO* pso_;

@@ -8,9 +8,16 @@
 #include<numbers>
 
 void ALEnemy::Initialize(const Vector3& position, const EulerWorldTransform* playerWorld) {
-	InstancingGameObject::Initialize("Player");
+	InstancingGameObject::Initialize("PlayerM4");
 
-	IMM_->SetTexture(tag_, TextureManager::white_);
+	IMM_->SetTexture(a3tag_, TextureManager::white_);
+	IMM_->SetAnimeNum(a3tag_, 3);
+	IMM_->SetTexture(a4tag_, TextureManager::white_);
+	IMM_->SetAnimeNum(a4tag_, 4);
+
+	IMM_->SetAnimationRoopFrame(a3tag_,  1,true);
+	IMM_->SetAnimationRoopFrame(a4tag_,  5,true);
+
 	color_ = { 1.0f,0.0f,0.0f,1.0f };
 
 	//model_->IsEnableTexture(false);
@@ -161,9 +168,6 @@ void ALEnemy::Update() {
 #pragma endregion
 
 
-
-
-
 	//InstancingGameObject::Update();
 	world_.UpdateMatrix();
 
@@ -251,10 +255,20 @@ void ALEnemy::Draw() {
 		IndexX++;
 	}
 
-	InstancingGameObject::Draw(3);
 
+	if (behaviorRequest_ == Stay || behavior_ == Stay) {
+		//InstancingGameObject::Draw(3);
+
+		//タグに対応したモデルにワールド追加
+		IMM_->SetData(a3tag_, world_, 3, color_);
+	}
+	else{
+		//InstancingGameObject::Draw(4);
+				//タグに対応したモデルにワールド追加
+		IMM_->SetData(a4tag_, world_, 3, color_);
+	}
 	shadow->Draw();
-	collider_->Draw();
+	//collider_->Draw();
 }
 
 #pragma region 各状態の初期化と更新
@@ -262,10 +276,13 @@ void ALEnemy::Draw() {
 void ALEnemy::StayInitialize()
 {
 	velocity_.SetZero();
+	animeNum_ = 3;
 }
 
 void ALEnemy::FollowInitialize()
 {
+	animeNum_ = 4;
+
 }
 
 void ALEnemy::HitInitialize()
@@ -285,6 +302,7 @@ void ALEnemy::StayUpdate()
 	//プレイヤーが追従範囲内の時
 	if (p_eLength > stopRange_ && p_eLength < serchRange_) {
 		behaviorRequest_ = Follow;
+
 	}
 }
 
@@ -316,7 +334,7 @@ void ALEnemy::FollowUpdate()
 		//プレイヤーへの向きベクトルに書ける
 		velocity_ = p_eVelo.SetNormalize() * veloSPD;
 
-
+		
 		//最大速度に達していたら移動量もどす
 		float spd = Length(velocity_);
 		if (spd > moveSPD_) {
@@ -334,6 +352,7 @@ void ALEnemy::FollowUpdate()
 	}
 	else {
 		behaviorRequest_ = Stay;
+
 	}
 }
 

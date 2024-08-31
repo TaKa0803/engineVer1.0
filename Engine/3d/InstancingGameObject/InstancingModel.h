@@ -108,6 +108,10 @@ public:
 	void SetEnableTexture(bool isEnable) { materialData_->enableTexture = isEnable; }
 
 	void SetEnableEnviomentMap(bool enable, float num) { materialData_->enableEnvironmentMap = enable; materialData_->enviromentCoefficient = num; }
+
+	void SetAnimationSecond( float sec, bool loop) { animationRoopSecond_ = sec; isAnimeRoop_ = loop; }
+
+	void SetAnimeNum(int num) { animeNum_ = num; }
 #pragma endregion
 
 	/// <summary>
@@ -217,9 +221,11 @@ private:
 #pragma region アニメーション関係
 	//アニメーションフラグ
 	bool isAnimationActive_ = true;
-	float animationTime = 0.0f;
+	float animationTime_=0;
 	//animationの一周までの秒数
 	float animationRoopSecond_ = 1.0f;
+
+	bool isAnimeRoop_ = true;
 
 	//アニメーション要素番号
 	int animeNum_ = 0;
@@ -235,7 +241,7 @@ private:
 	};
 
 	//アニメーションデータごとのデータ
-	std::map<int,std::vector<InstancingData>>instancingDatas_;
+	std::vector<InstancingData>instancingDatas_;
 #pragma endregion
 
 	

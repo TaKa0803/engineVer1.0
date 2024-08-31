@@ -111,7 +111,10 @@ private:
 	MoveState moveState_ = NoneS;
 #pragma endregion
 
+	std::string a3tag_ = "PlayerM3";
+	std::string a4tag_ = "PlayerM4";
 
+	int animeNum_ = 3;
 
 	//移動速度
 	Vector3 velocity_{};

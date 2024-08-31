@@ -248,3 +248,13 @@ void InstancingModelManager::SetEnableEnviomentMap(const std::string& tag, bool 
 {
 	modelDatas_[tag]->SetEnableEnviomentMap(isEnable, num);
 }
+
+void InstancingModelManager::SetAnimationRoopFrame(const std::string& tag, float sec,bool animeLoop)
+{
+	modelDatas_[tag]->SetAnimationSecond( sec,animeLoop);
+}
+
+void InstancingModelManager::SetAnimeNum(const std::string& tag, int num)
+{
+	modelDatas_[tag]->SetAnimeNum(num);
+}

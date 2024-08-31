@@ -21,7 +21,7 @@ InstancingModel::~InstancingModel() {
 	modelData_.skinCluster.paletteResource->Release();
 
 	indexResource_->Release();
-	vertexResource_->Release();	
+	vertexResource_->Release();
 	wvpResource_->Release();
 	materialResource_->Release();
 	directionalLightResource_->Release();
@@ -61,13 +61,13 @@ InstancingModel* InstancingModel::CreateFromOBJ(const std::string& directory, co
 
 
 
-void InstancingModel::AddInstancingData(const EulerWorldTransform& world,int animeNum, const Vector4& color) {
+void InstancingModel::AddInstancingData(const EulerWorldTransform& world, int animeNum, const Vector4& color) {
 	//データをコピー
 	InstancingData worl = { world,color };
 
-	
+
 	//追加
-	instancingDatas_[animeNum].push_back(std::move(worl));
+	instancingDatas_.push_back(std::move(worl));
 
 }
 
@@ -75,14 +75,30 @@ void InstancingModel::UpdateAnimationCount()
 {
 	if (modelType_ != kOBJModel) {
 		if (isAnimationActive_) {
-			animationTime += animationRoopSecond_ / 60.0f;
-			animationTime = std::fmod(animationTime, modelData_.animation[animeNum_].duration);//最後まで行ったら最初からリピート再生
-			//マイナス領域の時の処理
-			if (animationRoopSecond_ < 0) {
-				if (animationTime < 0) {
-					animationTime += modelData_.animation[animeNum_].duration;
+
+			animationTime_ += animationRoopSecond_ / 60.0f;
+			if (isAnimeRoop_) {
+				animationTime_ = std::fmod(animationTime_, modelData_.animation[animeNum_].duration);//最後まで行ったら最初からリピート再生
+			}
+			else {
+				if (animationTime_ > modelData_.animation[animeNum_].duration) {
+					animationTime_ = modelData_.animation[animeNum_].duration;
 				}
 			}
+			//マイナス領域の時の処理
+			if (animationRoopSecond_ < 0) {
+				if (animationTime_ < 0) {
+					if (isAnimeRoop_) {
+						animationTime_ += modelData_.animation[animeNum_].duration;
+					}
+					else {
+
+						animationTime_ = 0;
+
+					}
+				}
+			}
+
 		}
 	}
 }
@@ -96,7 +112,7 @@ void InstancingModel::UpdateAnimationBone(int animenum)
 			//ボーンのあるモデルの場合
 			if (modelType_ == kSkinningGLTF) {
 				//animationの更新を行って骨ごとのローカル情報を更新
-				ApplyAnimation(modelData_.skeleton, modelData_.animation[animenum], animationTime);
+				ApplyAnimation(modelData_.skeleton, modelData_.animation[animenum], animationTime_);
 				//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
 				Update(modelData_.skeleton);
 				//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
@@ -105,16 +121,20 @@ void InstancingModel::UpdateAnimationBone(int animenum)
 			else {
 				//ないanimationモデルの場合
 				NodeAnimation& rootNodeAnimation = modelData_.animation[animenum].nodeAnimations[modelData_.model.rootNode.name];
-				Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
-				Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
-				Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
+				Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
+				Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
+				Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
 				localM_ = MakeAffineMatrix(scale, rotate, translate);
 			}
 		}
 		else {
-			animationTime = 0;
+			animationTime_ = 0;
 			//animationの更新を行って骨ごとのローカル情報を更新
-			ApplyAnimation(modelData_.skeleton, modelData_.animation[animenum], animationTime);
+			ApplyAnimation(modelData_.skeleton, modelData_.animation[animenum], animationTime_);
+			//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
+			Update(modelData_.skeleton);
+			//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
+			Update(modelData_.skinCluster, modelData_.skeleton);
 		}
 	}
 }
@@ -122,159 +142,152 @@ void InstancingModel::UpdateAnimationBone(int animenum)
 void InstancingModel::Draw(int texture) {
 
 	UpdateAnimationCount();
-
+	//カウントに合わせたボーン状態に変更
+	UpdateAnimationBone(animeNum_);
 
 
 	Camera* camera = Camera::GetInstance();
 
-	//早期リターン
-	if (instancingDatas_.size() == 0) {
-		return;
+
+
+
+
+
+
+
+	int index = 0;
+	for (auto& data : instancingDatas_) {
+
+		data.world.UpdateMatrix();
+		Matrix4x4 WVP = data.world.matWorld_ * camera->GetViewProjectionMatrix();;
+
+		//ボーンアニメーション以外は動く
+		if (modelType_ == kAnimationGLTF) {
+			wvpData_[index].WVP = localM_ * WVP;
+			wvpData_[index].World = localM_ * data.world.matWorld_;
+			wvpData_[index].WorldInverseTranspose = Inverse(Transpose(wvpData_[index].World));
+
+		}
+		else {
+			wvpData_[index].WVP = WVP;
+			wvpData_[index].World = data.world.matWorld_;
+			wvpData_[index].WorldInverseTranspose = Inverse(Transpose(data.world.matWorld_));
+		}
+
+		wvpData_[index].color = data.color;
+
+		//animationのあるモデルなら
+		if (modelType_ == kSkinningGLTF) {
+			if (drawJoint_) {
+				//ジョイントMの更新
+				int i = 0;
+				for (auto& jointW : modelData_.skeleton.joints) {
+					Matrix4x4 world = jointW.skeletonSpaceMatrix;
+
+					EulerWorldTransform newdata;
+					newdata.matWorld_ = world;
+
+					IMM_->SetData(jointMtag_, newdata, 0, { 1,1,1,1 });
+
+					i++;
+				}
+			}
+
+
+		}
+
+		index++;
 	}
 
-	for (auto& insData : instancingDatas_) {
-
-		if (insData.second.size() == 0) {
-			continue;
-		}
 
 
-
-		//カウントに合わせたボーン状態に変更
-		UpdateAnimationBone(insData.first);
-
-		int index = 0;
-		for (auto& data : insData.second) {
-
-			data.world.UpdateMatrix();
-			Matrix4x4 WVP = data.world.matWorld_ * camera->GetViewProjectionMatrix();;
-
-			//ボーンアニメーション以外は動く
-			if (modelType_ == kAnimationGLTF) {
-				wvpData_[index].WVP = localM_ * WVP;
-				wvpData_[index].World = localM_ * data.world.matWorld_;
-				wvpData_[index].WorldInverseTranspose = Inverse(Transpose(wvpData_[index].World));
-
-			}
-			else {
-				wvpData_[index].WVP = WVP;
-				wvpData_[index].World = data.world.matWorld_;
-				wvpData_[index].WorldInverseTranspose = Inverse(Transpose(data.world.matWorld_));
-			}
-
-			wvpData_[index].color = data.color;
-
-			//animationのあるモデルなら
-			if (modelType_ == kSkinningGLTF) {
-				if (drawJoint_) {
-					//ジョイントMの更新
-					int i = 0;
-					for (auto& jointW : modelData_.skeleton.joints) {
-						Matrix4x4 world = jointW.skeletonSpaceMatrix;
-
-						EulerWorldTransform newdata;
-						newdata.matWorld_ = world;
-
-						IMM_->SetData(jointMtag_, newdata, 0, { 1,1,1,1 });
-
-						i++;
-					}
-				}
-
-
-			}
-
-			index++;
-		}
-
-
-
-		if (index > instancingNum_) {
-			tag_;
-			//indexが初期作成量よりおおい
-			assert(false);
-		}
-
-
-
-
-		if (index > 0) {
-
-			materialData_->uvTransform = uvWorld_.UpdateMatrix();
-
-			cameraData_->worldPosition = camera->GetMainCamera().GetMatWorldTranslate();
-
-			PointLight pl = LightManager::GetInstance()->GetPLight();
-			DirectionalLight dl = LightManager::GetInstance()->GetDLight();
-
-			pointLightData_->color = pl.color;
-			pointLightData_->decay = pl.decay;
-			pointLightData_->intensity = pl.intensity;
-			pointLightData_->position = pl.position;
-			pointLightData_->radius = pl.radius;
-
-			directionalLightData_->color = dl.color;
-			directionalLightData_->direction = dl.direction;
-			directionalLightData_->intensity = dl.intensity;
-
-
-			//オブジェクト以外ならスキニング処理
-			if (modelType_ == kSkinningGLTF) {
-				vertexBufferView_ = skinningCS_->PreDraw();
-			}
-
-			//ルートシグネチャとパイプライン
-			IMM_->GetPSO()->PreDraw(fillMode_, blendMode_);
-
-			uvWorld_.UpdateMatrix();
-			materialData_->uvTransform = uvWorld_.matWorld_;
-
-
-
-			DXF_->GetCMDList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
-			DXF_->GetCMDList()->IASetIndexBuffer(&indexBufferView_);//IBVを設定
-			//形状を設定、PSOに設定しているものとはまた別、同じものを設定すると考えておけばいい
-			DXF_->GetCMDList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-
-			//マテリアルCBufferの場所を設定
-			DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
-			//ディレクショナルライト
-			DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(3, directionalLightResource_->GetGPUVirtualAddress());
-			//カメラ位置転送
-			DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(4, cameraResource_->GetGPUVirtualAddress());
-			//ポイントライト
-			DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(5, pointlightResource_->GetGPUVirtualAddress());
-
-
-			if (setTexture_ == -1) {
-				if (texture == -1) {
-					DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, texture_);
-				}
-				else {
-					//SRVのDescriptorTableの先頭を設定。２はParameter[2]である。
-					DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, SRVManager::GetInstance()->GetTextureDescriptorHandle(texture));
-				}
-			}
-			else {
-				DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, SRVManager::GetInstance()->GetTextureDescriptorHandle(setTexture_));
-			}
-			DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(1, instancingHandle_);
-
-
-
-			//描画！		
-			//DXF_->GetCMDList()->DrawInstanced(point_, index, 0, 0);
-			//描画！		
-			DXF_->GetCMDList()->DrawIndexedInstanced(static_cast<UINT>(modelData_.model.indices.size()), index, 0, 0, 0);
-
-
-			skinningCS_->PostDraw();
-		}
-
-		insData.second.clear();
+	if (index > instancingNum_) {
+		tag_;
+		//indexが初期作成量よりおおい
+		assert(false);
 	}
+
+
+
+
+	if (index > 0) {
+
+		materialData_->uvTransform = uvWorld_.UpdateMatrix();
+
+		cameraData_->worldPosition = camera->GetMainCamera().GetMatWorldTranslate();
+
+		PointLight pl = LightManager::GetInstance()->GetPLight();
+		DirectionalLight dl = LightManager::GetInstance()->GetDLight();
+
+		pointLightData_->color = pl.color;
+		pointLightData_->decay = pl.decay;
+		pointLightData_->intensity = pl.intensity;
+		pointLightData_->position = pl.position;
+		pointLightData_->radius = pl.radius;
+
+		directionalLightData_->color = dl.color;
+		directionalLightData_->direction = dl.direction;
+		directionalLightData_->intensity = dl.intensity;
+
+
+		//オブジェクト以外ならスキニング処理
+		if (modelType_ == kSkinningGLTF) {
+			vertexBufferView_ = skinningCS_->PreDraw();
+		}
+
+		//ルートシグネチャとパイプライン
+		IMM_->GetPSO()->PreDraw(fillMode_, blendMode_);
+
+		uvWorld_.UpdateMatrix();
+		materialData_->uvTransform = uvWorld_.matWorld_;
+
+
+
+		DXF_->GetCMDList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
+		DXF_->GetCMDList()->IASetIndexBuffer(&indexBufferView_);//IBVを設定
+		//形状を設定、PSOに設定しているものとはまた別、同じものを設定すると考えておけばいい
+		DXF_->GetCMDList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+		//マテリアルCBufferの場所を設定
+		DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+		//ディレクショナルライト
+		DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(3, directionalLightResource_->GetGPUVirtualAddress());
+		//カメラ位置転送
+		DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(4, cameraResource_->GetGPUVirtualAddress());
+		//ポイントライト
+		DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(5, pointlightResource_->GetGPUVirtualAddress());
+
+
+		if (setTexture_ == -1) {
+			if (texture == -1) {
+				DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, texture_);
+			}
+			else {
+				//SRVのDescriptorTableの先頭を設定。２はParameter[2]である。
+				DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, SRVManager::GetInstance()->GetTextureDescriptorHandle(texture));
+			}
+		}
+		else {
+			DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, SRVManager::GetInstance()->GetTextureDescriptorHandle(setTexture_));
+		}
+		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(1, instancingHandle_);
+
+
+
+		//描画！		
+		//DXF_->GetCMDList()->DrawInstanced(point_, index, 0, 0);
+		//描画！		
+		DXF_->GetCMDList()->DrawIndexedInstanced(static_cast<UINT>(modelData_.model.indices.size()), index, 0, 0, 0);
+
+
+		skinningCS_->PostDraw();
+	}
+
+	//ワールドデータ削除
+	instancingDatas_.clear();
 }
+
 
 void InstancingModel::Debug(const char* name)
 {
@@ -300,9 +313,8 @@ void InstancingModel::Debug(const char* name)
 const float InstancingModel::GetWorldNum()
 {
 	float ans = 0;
-	for (auto& data : instancingDatas_) {
-		ans +=(float) data.second.size();
-	}
+
+	ans = (float)instancingDatas_.size();
 
 	return ans;
 }
@@ -312,7 +324,7 @@ void InstancingModel::Initialize(
 	std::string name,
 	int point,
 	int instancingNum
-	) {
+) {
 
 	DXF_ = DirectXFunc::GetInstance();
 
@@ -321,9 +333,10 @@ void InstancingModel::Initialize(
 	modelData_.skeleton = CreateSkeleton(modelData_.model.rootNode);
 	modelData_.skinCluster = CreateSkinCluster(*DXF_->GetDevice(), modelData_.skeleton, modelData_.model);
 	//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
-	Update(modelData_.skinCluster,modelData_.skeleton);
+	Update(modelData_.skinCluster, modelData_.skeleton);
 
 
+	//animationTime_ = { 0 };
 
 	//ジョイントのMの作成
 	IMM_ = InstancingModelManager::GetInstance();
@@ -332,7 +345,7 @@ void InstancingModel::Initialize(
 	//各データ受け渡し
 	point_ = point;
 	instancingNum_ = instancingNum;
-	
+
 
 	//WVP用のリソースを作る。Matrix４ｘ４1つ分のサイズを用意する
 	wvpResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(WorldTransformation) * instancingNum);
@@ -350,7 +363,7 @@ void InstancingModel::Initialize(
 
 	//頂点データ
 	vertexResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(VertexData) * point);
-	
+
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * point);
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
