@@ -123,8 +123,6 @@ void ALPlayer::Initialize() {
 
 	model_->ChangeAnimation(3,0);
 
-	roopState = SetUp;
-	roopCount_ = 0;
 
 	moveState_ = NoneS;
 
@@ -190,12 +188,9 @@ void (ALPlayer::* ALPlayer::BehaviorUpdate[])() = {
 };
 
 void ALPlayer::Draw() {
-	//IGameObject::Draw(viewprojection);
-	//model_->Draw(world_.matWorld_, viewprojection, TextureManager::uvChecker_);
-
 
 	//各モデル描画
-	int Index = 0;
+
 	GameObject::Draw();
 
 	shadow->Draw();
@@ -298,7 +293,6 @@ void ALPlayer::InitializeMove() {
 	model_->animationRoopSecond_ = 5.0;
 
 	moveState_ = StopS;
-	roopCount_ = 0;
 }
 
 void ALPlayer::InitializeATK() {

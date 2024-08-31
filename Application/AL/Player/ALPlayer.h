@@ -129,26 +129,7 @@ private:
 	//加算式落下加速度
 	float addFallSpd_ = 0;
 
-	//ループアニメーション管理
-	bool isRoopStart = false;
 
-	enum RoopState {
-		SetUp,
-		Roop
-	};
-
-
-
-	RoopState roopState = SetUp;
-
-
-
-	ModelAnimeParts seuUpAnime;
-
-	
-
-
-	int roopCount_ = 0;
 
 	enum MoveState {
 		StopS,
