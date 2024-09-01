@@ -12,6 +12,7 @@
 
 EnemyPopManager::EnemyPopManager()
 {
+	pM_ = std::make_unique<ParticleManager>();
 }
 
 EnemyPopManager::~EnemyPopManager()
@@ -181,20 +182,38 @@ void EnemyPopManager::LoadMapItem(const std::string& tag, Leveldata* datas)
 }
 
 void EnemyPopManager::Initialzie() {
+	int Index = 0;
 	for (auto& popdata : popDatas_) {
 		popdata.PopIntervalCount = 0;
 		popdata.maxAreaPopCount = 0;
+
+		poleModel_[Index]->model_->materialData_->enableTexture = false;
+		flagModel_[Index]->model_->materialData_->enableTexture = false;
+
+		poleModel_[Index]->model_->materialData_->enableEnvironmentMap = false;
+		flagModel_[Index]->model_->materialData_->enableEnvironmentMap = false;
+		Index++;
 	}
 
 	InstancingModelManager* IMM = InstancingModelManager::GetInstance();
 
 	IMM->SetTexture(flag_, TextureManager::white_);
+	IMM->SetEnableTexture(flag_, false);
+	IMM->SetEnableEnviomentMap(flag_, false);
 
-	IMM->SetEnableEnviomentMap(flag_, true);
+	pM_->Initialize(TextureManager::white_);
+	pM_->SetOnlyImpact(true);
+
+	EmiterSphere*emit  = pM_->GetEmiterData();
+	emit->veloY.x = 0;
+	emit->veloX = { -0.3f,0.3f };
+	emit->veloZ = { -0.3f,0.3f };
+	emit->lifetime = 0.5f;
 }
 
 void EnemyPopManager::Update() {
 
+	pM_->Update();
 
 	int Index = 0;
 	for (auto& world : flagWorlds_) {
@@ -204,23 +223,46 @@ void EnemyPopManager::Update() {
 			flagModel_[Index]->Update();
 			poleModel_[Index]->Update();
 		}
+		else {
+			if (popDatas_[Index].breakCount_++ < popDatas_[Index].maxBreakC_) {
+				float alpha = 1.0f - (popDatas_[Index].breakCount_ / popDatas_[Index].maxAreaPopCount);
+				flagModel_[Index]->model_->materialData_->color.w = alpha;
+				poleModel_[Index]->model_->materialData_->color.w = alpha;
+				if (alpha <= 0) {
+					popDatas_[Index].isMaxdraw_ = true;
+					flagModel_[Index]->model_->materialData_->color.w = 0;
+					poleModel_[Index]->model_->materialData_->color.w = 0;
+				}
+				else {
+					pM_->SpawnE(world.GetMatWorldTranslate());
+				}
+			}
+		}
 		Index++;
 	}
 
 }
 
 void EnemyPopManager::Draw() {
+
+
 	InstancingModelManager* IMM = InstancingModelManager::GetInstance();
 	int Index = 0;
 	for (auto& world : flagWorlds_) {
 		world.UpdateMatrix();
-		if (popDatas_[Index].maxAreaPopCount < popDatas_[Index].maxAreaPop) {
+		if (!popDatas_[Index].isMaxdraw_) {
 			//IMM->SetData(flag_, world);
 			poleModel_[Index]->Draw(TextureManager::white_);
 			flagModel_[Index]->Draw(TextureManager::white_);
 		}
 		Index++;
 	}
+}
+
+void EnemyPopManager::DrawParticle()
+{
+	pM_->Draw();
+
 }
 
 std::unique_ptr<ALEnemy> EnemyPopManager::PopEnemy() {

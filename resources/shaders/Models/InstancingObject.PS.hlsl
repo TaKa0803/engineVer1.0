@@ -24,6 +24,8 @@ struct Material {
     int32_t enablePointLight;
     
     int32_t enableEnvironmentMap;
+    
+    float enviromentCoefficient;
 };
 ConstantBuffer<Material> gMaterial : register(b0);
 

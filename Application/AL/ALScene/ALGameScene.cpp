@@ -27,7 +27,7 @@ ALGameScene::ALGameScene() {
 	for (auto& data : datas) {
 		if (data->colliderTag_ == "plane c") {
 			data->isActive_ = false;
-			continue;
+			break;
 		}
 	}
 
@@ -97,7 +97,8 @@ ALGameScene::ALGameScene() {
 
 
 	peM_ = std::make_unique<ParticleManager>();
-
+	EmiterSphere*emit = peM_->GetEmiterData();
+	emit->speed = { 0.1f,1.5f };
 }
 
 ALGameScene::~ALGameScene() {
@@ -264,6 +265,7 @@ void ALGameScene::Draw() {
 
 	peM_->Draw();
 	player_->DrawParticle();
+	enemyPopManager_->DrawParticle();
 
 	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
 

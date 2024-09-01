@@ -22,7 +22,7 @@ void EffectMove::Initialize(const Vector4& color)
 	emit->veloX = { -0.5f,0.5f };
 	emit->veloZ = { -0.5f,0.5f };
 	emit->speed = { 0.1f,0.3f };
-	emit->lifetime = 0.3f;
+	emit->lifetime = 0.1f;
 	emit->count = { 1,1 };
 }
 

@@ -5,6 +5,7 @@
 #include"Math/Vector3.h"
 #include"AL/Enemy/ALEnemy.h"
 #include"MapLoader/MapLoader.h"
+#include"ParticleManager.h"
 
 struct PopData {
 	std::string areaName;//出現エリアの名前
@@ -16,6 +17,11 @@ struct PopData {
 
 	float PopIntervalCount = 0;
 	float maxAreaPopCount = 0;
+
+	bool isMaxdraw_ = false;
+
+	int breakCount_ = 0;
+	int maxBreakC_ = 60;
 };
 
 
@@ -40,6 +46,8 @@ public:
 	void Update();
 
 	void Draw();
+
+	void DrawParticle();
 
 	std::unique_ptr<ALEnemy> PopEnemy();
 
@@ -92,6 +100,9 @@ private:
 
 	//プレイヤーの座標
 	const  EulerWorldTransform* playerWorld_ = nullptr;
+
+	//消失エフェクト
+	std::unique_ptr<ParticleManager>pM_;
 
 	float spawnHeight = 0.0f;
 
