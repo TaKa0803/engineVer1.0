@@ -33,7 +33,7 @@ void main( uint32_t3 DTid : SV_DispatchThreadID )
     
     if (particleIndex < kMaxParticles) {
         //Activeではないものは処理しない
-        if (gParticle[particleIndex].isActive!=0)
+        if (gParticle[particleIndex].color.a!=0)
         {
             gParticle[particleIndex].translate += gParticle[particleIndex].velocity;
             gParticle[particleIndex].currentTime += gPerView.deltaTime;

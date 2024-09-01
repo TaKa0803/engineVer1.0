@@ -164,10 +164,8 @@ void ParticleEmiterCS::Update(bool onlyImpact)
 
 }
 
-void ParticleEmiterCS::Dispatch(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhandle)
+void ParticleEmiterCS::EmitGPU(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhandle)
 {
-
-
 
 	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
 

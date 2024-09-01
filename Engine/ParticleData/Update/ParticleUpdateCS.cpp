@@ -125,7 +125,7 @@ void ParticleUpdateCS::Initialize()
 
 }
 
-void ParticleUpdateCS::PreDraw(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_VIRTUAL_ADDRESS adress, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhandle)
+void ParticleUpdateCS::UpdateGPU(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_VIRTUAL_ADDRESS adress, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhandle)
 {
 	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
 

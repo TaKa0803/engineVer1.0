@@ -41,6 +41,7 @@ struct PerFrame
 };
 
 RWStructuredBuffer<Particle> gParticle : register(u0);
+
 RWStructuredBuffer<int32_t> gFreeListIndex : register(u1);
 RWStructuredBuffer<uint32_t> gFreeList : register(u2);
 
@@ -99,14 +100,14 @@ void main(uint3 DTid : SV_DispatchThreadID)
         //乱数の量生成
         float32_t spawncount = lerp(gEmiter.count.x, gEmiter.count.y, generator.seed.x);
         
-        for (uint32_t countIndex = 0; countIndex < gEmiter.count.x; ++countIndex)
-        {
+        for (uint32_t countIndex = 0; countIndex < spawncount; ++countIndex) {
+            
+            //
             int32_t freeListIndex;
             InterlockedAdd(gFreeListIndex[0], -1, freeListIndex);
             
-            //
-            if (0<=freeListIndex && freeListIndex < kMaxParticles)
-            {
+            //取得したインデックスが範囲内の場合
+            if (0<=freeListIndex && freeListIndex < kMaxParticles) {
                 
                 //発生させるパーティクルの番号取得
                 uint32_t particleIndex = gFreeList[freeListIndex];
@@ -133,7 +134,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
                 randNum = generator.Generate1d();
                 gParticle[particleIndex].velocity = normalize(float32_t3(vx, vy, vz)) * lerp(gEmiter.speed.x,gEmiter.speed.y,randNum);
                 //gParticle[particleIndex].color.rgb = generator.Generate3d();
-                gParticle[particleIndex].color.rgb = float32_t3(1.0f, 0.0f, 0.0f);
+                gParticle[particleIndex].color.rgb = float32_t3(0.0f, 0.0f, 1.0f);
                 gParticle[particleIndex].color.a = 1.0f;
                 
                 //生存時間

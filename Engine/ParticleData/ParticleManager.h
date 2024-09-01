@@ -57,22 +57,28 @@ private:
 	size_t maxDataNum_ = 1024;
 
 #pragma region リソース関係
+	//頂点関係
 	ID3D12Resource* vertexResource_;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 
+	//インデックス
 	ID3D12Resource* indexResource_;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 
+	//パーティクル本体のデータ
 	ID3D12Resource* particleResource_;
 	Handles SRVHandle_;
 	Handles UAVHandle_;
 
+	//データ管理のリスト
 	ID3D12Resource* freeListResource_;
 	Handles listUAVHandle_;
 
+	//リストの頂点
 	ID3D12Resource* freeListIndexResource_;
 	Handles counterSRVHandle_;
 	Handles counterUAVHandle_;
+
 
 	ID3D12Resource* perResource_;
 	PerView* perViewData_ = nullptr;

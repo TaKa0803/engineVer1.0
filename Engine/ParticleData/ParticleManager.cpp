@@ -205,8 +205,9 @@ void ParticleManager::Update()
 	emiterCS_->Update(onlyImpact_);
 	
 
-	emiterCS_->Dispatch(UAVHandle_.gpu, counterUAVHandle_.gpu, listUAVHandle_.gpu);
+	emiterCS_->EmitGPU(UAVHandle_.gpu, counterUAVHandle_.gpu, listUAVHandle_.gpu);
 
+	//処理を並列に行わせないための処理
 	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
 	D3D12_RESOURCE_BARRIER ubarrier = {};
 	ubarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
@@ -214,7 +215,7 @@ void ParticleManager::Update()
 	ubarrier.UAV.pResource = particleResource_;
 	cmd->ResourceBarrier(1, &ubarrier);
 
-	particleUpdateCS_->PreDraw(UAVHandle_.gpu, perResource_->GetGPUVirtualAddress(), counterUAVHandle_.gpu, listUAVHandle_.gpu);
+	particleUpdateCS_->UpdateGPU(UAVHandle_.gpu, perResource_->GetGPUVirtualAddress(), counterUAVHandle_.gpu, listUAVHandle_.gpu);
 
 }
 
@@ -236,7 +237,7 @@ void ParticleManager::Draw()
 	barrier.Transition.pResource = particleResource_;  // 頂点バッファリソースへのポインタ
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE;
-	//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 
 	// コマンドリストにバリアを設定
 	cmd->ResourceBarrier(1, &barrier);
@@ -268,7 +269,7 @@ void ParticleManager::Draw()
 	barrier.Transition.pResource = particleResource_;  // 頂点バッファリソースへのポインタ
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-	//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 
 	// コマンドリストにバリアを設定
 	cmd->ResourceBarrier(1, &barrier);

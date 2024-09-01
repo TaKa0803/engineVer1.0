@@ -9,7 +9,7 @@ BrokenBody* BrokenBody::GetInstance() {
 
 void BrokenBody::Initialize() {
 	InstancingGameObject::Initialize("AnimeCube");
-	world_.scale_ = { 0.5f,0.5f,0.5f };
+	world_.scale_ = { 0.2f,0.2f,0.2f };
 	effectDatas_.clear();
 
 	int tex = TextureManager::LoadTex("resources/Models/Object/enemy.png").texNum;

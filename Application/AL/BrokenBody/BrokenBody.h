@@ -34,7 +34,7 @@ public:
 		Vector3 velocity_;
 		Vector3 accce_ = { 0,-0.1f,0 };
 		float BulletForce = 0.4f;
-		const int maxDeadCount = 120;
+		const int maxDeadCount = 180;
 		int deadCount = 0;
 		bool isdead_ = false;
 

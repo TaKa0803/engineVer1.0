@@ -159,6 +159,7 @@ void ALGameScene::Initialize() {
 	PEVignetting::materialData_->darkness = 0.3f;
 
 	peM_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
+	peM_->SetOnlyImpact(true);
 }
 
 
