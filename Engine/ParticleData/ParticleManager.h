@@ -40,6 +40,8 @@ public:
 	void SpawnE(const Vector3&pos);
 
 	void SetOnlyImpact(bool onlyImpact) { onlyImpact_ = onlyImpact; }
+
+	EmiterSphere* GetEmiterData() { return emiterData_; }
 private:
 
 	DirectXFunc* DXF_;

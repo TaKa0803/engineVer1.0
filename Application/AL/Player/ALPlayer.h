@@ -5,6 +5,7 @@
 #include"SphereCollider/SphereCollider.h"
 #include"Effect/Impact/Impact.h"
 #include"AL/items.h"
+#include"Effect/EffectMove/EffectMove.h"
 
 #include<vector>
 
@@ -36,6 +37,8 @@ public:
 	void Update();
 
 	void Draw();
+
+	void DrawParticle();
 
 	void DebugWindow(const char* name);
 
@@ -108,6 +111,7 @@ private:
 
 	std::unique_ptr<SphereCollider> collider_;
 
+	std::unique_ptr<EffectMove>peM_;
 #pragma region モデルに関する
 
 	//タグ軍

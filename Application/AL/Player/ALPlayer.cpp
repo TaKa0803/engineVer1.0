@@ -81,6 +81,8 @@ ALPlayer::ALPlayer() {
 
 	input_->SetDeadLine(0.3f);
 
+	peM_ = std::make_unique<EffectMove>();
+
 	collider_ = std::make_unique<SphereCollider>();
 	collider_->Initialize("player", world_);
 	collider_->SetRadius(1.5f);
@@ -123,6 +125,8 @@ void ALPlayer::Initialize() {
 
 	model_->ChangeAnimation(3,0);
 
+	peM_->Initialize({ 1,1,1,1 });
+
 
 	moveState_ = NoneS;
 
@@ -144,6 +148,8 @@ void ALPlayer::Initialize() {
 
 void ALPlayer::Update() {
 
+
+
 	//状態の初期化処理
 	if (behaviorRequest_) {
 		behavior_ = behaviorRequest_.value();
@@ -152,6 +158,8 @@ void ALPlayer::Update() {
 		//実際の初期化処理
 		(this->*BehaviorInitialize[(int)behavior_])();
 	}
+
+	peM_->Update();
 
 	//落下の処理
 	addFallSpd_ -= fallSpd_;
@@ -163,6 +171,7 @@ void ALPlayer::Update() {
 
 	//状態の更新
 	(this->*BehaviorUpdate[(int)behavior_])();
+
 
 
 	//更新
@@ -197,7 +206,13 @@ void ALPlayer::Draw() {
 
 	impactE_->Draw();
 
-	collider_->Draw();
+	//collider_->Draw();
+
+}
+
+void ALPlayer::DrawParticle()
+{
+	peM_->Draw();
 }
 
 void ALPlayer::DebugWindow(const char* name) {
@@ -254,12 +269,13 @@ void ALPlayer::Move() {
 	move.y = 0.0f;
 
 	if (move != Vector3(0, 0, 0)) {
+		peM_->SpawnE(world_.GetMatWorldTranslate());
 		world_.rotate_.y = GetYRotate({ move.x,move.z })+((float)std::numbers::pi);
 	}
 	//加算
 	world_.translate_ += move;
 
-
+	
 
 	ModelRoop(move);
 }

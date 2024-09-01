@@ -14,7 +14,7 @@ struct Particle
 
 struct Emiter
 {
-   
+    float32_t4 color;
     float32_t3 translate;
     
     float32_t2 radius; //最小最大サイズ;
@@ -29,7 +29,7 @@ struct Emiter
     float32_t emit;
     float32_t frequency;
     float32_t frequencyTime;
-    
+    float32_t lifetime;
     
 
 };
@@ -134,11 +134,11 @@ void main(uint3 DTid : SV_DispatchThreadID)
                 randNum = generator.Generate1d();
                 gParticle[particleIndex].velocity = normalize(float32_t3(vx, vy, vz)) * lerp(gEmiter.speed.x,gEmiter.speed.y,randNum);
                 //gParticle[particleIndex].color.rgb = generator.Generate3d();
-                gParticle[particleIndex].color.rgb = float32_t3(0.0f, 0.0f, 1.0f);
+                gParticle[particleIndex].color.rgb = gEmiter.color.rgb;
                 gParticle[particleIndex].color.a = 1.0f;
                 
                 //生存時間
-                gParticle[particleIndex].lifeTime = 1;
+                gParticle[particleIndex].lifeTime = gEmiter.lifetime;
                 //生存時間かうんと
                 gParticle[particleIndex].currentTime = 0;
                 //使用フラグON

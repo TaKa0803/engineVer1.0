@@ -160,6 +160,9 @@ void ALGameScene::Initialize() {
 
 	peM_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
 	peM_->SetOnlyImpact(true);
+	EmiterSphere*emit = peM_->GetEmiterData();
+
+	emit->color =  {0,0,1,1} ;
 }
 
 
@@ -260,8 +263,9 @@ void ALGameScene::Draw() {
 	InstancingModelManager::GetInstance()->DrawAllModel();
 
 	peM_->Draw();
+	player_->DrawParticle();
 
-	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
+	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
 
 
 

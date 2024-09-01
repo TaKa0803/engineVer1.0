@@ -23,6 +23,7 @@ public:
 	//CSの処理実行
 	void EmitGPU(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhand);
 
+	EmiterSphere* GetEmiterData() { return emiterData_; }
 private:
 
 	DirectXFunc* DXF_ = nullptr;

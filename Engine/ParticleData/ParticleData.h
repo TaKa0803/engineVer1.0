@@ -12,25 +12,21 @@ struct PerFrame {
 //円範囲のエミッター
 struct EmiterSphere {
 
+	Vector4 color;
+
+	//float padd;
 
 	Vector3 translate;		//生成中心座標
 
 	float pad;
 
 	Vector2 radius;			//生成範囲
-	
-
 	Vector2 count;			//生成量
 
 
 	Vector2 speed;			//最小最大速度
-
 	Vector2 veloX;			//
-
-
 	Vector2 veloY;
-
-
 	Vector2 veloZ;
 
 	float emit;			//射出許可
@@ -39,7 +35,7 @@ struct EmiterSphere {
 	
 	float frequencyTime;	//生成時間カウント
 
-
+	float lifetime;
 
 
 };

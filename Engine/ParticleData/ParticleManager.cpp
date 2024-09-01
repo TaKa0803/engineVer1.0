@@ -141,7 +141,7 @@ ParticleManager::ParticleManager()
 	emiterResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(EmiterSphere));
 	emiterResource_->Map(0, nullptr, reinterpret_cast<void**>(&emiterData_));
 	emiterData_->radius = { 0.0f,1.0f };
-	emiterData_->count = {100 ,100 };
+	emiterData_->count = {10 ,10 };
 
 	emiterData_->speed = { 0.0f,1.0f };
 	emiterData_->veloX = { -1.0f,1.0f };
@@ -150,8 +150,9 @@ ParticleManager::ParticleManager()
 	emiterData_->frequency = 0.5f;
 	emiterData_->frequencyTime = 0.0f;
 	emiterData_->translate = Vector3(0.0f, 0.0f, 0.0f);
-
+	emiterData_->color = { 1,1,1,1 };
 	emiterData_->emit = 0;
+	emiterData_->lifetime = 1;
 
 	pso_ = std::make_unique<ParticlePSO>();
 	pso_->Initialize();
