@@ -118,6 +118,7 @@
     <ClCompile Include="Engine\ParticleData\Initialize\ParticleInitialize.cpp" />
     <ClCompile Include="Engine\ParticleData\Emiter\ParticleEmiterCS.cpp" />
     <ClCompile Include="Application\Effect\EffectMove\EffectMove.cpp" />
+    <ClCompile Include="Application\AL\ALBoss\ALBoss.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -210,6 +211,7 @@
     <ClInclude Include="Engine\ParticleData\Initialize\ParticleInitialize.h" />
     <ClInclude Include="Engine\ParticleData\Emiter\ParticleEmiterCS.h" />
     <ClInclude Include="Application\Effect\EffectMove\EffectMove.h" />
+    <ClInclude Include="Application\AL\ALBoss\ALBoss.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

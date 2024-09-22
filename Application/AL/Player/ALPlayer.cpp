@@ -83,6 +83,7 @@ ALPlayer::ALPlayer() {
 
 	peM_ = std::make_unique<EffectMove>();
 
+
 	collider_ = std::make_unique<SphereCollider>();
 	collider_->Initialize("player", world_);
 	collider_->SetRadius(1.5f);

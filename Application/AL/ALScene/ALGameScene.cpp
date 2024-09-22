@@ -17,6 +17,7 @@ ALGameScene::ALGameScene() {
 
 	camera_ = Camera::GetInstance();
 	player_ = std::make_unique<ALPlayer>();
+	boss_ = std::make_unique<ALBoss>();
 
 	plane_ = std::make_unique<Plane>();
 
@@ -114,6 +115,9 @@ void ALGameScene::Initialize() {
 	player_->Initialize();
 	plane_->Initialize();
 
+	boss_->Initilaize();
+
+
 	//初期化
 	camera_->Initialize();
 	//各種設定
@@ -173,6 +177,8 @@ void ALGameScene::Update() {
 	PostEffectManager::GetInstance()->Debug();
 
 	peM_->Update();
+
+	boss_->Update();
 	switch (scene_) {
 	case ALGameScene::Game:
 
@@ -257,6 +263,7 @@ void ALGameScene::Draw() {
 
 	//プレイヤー
 	player_->Draw();
+	boss_->Draw();
 
 	brokenBody_->Draw();
 

@@ -8,6 +8,7 @@
 #include"Input/Input.h"
 #include"Camera/Camera.h"
 
+#include"AL/ALBoss/ALBoss.h"
 #include"AL/Player/ALPlayer.h"
 #include"AL/Plane/Plane.h"
 #include"AL/Enemy/ALEnemy.h"
@@ -59,6 +60,8 @@ private:
 
 	///以下ゲーム実装
 	std::unique_ptr<ALPlayer>player_;
+
+	std::unique_ptr<ALBoss> boss_;
 
 	std::unique_ptr<Plane>plane_;
 
