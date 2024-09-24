@@ -3,6 +3,7 @@
 #include"Input/Input.h"
 #include"AL/Player/ALPlayer.h"
 
+
 class ALBoss : public GameObject {
 
 
@@ -39,6 +40,7 @@ private://状態管理
 private:
 	Input* input_ = nullptr;
 
+	std::unique_ptr<ALPlayer>player_;
 #pragma region 影
 	std::unique_ptr<InstancingGameObject>shadow;
 #pragma endregion

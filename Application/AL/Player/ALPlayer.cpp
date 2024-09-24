@@ -73,8 +73,6 @@ void ALPlayer::LoadATKDatas() {
 
 }
 
-
-
 ALPlayer::ALPlayer() {
 	//一回しかしない初期化情報
 	input_ = Input::GetInstance();
