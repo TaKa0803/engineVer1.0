@@ -98,8 +98,6 @@ ALPlayer::ALPlayer() {
 	
 	textureData = TextureManager::LoadTex("resources/Models/Object/player.png").texNum;
 
-	impactE_ = std::make_unique<EffectImpact>();
-
 	shadow = std::make_unique<InstancingGameObject>();
 
 
@@ -137,7 +135,6 @@ void ALPlayer::Initialize() {
 	shadow->SetTranslate({ 0,0.01f,0 });
 	shadow->SetScale(1.5f);
 
-	impactE_->Initialize();
 	
 	model_->animationRoopSecond_ = 5.0f;
 
@@ -180,7 +177,7 @@ void ALPlayer::Update() {
 	model_->UpdateAnimation();
 	collider_->Update();
 	shadow->Update();
-	impactE_->Update();
+
 }
 
 void (ALPlayer::* ALPlayer::BehaviorInitialize[])() = {
@@ -206,7 +203,6 @@ void ALPlayer::Draw() {
 
 	shadow->Draw();
 
-	impactE_->Draw();
 
 	//collider_->Draw();
 
@@ -434,7 +430,6 @@ void ALPlayer::UpdateATK() {
 				}
 			}
 
-			impactE_->Spawn(world_);
 		}
 		else {
 

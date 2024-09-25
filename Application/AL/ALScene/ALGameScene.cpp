@@ -38,33 +38,14 @@ ALGameScene::ALGameScene() {
 	}
 
 
-
-	//インスタンシングの複数モデルが同じ画像利用の時の対応
-	InstancingModelManager* IMM = InstancingModelManager::GetInstance();
-	std::string eModelparts[5] = {
-		"Head",
-		"LArm",
-		"RArm",
-		"LFoot",
-		"RFoot"
-	};
-	int texture = TextureManager::LoadTex("resources/Models/Object/enemy.png").texNum;
-	for (auto& tag : eModelparts) {
-		IMM->SetTexture(tag, texture);
-	}
-
-
-	
-
-
 	brokenBody_ = BrokenBody::GetInstance();
 
-	texture = TextureManager::LoadTex(white).texNum;
+	int texture = TextureManager::LoadTex(white).texNum;
 	sceneC_.reset(Sprite::Create(texture, { 1,1 }, { 1,1 }, { 1280,720 }));
 	sceneC_->SetMaterialDataColor({ 0,0,0,1 });
 
-	bgmGame_ = AudioManager::LoadSoundNum("game");
 
+	bgmGame_ = AudioManager::LoadSoundNum("game");
 	bgmClear_ = AudioManager::LoadSoundNum("clear");
 
 

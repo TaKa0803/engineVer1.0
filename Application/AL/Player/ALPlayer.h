@@ -168,7 +168,7 @@ private:
 
 #pragma region 攻撃に関する変数
 
-	std::unique_ptr<EffectImpact>impactE_;
+	//std::unique_ptr<EffectImpact>impactE_;
 
 	//攻撃に関するデータ
 	std::string atkDataPass_ = "resources/jsonfile/PlayerATKData.json";
