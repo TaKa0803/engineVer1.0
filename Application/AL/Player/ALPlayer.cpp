@@ -2,6 +2,7 @@
 
 #include"AudioManager/AudioManager.h"
 #include"TextureManager/TextureManager.h"
+#include"DeltaTimer/DeltaTimer.h"
 #include<imgui.h>
 #include<json.hpp>
 #include<cassert>
@@ -95,8 +96,6 @@ ALPlayer::ALPlayer() {
 	model_->SetAnimeSecond(10);
 	int Index = 0;
 	
-
-
 	textureData = TextureManager::LoadTex("resources/Models/Object/player.png").texNum;
 
 	impactE_ = std::make_unique<EffectImpact>();
@@ -104,12 +103,12 @@ ALPlayer::ALPlayer() {
 	shadow = std::make_unique<InstancingGameObject>();
 
 
+	rolling_ = std::make_unique<PlayerDash>(this);
+
 
 	punchSound_ = AudioManager::LoadSoundNum("com1");
 	kickSound_ = AudioManager::LoadSoundNum("com2");
-	drilSound_ = AudioManager::LoadSoundNum("com3");
-
-	
+	drilSound_ = AudioManager::LoadSoundNum("com3");	
 }
 
 ALPlayer::~ALPlayer() {
@@ -143,16 +142,17 @@ void ALPlayer::Initialize() {
 	model_->animationRoopSecond_ = 5.0f;
 
 	collider_->Update();
+
 }
 
 void ALPlayer::Update() {
 
-
+	rolling_->Debug();
 
 	//状態の初期化処理
-	if (behaviorRequest_) {
-		behavior_ = behaviorRequest_.value();
-		behaviorRequest_ = std::nullopt;
+	if (behaviorReq_) {
+		behavior_ = behaviorReq_.value();
+		behaviorReq_ = std::nullopt;
 
 		//実際の初期化処理
 		(this->*BehaviorInitialize[(int)behavior_])();
@@ -161,16 +161,18 @@ void ALPlayer::Update() {
 	peM_->Update();
 
 	//落下の処理
-	addFallSpd_ -= fallSpd_;
-	world_.translate_.y += addFallSpd_;
+	data_.addFallSpd_ -= data_.fallSpd_;
+	world_.translate_.y += data_.addFallSpd_;
 	if (world_.translate_.y < 0) {
 		world_.translate_.y = 0;
-		addFallSpd_ = 0;
+		data_.addFallSpd_ = 0;
 	}
 
 	//状態の更新
 	(this->*BehaviorUpdate[(int)behavior_])();
 
+	//移動量ベクトル*デルタタイムを加算
+	world_.translate_ += data_.velo_ * (float)DeltaTimer::deltaTime_;
 
 
 	//更新
@@ -182,17 +184,18 @@ void ALPlayer::Update() {
 }
 
 void (ALPlayer::* ALPlayer::BehaviorInitialize[])() = {
-	&ALPlayer::InitializeMove,		//移動
-	&ALPlayer::InitializeATK,		//攻撃
-	&ALPlayer::InitializeHitAction,	//被攻撃
-	&ALPlayer::InitializeSpecialATK	//特殊攻撃
+	&ALPlayer::InitMove,		//移動
+	&ALPlayer::InitRolling,		//回避
+	&ALPlayer::InitATK,			//攻撃
+	&ALPlayer::InitHitAction	//被攻撃
 };
 
 void (ALPlayer::* ALPlayer::BehaviorUpdate[])() = {
 	&ALPlayer::UpdateMove,			//移動
+	&ALPlayer::UpdateRolling,		//回避
 	&ALPlayer::UpdateATK,			//攻撃
-	&ALPlayer::UpdateHitAction,		//被攻撃
-	&ALPlayer::InitializeSpecialATK	//特殊攻撃
+	&ALPlayer::UpdateHitAction		//被攻撃
+
 };
 
 void ALPlayer::Draw() {
@@ -219,8 +222,8 @@ void ALPlayer::DebugWindow(const char* name) {
 	float cScale = collider_->GetRadius();
 
 	ImGui::Begin(name);
-	ImGui::DragFloat("spd", &spd_, 0.01f);
-	ImGui::DragFloat("fall spd", &fallSpd_, 0.01f);
+	ImGui::DragFloat("spd", &data_.spd_, 0.01f);
+	ImGui::DragFloat("fall spd", &data_.fallSpd_, 0.01f);
 
 	world_.DrawDebug(name);
 	collider_->Debug(name);
@@ -242,11 +245,9 @@ void ALPlayer::OnCollisionBack(const Vector3& backV)
 
 	//高さに関する処理が行われた場合落下速度を初期化
 	if (backV.y != 0) {
-		addFallSpd_ = 0;
+		data_.addFallSpd_ = 0;
 	}
 }
-
-
 
 void ALPlayer::Move() {
 
@@ -260,7 +261,7 @@ void ALPlayer::Move() {
 	}
 
 	move.SetNormalize();
-	move *= spd_;
+	move *= data_.spd_;
 
 	//カメラ方向に向ける
 	move = TransformNormal(move, camera_->GetMainCamera().matWorld_);
@@ -301,7 +302,7 @@ void ALPlayer::ModelRoop(const Vector3& velo)
 #pragma region 各状態初期化処理
 
 
-void ALPlayer::InitializeMove() {
+void ALPlayer::InitMove() {
 
 	model_->ChangeAnimation(3, 0);
 	model_->SetAnimationRoop(true);
@@ -310,7 +311,12 @@ void ALPlayer::InitializeMove() {
 	moveState_ = StopS;
 }
 
-void ALPlayer::InitializeATK() {
+void ALPlayer::InitRolling()
+{
+	rolling_->Initialize();
+}
+
+void ALPlayer::InitATK() {
 
 
 	model_->ChangeAnimation(0, 5);
@@ -332,15 +338,11 @@ void ALPlayer::InitializeATK() {
 	ATKConboCount = 1;
 }
 
-void ALPlayer::InitializeHitAction() {
+void ALPlayer::InitHitAction() {
 
 }
 
-void ALPlayer::InitializeSpecialATK() {
-}
 
-void ALPlayer::UpdateSpecialATK() {
-}
 
 #pragma endregion
 
@@ -356,11 +358,13 @@ void ALPlayer::UpdateMove() {
 	//スペシャル攻撃
 	bool isSpecialATK = false;
 
+	bool isRoll = false;
 
 	isATK = input_->TriggerKey(DIK_Z);
 
 	isSpecialATK = input_->TriggerKey(DIK_C);
 
+	isRoll = input_->TriggerKey(DIK_LSHIFT);
 
 	//コントローラーがあるときの処理
 	if (input_->IsControllerActive()) {
@@ -372,10 +376,21 @@ void ALPlayer::UpdateMove() {
 	}
 
 	if (isATK) {
-		behaviorRequest_ = State::ATK;
+		behaviorReq_ = State::ATK;
 	}
 
+	if (isRoll) {
+		behaviorReq_ = State::Rolling;
+	}
+	
 }
+
+void ALPlayer::UpdateRolling()
+{
+	rolling_->Update();
+}
+
+
 
 void ALPlayer::UpdateATK() {
 
@@ -512,7 +527,7 @@ void ALPlayer::UpdateATK() {
 			}
 			else {
 				//移動状態に変更
-				behaviorRequest_ = State::Move;
+				behaviorReq_ = State::Move;
 				ATKConboCount = 0;
 			}
 #pragma endregion

@@ -118,6 +118,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\AL\Enemy\ALEnemy.cpp" />
     <ClCompile Include="Application\AL\FollowCamera\FollowCamera.cpp" />
     <ClCompile Include="Application\AL\GameUI\GameUI.cpp" />
+    <ClCompile Include="Application\AL\Player\PlayerDash\PlayerDash.cpp" />
     <ClCompile Include="Application\Effect\EffectMove\EffectMove.cpp" />
     <ClCompile Include="Application\Effect\Impact\Impact.cpp" />
     <ClCompile Include="Application\AL\Player\ALPlayer.cpp" />
@@ -139,6 +140,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3d\SkyBoxModel\SkyBoxModel.cpp" />
     <ClCompile Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.cpp" />
     <ClCompile Include="Engine\base\AudioManager\AudioManager.cpp" />
+    <ClCompile Include="Engine\base\DeltaTimer\DeltaTimer.cpp" />
     <ClCompile Include="Engine\base\DSVManager\DSVManager.cpp" />
     <ClCompile Include="Engine\base\DXC\DXCManager.cpp" />
     <ClCompile Include="Engine\base\RTVManager\RTVManager.cpp" />
@@ -369,6 +371,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\AL\GameUI\GameUI.h" />
     <ClInclude Include="Application\AL\items.h" />
     <ClInclude Include="Application\AL\Player\ALPlayer.h" />
+    <ClInclude Include="Application\AL\Player\PlayerDash\PlayerDash.h" />
     <ClInclude Include="Application\CG\CGScene.h" />
     <ClInclude Include="Application\Effect\dZoneE\DZone.h" />
     <ClInclude Include="Application\Effect\EffectExplosion.h" />
@@ -389,6 +392,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.h" />
     <ClInclude Include="Engine\base\AudioManager\AudioManager.h" />
     <ClInclude Include="Engine\base\AudioManager\SoundData.h" />
+    <ClInclude Include="Engine\base\DeltaTimer\DeltaTimer.h" />
     <ClInclude Include="Engine\base\DSVManager\DSVManager.h" />
     <ClInclude Include="Engine\base\DXC\DXCManager.h" />
     <ClInclude Include="Engine\base\RTVManager\RTVManager.h" />

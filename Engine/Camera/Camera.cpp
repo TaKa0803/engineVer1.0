@@ -200,3 +200,10 @@ void Camera::SetCameraDirection(const float farZ) {
 	farFeaturedPos_ = farZ;
 	mainCamera_.translate_.z = farZ;
 }
+
+Vector3 Camera::SetDirection4Camera(const Vector3& velo)
+{
+	Vector3 ans = TransformNormal(velo, mainCamera_.matWorld_);
+
+	return ans;
+}

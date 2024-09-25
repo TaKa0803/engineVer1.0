@@ -24,7 +24,7 @@ Vector3 CalculateValue(const std::vector<KayframeVector3>& keyframes, float time
 
 		if (keyframes[index].time <= time && time <= keyframes[nextIndex].time) {
 			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
-			return Esing(keyframes[index].value, keyframes[nextIndex].value, t);
+			return Lerp(keyframes[index].value, keyframes[nextIndex].value, t);
 		}
 	}
 

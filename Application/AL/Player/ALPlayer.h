@@ -6,6 +6,7 @@
 #include"Effect/Impact/Impact.h"
 #include"AL/items.h"
 #include"Effect/EffectMove/EffectMove.h"
+#include"PlayerDash/PlayerDash.h"
 
 #include<vector>
 
@@ -51,10 +52,21 @@ public:
 
 	int GetConboCount() { return ATKConboCount; }
 
+	//プレイヤー方向取得
+	Vector3 GetDirection();
+
 	bool IsPlayerATK() {
 		if (behavior_ == State::ATK) { return true; }
 		return false;
 	}
+
+	enum class State {
+		Move,		//移動
+		Rolling,    //ローリング 
+		ATK,		//攻撃
+		HITACTION,	//被攻撃時
+		kNumStates	//状態の数
+	};
 private://メンバ関数
 
 
@@ -65,18 +77,11 @@ private://メンバ関数
 
 #pragma region 状態管理とメンバ関数ポインタテーブル
 
-	enum class State {
-		Move,		//移動
-		ATK,		//攻撃
-		HITACTION,	//被攻撃時
-		SPECIALATK,	//特別攻撃
-		kNumStates	//状態の数
-	};
+
 
 	//プレイヤーの状態
 	State behavior_ = State::Move;
-	//状態リクエスト
-	std::optional<State>behaviorRequest_ = std::nullopt;
+
 
 	//状態ごとの初期化テーブル
 	static void (ALPlayer::* BehaviorInitialize[])();
@@ -85,24 +90,49 @@ private://メンバ関数
 	static void (ALPlayer::* BehaviorUpdate[])();
 
 
-	void InitializeMove();
+	void InitMove();
 
-	void InitializeATK();
+	void InitRolling();
 
-	void InitializeHitAction();
+	void InitATK();
 
-	void InitializeSpecialATK();
+	void InitHitAction();
+
 
 	void UpdateMove();
+
+	void UpdateRolling();
 
 	void UpdateATK();
 
 	void UpdateHitAction();
 
-	void UpdateSpecialATK();
 #pragma endregion
 
 	void LoadATKDatas();
+
+public:
+
+	struct PlayerData
+	{
+
+		Vector3 velo_ = { 0,0,0 };
+		Vector3 acce_ = { 0,0,0 };
+
+		//移動速度
+		float spd_ = 0.5f;
+
+		//落下速度
+		float fallSpd_ = 0.1f;
+
+		//加算式落下加速度
+		float addFallSpd_ = 0;
+	};
+
+	PlayerData data_;
+
+	//状態リクエスト
+	std::optional<State>behaviorReq_ = std::nullopt;
 
 private:
 	Input* input_ = nullptr;
@@ -112,6 +142,8 @@ private:
 	std::unique_ptr<SphereCollider> collider_;
 
 	std::unique_ptr<EffectMove>peM_;
+
+	std::unique_ptr<PlayerDash>rolling_;
 #pragma region モデルに関する
 
 	//タグ軍
@@ -123,15 +155,6 @@ private:
 	std::unique_ptr<InstancingGameObject>shadow;
 #pragma endregion
 
-
-	//移動速度
-	float spd_ = 0.5f;
-
-	//落下速度
-	float fallSpd_ = 0.1f;
-
-	//加算式落下加速度
-	float addFallSpd_ = 0;
 
 
 
@@ -205,9 +228,11 @@ private:
 		_countATK
 	};
 
-	NowATK nowATKState_=kATK1;
+	NowATK nowATKState_ = kATK1;
 #pragma endregion
 
+
+	//音のデータポインタ
 	int punchSound_;
 
 	int kickSound_;

@@ -37,7 +37,7 @@ float Vector3::GetLength() {
 
 
 
-Vector3 Esing(const Vector3& p1, const Vector3& p2, float t)
+Vector3 Lerp(const Vector3& p1, const Vector3& p2, float t)
 {
 	return{
 		p1.x * (1.0f - t) + p2.x * t,

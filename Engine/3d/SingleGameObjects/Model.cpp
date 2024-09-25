@@ -281,9 +281,9 @@ void Model::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float
 		//アニメーション変更によるフラグ処理ONの場合
 		if (isSupplementation_) {
 
-			joint.transform.translate_ = Esing(savedT[i].translate_, joint.transform.translate_, t);
+			joint.transform.translate_ = Lerp(savedT[i].translate_, joint.transform.translate_, t);
 			joint.transform.rotate_ = Slerp(savedT[i].rotate_, joint.transform.rotate_, t);
-			joint.transform.scale_ = Esing(savedT[i].scale_, joint.transform.scale_, t);
+			joint.transform.scale_ = Lerp(savedT[i].scale_, joint.transform.scale_, t);
 
 		}
 

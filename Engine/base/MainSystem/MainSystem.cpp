@@ -74,6 +74,10 @@ void MainSystem::Initializes() {
 	randomNumClass_ = RandomNumber::GetInstance();
 	randomNumClass_->RandomNumberProcessInitialize();
 	
+	//デルタタイム
+	deitaTimer_ = DeltaTimer::GetInstance();
+	deitaTimer_->Initialize();
+
 	//音声マネージャ
 	AudioManager *audioManager = AudioManager::GetInstance();
 	audioManager->Initialize();
@@ -83,6 +87,9 @@ void MainSystem::Initializes() {
 	ModelManager::GetInstance()->Initialize();
 	//スプライトマネージャ初期化
 	SpriteManager::GetInstance()->Initialize();
+
+
+
 }
 
 void MainSystem::MainRoop() {
@@ -107,7 +114,7 @@ void MainSystem::MainRoop() {
 	
 
 	while (winApp_->ProcessMessage()) {
-		
+		deitaTimer_->Update();
 #pragma region 状態更新
 		///更新前処理
 		//ImGui
@@ -120,10 +127,10 @@ void MainSystem::MainRoop() {
 #ifdef _DEBUG
 		//GlobalVariableデータの更新処理
 		GlobalVariables::GetInstance()->Update();
-		auto delta = ImGui::GetIO().Framerate;
+		
 
 		ImGui::Begin("Engine");
-		ImGui::Text("Frame %4.1f", delta);
+		ImGui::Text("deltaTime %4.5f", deitaTimer_->deltaTime_);
 		ImGui::End();
 #endif // _DEBUG
 		DXF_->Update();
@@ -186,3 +193,5 @@ void MainSystem::Finalize() {
 	winApp_->Finalize();
 
 }
+
+

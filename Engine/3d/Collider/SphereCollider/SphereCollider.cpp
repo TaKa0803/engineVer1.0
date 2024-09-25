@@ -122,7 +122,7 @@ bool SphereCollider::IsCollision(OBBCollider& obb, Vector3& backVec, float divis
 	while (t <= 1.0f) {
 
 		//過去位置から現在位置までの場所取得
-		Vector3 pos = Esing(preWorld_.GetMatWorldTranslate(), world_.GetMatWorldTranslate(), t);
+		Vector3 pos = Lerp(preWorld_.GetMatWorldTranslate(), world_.GetMatWorldTranslate(), t);
 
 		//スフィアコライダーの座標をOBBのローカル空間に出る
 		Vector3 sphereLocal = Transform(pos, inverseM);

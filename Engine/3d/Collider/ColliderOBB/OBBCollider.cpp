@@ -119,7 +119,7 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 	while (true) {
 
 		//過去地点から現在地点まで段階的に探査する
-		Vector3 spehrePos = Esing(preCWorld, CWorld, t);
+		Vector3 spehrePos = Lerp(preCWorld, CWorld, t);
 
 		//スフィアコライダーの座標をOBBのローカル空間にする
 		Vector3 sphereLocal = Transform(spehrePos, inverseM_);

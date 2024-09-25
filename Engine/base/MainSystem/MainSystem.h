@@ -9,7 +9,7 @@
 #include"Input/Input.h"
 #include"SRVManager/SRVManager.h"
 #include"RandomNum/RandomNum.h"
-
+#include"DeltaTimer/DeltaTimer.h"
 
 class MainSystem {
 public://シングルトンパターン
@@ -59,5 +59,9 @@ private:
 	//乱数クラス
 	RandomNumber* randomNumClass_;
 
+	//デルタタイム
+	DeltaTimer* deitaTimer_;
 #pragma endregion
+
+
 };
