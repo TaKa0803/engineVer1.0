@@ -123,6 +123,7 @@
     <ClCompile Include="Application\AL\GameUI\GameUI.cpp" />
     <ClCompile Include="Application\AL\Player\PlayerDash\PlayerDash.cpp" />
     <ClCompile Include="Engine\base\DeltaTimer\DeltaTimer.cpp" />
+    <ClCompile Include="Application\AL\CirccleShadow\CirccleShadow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -220,6 +221,7 @@
     <ClInclude Include="Application\AL\GameUI\GameUI.h" />
     <ClInclude Include="Application\AL\Player\PlayerDash\PlayerDash.h" />
     <ClInclude Include="Engine\base\DeltaTimer\DeltaTimer.h" />
+    <ClInclude Include="Application\AL\CirccleShadow\CirccleShadow.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

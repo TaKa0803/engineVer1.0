@@ -3,9 +3,10 @@
 #include"Input/Input.h"
 #include"Camera/Camera.h"
 #include"SphereCollider/SphereCollider.h"
-#include"Effect/Impact/Impact.h"
 #include"AL/items.h"
 #include"Effect/EffectMove/EffectMove.h"
+#include"AL/CirccleShadow/CirccleShadow.h"
+
 #include"PlayerDash/PlayerDash.h"
 
 #include<vector>
@@ -144,6 +145,9 @@ private:
 	std::unique_ptr<EffectMove>peM_;
 
 	std::unique_ptr<PlayerDash>rolling_;
+
+	std::unique_ptr<CirccleShadow>shadow_;
+
 #pragma region モデルに関する
 
 	//タグ軍
@@ -151,9 +155,6 @@ private:
 	int textureData = 0;
 #pragma endregion
 
-#pragma region 影
-	std::unique_ptr<InstancingGameObject>shadow;
-#pragma endregion
 
 
 

@@ -98,7 +98,7 @@ ALPlayer::ALPlayer() {
 	
 	textureData = TextureManager::LoadTex("resources/Models/Object/player.png").texNum;
 
-	shadow = std::make_unique<InstancingGameObject>();
+	shadow_ = std::make_unique<CirccleShadow>(world_);
 
 
 	rolling_ = std::make_unique<PlayerDash>(this);
@@ -129,11 +129,7 @@ void ALPlayer::Initialize() {
 	ATKConboCount = 1;
 	ATKAnimationSetup_ = false;
 
-	shadow->Initialize("DZone");
-	shadow->SetParent(&world_);
-	shadow->SetColor({ 0,0,0,1 });
-	shadow->SetTranslate({ 0,0.01f,0 });
-	shadow->SetScale(1.5f);
+
 
 	
 	model_->animationRoopSecond_ = 5.0f;
@@ -176,7 +172,7 @@ void ALPlayer::Update() {
 	world_.UpdateMatrix();
 	model_->UpdateAnimation();
 	collider_->Update();
-	shadow->Update();
+	shadow_->Update();
 
 }
 
@@ -199,10 +195,10 @@ void ALPlayer::Draw() {
 
 	//各モデル描画
 
+	shadow_->Draw();
 	GameObject::Draw();
 
-	shadow->Draw();
-
+	
 
 	//collider_->Draw();
 

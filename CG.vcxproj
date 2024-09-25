@@ -114,6 +114,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\AL\ALScene\ALGameScene.cpp" />
     <ClCompile Include="Application\AL\ALScene\ALTitleScene.cpp" />
     <ClCompile Include="Application\AL\BrokenBody\BrokenBody.cpp" />
+    <ClCompile Include="Application\AL\CirccleShadow\CirccleShadow.cpp" />
     <ClCompile Include="Application\AL\EnemyPopManager\EnemyPopManager.cpp" />
     <ClCompile Include="Application\AL\Enemy\ALEnemy.cpp" />
     <ClCompile Include="Application\AL\FollowCamera\FollowCamera.cpp" />
@@ -365,6 +366,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\AL\ALScene\ALGameScene.h" />
     <ClInclude Include="Application\AL\ALScene\ALTitleScene.h" />
     <ClInclude Include="Application\AL\BrokenBody\BrokenBody.h" />
+    <ClInclude Include="Application\AL\CirccleShadow\CirccleShadow.h" />
     <ClInclude Include="Application\AL\EnemyPopManager\EnemyPopManager.h" />
     <ClInclude Include="Application\AL\Enemy\ALEnemy.h" />
     <ClInclude Include="Application\AL\FollowCamera\FollowCamera.h" />
