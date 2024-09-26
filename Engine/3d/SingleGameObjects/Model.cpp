@@ -350,7 +350,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 
 		DXF_->GetCMDList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
-		cameraData_->worldPosition = camera->GetMainCamera().GetMatWorldTranslate();
+		cameraData_->worldPosition = camera->GetMainCamera().GetWorldTranslate();
 
 		PointLight pointlight = LightManager::GetInstance()->GetPLight();
 

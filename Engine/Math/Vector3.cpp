@@ -47,6 +47,11 @@ Vector3 Lerp(const Vector3& p1, const Vector3& p2, float t)
 
 }
 
+float Lerp(float p1, float p2, float t)
+{
+	return p1 * (1.0f - t) + p2 * t;
+}
+
 // 内積
 float Dot(const Vector3& v1, const Vector3& v2) {
 	float Answer = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;

@@ -68,8 +68,8 @@ void SphereCollider::Draw() {
 bool SphereCollider::IsCollision(const SphereCollider* sphere, Vector3& backVec) {
 
 	//各点取得
-	Vector3 pos = sphere->world_.GetMatWorldTranslate();
-	Vector3 myP = world_.GetMatWorldTranslate();
+	Vector3 pos = sphere->world_.GetWorldTranslate();
+	Vector3 myP = world_.GetWorldTranslate();
 
 	//各半径取得
 	float wide = GetAllScaleX(sphere->GetWorld());
@@ -122,7 +122,7 @@ bool SphereCollider::IsCollision(OBBCollider& obb, Vector3& backVec, float divis
 	while (t <= 1.0f) {
 
 		//過去位置から現在位置までの場所取得
-		Vector3 pos = Lerp(preWorld_.GetMatWorldTranslate(), world_.GetMatWorldTranslate(), t);
+		Vector3 pos = Lerp(preWorld_.GetWorldTranslate(), world_.GetWorldTranslate(), t);
 
 		//スフィアコライダーの座標をOBBのローカル空間に出る
 		Vector3 sphereLocal = Transform(pos, inverseM);
@@ -141,16 +141,16 @@ bool SphereCollider::IsCollision(OBBCollider& obb, Vector3& backVec, float divis
 			saikin = Transform(saikin, OBBM);
 
 			//mosionajiiti
-			if (world_.GetMatWorldTranslate() == saikin) {
+			if (world_.GetWorldTranslate() == saikin) {
 				//スフィアコライダーの座標をOBBのローカル空間に出る
-				sphereLocal = Transform(preWorld_.GetMatWorldTranslate(), inverseM);
+				sphereLocal = Transform(preWorld_.GetWorldTranslate(), inverseM);
 				//Sphere取得
 				sphere = { sphereLocal,radius_ };
 				InCollision(aabb_, sphere, saikin);
 
 				saikin = Transform(saikin, OBBM);
 
-				Vector3 velo = preWorld_.GetMatWorldTranslate() - saikin;
+				Vector3 velo = preWorld_.GetWorldTranslate() - saikin;
 				velo.SetNormalize();
 				velo *= radius_;
 
@@ -160,7 +160,7 @@ bool SphereCollider::IsCollision(OBBCollider& obb, Vector3& backVec, float divis
 			else {
 				///押し出しベクトルを利用して計算
 				//最近接点から円の中心点への向きベクトルを算出
-				Vector3 velo = world_.GetMatWorldTranslate() - saikin;
+				Vector3 velo = world_.GetWorldTranslate() - saikin;
 				//正規化
 
 				Vector3 norVe = velo;
@@ -188,17 +188,17 @@ bool SphereCollider::IsCollision(OBBCollider& obb, Vector3& backVec, float divis
 
 			//貫通しているかの処理
 			//最近接点から過去
-			Vector3 v1 = preWorld_.GetMatWorldTranslate() - saikin;
+			Vector3 v1 = preWorld_.GetWorldTranslate() - saikin;
 			//最近接点から現在
-			Vector3 v2 = world_.GetMatWorldTranslate() - saikin;
+			Vector3 v2 = world_.GetWorldTranslate() - saikin;
 			v2 *= -1;
 			//真反対の時押し出し量変更
 			if (v1 == v2) {
 				//現在から過去へのベクトル取得
-				Vector3 npVelo = preWorld_.GetMatWorldTranslate() - world_.GetMatWorldTranslate();
+				Vector3 npVelo = preWorld_.GetWorldTranslate() - world_.GetWorldTranslate();
 				npVelo.SetNormalize();
 				//現在位置から最近接点までの向きベクトル取得
-				Vector3 v1 = preWorld_.GetMatWorldTranslate() - saikin;
+				Vector3 v1 = preWorld_.GetWorldTranslate() - saikin;
 				//求めた長さを押し出し量にタス
 
 				backVec += v1;

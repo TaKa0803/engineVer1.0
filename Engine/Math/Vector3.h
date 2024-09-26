@@ -51,6 +51,8 @@ public:
 
 Vector3 Lerp(const Vector3& p1, const Vector3& p2,float t);
 
+float Lerp(float p1, float p2, float t);
+
 // クロス積
 Vector3 Cross(const Vector3& v1, const Vector3& v2);
 

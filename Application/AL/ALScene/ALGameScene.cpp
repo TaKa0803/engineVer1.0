@@ -20,11 +20,12 @@ ALGameScene::ALGameScene() {
 	player_->SetCamera(camera_);
 	followCamera_ = std::make_unique<FollowCamera>(&player_->GetWorld());
 
-	boss_ = std::make_unique<ALBoss>();
+	boss_ = std::make_unique<ALBoss>(player_.get());
 
 	gameUI_ = std::make_unique<GameUI>();
 
 	plane_ = std::make_unique<Plane>();
+	plane_->model_->SetUVScale({ 500, 500});
 
 	MapLoader::GetInstance()->LoadLevelEditor("untitled", ".json");
 	MapLoader::GetInstance()->CreateModel(0);
@@ -51,7 +52,7 @@ ALGameScene::ALGameScene() {
 
 
 	peM_ = std::make_unique<ParticleManager>();
-	EmiterSphere*emit = peM_->GetEmiterData();
+	EmiterSphere* emit = peM_->GetEmiterData();
 	emit->speed = { 0.1f,1.5f };
 }
 
@@ -104,9 +105,9 @@ void ALGameScene::Initialize() {
 
 	peM_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
 	peM_->SetOnlyImpact(true);
-	EmiterSphere*emit = peM_->GetEmiterData();
+	EmiterSphere* emit = peM_->GetEmiterData();
 
-	emit->color =  {0,0,1,1} ;
+	emit->color = { 0,0,1,1 };
 }
 
 
@@ -215,7 +216,7 @@ void ALGameScene::Draw() {
 		break;
 	}
 
-	
+
 	sceneC_->Draw();
 }
 

@@ -45,7 +45,7 @@ public://Getter
 	/// matWorldのTranslate取得
 	/// </summary>
 	/// <returns>ワールドのtranslate</returns>
-	const Vector3 GetMatWorldTranslate() const {
+	const Vector3 GetWorldTranslate() const {
 		Vector3 matTranslation = {
 			matWorld_.m[3][0],
 			matWorld_.m[3][1],

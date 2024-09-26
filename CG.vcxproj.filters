@@ -124,6 +124,11 @@
     <ClCompile Include="Application\AL\Player\PlayerRoll\PlayerRoll.cpp" />
     <ClCompile Include="Engine\base\DeltaTimer\DeltaTimer.cpp" />
     <ClCompile Include="Application\AL\CirccleShadow\CirccleShadow.cpp" />
+    <ClCompile Include="Application\AL\ALBoss\Idle\BossIdle.cpp" />
+    <ClCompile Include="Application\AL\ALBoss\Move\BossMove.cpp" />
+    <ClCompile Include="Application\AL\ALBoss\ATK\BossATK.cpp" />
+    <ClCompile Include="Application\AL\ALBoss\ATK\Normal\BossNormal.cpp" />
+    <ClCompile Include="Application\AL\ALBoss\ATK\Normal\Stump\BossNormalStump.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -222,6 +227,11 @@
     <ClInclude Include="Application\AL\Player\PlayerRoll\PlayerRoll.h" />
     <ClInclude Include="Engine\base\DeltaTimer\DeltaTimer.h" />
     <ClInclude Include="Application\AL\CirccleShadow\CirccleShadow.h" />
+    <ClInclude Include="Application\AL\ALBoss\Idle\BossIdle.h" />
+    <ClInclude Include="Application\AL\ALBoss\Move\BossMove.h" />
+    <ClInclude Include="Application\AL\ALBoss\ATK\BossATK.h" />
+    <ClInclude Include="Application\AL\ALBoss\ATK\Normal\BossNormal.h" />
+    <ClInclude Include="Application\AL\ALBoss\ATK\Normal\Stump\BossNormalStump.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

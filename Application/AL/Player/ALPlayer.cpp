@@ -286,6 +286,7 @@ void ALPlayer::Move() {
 	if (move != Vector3{0,0,0}&& input_->PushKey(DIK_LSHIFT) && data_.stamina.currentStamina >= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_) {
 		move *= data_.dashMultiply;
 
+		//スタミナを消費
 		data_.stamina.currentStamina -= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_;
 		data_.stamina.currentCharge = 0;
 	}
@@ -296,7 +297,7 @@ void ALPlayer::Move() {
 	move.y = 0.0f;
 
 	if (move != Vector3(0, 0, 0)) {
-		peM_->SpawnE(world_.GetMatWorldTranslate());
+		peM_->SpawnE(world_.GetWorldTranslate());
 		world_.rotate_.y = GetYRotate({ move.x,move.z })+((float)std::numbers::pi);
 	}
 	//加算

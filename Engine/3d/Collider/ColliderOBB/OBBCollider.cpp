@@ -91,7 +91,7 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 	//回転行列
 	Matrix4x4 rotateM = MakeRotateXMatrix(rotate.x) * (MakeRotateYMatrix(rotate.y) * MakeRotateZMatrix(rotate.z));
 	//座標行列
-	Matrix4x4 translateM = MakeTranslateMatrix(world_.GetMatWorldTranslate());
+	Matrix4x4 translateM = MakeTranslateMatrix(world_.GetWorldTranslate());
 	//スケールは使わない（sizeで使う
 	Matrix4x4 scaleM = MakeScaleMatrix({ 1,1,1 });
 	//OBBのworld行列生成
@@ -111,9 +111,9 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 	float t = 0;
 
 	//ワールド座標
-	Vector3 preCWorld = collider->GetPreWorld().GetMatWorldTranslate();
+	Vector3 preCWorld = collider->GetPreWorld().GetWorldTranslate();
 	//ワールド座標
-	Vector3 CWorld = collider->GetWorld().GetMatWorldTranslate();
+	Vector3 CWorld = collider->GetWorld().GetWorldTranslate();
 
 
 	while (true) {
@@ -271,7 +271,7 @@ void OBBCollider::UpdateMatrix()
 	//回転行列
 	Matrix4x4 rotateM = MakeRotateXMatrix(rotate.x) * (MakeRotateYMatrix(rotate.y) * MakeRotateZMatrix(rotate.z));
 	//座標行列
-	Matrix4x4 translateM = MakeTranslateMatrix(world_.GetMatWorldTranslate());
+	Matrix4x4 translateM = MakeTranslateMatrix(world_.GetWorldTranslate());
 	//スケールは使わない（sizeで使う
 	Matrix4x4 scaleM = MakeIdentity4x4();
 	//OBBのworld行列生成

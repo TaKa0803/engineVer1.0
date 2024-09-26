@@ -234,7 +234,7 @@ void EnemyPopManager::Update() {
 					poleModel_[Index]->model_->materialData_->color.w = 0;
 				}
 				else {
-					pM_->SpawnE(world.GetMatWorldTranslate());
+					pM_->SpawnE(world.GetWorldTranslate());
 				}
 			}
 		}
@@ -277,7 +277,7 @@ std::unique_ptr<ALEnemy> EnemyPopManager::PopEnemy() {
 			if (popdata.PopIntervalCount-- <= 0 && popdata.maxAreaPopCount < popdata.maxAreaPop) {
 
 				//出現エリアとの距離測定
-				float length = Length(playerWorld_->GetMatWorldTranslate() - popdata.areaPosition);
+				float length = Length(playerWorld_->GetWorldTranslate() - popdata.areaPosition);
 
 				//エリア内で出現
 				if (length <= popdata.PopStartingArea) {

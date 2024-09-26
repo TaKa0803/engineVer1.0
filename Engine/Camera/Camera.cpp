@@ -59,7 +59,7 @@ void Camera::Update() {
 	if (FeaturedWorldTransform_) {
 		//座標のみ取得するフラグが起動しているとき
 		if (isOnlyGetPosition) {
-			CameraMotionSupport_.translate_ = camerapos_ + FeaturedWorldTransform_->GetMatWorldTranslate();
+			CameraMotionSupport_.translate_ = camerapos_ + FeaturedWorldTransform_->GetWorldTranslate();
 			CameraMotionSupport_.UpdateMatrix();
 		}
 		else {
@@ -83,7 +83,7 @@ void Camera::Update() {
 
 #pragma region Segment設定
 	//カメラ位置計算
-	segment_.origin = mainCamera_.GetMatWorldTranslate();
+	segment_.origin = mainCamera_.GetWorldTranslate();
 	//距離計算
 	segment_.diff = TransformNormal({ 0,0,1 }, mainCamera_.matWorld_);
 	segment_.diff.SetNormalize();
@@ -137,7 +137,7 @@ void Camera::IsCollision(OBBCollider* obb)
 	float division = farFeaturedPos_;
 
 	//注目点
-	Vector3 featuredPos = GetFeaturedWorld().GetMatWorldTranslate();
+	Vector3 featuredPos = GetFeaturedWorld().GetWorldTranslate();
 
 	while (t <= 1.0f) {
 		//Zが設定値のmatWorldを生成
@@ -145,7 +145,7 @@ void Camera::IsCollision(OBBCollider* obb)
 		world.translate_.z = farFeaturedPos_;
 		world.UpdateMatrix();
 		//カメラ位置
-		Vector3 cameraPos = world.GetMatWorldTranslate();
+		Vector3 cameraPos = world.GetWorldTranslate();
 		//距離だけは設定場所に
 
 

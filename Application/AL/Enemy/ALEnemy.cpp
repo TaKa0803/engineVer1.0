@@ -98,8 +98,8 @@ bool ALEnemy::Collision(SphereCollider* collider) {
 
 		velocity_ = hitVelo;
 
-		Vector3 myPos = world_.GetMatWorldTranslate();
-		Vector3 pPos = playerWorld_->GetMatWorldTranslate();
+		Vector3 myPos = world_.GetWorldTranslate();
+		Vector3 pPos = playerWorld_->GetWorldTranslate();
 
 		myPos.y = 0;
 		pPos.y = 0;
@@ -186,7 +186,7 @@ void ALEnemy::HitInitialize()
 void ALEnemy::StayUpdate()
 {
 	//pk
-	Vector3 p_eVelo = playerWorld_->GetMatWorldTranslate() - world_.GetMatWorldTranslate();
+	Vector3 p_eVelo = playerWorld_->GetWorldTranslate() - world_.GetWorldTranslate();
 	//高さを考慮しない
 	p_eVelo.y = 0;
 
@@ -202,7 +202,7 @@ void ALEnemy::StayUpdate()
 void ALEnemy::FollowUpdate()
 {
 	//プレイヤー方向の向き
-	Vector3 p_eVelo = playerWorld_->GetMatWorldTranslate() - world_.GetMatWorldTranslate();
+	Vector3 p_eVelo = playerWorld_->GetWorldTranslate() - world_.GetWorldTranslate();
 	//高さを考慮しない
 	p_eVelo.y = 0;
 

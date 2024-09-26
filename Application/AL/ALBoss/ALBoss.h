@@ -2,13 +2,17 @@
 #include"SingleGameObjects/GameObject.h"
 #include"Input/Input.h"
 #include"AL/Player/ALPlayer.h"
+#include"AL/CirccleShadow/CirccleShadow.h"
 
+#include"AL/ALBoss/Idle/BossIdle.h"
+#include"AL/ALBoss/Move/BossMove.h"
+#include"AL/ALBoss/ATK/BossATK.h"
 
 class ALBoss : public GameObject {
 
 
 public:
-	ALBoss();
+	ALBoss(ALPlayer* player);
 	~ALBoss();
 
 	void Initilaize();
@@ -17,9 +21,14 @@ public:
 
 	void Draw();
 
-private://状態管理
+	//プレイヤー方向への向きベクトルを取得
+	Vector3 GetBoss2PlayerDirection();
 
-	enum class Behavior {
+	Vector3 GetPlayerWorldTranslate() { return player_->GetWorld().GetWorldTranslate(); };
+public://状態管理
+#pragma region 状態
+
+	enum Behavior {
 		IDLE,	//待機状態
 		MOVE,	//移動
 		ATK,    //攻撃
@@ -29,7 +38,10 @@ private://状態管理
 	//プレイヤーの状態
 	Behavior behavior_ = Behavior::IDLE;
 	//状態リクエスト
-	std::optional<Behavior>behaviorRequest_ = std::nullopt;
+	std::optional<Behavior>behaviorReq_ = std::nullopt;
+
+	bool isFinishedATK_ = false;
+private://状態管理
 
 	//状態ごとの初期化テーブル
 	static void (ALBoss::* BehaviorInitialize[])();
@@ -37,11 +49,40 @@ private://状態管理
 	//状態ごとの更新テーブル
 	static void (ALBoss::* BehaviorUpdate[])();
 
+#pragma region 各状態
+	void InitIdle();
+	void InitMove();
+	void InitATK();
+
+	void UpdateIdle();
+	void UpdateMove();
+	void UpdateATK();
+#pragma endregion
+
+#pragma endregion
 private:
 	Input* input_ = nullptr;
 
-	std::unique_ptr<ALPlayer>player_;
-#pragma region 影
-	std::unique_ptr<InstancingGameObject>shadow;
-#pragma endregion
+	ALPlayer*player_;
+
+	std::unique_ptr<CirccleShadow>shadow_;
+
+	std::unique_ptr<SphereCollider> collider_;
+
+	//各処理
+	std::unique_ptr<BossIdle>idle_;
+	std::unique_ptr<BossMove>move_;
+	std::unique_ptr<BossATK>atk_;
+	
+
+	std::unique_ptr<SphereCollider>atkCollider_;
+
+
+
+	//
+	std::string behaviorName_[(int)Behavior::_CountBehavior] = {
+		"Idle",
+		"Move",
+		"ATK"
+	};
 };

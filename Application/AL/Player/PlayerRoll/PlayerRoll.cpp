@@ -38,7 +38,7 @@ void PlayerRoll::Initialize()
 	player_->data_.velo_ = move;
 
 	//移動開始地点を取得
-	data_.stPos = player_->world_.GetMatWorldTranslate();	
+	data_.stPos = player_->world_.GetWorldTranslate();	
 	data_.currentStop = 0;
 }
 
@@ -46,7 +46,7 @@ void PlayerRoll::Update()
 {
 
 	//もし指定量以上移動したら減速
-	if (Vector3{ data_.stPos - player_->world_.GetMatWorldTranslate() }.GetLength() >= data_.length) {
+	if (Vector3{ data_.stPos - player_->world_.GetWorldTranslate() }.GetLength() >= data_.length) {
 
 		//カウント量で段々速度低下
 		Vector3 ve = Lerp(player_->data_.velo_, { 0,0,0 }, data_.currentStop);
