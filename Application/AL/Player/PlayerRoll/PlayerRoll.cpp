@@ -1,10 +1,10 @@
-#include "PlayerDash.h"
+#include "PlayerRoll.h"
 #include"AL/Player/ALPlayer.h"
 #include"DeltaTimer/DeltaTimer.h"
 #include"ImGuiManager/ImGuiManager.h"
 
 
-PlayerDash::PlayerDash(ALPlayer* player)
+PlayerRoll::PlayerRoll(ALPlayer* player)
 {
 	//プレイヤー取得
 	player_ = player;
@@ -13,7 +13,7 @@ PlayerDash::PlayerDash(ALPlayer* player)
 	camera_ = Camera::GetInstance();
 }
 
-void PlayerDash::Initialize()
+void PlayerRoll::Initialize()
 {
 	//入力方向にダッシュ
 	Vector3 move = inp_->GetWASD().SetNormalize();
@@ -42,7 +42,7 @@ void PlayerDash::Initialize()
 	data_.currentStop = 0;
 }
 
-void PlayerDash::Update()
+void PlayerRoll::Update()
 {
 
 	//もし指定量以上移動したら減速
@@ -63,7 +63,7 @@ void PlayerDash::Update()
 	}
 }
 
-void PlayerDash::Debug()
+void PlayerRoll::Debug()
 {
 #ifdef _DEBUG
 	ImGui::Begin("dash");

@@ -119,7 +119,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\AL\Enemy\ALEnemy.cpp" />
     <ClCompile Include="Application\AL\FollowCamera\FollowCamera.cpp" />
     <ClCompile Include="Application\AL\GameUI\GameUI.cpp" />
-    <ClCompile Include="Application\AL\Player\PlayerDash\PlayerDash.cpp" />
+    <ClCompile Include="Application\AL\Player\PlayerRoll\PlayerRoll.cpp" />
     <ClCompile Include="Application\Effect\EffectMove\EffectMove.cpp" />
     <ClCompile Include="Application\Effect\Impact\Impact.cpp" />
     <ClCompile Include="Application\AL\Player\ALPlayer.cpp" />
@@ -373,7 +373,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\AL\GameUI\GameUI.h" />
     <ClInclude Include="Application\AL\items.h" />
     <ClInclude Include="Application\AL\Player\ALPlayer.h" />
-    <ClInclude Include="Application\AL\Player\PlayerDash\PlayerDash.h" />
+    <ClInclude Include="Application\AL\Player\PlayerRoll\PlayerRoll.h" />
     <ClInclude Include="Application\CG\CGScene.h" />
     <ClInclude Include="Application\Effect\dZoneE\DZone.h" />
     <ClInclude Include="Application\Effect\EffectExplosion.h" />

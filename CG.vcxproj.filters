@@ -121,7 +121,7 @@
     <ClCompile Include="Application\AL\ALBoss\ALBoss.cpp" />
     <ClCompile Include="Application\AL\FollowCamera\FollowCamera.cpp" />
     <ClCompile Include="Application\AL\GameUI\GameUI.cpp" />
-    <ClCompile Include="Application\AL\Player\PlayerDash\PlayerDash.cpp" />
+    <ClCompile Include="Application\AL\Player\PlayerRoll\PlayerRoll.cpp" />
     <ClCompile Include="Engine\base\DeltaTimer\DeltaTimer.cpp" />
     <ClCompile Include="Application\AL\CirccleShadow\CirccleShadow.cpp" />
   </ItemGroup>
@@ -219,7 +219,7 @@
     <ClInclude Include="Application\AL\ALBoss\ALBoss.h" />
     <ClInclude Include="Application\AL\FollowCamera\FollowCamera.h" />
     <ClInclude Include="Application\AL\GameUI\GameUI.h" />
-    <ClInclude Include="Application\AL\Player\PlayerDash\PlayerDash.h" />
+    <ClInclude Include="Application\AL\Player\PlayerRoll\PlayerRoll.h" />
     <ClInclude Include="Engine\base\DeltaTimer\DeltaTimer.h" />
     <ClInclude Include="Application\AL\CirccleShadow\CirccleShadow.h" />
   </ItemGroup>

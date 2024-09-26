@@ -7,7 +7,7 @@
 #include"Effect/EffectMove/EffectMove.h"
 #include"AL/CirccleShadow/CirccleShadow.h"
 
-#include"PlayerDash/PlayerDash.h"
+#include"PlayerRoll/PlayerRoll.h"
 
 #include<vector>
 
@@ -112,7 +112,28 @@ private://メンバ関数
 
 	void LoadATKDatas();
 
+	void StaminaUpdate();
 public:
+
+	struct StaminaData {
+		//スタミナ関係
+		float maxStamina = 100;
+		float currentStamina = StaminaData::maxStamina;
+
+		//回復開始カウント
+		float reChargeSec = 1.0f;
+		float currentCharge = 0.0f;
+
+		//回復速度
+		float healSec = 100;
+
+		//各アクションのスタミナコスト
+		float rollCost = 20;
+
+		float dashCostSec = 10;
+
+		float atkCost = 10;
+	};
 
 	struct PlayerData
 	{
@@ -123,11 +144,16 @@ public:
 		//移動速度
 		float spd_ = 0.5f;
 
+		//ダッシュの速度倍率
+		float dashMultiply = 2.0f;
+
 		//落下速度
 		float fallSpd_ = 0.1f;
 
 		//加算式落下加速度
 		float addFallSpd_ = 0;
+
+		StaminaData stamina{};
 	};
 
 	PlayerData data_;
@@ -144,7 +170,7 @@ private:
 
 	std::unique_ptr<EffectMove>peM_;
 
-	std::unique_ptr<PlayerDash>rolling_;
+	std::unique_ptr<PlayerRoll>rolling_;
 
 	std::unique_ptr<CirccleShadow>shadow_;
 

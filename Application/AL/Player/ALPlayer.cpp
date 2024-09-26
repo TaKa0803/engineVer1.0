@@ -74,6 +74,25 @@ void ALPlayer::LoadATKDatas() {
 
 }
 
+void ALPlayer::StaminaUpdate()
+{
+	StaminaData& data = data_.stamina;
+	data.currentCharge += (float)DeltaTimer::deltaTime_;
+
+	//待機カウント以上で回復処理
+	if (data.currentCharge >= data.reChargeSec) {
+		data.currentCharge = data.reChargeSec;
+
+		//回復処理
+		data.currentStamina += data.healSec * (float)DeltaTimer::deltaTime_;
+		//オーバーヒール処理
+		if (data.currentStamina>data.maxStamina) {
+			data.currentStamina = data.maxStamina;
+		}
+
+	}
+}
+
 ALPlayer::ALPlayer() {
 	//一回しかしない初期化情報
 	input_ = Input::GetInstance();
@@ -101,7 +120,7 @@ ALPlayer::ALPlayer() {
 	shadow_ = std::make_unique<CirccleShadow>(world_);
 
 
-	rolling_ = std::make_unique<PlayerDash>(this);
+	rolling_ = std::make_unique<PlayerRoll>(this);
 
 
 	punchSound_ = AudioManager::LoadSoundNum("com1");
@@ -129,7 +148,7 @@ void ALPlayer::Initialize() {
 	ATKConboCount = 1;
 	ATKAnimationSetup_ = false;
 
-
+	data_ = PlayerData{};
 
 	
 	model_->animationRoopSecond_ = 5.0f;
@@ -140,7 +159,14 @@ void ALPlayer::Initialize() {
 
 void ALPlayer::Update() {
 
+#ifdef _DEBUG
 	rolling_->Debug();
+
+	ImGui::Begin("Player");
+	ImGui::Text("Stamina : %4.1f", data_.stamina.currentStamina);
+	ImGui::End();
+#endif // _DEBUG
+
 
 	//状態の初期化処理
 	if (behaviorReq_) {
@@ -167,6 +193,7 @@ void ALPlayer::Update() {
 	//移動量ベクトル*デルタタイムを加算
 	world_.translate_ += data_.velo_ * (float)DeltaTimer::deltaTime_;
 
+	StaminaUpdate();
 
 	//更新
 	world_.UpdateMatrix();
@@ -255,6 +282,14 @@ void ALPlayer::Move() {
 	move.SetNormalize();
 	move *= data_.spd_;
 
+	//ダッシュキー併用で速度アップ
+	if (move != Vector3{0,0,0}&& input_->PushKey(DIK_LSHIFT) && data_.stamina.currentStamina >= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_) {
+		move *= data_.dashMultiply;
+
+		data_.stamina.currentStamina -= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_;
+		data_.stamina.currentCharge = 0;
+	}
+
 	//カメラ方向に向ける
 	move = TransformNormal(move, camera_->GetMainCamera().matWorld_);
 
@@ -306,10 +341,13 @@ void ALPlayer::InitMove() {
 void ALPlayer::InitRolling()
 {
 	rolling_->Initialize();
+	data_.stamina.currentStamina -= data_.stamina.rollCost;
+	data_.stamina.currentCharge = 0;
 }
 
 void ALPlayer::InitATK() {
-
+	data_.stamina.currentStamina -= data_.stamina.atkCost;
+	data_.stamina.currentCharge = 0;
 
 	model_->ChangeAnimation(0, 5);
 	model_->SetAnimationRoop(false);
@@ -350,13 +388,15 @@ void ALPlayer::UpdateMove() {
 	//スペシャル攻撃
 	bool isSpecialATK = false;
 
+	//回転処理
 	bool isRoll = false;
 
 	isATK = input_->TriggerKey(DIK_Z);
 
 	isSpecialATK = input_->TriggerKey(DIK_C);
 
-	isRoll = input_->TriggerKey(DIK_LSHIFT);
+	isRoll = input_->TriggerKey(DIK_SPACE);
+
 
 	//コントローラーがあるときの処理
 	if (input_->IsControllerActive()) {
@@ -367,11 +407,11 @@ void ALPlayer::UpdateMove() {
 
 	}
 
-	if (isATK) {
+	if (isATK&&data_.stamina.currentStamina>=data_.stamina.atkCost) {
 		behaviorReq_ = State::ATK;
 	}
 
-	if (isRoll) {
+	if (isRoll&&data_.stamina.currentStamina >= data_.stamina.rollCost) {
 		behaviorReq_ = State::Rolling;
 	}
 	
@@ -497,24 +537,33 @@ void ALPlayer::UpdateATK() {
 			}
 
 
-			//攻撃入力フラグON
-			if (updateATKData_.nextATK && nowATKState_!=kATK3 && ATKData_.ATKDerivation.size() != 0) {
+			//攻撃入力フラグONスタミナコスト十分
+			if (updateATKData_.nextATK && 
+				nowATKState_!=kATK3 &&
+				ATKData_.ATKDerivation.size() != 0&&
+				data_.stamina.currentStamina >= data_.stamina.atkCost) {
 
-				ATKData_ = ATKData_.ATKDerivation[0];
 
-				updateATKData_ = ATKUpdateData{};
-				ATKAnimationSetup_ = false;
-				atkState_ = ATKState::Extra;
+					ATKData_ = ATKData_.ATKDerivation[0];
 
-				ATKConboCount++;
+					updateATKData_ = ATKUpdateData{};
+					ATKAnimationSetup_ = false;
+					atkState_ = ATKState::Extra;
+
+					ATKConboCount++;
+
+					if (nowATKState_ == kATK1) {
+						nowATKState_ = kATK2;
+						model_->ChangeAnimation(1, 5);
+					}
+					else if (nowATKState_ == kATK2) {
+						nowATKState_ = kATK3;
+						model_->ChangeAnimation(2, 5);
+					}
+
+					data_.stamina.currentStamina -= data_.stamina.atkCost;
+					data_.stamina.currentCharge = 0;
 				
-				if (nowATKState_ == kATK1) {
-					nowATKState_ = kATK2;
-					model_->ChangeAnimation(1, 5);
-				}else if (nowATKState_ == kATK2) {
-					nowATKState_ = kATK3;
-					model_->ChangeAnimation(2, 5);
-				}
 			}
 			else {
 				//移動状態に変更

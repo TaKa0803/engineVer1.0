@@ -4,11 +4,11 @@
 //前方宣言
 class ALPlayer;
 
-class PlayerDash {
+class PlayerRoll {
 
 public:
-	PlayerDash(ALPlayer* player);
-	~PlayerDash() = default;
+	PlayerRoll(ALPlayer* player);
+	~PlayerRoll() = default;
 
 	void Initialize();
 
