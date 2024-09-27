@@ -41,7 +41,6 @@ private:
 	void SceneChange();
 
 
-
 	//void ShakeStart(int count);
 
 

@@ -47,6 +47,7 @@ void ALBoss::Update()
 #ifdef _DEBUG
 	ImGui::Begin("Boss");
 	ImGui::Text("behavior : %s", behaviorName_[(int)behavior_].c_str());
+	ImGui::DragInt("体力:", &HP_);
 	ImGui::End();
 
 	model_->DebugParameter("Boss");
@@ -93,6 +94,15 @@ void ALBoss::Draw()
 
 	collider_->Draw();
 	atkCollider_->Draw();
+}
+
+void ALBoss::OnCollision()
+{
+	HP_--;
+
+	if (HP_-- <= 0) {
+
+	}
 }
 
 Vector3 ALBoss::GetBoss2PlayerDirection()

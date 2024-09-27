@@ -96,4 +96,9 @@ private:
 	Vector4 hitColor = { 1,0,0,alpha_ };
 
 
+public:
+
+	//有効処理
+	bool isActive_ = true;
+
 };

@@ -26,6 +26,7 @@
     "Wall": [ "Wall", "Wall.obj", 100 ],
     "weapon": [ "Weapon", "Weapon.obj", 64 ],
     "wall": [ "Stage", "Stage.obj", 5 ],
+    "bossBullet": [ "SystemResources/sphere", "sphere.obj", 10000 ],
     "sphere": [ "SystemResources/sphere", "sphere.obj", 10000 ],
     "z+Plane": [ "SystemResources/normalZ+Plane", "normalZ+Plane.obj", 1000 ],
     "box": [ "ALPlayer", "ALPlayer.obj", 1000 ],

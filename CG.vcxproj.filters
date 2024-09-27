@@ -129,6 +129,9 @@
     <ClCompile Include="Application\AL\ALBoss\ATK\BossATK.cpp" />
     <ClCompile Include="Application\AL\ALBoss\ATK\Normal\BossNormal.cpp" />
     <ClCompile Include="Application\AL\ALBoss\ATK\Normal\Stump\BossNormalStump.cpp" />
+    <ClCompile Include="Application\AL\ALBoss\ATK\Normal\ShotBullet\ShotBullet.cpp" />
+    <ClCompile Include="Application\AL\ALBoss\ATK\BulletManager\BulletManager.cpp" />
+    <ClCompile Include="Application\AL\ALBoss\ATK\Normal\Charge\BossCharge.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -232,6 +235,9 @@
     <ClInclude Include="Application\AL\ALBoss\ATK\BossATK.h" />
     <ClInclude Include="Application\AL\ALBoss\ATK\Normal\BossNormal.h" />
     <ClInclude Include="Application\AL\ALBoss\ATK\Normal\Stump\BossNormalStump.h" />
+    <ClInclude Include="Application\AL\ALBoss\ATK\Normal\ShotBullet\ShotBullet.h" />
+    <ClInclude Include="Application\AL\ALBoss\ATK\BulletManager\BulletManager.h" />
+    <ClInclude Include="Application\AL\ALBoss\ATK\Normal\Charge\BossCharge.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

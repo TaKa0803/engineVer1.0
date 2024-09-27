@@ -67,6 +67,10 @@ void SphereCollider::Draw() {
 
 bool SphereCollider::IsCollision(const SphereCollider* sphere, Vector3& backVec) {
 
+	if (!isActive_ || !sphere->isActive_) {
+		return false;
+	}
+
 	//各点取得
 	Vector3 pos = sphere->world_.GetWorldTranslate();
 	Vector3 myP = world_.GetWorldTranslate();

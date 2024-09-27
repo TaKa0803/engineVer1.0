@@ -107,6 +107,11 @@ ALPlayer::ALPlayer() {
 	collider_->SetRadius(1.5f);
 	collider_->SetTranslate({ 0,1.4f,0 });
 
+	atkCollider_ = std::make_unique<SphereCollider>();
+	atkCollider_->Initialize("player atk", world_);
+	atkCollider_->SetRadius(1.5f);
+	atkCollider_->SetTranslate({ 0,1.4f,0 });
+
 	//攻撃データの初期化
 	LoadATKDatas();
 
@@ -154,7 +159,8 @@ void ALPlayer::Initialize() {
 	model_->animationRoopSecond_ = 5.0f;
 
 	collider_->Update();
-
+	atkCollider_->Update();
+	atkCollider_->isActive_ = false;
 }
 
 void ALPlayer::Update() {
@@ -198,6 +204,7 @@ void ALPlayer::Update() {
 	//更新
 	world_.UpdateMatrix();
 	model_->UpdateAnimation();
+	atkCollider_->Update();
 	collider_->Update();
 	shadow_->Update();
 
@@ -367,6 +374,8 @@ void ALPlayer::InitATK() {
 	ATKAnimationSetup_ = false;
 
 	ATKConboCount = 1;
+
+	atkCollider_->isActive_ = true;
 }
 
 void ALPlayer::InitHitAction() {
@@ -564,12 +573,18 @@ void ALPlayer::UpdateATK() {
 
 					data_.stamina.currentStamina -= data_.stamina.atkCost;
 					data_.stamina.currentCharge = 0;
+
+
+					atkCollider_->isActive_ = true;
 				
 			}
 			else {
 				//移動状態に変更
 				behaviorReq_ = State::Move;
 				ATKConboCount = 0;
+
+
+				atkCollider_->isActive_ = false;
 			}
 #pragma endregion
 

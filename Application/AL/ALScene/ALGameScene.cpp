@@ -240,7 +240,12 @@ void ALGameScene::DebugWindows() {
 
 void ALGameScene::Collision() {
 
-
+	//ボスの体との接触判定
+	Vector3 vec;
+	if (boss_->GetBodyCollider().IsCollision(player_->GetATKCollider(),vec)) {
+		boss_->OnCollision();
+		player_->GetATKCollider()->isActive_ = false;
+	}
 
 }
 
@@ -248,7 +253,7 @@ void ALGameScene::SceneChange() {
 
 	switch (scene_) {
 	case ALGameScene::Game:
-		if (limitMinute-- <= 0) {
+		if (boss_->HP_ <= 0) {
 			scene_ = Clear;
 			AudioManager::GetInstance()->StopAllSounds();
 			AudioManager::PlaySoundData(bgmClear_, 0.08f);
@@ -311,6 +316,8 @@ void ALGameScene::SceneChange() {
 		}
 	}
 }
+
+
 
 
 

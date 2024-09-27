@@ -3,6 +3,7 @@
 #include"Input/Input.h"
 #include"AL/Player/ALPlayer.h"
 #include"AL/CirccleShadow/CirccleShadow.h"
+#include"SphereCollider/SphereCollider.h"
 
 #include"AL/ALBoss/Idle/BossIdle.h"
 #include"AL/ALBoss/Move/BossMove.h"
@@ -20,6 +21,11 @@ public:
 	void Update();
 
 	void Draw();
+
+	//攻撃ヒット時の処理
+	void OnCollision();
+
+	SphereCollider& GetBodyCollider()& { return *collider_.get(); }
 
 	//プレイヤー方向への向きベクトルを取得
 	Vector3 GetBoss2PlayerDirection();
@@ -60,10 +66,12 @@ private://状態管理
 #pragma endregion
 
 #pragma endregion
-private:
+private://**参照
 	Input* input_ = nullptr;
 
 	ALPlayer*player_;
+
+private://**変数
 
 	std::unique_ptr<CirccleShadow>shadow_;
 
@@ -77,7 +85,11 @@ private:
 
 	std::unique_ptr<SphereCollider>atkCollider_;
 
+public://**パラメータ
 
+	int HP_ = 50;
+
+private://ImGui用
 
 	//
 	std::string behaviorName_[(int)Behavior::_CountBehavior] = {

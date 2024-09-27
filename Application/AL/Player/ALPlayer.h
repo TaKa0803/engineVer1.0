@@ -51,6 +51,8 @@ public:
 
 	SphereCollider* GetCollider() { return collider_.get(); }
 
+	SphereCollider* GetATKCollider() { return atkCollider_.get(); };
+
 	int GetConboCount() { return ATKConboCount; }
 
 	//プレイヤー方向取得
@@ -167,6 +169,8 @@ private:
 	const Camera* camera_ = nullptr;
 
 	std::unique_ptr<SphereCollider> collider_;
+	std::unique_ptr<SphereCollider> atkCollider_;
+
 
 	std::unique_ptr<EffectMove>peM_;
 
