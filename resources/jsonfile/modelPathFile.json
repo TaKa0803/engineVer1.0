@@ -1,5 +1,6 @@
 {
   "modelPathFile": {
+    "box": [ "ALPlayer", "ALPlayer.obj" ],
     "wall": [ "Stage", "Stage.obj" ],
     "ALPlayer": [ "ALPlayer", "ALPlayer.obj" ],
     "plane": [ "plane", "plane.obj" ],

@@ -1,11 +1,13 @@
 #include "BossNormal.h"
 #include"AL/ALBoss/ALBoss.h"
+#include"RandomNum/RandomNum.h"
 
 BossNormal::BossNormal(ALBoss* boss)
 {
 	boss_ = boss;
 
 	stump_ = std::make_unique<BossNormalStump>(boss);
+	charge_ = std::make_unique<BossCharge>(boss);
 }
 
 void BossNormal::Initialize()
@@ -13,6 +15,16 @@ void BossNormal::Initialize()
 	//ランダムな技を選択して使用
 	//ここでtypeを変える処理
 
+	if (RandomNumber::Get(0, 1) > 0.5f) {
+		type_ = Stump;
+
+	}
+	else {
+		type_ = Charge;
+
+	}
+
+	
 	//初期化
 	(this->*typeInit[type_])();
 
@@ -37,11 +49,15 @@ void BossNormal::Update()
 
 
 void (BossNormal::* BossNormal::typeInit[])() = {
-	&BossNormal::InitStump
+	&BossNormal::InitStump,
+	&BossNormal::InitShotBullet,
+	& BossNormal::InitCharge
 };
 
 void (BossNormal::* BossNormal::typeUpdate[])() = {
-	&BossNormal::UpdateStump
+	&BossNormal::UpdateStump,
+	& BossNormal::UpdateShotBullet,
+	& BossNormal::UpdateCharge
 };
 
 void BossNormal::InitStump() { stump_->Initialize(); }
@@ -50,5 +66,5 @@ void BossNormal::UpdateStump() { stump_->Update(); }
 void BossNormal::InitShotBullet() {}
 void BossNormal::UpdateShotBullet() {}
 
-void BossNormal::InitCharge() {}
-void BossNormal::UpdateCharge() {}
+void BossNormal::InitCharge() { charge_->Initialize(); }
+void BossNormal::UpdateCharge() { charge_->Update(); }

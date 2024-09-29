@@ -25,7 +25,7 @@ ALGameScene::ALGameScene() {
 	gameUI_ = std::make_unique<GameUI>();
 
 	plane_ = std::make_unique<Plane>();
-	plane_->model_->SetUVScale({ 500, 500});
+	plane_->model_->SetUVScale({ 500, 500 });
 
 	MapLoader::GetInstance()->LoadLevelEditor("untitled", ".json");
 	MapLoader::GetInstance()->CreateModel(0);
@@ -118,7 +118,6 @@ void ALGameScene::Update() {
 
 	peM_->Update();
 
-	boss_->Update();
 	switch (scene_) {
 	case ALGameScene::Game:
 
@@ -131,6 +130,8 @@ void ALGameScene::Update() {
 
 		//プレイヤー更新
 		player_->Update();
+
+		boss_->Update();
 
 		//追従カメラ更新
 		followCamera_->Update(isShake_);
@@ -145,7 +146,6 @@ void ALGameScene::Update() {
 
 		break;
 	case ALGameScene::Clear:
-
 
 		break;
 	default:
@@ -242,46 +242,44 @@ void ALGameScene::Collision() {
 
 	//ボスの体との接触判定
 	Vector3 vec;
-	if (boss_->GetBodyCollider().IsCollision(player_->GetATKCollider(),vec)) {
+	if (boss_->GetBodyCollider().IsCollision(player_->GetATKCollider(), vec)) {
 		boss_->OnCollision();
 		player_->GetATKCollider()->isActive_ = false;
 	}
 
+	//プレイヤーのボス攻撃の当たり判定
+	if (player_->GetCollider()->IsCollision(&boss_->GetATKCollider(), vec)) {
+		player_->OnCollision();
+		boss_->GetATKCollider().isActive_ = false;
+
+	}
 }
 
 void ALGameScene::SceneChange() {
 
+
+
 	switch (scene_) {
-	case ALGameScene::Game:
+	case (int)ALGameScene::Game:
 		if (boss_->HP_ <= 0) {
-			scene_ = Clear;
-			AudioManager::GetInstance()->StopAllSounds();
-			AudioManager::PlaySoundData(bgmClear_, 0.08f);
+			//scene_ = Clear;
+			//AudioManager::GetInstance()->StopAllSounds();
+			//AudioManager::PlaySoundData(bgmClear_, 0.08f);
 
 		}
-
-
-		//デバッグ用シーンチェンジ
-#ifdef _DEBUG
-		if (input_->TriggerKey(DIK_P)) {
-			scene_ = Clear;
-
-
-		}
-#endif // _DEBUG
-
 
 		break;
-	case ALGameScene::Clear:
-		if (serchComplete_) {
-			if (input_->TriggerKey(DIK_SPACE) || input_->IsTriggerButton(kButtonB)) {
-				isSceneChange_ = true;
-			}
+	case (int)ALGameScene::Clear:
+
+		if (input_->TriggerKey(DIK_SPACE) || input_->IsTriggerButton(kButtonB)) {
+			isSceneChange_ = true;
 		}
+
 		break;
 	default:
 		break;
 	}
+
 
 	if (input_->TriggerKey(DIK_ESCAPE)) {
 		leaveGame = true;
@@ -314,10 +312,16 @@ void ALGameScene::SceneChange() {
 			}
 
 		}
+
+	}
+
+	if (scene_ == ALGameScene::Game && boss_->HP_ <= 0) {
+		scene_ = Clear;
+		AudioManager::GetInstance()->StopAllSounds();
+		AudioManager::PlaySoundData(bgmClear_, 0.08f);
+
 	}
 }
-
-
 
 
 

@@ -27,6 +27,8 @@ public:
 
 	SphereCollider& GetBodyCollider()& { return *collider_.get(); }
 
+	SphereCollider& GetATKCollider()& { return *atkCollider_.get(); }
+
 	//プレイヤー方向への向きベクトルを取得
 	Vector3 GetBoss2PlayerDirection();
 
@@ -87,7 +89,7 @@ private://**変数
 
 public://**パラメータ
 
-	int HP_ = 50;
+	int HP_ = 20;
 
 private://ImGui用
 

@@ -29,8 +29,8 @@ void BossIdle::Update()
 			boss_->behaviorReq_ = ALBoss::Behavior::MOVE;
 		}
 		else {
-			//boss_->behaviorReq_ = ALBoss::Behavior::ATK;
-			boss_->behaviorReq_ = ALBoss::Behavior::MOVE;
+			boss_->behaviorReq_ = ALBoss::Behavior::ATK;
+			//boss_->behaviorReq_ = ALBoss::Behavior::MOVE;
 		}
 		
 	}

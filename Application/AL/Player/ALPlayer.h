@@ -46,6 +46,8 @@ public:
 
 	void SetCamera(Camera* camera) { camera_ = camera; }
 
+	void OnCollision();
+
 	//押し戻し
 	void OnCollisionBack(const Vector3& backV);
 

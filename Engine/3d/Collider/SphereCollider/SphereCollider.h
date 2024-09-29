@@ -44,7 +44,7 @@ public:
 	void SetAlpha(const float alpha) { alpha_ = alpha; }
 
 	//半径設定
-	void SetRadius(float wide) { radius_ = wide; world_.scale_ = { radius_,radius_,radius_ }; }
+	void SetRadius(float wide) { radius_ = wide;  }
 
 	//座標設定
 	void SetTranslate(const Vector3& pos) { world_.translate_ = pos; world_.UpdateMatrix(); }

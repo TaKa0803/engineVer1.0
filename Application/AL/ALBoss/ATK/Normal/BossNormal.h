@@ -1,5 +1,7 @@
 #pragma once
 #include"AL/ALBoss/ATK/Normal/Stump/BossNormalStump.h"
+#include"AL/ALBoss/ATK/Normal/Charge/BossCharge.h"
+
 #include<iostream>
 
 class ALBoss;
@@ -41,6 +43,8 @@ private://**ノーマルの攻撃手段
 	void UpdateCharge();
 
 	std::unique_ptr<BossNormalStump>stump_;
+	std::unique_ptr<BossCharge>charge_;
+
 
 public:
 	bool isFinished_ = false;

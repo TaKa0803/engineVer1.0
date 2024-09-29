@@ -13,6 +13,12 @@ void BossMove::Initialize()
 {
 	data_.currentSec = 0;
 
+	//プレイヤー方向を見続ける
+	Vector3 direc = boss_->GetBoss2PlayerDirection();
+	if (direc != Vector3(0, 0, 0)) {
+		boss_->world_.rotate_.y = GetYRotate({ direc.x,direc.z }) + ((float)std::numbers::pi);
+	}
+
 	//左右どちらかに進む
 	data_.moveV = RandomNumber::Get(-1.0f, 1.0f);
 	if (data_.moveV > 0) {

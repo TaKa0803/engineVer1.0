@@ -58,11 +58,13 @@ private://**パラメータ
 	};
 	struct DashData
 	{
-		Vector3 pos;
+		Vector3 prePos;
+		Vector3 velo;
+		float length = 0;
 		float spd = 30.0f;
 	};
 	struct StiffnessData {
-		float sec = 5.0f;
+		float sec = 0.5f;
 	};
 	struct BackData {
 		float sec = 1.0f;
@@ -78,5 +80,5 @@ private://**パラメータ
 
 		float currentCount = 0;
 	};
-
+	ATKData data_;
 };

@@ -9,13 +9,17 @@ ALBoss::ALBoss(ALPlayer* player)
 	input_ = Input::GetInstance();
 	input_->SetDeadLine(0.3f);
 
-	GameObject::Initialize("AnimeCube");
+	GameObject::Initialize("box");
 	model_->SetAnimationActive(true);
 	model_->SetAnimeSecond(10);
 
+	model_->IsEnableTexture(false);
+	model_->SetColor({ 1,1,1,1 });
+
+
 	collider_ = std::make_unique<SphereCollider>();
 	collider_->Initialize("boss", world_);
-	collider_->SetRadius(1.5f);
+	collider_->SetRadius(5.0f);
 	collider_->SetTranslate({ 0,1.4f,0 });
 
 	shadow_ = std::make_unique<CirccleShadow>(world_);
@@ -27,8 +31,9 @@ ALBoss::ALBoss(ALPlayer* player)
 
 	atkCollider_ = std::make_unique<SphereCollider>();
 	atkCollider_->Initialize("boss", world_);
-	atkCollider_->SetRadius(2.0f);
-	atkCollider_->SetTranslate({ 0.0f,1.4f,4.6f });
+	atkCollider_->SetRadius(5.0f);
+	atkCollider_->SetTranslate({ 0.0f,1.4f,0.0f });
+	atkCollider_->isActive_ = false;
 }
 
 
@@ -39,6 +44,8 @@ ALBoss::~ALBoss()
 void ALBoss::Initilaize()
 {
 	world_.Initialize();
+	world_.translate_ = { 0,0,10 };
+	world_.scale_ = { 5,5,5 };
 	atk_->SceneInit();
 }
 
@@ -60,7 +67,7 @@ void ALBoss::Update()
 	if (behaviorReq_) {
 		behavior_ = behaviorReq_.value();
 		behaviorReq_ = std::nullopt;
-
+		atkCollider_->isActive_ = false;
 		//実際の初期化処理
 		(this->*BehaviorInitialize[(int)behavior_])();
 	}
@@ -115,7 +122,7 @@ void ALBoss::InitIdle() { idle_->Initialize(); }
 
 void ALBoss::InitMove() { move_->Initialize(); }
 
-void ALBoss::InitATK() { atk_->Initialize(); }
+void ALBoss::InitATK() { atk_->Initialize(); atkCollider_->isActive_ = true; }
 
 void ALBoss::UpdateIdle() { idle_->Update(); }
 
