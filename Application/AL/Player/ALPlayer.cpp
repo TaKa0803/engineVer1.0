@@ -115,7 +115,8 @@ ALPlayer::ALPlayer() {
 	//攻撃データの初期化
 	LoadATKDatas();
 
-	GameObject::Initialize("Player");
+	GameObject::Initialize("human");
+	model_->IsEnableTexture(false);
 	model_->SetAnimationActive(true);
 	model_->SetAnimeSecond(10);
 	int Index = 0;
@@ -280,9 +281,34 @@ void ALPlayer::OnCollisionBack(const Vector3& backV)
 	}
 }
 
+bool ALPlayer::GetATKInput()
+{
+	int isATK = 0;
+
+	isATK += (int)input_->TriggerKey(DIK_Z);
+
+	//コントローラーがあるときの処理
+	if (input_->IsControllerActive()) {
+		isATK += (int)input_->IsTriggerButton(kButtonB);
+	}
+
+	if (isATK > 1) {
+		isATK = 1;
+	}
+
+	return (bool)isATK;
+}
+
+bool ALPlayer::GetRollInput()
+{
+	return input_->TriggerKey(DIK_SPACE);
+}
+
 void ALPlayer::Move() {
 
 	Vector3 move{};
+	//ダッシュチェック
+	bool isDash = false;
 
 	//移動取得
 	move = input_->GetWASD();
@@ -296,6 +322,9 @@ void ALPlayer::Move() {
 
 	//ダッシュキー併用で速度アップ
 	if (move != Vector3{0,0,0}&& input_->PushKey(DIK_LSHIFT) && data_.stamina.currentStamina >= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_) {
+		
+		isDash = true;
+		
 		move *= data_.dashMultiply;
 
 		//スタミナを消費
@@ -317,20 +346,34 @@ void ALPlayer::Move() {
 
 	
 
-	ModelRoop(move);
+	ModelRoop(move,isDash);
 }
 
-void ALPlayer::ModelRoop(const Vector3& velo)
+void ALPlayer::ModelRoop(const Vector3& velo,bool isDash)
 {
 	if (velo.x == 0 && velo.y == 0 && velo.z == 0) {
-		model_->ChangeAnimation(3, 15);
-		model_->animationRoopSecond_ = 1.0f;
+		//待機状態になる
+		SetAnimation(Idle, 15, 1.0f);
 	}
 	else {
-		model_->ChangeAnimation(4, 30);
-		model_->animationRoopSecond_ = 10.0f;
+		//移動状態
+		if (!isDash) {
+			//歩き
+			SetAnimation(Run, 30, 10.0f);
+		}
+		else {
+			//ダッシュ
+			SetAnimation(Dash, 30, 10.0f);
+		}
 	}
 
+}
+
+void ALPlayer::SetAnimation(int animeNum, float count, float loopSec, bool isLoop)
+{
+	model_->ChangeAnimation(animeNum, count);
+	model_->SetAnimationRoop(isLoop);
+	model_->animationRoopSecond_ = loopSec;
 }
 
 
@@ -344,15 +387,13 @@ void ALPlayer::ModelRoop(const Vector3& velo)
 
 void ALPlayer::InitMove() {
 
-	model_->ChangeAnimation(3, 0);
-	model_->SetAnimationRoop(true);
-	model_->animationRoopSecond_ = 5.0;
-
+	SetAnimation(3, 0, 1.0f);
 	moveState_ = StopS;
 }
 
 void ALPlayer::InitRolling()
 {
+	
 	rolling_->Initialize();
 	data_.stamina.currentStamina -= data_.stamina.rollCost;
 	data_.stamina.currentCharge = 0;
@@ -361,10 +402,6 @@ void ALPlayer::InitRolling()
 void ALPlayer::InitATK() {
 	data_.stamina.currentStamina -= data_.stamina.atkCost;
 	data_.stamina.currentCharge = 0;
-
-	model_->ChangeAnimation(0, 5);
-	model_->SetAnimationRoop(false);
-	model_->animationRoopSecond_ = 10.0;
 
 	nowATKState_ = kATK1;
 
@@ -397,30 +434,12 @@ void ALPlayer::UpdateMove() {
 	//移動処理
 	Move();
 
-	//攻撃状態に移るかの処理
-	bool isATK = false;
+	//攻撃状態,回転処理に移るかの処理
+	bool isATK, isRoll = { false };
 
-	//スペシャル攻撃
-	bool isSpecialATK = false;
-
-	//回転処理
-	bool isRoll = false;
-
-	isATK = input_->TriggerKey(DIK_Z);
-
-	isSpecialATK = input_->TriggerKey(DIK_C);
-
-	isRoll = input_->TriggerKey(DIK_SPACE);
-
-
-	//コントローラーがあるときの処理
-	if (input_->IsControllerActive()) {
-
-		isATK = input_->IsTriggerButton(kButtonB);
-
-		isSpecialATK = input_->IsTriggerButton(kButtonY);
-
-	}
+	//各入力取得
+	isATK = GetATKInput();
+	isRoll = GetRollInput();
 
 	if (isATK&&data_.stamina.currentStamina>=data_.stamina.atkCost) {
 		behaviorReq_ = State::ATK;
@@ -443,12 +462,14 @@ void ALPlayer::UpdateATK() {
 
 
 #pragma region 実行処理
+
+	//攻撃準備段階
 	if (atkState_ == ATKState::Extra) {
 
 		//初期設定
 		if (!ATKAnimationSetup_) {
 			ATKAnimationSetup_ = true;
-
+			SetAnimation(PrePunch1, 5, 10, false);
 			
 		}
 		else {

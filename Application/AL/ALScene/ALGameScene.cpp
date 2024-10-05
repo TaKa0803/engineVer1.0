@@ -158,6 +158,10 @@ void ALGameScene::Update() {
 	gameUI_->Update();
 
 	SceneChange();
+
+
+
+
 }
 
 void ALGameScene::Draw() {
@@ -262,10 +266,18 @@ void ALGameScene::SceneChange() {
 	switch (scene_) {
 	case (int)ALGameScene::Game:
 		if (boss_->HP_ <= 0) {
-			//scene_ = Clear;
-			//AudioManager::GetInstance()->StopAllSounds();
-			//AudioManager::PlaySoundData(bgmClear_, 0.08f);
+			scene_ = Clear;
+			AudioManager::GetInstance()->StopAllSounds();
+			AudioManager::PlaySoundData(bgmClear_, 0.08f);
 
+
+			//if (scene_ == ALGameScene::Game && boss_->isDead_) {
+			//	scene_ = Clear;
+			//	AudioManager::GetInstance()->StopAllSounds();
+			//	AudioManager::PlaySoundData(bgmClear_, 0.08f);
+			//	sceneC_->SetColorAlpha(1);
+			//	sceneNo = ALTITLE;
+			//}
 		}
 
 		break;
@@ -315,12 +327,6 @@ void ALGameScene::SceneChange() {
 
 	}
 
-	if (scene_ == ALGameScene::Game && boss_->HP_ <= 0) {
-		scene_ = Clear;
-		AudioManager::GetInstance()->StopAllSounds();
-		AudioManager::PlaySoundData(bgmClear_, 0.08f);
-
-	}
 }
 
 

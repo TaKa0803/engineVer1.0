@@ -95,6 +95,13 @@ public:
 	void SetFillMode(FillMode fillmode) { fillMode_=fillmode; }
 
 	void SetAnimeSecond(float spd) { animationRoopSecond_ = spd; }
+
+	/// <summary>
+	/// アニメーションタイムを引数側から指定する
+	/// </summary>
+	/// <param name="isAct"></param>
+	/// <param name="t"></param>
+	void SetAnimationTime(bool isAct, float t) { isSetATime_ = isAct; setAt_ = t; };
 #pragma endregion
 
 	/// <summary>
@@ -192,6 +199,8 @@ private:
 
 #pragma region アニメーション関係
 
+	bool isSetATime_ = false;
+	float setAt_ = 0;
 
 	//アニメーションカウント
 	float animationTime_ = 0.0f;

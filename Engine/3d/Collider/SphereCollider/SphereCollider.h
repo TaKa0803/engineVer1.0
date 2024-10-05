@@ -44,7 +44,7 @@ public:
 	void SetAlpha(const float alpha) { alpha_ = alpha; }
 
 	//半径設定
-	void SetRadius(float wide) { radius_ = wide;  }
+	void SetRadius(float wide) {world_.scale_ = { wide,wide,wide };}
 
 	//座標設定
 	void SetTranslate(const Vector3& pos) { world_.translate_ = pos; world_.UpdateMatrix(); }
@@ -57,7 +57,7 @@ public:
 public:
 
 	//半径取得
-	float GetRadius() { return radius_; }
+	float GetRadius();
 
 	//ローカル平行移動取得
 	//Vector3 GetTranslate() { return world_.translate_; }
@@ -75,8 +75,6 @@ private:
 
 	const EulerWorldTransform* parent_;
 
-	//半径
-	float radius_=1.0f;
 	//コライダータグ
 	std::string colliderTag_;
 

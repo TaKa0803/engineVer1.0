@@ -66,7 +66,6 @@ std::vector<Animation> LoadAnimationFile(const std::string& directoryPath, const
 		aiAnimation* animationAssimp = scene->mAnimations[i];//最初のアニメーションのみ読み込み
 		Animation  result;
 		result.duration = float(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);//時間の単位を秒に変換
-
 		//assimpでは個々のNodeのAnimationをchannelと読んでいるのでchannelを回してNodeAnimationの情報を取る
 		for (uint32_t channelIndex = 0; channelIndex < animationAssimp->mNumChannels; ++channelIndex) {
 			aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];

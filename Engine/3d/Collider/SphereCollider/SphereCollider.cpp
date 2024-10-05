@@ -20,8 +20,6 @@ void SphereCollider::Initialize(const std::string& tag, const EulerWorldTransfor
 
 	colliderTag_ = tag;
 
-	world_.scale_ = { radius_,radius_,radius_ };
-
 	IMM_->SetFillMode(tag_, FillMode::kWireFrame);
 	IMM_->SetAlpha(tag_, alpha_);
 	IMM_->SetEnableTexture(tag_, false);
@@ -34,8 +32,6 @@ void SphereCollider::Initialize(const std::string& tag)
 
 	colliderTag_ = tag;
 
-	world_.scale_ = { radius_,radius_,radius_ };
-
 	IMM_->SetFillMode(tag_, FillMode::kWireFrame);
 	IMM_->SetAlpha(tag_, alpha_);
 	IMM_->SetEnableTexture(tag_, false);
@@ -45,14 +41,8 @@ void SphereCollider::Initialize(const std::string& tag)
 
 void SphereCollider::Update() {
 	preWorld_ = world_;
-
-
 	
 	world_.UpdateMatrix();
-
-	
-	radius_ = GetAllScaleX(world_);
-	//サイズを無視した
 	
 }
 
@@ -121,6 +111,7 @@ bool SphereCollider::IsCollision(OBBCollider& obb, Vector3& backVec, float divis
 
 #pragma endregion
 
+	float radius = GetAllScaleX(world_);
 
 	float t = 0;
 	while (t <= 1.0f) {
@@ -149,14 +140,14 @@ bool SphereCollider::IsCollision(OBBCollider& obb, Vector3& backVec, float divis
 				//スフィアコライダーの座標をOBBのローカル空間に出る
 				sphereLocal = Transform(preWorld_.GetWorldTranslate(), inverseM);
 				//Sphere取得
-				sphere = { sphereLocal,radius_ };
+				sphere = { sphereLocal,GetAllScaleX(world_)};
 				InCollision(aabb_, sphere, saikin);
 
 				saikin = Transform(saikin, OBBM);
 
 				Vector3 velo = preWorld_.GetWorldTranslate() - saikin;
 				velo.SetNormalize();
-				velo *= radius_;
+				velo *= radius;
 
 				backVec = velo;
 
@@ -170,7 +161,7 @@ bool SphereCollider::IsCollision(OBBCollider& obb, Vector3& backVec, float divis
 				Vector3 norVe = velo;
 				norVe.SetNormalize();
 				//半径分伸ばす
-				norVe *= radius_;
+				norVe *= radius;
 
 				//渡す
 				backVec = norVe - velo;
@@ -241,16 +232,19 @@ void SphereCollider::Debug(const char* name) {
 	std::string cName = name;
 	cName = cName + " collider";
 
+	float radius = world_.scale_.x;
+
 	if (ImGui::BeginMenu(cName.c_str())) {
 		world_.DrawDebug(cName.c_str());
 		ImGui::DragFloat("alpha", &alpha_, 0.01f);
-		ImGui::DragFloat("radius", &radius_, 0.1f);
+		ImGui::DragFloat("radius", &radius, 0.1f);
 		ImGui::Checkbox("isDrawAll", &isDraw_);
 		ImGui::EndMenu();
 	}
 
 	IMM_->SetAlpha(tag_, alpha_);
-	world_.scale_ = { radius_,radius_,radius_ };
+
+	world_.scale_ = { radius,radius,radius };
 
 #endif // _DEBUG
 
@@ -272,6 +266,11 @@ void SphereCollider::SetColor(bool hit)
 void SphereCollider::UpdateMatrix()
 {
 	world_.UpdateMatrix();
+}
+
+float SphereCollider::GetRadius()
+{
+	return GetAllScaleX(world_);
 }
 
 

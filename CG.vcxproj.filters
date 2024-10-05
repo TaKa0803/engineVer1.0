@@ -132,6 +132,8 @@
     <ClCompile Include="Application\AL\ALBoss\ATK\Normal\ShotBullet\ShotBullet.cpp" />
     <ClCompile Include="Application\AL\ALBoss\ATK\BulletManager\BulletManager.cpp" />
     <ClCompile Include="Application\AL\ALBoss\ATK\Normal\Charge\BossCharge.cpp" />
+    <ClCompile Include="Application\AL\Player\Behavior\PlayerATKManager\PlayerATKManager.cpp" />
+    <ClCompile Include="Application\AL\Player\Behavior\ATKData\PlayerPunch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -238,6 +240,8 @@
     <ClInclude Include="Application\AL\ALBoss\ATK\Normal\ShotBullet\ShotBullet.h" />
     <ClInclude Include="Application\AL\ALBoss\ATK\BulletManager\BulletManager.h" />
     <ClInclude Include="Application\AL\ALBoss\ATK\Normal\Charge\BossCharge.h" />
+    <ClInclude Include="Application\AL\Player\Behavior\PlayerATKManager\PlayerATKManager.h" />
+    <ClInclude Include="Application\AL\Player\Behavior\ATKData\PlayerPunch.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

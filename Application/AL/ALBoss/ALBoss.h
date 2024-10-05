@@ -91,6 +91,7 @@ public://**パラメータ
 
 	int HP_ = 20;
 
+	bool isDead_ = false;
 private://ImGui用
 
 	//

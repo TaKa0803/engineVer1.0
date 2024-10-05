@@ -11,7 +11,22 @@
 
 #include<vector>
 
-
+#pragma region アニメーション関係
+enum AnimationData {
+	Dash,
+	Idle,
+	PrePunch1,
+	PrePunch2,
+	PrePunch3,
+	Punch1,
+	Punch2,
+	Punch3,
+	Roll,
+	RollEnd,
+	Run,
+	_countAnime
+};
+#pragma endregion
 
 //攻撃のデータ構造体
 struct ATKData {
@@ -57,13 +72,15 @@ public:
 
 	int GetConboCount() { return ATKConboCount; }
 
-	//プレイヤー方向取得
-	Vector3 GetDirection();
-
 	bool IsPlayerATK() {
 		if (behavior_ == State::ATK) { return true; }
 		return false;
 	}
+
+	//攻撃入力の取得処理まとめ
+	bool GetATKInput();
+	//回転入力の処理まとめ
+	bool GetRollInput();
 
 	enum class State {
 		Move,		//移動
@@ -72,17 +89,24 @@ public:
 		HITACTION,	//被攻撃時
 		kNumStates	//状態の数
 	};
+
+	void SetAnimation(int animeNum, float count, float loopSec, bool isLoop = true);
+	
+	///アニメーション進行をこちらで管理する処理
+	void SetAnimeTime(bool active, float t = 0) { model_->SetAnimationTime(active, t); }
 private://メンバ関数
 
 
 	//移動
 	void Move();
 
-	void ModelRoop(const Vector3& velo);
-
-#pragma region 状態管理とメンバ関数ポインタテーブル
+	void ModelRoop(const Vector3& velo, bool isDash);
 
 
+	void LoadATKDatas();
+
+	void StaminaUpdate();
+private://状態管理関数
 
 	//プレイヤーの状態
 	State behavior_ = State::Move;
@@ -112,11 +136,8 @@ private://メンバ関数
 
 	void UpdateHitAction();
 
-#pragma endregion
 
-	void LoadATKDatas();
 
-	void StaminaUpdate();
 public:
 
 	struct StaminaData {
@@ -263,6 +284,8 @@ private:
 
 	NowATK nowATKState_ = kATK1;
 #pragma endregion
+
+
 
 
 	//音のデータポインタ

@@ -19,6 +19,7 @@
     "Flag": [ "Flag", "Flag.obj" ],
     "Wall": [ "Wall", "Wall.obj" ],
     "Player": [ "Object", "player.gltf" ],
+    "human": [ "human", "player.gltf" ],
     "z+Plane": [ "SystemResources/normalZ+Plane", "normalZ+Plane.obj" ]
   },
   "InstancingmodelPathFile": {

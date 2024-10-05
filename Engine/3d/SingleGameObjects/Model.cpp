@@ -9,6 +9,7 @@
 #include"InstancingModelManager/InstancingModelManager.h"
 #include"struct.h"
 #include"Camera/Camera.h"
+#include"DeltaTimer/DeltaTimer.h"
 
 #define _USE_MATH_DEFINES
 #include<math.h>
@@ -71,12 +72,14 @@ void Model::UpdateAnimation()
 	if (modelType_ != kOBJModel) {
 		//アニメーションフラグON
 		if (isAnimationActive_) {
-			animationTime_ += animationRoopSecond_ / 60.0f;
+			//
+			animationTime_ += animationRoopSecond_ * modelData_.animation[animeNum_].duration * (float)DeltaTimer::deltaTime_;
 			//アニメーションループフラグON
 			if (isAnimeRoop_) {
 				animationTime_ = std::fmod(animationTime_, modelData_.animation[animeNum_].duration);//最後まで行ったら最初からリピート再生
 			}
 			else {
+				//ループしない処理
 				if (animationTime_ > modelData_.animation[animeNum_].duration) {
 					animationTime_ = modelData_.animation[animeNum_].duration;
 				}
@@ -85,6 +88,7 @@ void Model::UpdateAnimation()
 			if (animationRoopSecond_ < 0) {
 
 				if (animationTime_ < 0) {
+					//ループ処理
 					if (isAnimeRoop_) {
 						animationTime_ += modelData_.animation[animeNum_].duration;
 					}
@@ -92,6 +96,11 @@ void Model::UpdateAnimation()
 						animationTime_ = 0;
 					}
 				}
+			}
+
+			//指定してた場合
+			if (isSetATime_) {
+				animationTime_ = Lerp(0, modelData_.animation[animeNum_].duration, setAt_);
 			}
 
 			//ボーンのあるモデルの場合
@@ -116,6 +125,10 @@ void Model::UpdateAnimation()
 			animationTime_ = 0;
 			//animationの更新を行って骨ごとのローカル情報を更新
 			ApplyAnimation(modelData_.skeleton, modelData_.animation[animeNum_], animationTime_);
+			//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
+			Update(modelData_.skeleton);
+			//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
+			Update(modelData_.skinCluster, modelData_.skeleton);
 		}
 	}
 
@@ -259,6 +272,7 @@ void Model::Initialize(
 
 void Model::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime)
 {
+	//補完処理
 	float t = 0;
 	if (isSupplementation_) {
 		supplementationCount_++;
@@ -397,13 +411,6 @@ void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 }
 
 
-
-
-
-
-
-
-
 void Model::ChangeAnimation(int animeNum, float count)
 {
 
@@ -413,7 +420,7 @@ void Model::ChangeAnimation(int animeNum, float count)
 	}
 
 	//アニメーションの値内ならアニメーション変更と補完処理フラグON
-	if (animeNum <= modelData_.animation.size() - 2) {
+	if (animeNum <= modelData_.animation.size()) {
 		animeNum_ = animeNum;
 
 		if (count != 0) {
@@ -496,7 +503,7 @@ void Model::DebugParameter(const char* name)
 		ImGui::Checkbox("animeActive", &isAnimationActive_);
 		ImGui::Checkbox("animeRoop", &isAnimeRoop_);
 		ImGui::DragFloat("Roop second", &animationRoopSecond_, 0.1f);
-		ImGui::SliderInt("AnimeNum", &anum, 0, (int)(modelData_.animation.size()));
+		ImGui::SliderInt("AnimeNum", &anum, 0, (int)(modelData_.animation.size())-1);
 
 		ImGui::Text("Blinn Phong Reflection");
 		ImGui::DragFloat("Shininess", &shininess);

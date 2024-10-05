@@ -40,6 +40,8 @@ void PlayerRoll::Initialize()
 	//移動開始地点を取得
 	data_.stPos = player_->world_.GetWorldTranslate();	
 	data_.currentStop = 0;
+
+	player_->SetAnimation((int)AnimationData::Roll, 0, 1.0f, false);
 }
 
 void PlayerRoll::Update()
