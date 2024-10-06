@@ -364,9 +364,8 @@ void ALPlayer::InitMove() {
 	SetAnimation(3, 0.1f, 1.0f);
 }
 
-void ALPlayer::InitRolling()
-{
-	
+void ALPlayer::InitRolling() {
+
 	rolling_->Initialize();
 	data_.stamina.currentStamina -= data_.stamina.rollCost;
 	data_.stamina.currentCharge = 0;

@@ -280,6 +280,12 @@ void ALGameScene::SceneChange() {
 			//}
 		}
 
+		if (player_->data_.HP_<=0) {
+			sceneNo =GAMEOVER;
+			AudioManager::GetInstance()->StopAllSounds();
+		}
+
+
 		break;
 	case (int)ALGameScene::Clear:
 

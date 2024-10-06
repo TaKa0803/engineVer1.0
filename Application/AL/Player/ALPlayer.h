@@ -175,6 +175,9 @@ public:
 		Vector3 velo_ = { 0,0,0 };
 		Vector3 acce_ = { 0,0,0 };
 
+		//体力
+		int HP_ = 10;
+
 		//移動速度
 		float spd_ = 13.0f;
 

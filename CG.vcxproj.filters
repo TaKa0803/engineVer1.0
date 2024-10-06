@@ -134,6 +134,7 @@
     <ClCompile Include="Application\AL\ALBoss\ATK\Normal\Charge\BossCharge.cpp" />
     <ClCompile Include="Application\AL\Player\Behavior\PlayerATKManager\PlayerATKManager.cpp" />
     <ClCompile Include="Application\AL\Player\Behavior\ATKData\PlayerPunch.cpp" />
+    <ClCompile Include="Application\AL\ALScene\GameOverScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -242,6 +243,7 @@
     <ClInclude Include="Application\AL\ALBoss\ATK\Normal\Charge\BossCharge.h" />
     <ClInclude Include="Application\AL\Player\Behavior\PlayerATKManager\PlayerATKManager.h" />
     <ClInclude Include="Application\AL\Player\Behavior\ATKData\PlayerPunch.h" />
+    <ClInclude Include="Application\AL\ALScene\GameOverScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

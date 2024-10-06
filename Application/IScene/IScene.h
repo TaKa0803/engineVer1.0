@@ -36,5 +36,6 @@ enum SCENE {
 	CG,
 	ALTITLE,
 	ALGAME,
-	_SceneCount	//使うな
+	GAMEOVER,
+	SceneCount	//使うな
 };

@@ -8,6 +8,7 @@
 #include"CG/CGScene.h"
 #include"AL/ALScene/ALTitleScene.h"
 #include"AL/ALScene/ALGameScene.h"
+#include"AL/ALScene/GameOverScene.h"
 #pragma endregion
 
 
@@ -23,19 +24,23 @@ SceneManager::~SceneManager()
 void SceneManager::Initialize()
 {
 	//シーンの数取得
-	sceneArr_.resize((size_t)SCENE::_SceneCount);
+	sceneArr_.resize((size_t)SCENE::SceneCount);
 
 	//各シーンの情報設定
 	sceneArr_[DEBUG] = std::make_unique<DebugScene>();
 	sceneArr_[CG] = std::make_unique<CGScnene>();
 	sceneArr_[ALTITLE] = std::make_unique<ALTitleScene>();
 	sceneArr_[ALGAME] = std::make_unique<ALGameScene>();
+	sceneArr_[GAMEOVER] = std::make_unique<GameOverScene>();
+
 	
 	sceneName_.clear();
 	sceneName_.push_back("DEBUG");
 	sceneName_.push_back("CG");
 	sceneName_.push_back("ALTITLE");
 	sceneName_.push_back("ALGAME");
+	sceneName_.push_back("GAMEOVER");
+
 
 	//初期シーン設定
 	IScene::SetSceneNo(ALTITLE);
@@ -83,7 +88,7 @@ void SceneManager::DebugWindow()
 	ImGui::Begin("SceneManager");
 	ImGui::Text("SceneNo.%d", currentSceneNo_);
 	ImGui::Text("%s", sceneName_[currentSceneNo_].c_str());
-	ImGui::SliderInt("sceneNo", &num,0,_SceneCount-1 );
+	ImGui::SliderInt("sceneNo", &num,0,SceneCount-1 );
 	ImGui::End();
 
 	IScene::SetSceneNo(num);
