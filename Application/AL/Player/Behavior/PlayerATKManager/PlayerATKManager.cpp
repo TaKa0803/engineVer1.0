@@ -3,6 +3,8 @@
 
 PlayerATKManager::PlayerATKManager(ALPlayer* player) {
 	player_ = player;
+
+	punch_ = std::make_unique<PlayerPunch>(player);
 }
 
 void PlayerATKManager::Initialize()
@@ -16,6 +18,10 @@ void PlayerATKManager::Update()
 {
 	//状態の更新
 	(this->*TypeUpdate[(int)type_])();
+
+	if (type_ == Punch&&punch_->isEnd_) {
+		isEnd_ = true;
+	}
 }
 
 void (PlayerATKManager::* PlayerATKManager::TypeInit[])() {
@@ -26,6 +32,6 @@ void (PlayerATKManager::* PlayerATKManager::TypeUpdate[])() {
 };
 
 #pragma region 各状態
-void PlayerATKManager::InitPunch(){}
-void PlayerATKManager::UpdatePunch(){}
+void PlayerATKManager::InitPunch() { punch_->Initialize(); }
+void PlayerATKManager::UpdatePunch() { punch_->Update(); }
 #pragma endregion

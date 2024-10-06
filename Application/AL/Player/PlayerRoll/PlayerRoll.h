@@ -21,8 +21,8 @@ public:
 
 		Vector3 stPos{};
 
-		float spd=30.0f;
-		float length = 10.0f;
+		float spd=40.0f;
+		float length = 20.0f;
 
 		float stopSec = 0.5f;
 

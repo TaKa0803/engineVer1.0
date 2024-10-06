@@ -1,4 +1,6 @@
 #pragma once
+#include"AL/Player/Behavior/ATKData/PlayerPunch.h"
+#include<iostream>
 
 class ALPlayer;
 
@@ -32,6 +34,8 @@ private://各状態まとめ
 
 	void InitPunch();
 	void UpdatePunch();
+
+	std::unique_ptr<PlayerPunch> punch_;
 
 private://プライベート変数
 

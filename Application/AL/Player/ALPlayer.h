@@ -6,6 +6,8 @@
 #include"AL/items.h"
 #include"Effect/EffectMove/EffectMove.h"
 #include"AL/CirccleShadow/CirccleShadow.h"
+#include"AL/Player/Behavior/PlayerATKManager/PlayerATKManager.h"
+
 
 #include"PlayerRoll/PlayerRoll.h"
 
@@ -70,7 +72,14 @@ public:
 
 	SphereCollider* GetATKCollider() { return atkCollider_.get(); };
 
-	int GetConboCount() { return ATKConboCount; }
+	/// <summary>
+	/// 入力方向に向く
+	/// </summary>
+	/// <param name="isZero">入力の有無受け取り</param>
+	/// <returns></returns>
+	Vector3 SetInputDirection(bool& isZero);
+	
+	//int GetConboCount() { return ATKConboCount; }
 
 	bool IsPlayerATK() {
 		if (behavior_ == State::ATK) { return true; }
@@ -90,7 +99,8 @@ public:
 		kNumStates	//状態の数
 	};
 
-	void SetAnimation(int animeNum, float count, float loopSec, bool isLoop = true);
+	//アニメーションのセット
+	void SetAnimation(int animeNum, float sec, float loopSec, bool isLoop = true);
 	
 	///アニメーション進行をこちらで管理する処理
 	void SetAnimeTime(bool active, float t = 0) { model_->SetAnimationTime(active, t); }
@@ -100,10 +110,9 @@ private://メンバ関数
 	//移動
 	void Move();
 
-	void ModelRoop(const Vector3& velo, bool isDash);
+	void ModelRoop(bool ismove, bool isDash);
 
 
-	void LoadATKDatas();
 
 	void StaminaUpdate();
 private://状態管理関数
@@ -167,7 +176,7 @@ public:
 		Vector3 acce_ = { 0,0,0 };
 
 		//移動速度
-		float spd_ = 0.5f;
+		float spd_ = 13.0f;
 
 		//ダッシュの速度倍率
 		float dashMultiply = 2.0f;
@@ -199,6 +208,8 @@ private:
 
 	std::unique_ptr<PlayerRoll>rolling_;
 
+	std::unique_ptr<PlayerATKManager>atkM_;
+
 	std::unique_ptr<CirccleShadow>shadow_;
 
 #pragma region モデルに関する
@@ -209,91 +220,6 @@ private:
 #pragma endregion
 
 
-
-
-
-	enum MoveState {
-		StopS,
-		MoveS,
-		NoneS
-	};
-
-	MoveState moveState_ = NoneS;
-
-#pragma region 攻撃に関する変数
-
-	//std::unique_ptr<EffectImpact>impactE_;
-
-	//攻撃に関するデータ
-	std::string atkDataPass_ = "resources/jsonfile/PlayerATKData.json";
-
-	//グループ名
-	std::string groupName_ = "BButtonATK";
-
-	static const int itemNum = 2;
-
-	//アイテムの名前
-	std::string keyNames_[itemNum] = {
-		"data",
-		"ATKDerivation"
-	};
-
-
-	//ボタンを押したときからの攻撃一覧
-	ATKData startATKData_;
-
-
-
-
-
-	//最大コンボ数
-	const int maxATKConBo = 3;
-
-	int ATKConboCount = 1;
-
-	enum class ATKState {
-		Extra,//準備
-		ATK,	//攻撃実行
-		Rigor//硬直
-	};
-	//攻撃の状態enum
-	ATKState atkState_;
-
-	//攻撃時に使うデータまとめ
-	struct ATKUpdateData {
-		//次の攻撃をするか
-		bool nextATK = false;
-		bool isPushY = false;
-		int count = 0;
-	};
-
-	//攻撃の更新データ
-	ATKUpdateData updateATKData_;
-
-	//実行する攻撃動作
-	ATKData ATKData_;
-
-	bool ATKAnimationSetup_ = false;
-
-	enum NowATK {
-		kATK1,
-		kATK2,
-		kATK3,
-		_countATK
-	};
-
-	NowATK nowATKState_ = kATK1;
-#pragma endregion
-
-
-
-
-	//音のデータポインタ
-	int punchSound_;
-
-	int kickSound_;
-
-	int drilSound_;
 
 
 

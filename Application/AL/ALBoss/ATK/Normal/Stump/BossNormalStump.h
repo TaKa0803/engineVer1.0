@@ -27,7 +27,7 @@ private://動きの処理
 		Stump,		//実際の攻撃
 		Stiffness,	//攻撃による硬直
 		Back,		//別の攻撃移行または
-		_countOfATKData
+		CountOfATKData
 	};
 
 	Behavior behavior_ = AIMing;

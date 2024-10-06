@@ -98,7 +98,7 @@ public:
 	void AddCameraR_X(float x) { CameraMotionSupport_.rotate_.x += x; }
 
 	//カメラから見たベクトル方向に変換
-	Vector3 SetDirection4Camera(const Vector3&velo);
+	Vector3 SetDirection4Camera(const Vector3&velo)const;
 private:
 	//カメラ本体
 	EulerWorldTransform mainCamera_;

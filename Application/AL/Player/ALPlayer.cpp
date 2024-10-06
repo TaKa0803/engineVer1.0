@@ -9,71 +9,6 @@
 #include<fstream>
 #include<numbers>
 
-ATKData LoadATKData(nlohmann::json::iterator& itGroup) {
-	ATKData data;
-
-	for (nlohmann::json::iterator itItem = itGroup->begin(); itItem != itGroup->end(); ++itItem) {
-
-		//アイテム名
-		const std::string& itemName = itItem.key();
-
-		//各データ
-		if (itemName == "data") {
-			data.extraTime = (float)itItem->at(0);
-			data.AttackTime = (float)itItem->at(1);
-			data.RigorTime = (float)itItem->at(2);
-			data.isYATK = (int)itItem->at(3);
-			data.spd = (float)itItem->at(4);
-		}
-		else if (itemName == "ATKDerivation") {
-			//皇族データ保存
-			data.ATKDerivation.push_back(LoadATKData(itItem));
-		}
-	}
-
-	return data;
-}
-
-void ALPlayer::LoadATKDatas() {
-
-	//読み込み用ファイルストリーム
-	std::ifstream ifs;
-	//ファイルを読み込み用に開く
-	ifs.open(atkDataPass_);
-
-	//読み込み失敗
-	if (ifs.fail()) {
-		assert(false);
-		return;
-	}
-
-	nlohmann::json root;
-	//json文字列からjsonのデータ構造に展開
-	ifs >> root;
-	//移したのでファイルを閉じる
-	ifs.close();
-
-
-
-
-	int Index = 0;
-	//攻撃グループ複数読み込み
-
-		//グループ検索
-	nlohmann::json::iterator itGroup = root.find(groupName_);
-
-	//未登録チェック
-	assert(itGroup != root.end());
-
-
-	startATKData_ = LoadATKData(itGroup);
-
-
-
-	Index++;
-
-}
-
 void ALPlayer::StaminaUpdate()
 {
 	StaminaData& data = data_.stamina;
@@ -112,9 +47,6 @@ ALPlayer::ALPlayer() {
 	atkCollider_->SetRadius(1.5f);
 	atkCollider_->SetTranslate({ 0,1.4f,0.5f });
 
-	//攻撃データの初期化
-	LoadATKDatas();
-
 	GameObject::Initialize("human");
 	model_->IsEnableTexture(false);
 	model_->SetAnimationActive(true);
@@ -127,11 +59,9 @@ ALPlayer::ALPlayer() {
 
 
 	rolling_ = std::make_unique<PlayerRoll>(this);
+	atkM_ = std::make_unique<PlayerATKManager>(this);
 
 
-	punchSound_ = AudioManager::LoadSoundNum("com1");
-	kickSound_ = AudioManager::LoadSoundNum("com2");
-	drilSound_ = AudioManager::LoadSoundNum("com3");	
 }
 
 ALPlayer::~ALPlayer() {
@@ -149,10 +79,10 @@ void ALPlayer::Initialize() {
 	peM_->Initialize({ 1,1,1,1 });
 
 
-	moveState_ = NoneS;
 
-	ATKConboCount = 1;
-	ATKAnimationSetup_ = false;
+
+	//ATKConboCount = 1;
+	//ATKAnimationSetup_ = false;
 
 	data_ = PlayerData{};
 
@@ -162,6 +92,8 @@ void ALPlayer::Initialize() {
 	collider_->Update();
 	atkCollider_->Update();
 	atkCollider_->isActive_ = false;
+
+	behaviorReq_ = State::Move;
 }
 
 void ALPlayer::Update() {
@@ -177,14 +109,21 @@ void ALPlayer::Update() {
 
 	//状態の初期化処理
 	if (behaviorReq_) {
+		//状態を変更してリクエストを消す
 		behavior_ = behaviorReq_.value();
 		behaviorReq_ = std::nullopt;
+
+		//攻撃、ローリング後はアニメーションのフラグが変わるのでここで変更しておく
+		SetAnimeTime(false);
 
 		//実際の初期化処理
 		(this->*BehaviorInitialize[(int)behavior_])();
 	}
 
 	peM_->Update();
+
+	//状態の更新
+	(this->*BehaviorUpdate[(int)behavior_])();
 
 	//落下の処理
 	data_.addFallSpd_ -= data_.fallSpd_;
@@ -193,9 +132,6 @@ void ALPlayer::Update() {
 		world_.translate_.y = 0;
 		data_.addFallSpd_ = 0;
 	}
-
-	//状態の更新
-	(this->*BehaviorUpdate[(int)behavior_])();
 
 	//移動量ベクトル*デルタタイムを加算
 	world_.translate_ += data_.velo_ * (float)DeltaTimer::deltaTime_;
@@ -281,6 +217,48 @@ void ALPlayer::OnCollisionBack(const Vector3& backV)
 	}
 }
 
+Vector3 ALPlayer::SetInputDirection(bool&isZero)
+{
+	//入力方向をチェック
+	Vector3 move = input_->GetWASD().SetNormalize();
+
+	//ローラーがあるならその値を追加
+	if (input_->IsControllerActive()) {
+		move += input_->GetjoyStickLV3();
+	}
+
+	//入力が行われていない場合
+	if (move == Vector3{ 0,0,0 }) {
+
+		//すでに向いている方向にする
+		move = TransformNormal({ 0,0,-1 }, world_.matWorld_);
+		//高さをなくす
+		move.y = 0;
+		//正規化
+		move.SetNormalize();
+		//入力なしと見る
+		isZero = false;
+
+		//返却
+		return move;
+	}
+	else {
+		//カメラから見て違和感のない方向に修正
+		move = camera_->SetDirection4Camera(move);
+		isZero = true;
+	}
+
+	//高さは使わない
+	move.y = 0;
+	move.SetNormalize();
+
+	//向きを変更する処理
+	world_.rotate_.y = GetYRotate({ move.x,move.z }) + ((float)std::numbers::pi);
+	
+
+	return move;
+}
+
 bool ALPlayer::GetATKInput()
 {
 	int isATK = 0;
@@ -310,60 +288,56 @@ void ALPlayer::Move() {
 	//ダッシュチェック
 	bool isDash = false;
 
-	//移動取得
-	move = input_->GetWASD();
+	//移動入力の有無
+	bool isMoveInput = false;
 
-	if (input_->IsControllerActive()) {
-		move = input_->GetjoyStickLV3();
-	}
+	//入力受付と向きなおし処理＆向いた向きベクトル取得
+	move = SetInputDirection(isMoveInput);
 
-	move.SetNormalize();
+	//移動量分加算
 	move *= data_.spd_;
 
 	//ダッシュキー併用で速度アップ
-	if (move != Vector3{0,0,0}&& input_->PushKey(DIK_LSHIFT) && data_.stamina.currentStamina >= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_) {
-		
+	if (isMoveInput && input_->PushKey(DIK_LSHIFT) && data_.stamina.currentStamina >= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_) {
+
 		isDash = true;
-		
+
 		move *= data_.dashMultiply;
 
 		//スタミナを消費
 		data_.stamina.currentStamina -= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_;
 		data_.stamina.currentCharge = 0;
 	}
-
-	//カメラ方向に向ける
-	move = TransformNormal(move, camera_->GetMainCamera().matWorld_);
-
-	move.y = 0.0f;
-
-	if (move != Vector3(0, 0, 0)) {
-		peM_->SpawnE(world_.GetWorldTranslate());
-		world_.rotate_.y = GetYRotate({ move.x,move.z })+((float)std::numbers::pi);
-	}
-	//加算
-	world_.translate_ += move;
-
 	
+	//移動入力があった場合
+	if (isMoveInput) {
 
-	ModelRoop(move,isDash);
+		//歩行エフェクト出現
+		peM_->SpawnE(world_.GetWorldTranslate());
+
+		//加算
+		world_.translate_ += move*(float)DeltaTimer::deltaTime_;
+	}
+
+
+	ModelRoop(isMoveInput,isDash);
 }
 
-void ALPlayer::ModelRoop(const Vector3& velo,bool isDash)
+void ALPlayer::ModelRoop(bool ismove,bool isDash)
 {
-	if (velo.x == 0 && velo.y == 0 && velo.z == 0) {
+	if (!ismove) {
 		//待機状態になる
-		SetAnimation(Idle, 15, 1.0f);
+		SetAnimation(Idle, 0.1f, 1.0f);
 	}
 	else {
 		//移動状態
 		if (!isDash) {
 			//歩き
-			SetAnimation(Run, 30, 10.0f);
+			SetAnimation(Run, 0.1f, 1.0f);
 		}
 		else {
 			//ダッシュ
-			SetAnimation(Dash, 30, 10.0f);
+			SetAnimation(Dash,	0.1f, 1.0f);
 		}
 	}
 
@@ -387,8 +361,7 @@ void ALPlayer::SetAnimation(int animeNum, float count, float loopSec, bool isLoo
 
 void ALPlayer::InitMove() {
 
-	SetAnimation(3, 0, 1.0f);
-	moveState_ = StopS;
+	SetAnimation(3, 0.1f, 1.0f);
 }
 
 void ALPlayer::InitRolling()
@@ -403,19 +376,7 @@ void ALPlayer::InitATK() {
 	data_.stamina.currentStamina -= data_.stamina.atkCost;
 	data_.stamina.currentCharge = 0;
 
-	nowATKState_ = kATK1;
-
-	atkState_ = ATKState::Extra;
-
-	updateATKData_ = ATKUpdateData{};
-
-	//どちらのボタンが最初かで攻撃ツリー変更
-
-	ATKData_ = startATKData_;
-
-	ATKAnimationSetup_ = false;
-
-	ATKConboCount = 1;
+	atkM_->Initialize();
 
 	atkCollider_->isActive_ = true;
 }
@@ -460,174 +421,13 @@ void ALPlayer::UpdateRolling()
 
 void ALPlayer::UpdateATK() {
 
+	//攻撃の処理
+	atkM_->Update();
 
-#pragma region 実行処理
-
-	//攻撃準備段階
-	if (atkState_ == ATKState::Extra) {
-
-		//初期設定
-		if (!ATKAnimationSetup_) {
-			ATKAnimationSetup_ = true;
-			SetAnimation(PrePunch1, 5, 10, false);
-			
-		}
-		else {
-			updateATKData_.count++;
-			//条件を満たしたら次の状態へ
-			if (updateATKData_.count >= ATKData_.extraTime) {
-
-				atkState_ = ATKState::ATK;
-				updateATKData_.count = 0;
-				ATKAnimationSetup_ = false;
-			}
-
-		}
+	//攻撃処理が終わったフラグを取得
+	if (atkM_->isEnd_) {
+		behaviorReq_ = State::Move;
 	}
-
-	if (atkState_ == ATKState::ATK) {
-		if (!ATKAnimationSetup_) {
-			ATKAnimationSetup_ = true;
-			for (int partsNum = 0; partsNum < modelNum_; ++partsNum) {
-				
-
-				if (ATKConboCount == 1) {
-					AudioManager::PlaySoundData(punchSound_,0.05f);
-				}
-				else if (ATKConboCount == 2) {
-					AudioManager::PlaySoundData(kickSound_,0.05f);
-				}
-				else if (ATKConboCount == 3) {
-					AudioManager::PlaySoundData(drilSound_,0.05f);
-				}
-			}
-
-		}
-		else {
-
-			//予備動作中向き変更
-			Vector3 move{};
-			//データ
-			move = input_->GetWASD();
-			if (input_->IsControllerActive()) {
-				move = input_->GetjoyStickLV3();
-			}
-
-			move.SetNormalize();
-			//カメラ方向に向ける
-			move = TransformNormal(move, camera_->GetMainCamera().matWorld_);
-			move.y = 0;
-
-			if (move != Vector3(0, 0, 0)) {
-				world_.rotate_.y = GetYRotate({ move.x,move.z })+((float)std::numbers::pi);
-
-				move *= ATKData_.spd;
-
-				world_.translate_ += move;
-			}
-			else {
-				Vector3 offset = { 0,0,1 };
-				offset = TransformNormal(offset, camera_->GetMainCamera().matWorld_);
-
-				world_.rotate_.y = GetYRotate({ offset.x,offset.z }) + ((float)std::numbers::pi);
-
-				offset *= ATKData_.spd;
-
-				offset.y = 0;
-
-				world_.translate_ += offset;
-			}
-
-
-			float t = (float)updateATKData_.count / (float)ATKData_.AttackTime;
-
-			
-
-			updateATKData_.count++;
-			//条件を満たしたら次の状態へ
-			if (updateATKData_.count >= ATKData_.AttackTime) {
-				
-
-				atkState_ = ATKState::Rigor;
-				updateATKData_.count = 0;
-				ATKAnimationSetup_ = false;
-			}
-
-		}
-	}
-
-	if (atkState_ == ATKState::Rigor) {
-		updateATKData_.count++;
-		//条件を満たしたら次の状態へ
-		if (updateATKData_.count >= ATKData_.RigorTime) {
-#pragma region 条件によるシーン転換
-
-			if (ATKConboCount == 1) {
-				AudioManager::StopSound(punchSound_);
-			}
-			else if (ATKConboCount == 2) {
-				AudioManager::StopSound(kickSound_);
-			}
-			else if (ATKConboCount == 3) {
-				AudioManager::StopSound(drilSound_);
-			}
-
-
-			//攻撃入力フラグONスタミナコスト十分
-			if (updateATKData_.nextATK && 
-				nowATKState_!=kATK3 &&
-				ATKData_.ATKDerivation.size() != 0&&
-				data_.stamina.currentStamina >= data_.stamina.atkCost) {
-
-
-					ATKData_ = ATKData_.ATKDerivation[0];
-
-					updateATKData_ = ATKUpdateData{};
-					ATKAnimationSetup_ = false;
-					atkState_ = ATKState::Extra;
-
-					ATKConboCount++;
-
-					if (nowATKState_ == kATK1) {
-						nowATKState_ = kATK2;
-						model_->ChangeAnimation(1, 5);
-					}
-					else if (nowATKState_ == kATK2) {
-						nowATKState_ = kATK3;
-						model_->ChangeAnimation(2, 5);
-					}
-
-					data_.stamina.currentStamina -= data_.stamina.atkCost;
-					data_.stamina.currentCharge = 0;
-
-
-					atkCollider_->isActive_ = true;
-				
-			}
-			else {
-				//移動状態に変更
-				behaviorReq_ = State::Move;
-				ATKConboCount = 0;
-
-
-				atkCollider_->isActive_ = false;
-			}
-#pragma endregion
-
-		}
-	}
-#pragma endregion
-
-#pragma region 実行中のキー入力受付
-
-	if (input_->IsTriggerButton(kButtonB) || input_->TriggerKey(DIK_Z)) {
-		updateATKData_.nextATK = true;
-	}
-#pragma endregion
-
-
-
-
 }
 
 void ALPlayer::UpdateHitAction() {

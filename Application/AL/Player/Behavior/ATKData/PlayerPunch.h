@@ -30,31 +30,31 @@ private://パラメータ
 	struct Com1
 	{
 		//開始交直
-		float stStiffnessSec = 1.0f;
+		float stStiffnessSec = 0.2f;
 		//攻撃状態
-		float atkSec = 1.0f;
+		float atkSec = 0.2f;
 		//攻撃終了交直
-		float edStiffnessSec = 1.0f;
+		float edStiffnessSec = 0.2f;
 	};
 
 	struct Com2
 	{
 		//開始交直
-		float stStiffnessSec = 1.0f;
+		float stStiffnessSec = 0.3f;
 		//攻撃状態
-		float atkSec = 1.0f;
+		float atkSec = 0.2f;
 		//攻撃終了交直
-		float edStiffnessSec = 1.0f;
+		float edStiffnessSec = 0.3f;
 	};
 
 	struct Com3
 	{
 		//開始交直
-		float stStiffnessSec = 1.0f;
+		float stStiffnessSec = 0.4f;
 		//攻撃状態
-		float atkSec = 1.0f;
+		float atkSec = 0.3f;
 		//攻撃終了交直
-		float edStiffnessSec = 1.0f;
+		float edStiffnessSec = 0.4f;
 	};
 
 	struct Parameters {
@@ -86,4 +86,11 @@ private://パラメータ
 	AtkState state_=St;
 
 	Parameters parameters_ = Parameters{};
+
+	//音のデータポインタ
+	int punchSound_;
+
+	int kickSound_;
+
+	int drilSound_;
 };

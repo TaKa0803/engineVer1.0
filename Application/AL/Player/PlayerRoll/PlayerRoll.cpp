@@ -41,14 +41,18 @@ void PlayerRoll::Initialize()
 	data_.stPos = player_->world_.GetWorldTranslate();	
 	data_.currentStop = 0;
 
-	player_->SetAnimation((int)AnimationData::Roll, 0, 1.0f, false);
+	player_->SetAnimation((int)AnimationData::Roll, 0.1f, 1.0f, false);
+	//player_->SetAnimeTime(true);
 }
 
 void PlayerRoll::Update()
 {
+	//初期位置との距離
+	float leng = Vector3{ data_.stPos - player_->world_.GetWorldTranslate() }.GetLength();
 
 	//もし指定量以上移動したら減速
-	if (Vector3{ data_.stPos - player_->world_.GetWorldTranslate() }.GetLength() >= data_.length) {
+	if (leng >= data_.length) {
+
 
 		//カウント量で段々速度低下
 		Vector3 ve = Lerp(player_->data_.velo_, { 0,0,0 }, data_.currentStop);
@@ -62,6 +66,16 @@ void PlayerRoll::Update()
 			player_->behaviorReq_ = ALPlayer::State::Move;
 			player_->data_.velo_.SetZero();
 		}
+		else {
+			float t = data_.currentStop / data_.stopSec;
+			player_->SetAnimeTime(true, t);
+			player_->SetAnimation(RollEnd, 0, 1, false);
+		}
+	}
+	else {
+		//アニメーション進行
+		float t = leng / data_.length;
+		player_->SetAnimeTime(true,t);
 	}
 }
 

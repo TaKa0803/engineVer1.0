@@ -84,6 +84,7 @@ void Model::UpdateAnimation()
 					animationTime_ = modelData_.animation[animeNum_].duration;
 				}
 			}
+
 			//マイナス領域の時の処理
 			if (animationRoopSecond_ < 0) {
 
@@ -268,6 +269,8 @@ void Model::Initialize(
 	skinningCS_ = std::make_unique<SkinningCS>();
 	skinningCS_->Initialize(modelData_);
 	//EndInitialize
+
+	
 }
 
 void Model::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime)
@@ -275,7 +278,7 @@ void Model::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float
 	//補完処理
 	float t = 0;
 	if (isSupplementation_) {
-		supplementationCount_++;
+		supplementationCount_+=(float)DeltaTimer::deltaTime_;
 		t = supplementationCount_ / maxSupplementationCount_;
 		if (t >= 1.0f) {
 			t = 1.0f;
@@ -430,13 +433,12 @@ void Model::ChangeAnimation(int animeNum, float count)
 			//各ジョイント位置保存
 			savedT.clear();
 			for (Joint& joint : modelData_.skeleton.joints) {
-
 				QuaterinionWorldTransform newd;
 				newd = joint.transform;
 				savedT.emplace_back(newd);
 			}
 
-
+			//
 			supplementationCount_ = 0;
 			maxSupplementationCount_ = count;
 		}

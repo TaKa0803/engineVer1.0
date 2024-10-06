@@ -52,7 +52,7 @@ public:
 	/// </summary>
 	/// <param name="animeNum">番号</param>
 	/// <param name="count">変わりきるまでの速度</param>
-	void ChangeAnimation(int animeNum, float count);
+	void ChangeAnimation(int animeNum, float sec);
 
 	//アニメーションループフラグ
 	void SetAnimationRoop(bool isLoop) { isAnimeRoop_ = isLoop; };
@@ -221,7 +221,7 @@ private:
 
 	//カウント変数
 	float supplementationCount_ = 0;
-	//
+	//補完カウント
 	float maxSupplementationCount_;
 	//過去アニメーション
 	std::vector<QuaterinionWorldTransform> savedT;
