@@ -279,7 +279,23 @@ bool ALPlayer::GetATKInput()
 
 bool ALPlayer::GetRollInput()
 {
-	return input_->TriggerKey(DIK_SPACE);
+
+	int ans = input_->TriggerKey(DIK_SPACE);
+
+	if (input_->IsControllerActive()) {
+		ans += input_->IsPushButton(kButtonA);
+	}
+
+	return ans;
+}
+
+bool ALPlayer::GetDashInput()
+{
+	int ans = input_->PushKey(DIK_LSHIFT);
+	if (input_->IsControllerActive()) {
+		ans += input_->IsPushButton(kButtonX);
+	}
+	return ans;
 }
 
 void ALPlayer::Move() {
@@ -298,7 +314,7 @@ void ALPlayer::Move() {
 	move *= data_.spd_;
 
 	//ダッシュキー併用で速度アップ
-	if (isMoveInput && input_->PushKey(DIK_LSHIFT) && data_.stamina.currentStamina >= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_) {
+	if (isMoveInput && GetDashInput() && data_.stamina.currentStamina >= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_) {
 
 		isDash = true;
 

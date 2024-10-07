@@ -91,6 +91,8 @@ public:
 	//回転入力の処理まとめ
 	bool GetRollInput();
 
+	bool GetDashInput();
+
 	enum class State {
 		Move,		//移動
 		Rolling,    //ローリング 
