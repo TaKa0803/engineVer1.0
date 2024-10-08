@@ -5,16 +5,16 @@
 #include"AL/CirccleShadow/CirccleShadow.h"
 #include"SphereCollider/SphereCollider.h"
 
-#include"AL/ALBoss/Idle/BossIdle.h"
-#include"AL/ALBoss/Move/BossMove.h"
-#include"AL/ALBoss/ATK/BossATK.h"
+#include"AL/Boss/Idle/BossIdle.h"
+#include"AL/Boss/Move/BossMove.h"
+#include"AL/Boss/ATK/BossATK.h"
 
-class ALBoss : public GameObject {
+class Boss : public GameObject {
 
 
 public:
-	ALBoss(ALPlayer* player);
-	~ALBoss();
+	Boss(ALPlayer* player);
+	~Boss();
 
 	void Initilaize();
 
@@ -52,10 +52,10 @@ public://状態管理
 private://状態管理
 
 	//状態ごとの初期化テーブル
-	static void (ALBoss::* BehaviorInitialize[])();
+	static void (Boss::* BehaviorInitialize[])();
 
 	//状態ごとの更新テーブル
-	static void (ALBoss::* BehaviorUpdate[])();
+	static void (Boss::* BehaviorUpdate[])();
 
 #pragma region 各状態
 	void InitIdle();
@@ -82,7 +82,7 @@ private://**変数
 	//各処理
 	std::unique_ptr<BossIdle>idle_;
 	std::unique_ptr<BossMove>move_;
-	std::unique_ptr<BossATK>atk_;
+	std::unique_ptr<BossATKManager>atk_;
 	
 
 	std::unique_ptr<SphereCollider>atkCollider_;

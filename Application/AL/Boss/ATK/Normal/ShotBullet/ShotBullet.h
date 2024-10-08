@@ -2,7 +2,7 @@
 #include"Vector3.h"
 #include<optional>
 
-class ALBoss;
+class Boss;
 
 struct BulletData
 {
@@ -12,14 +12,14 @@ struct BulletData
 class ShotBullet {
 
 public:
-	ShotBullet(ALBoss* boss);
+	ShotBullet(Boss* boss);
 	~ShotBullet();
 
 	void Init();
 
 	void Update();
 
-	ALBoss* boss_;
+	Boss* boss_;
 
 private://動きの処理
 

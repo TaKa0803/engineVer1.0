@@ -1,12 +1,12 @@
 #pragma once
 
-class ALBoss;
+class Boss;
 
 //様子見移動
 class BossMove {
 public:
 
-	BossMove(ALBoss* boss);
+	BossMove(Boss* boss);
 	~BossMove() = default;
 
 	void Initialize();
@@ -15,7 +15,7 @@ public:
 
 private:
 
-	ALBoss* boss_;
+	Boss* boss_;
 
 	struct Data
 	{

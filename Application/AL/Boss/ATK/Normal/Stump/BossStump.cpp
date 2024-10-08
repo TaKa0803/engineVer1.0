@@ -1,54 +1,24 @@
-#include "BossNormalStump.h"
+#include "BossStump.h"
 #include"DeltaTimer/DeltaTimer.h"
-#include"AL/ALBoss/ALBoss.h"
+#include"AL/Boss/Boss.h"
 
-BossNormalStump::BossNormalStump(ALBoss* boss)
+BossStump::BossStump()
 {
-	boss_ = boss;
+	
 }
 
-void BossNormalStump::Initialize()
+void BossStump::Init()
 {
-	//エイム処理からスタート
-	behaviReq_ =AIMing;
-
-	isFinished_ = false;
+	InitIATK();
 }
 
-void BossNormalStump::Update()
+void BossStump::Update()
 {
-	//状態の初期化処理
-	if (behaviReq_) {
-		behavior_ = behaviReq_.value();
-		behaviReq_ = std::nullopt;
-
-		//実際の初期化処理
-		(this->*behaviorInit[(int)behavior_])();
-	}
-
-	//状態の更新
-	(this->*behaviorUpdate[(int)behavior_])();
+	BehaviorUpdating();
 }
 
-//関数群
-void (BossNormalStump::* BossNormalStump::behaviorInit[])() {
-	& BossNormalStump::InitAIMing,
-	& BossNormalStump::InitWarning,
-	& BossNormalStump::InitStump,
-	& BossNormalStump::InitStiffness,
-	& BossNormalStump::InitBack
-};
-//関数群
-void (BossNormalStump::* BossNormalStump::behaviorUpdate[])() {
-	& BossNormalStump::UpdateAIMing,
-	& BossNormalStump::UpdateWarning,
-	& BossNormalStump::UpdateStump,
-	& BossNormalStump::UpdateStiffness,
-	& BossNormalStump::UpdateBack
-
-};
-
-void BossNormalStump::InitAIMing()
+#pragma region 各状態初期化
+void BossStump::InitAIMing()
 {
 	//使用する変数を初期化
 	data_.currentCount = 0.0f;
@@ -57,42 +27,44 @@ void BossNormalStump::InitAIMing()
 	data_.aim.stPos = boss_->world_.translate_;
 }
 
-void BossNormalStump::InitWarning()
+void BossStump::InitWarning()
 {
 	data_.currentCount = 0.0f;
 }
 
-void BossNormalStump::InitStump()
+void BossStump::InitATK()
 {
 	data_.currentCount = 0.0f;
 }
 
-void BossNormalStump::InitStiffness()
+void BossStump::InitStiffness()
 {
 	data_.currentCount = 0.0f;
 }
 
-void BossNormalStump::InitBack()
+void BossStump::InitBack()
 {
 	data_.currentCount = 0.0f;
 }
+#pragma endregion
 
-void BossNormalStump::UpdateAIMing()
+#pragma region 各状態更新
+void BossStump::UpdateAIMing()
 {
 	AIMData& aim = data_.aim;
 	//値の加算処理
 	data_.currentCount += (float)DeltaTimer::deltaTime_;
 
 	//高さの処理
-	float hT = data_.currentCount  / aim.goTopSec;
+	float hT = data_.currentCount / aim.goTopSec;
 	if (hT > 1.0f) {
 		hT = 1.0f;
 	}
 	//高さを取得
 	float height = Lerp(aim.stPos.y, boss_->GetPlayerWorldTranslate().y + aim.height, hT);
-	
+
 	//横移動の値
-	float wT = data_.currentCount  / aim.xzSetSec;
+	float wT = data_.currentCount / aim.xzSetSec;
 	if (wT > 1.0f) {
 		wT = 1.0f;
 	}
@@ -115,20 +87,19 @@ void BossNormalStump::UpdateAIMing()
 	}
 }
 
-void BossNormalStump::UpdateWarning()
+void BossStump::UpdateWarning()
 {
 	//値の加算処理
 	data_.currentCount += (float)DeltaTimer::deltaTime_;
 
 	if (data_.currentCount >= data_.warning.maxWarning) {
-		behaviReq_ = Stump;
+		behaviReq_ = ATK;
 	}
 }
 
-void BossNormalStump::UpdateStump()
+void BossStump::UpdateATK()
 {
-
-	boss_->world_.translate_ += data_.stump.velo * data_.stump.spd*(float)DeltaTimer::deltaTime_;
+	boss_->world_.translate_ += data_.stump.velo * data_.stump.spd * (float)DeltaTimer::deltaTime_;
 
 	if (boss_->world_.translate_.y < 0) {
 		boss_->world_.translate_.y = 0;
@@ -137,7 +108,7 @@ void BossNormalStump::UpdateStump()
 	}
 }
 
-void BossNormalStump::UpdateStiffness()
+void BossStump::UpdateStiffness()
 {
 	//値の加算処理
 	data_.currentCount += (float)DeltaTimer::deltaTime_;
@@ -145,10 +116,9 @@ void BossNormalStump::UpdateStiffness()
 	if (data_.currentCount >= data_.stiffnrss.stifnessSec) {
 		behaviReq_ = Back;
 	}
-
 }
 
-void BossNormalStump::UpdateBack()
+void BossStump::UpdateBack()
 {
 	//値の加算処理
 	data_.currentCount += (float)DeltaTimer::deltaTime_;
@@ -158,3 +128,7 @@ void BossNormalStump::UpdateBack()
 		boss_->isFinishedATK_ = true;
 	}
 }
+#pragma endregion
+
+
+

@@ -1,8 +1,11 @@
-#include "IScene.h"
+#include"IScene/IScene.h"
 
-//初期シーンの設定
-int IScene::sceneNo = TITLE;
+int IScene::sceneNo = 0;
+
+bool IScene::leaveGame = false;
 
 IScene::~IScene() {}
 
 int IScene::GetSceneNo() { return sceneNo; }
+
+void IScene::SetSceneNo(int num) { sceneNo = num; }

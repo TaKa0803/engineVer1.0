@@ -1,12 +1,12 @@
 #pragma once
 
-class ALBoss;
+class Boss;
 
 //ボスの棒立ちor試案処理
 class BossIdle {
 public:
 
-	BossIdle(ALBoss* boss);
+	BossIdle(Boss* boss);
 	~BossIdle() = default;
 
 	void Initialize();
@@ -15,7 +15,7 @@ public:
 
 private:
 
-	ALBoss* boss_;
+	Boss* boss_;
 
 	struct Data
 	{

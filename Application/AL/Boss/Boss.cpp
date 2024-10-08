@@ -1,9 +1,11 @@
-#include "ALBoss.h"
+#include "Boss.h"
 #include"ImGuiManager/ImGuiManager.h"
+#include"AL/Boss//ATK/IATK/IATK.h"
 
-ALBoss::ALBoss(ALPlayer* player)
+Boss::Boss(ALPlayer* player)
 {
 	player_ = player;
+
 
 	//一回しかしない初期化情報
 	input_ = Input::GetInstance();
@@ -26,7 +28,7 @@ ALBoss::ALBoss(ALPlayer* player)
 
 	idle_ = std::make_unique<BossIdle>(this);
 	move_ = std::make_unique<BossMove>(this);
-	atk_ = std::make_unique<BossATK>(this);
+	atk_ = std::make_unique<BossATKManager>(this);
 
 
 	atkCollider_ = std::make_unique<SphereCollider>();
@@ -37,11 +39,11 @@ ALBoss::ALBoss(ALPlayer* player)
 }
 
 
-ALBoss::~ALBoss()
+Boss::~Boss()
 {
 }
 
-void ALBoss::Initilaize()
+void Boss::Initilaize()
 {
 	world_.Initialize();
 	world_.translate_ = { 0,0,10 };
@@ -51,7 +53,7 @@ void ALBoss::Initilaize()
 	isDead_ = false;
 }
 
-void ALBoss::Update()
+void Boss::Update()
 {
 #ifdef _DEBUG
 	ImGui::Begin("Boss");
@@ -84,19 +86,19 @@ void ALBoss::Update()
 	collider_->Update();
 }
 
-void (ALBoss::* ALBoss::BehaviorInitialize[])() = {
-	&ALBoss::InitIdle,
-	&ALBoss::InitMove,
-	&ALBoss::InitATK
+void (Boss::* Boss::BehaviorInitialize[])() = {
+	&Boss::InitIdle,
+	&Boss::InitMove,
+	&Boss::InitATK
 };
 
-void (ALBoss::* ALBoss::BehaviorUpdate[])() = {
-	&ALBoss::UpdateIdle,
-	&ALBoss::UpdateMove,
-	&ALBoss::UpdateATK
+void (Boss::* Boss::BehaviorUpdate[])() = {
+	&Boss::UpdateIdle,
+	&Boss::UpdateMove,
+	&Boss::UpdateATK
 };
 
-void ALBoss::Draw()
+void Boss::Draw()
 {
 	shadow_->Draw();
 	GameObject::Draw();
@@ -105,7 +107,7 @@ void ALBoss::Draw()
 	//atkCollider_->Draw();
 }
 
-void ALBoss::OnCollision()
+void Boss::OnCollision()
 {
 	HP_--;
 	if (HP_ <= 0) {
@@ -114,23 +116,23 @@ void ALBoss::OnCollision()
 
 }
 
-Vector3 ALBoss::GetBoss2PlayerDirection()
+Vector3 Boss::GetBoss2PlayerDirection()
 {
 	return player_->GetWorld().GetWorldTranslate() - world_.GetWorldTranslate();
 }
 
 #pragma region 各状態初期化と更新
-void ALBoss::InitIdle() { idle_->Initialize(); }
+void Boss::InitIdle() { idle_->Initialize(); }
 
-void ALBoss::InitMove() { move_->Initialize(); }
+void Boss::InitMove() { move_->Initialize(); }
 
-void ALBoss::InitATK() { atk_->Initialize(); atkCollider_->isActive_ = true; }
+void Boss::InitATK() { atk_->Initialize(); atkCollider_->isActive_ = true; }
 
-void ALBoss::UpdateIdle() { idle_->Update(); }
+void Boss::UpdateIdle() { idle_->Update(); }
 
-void ALBoss::UpdateMove() { move_->Update(); }
+void Boss::UpdateMove() { move_->Update(); }
 
-void ALBoss::UpdateATK() { atk_->Update(); }
+void Boss::UpdateATK() { atk_->Update(); }
 
 
 #pragma endregion

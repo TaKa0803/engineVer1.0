@@ -1,9 +1,9 @@
 #include "BossIdle.h"
-#include"AL/ALBoss/ALBoss.h"
+#include"AL/Boss/Boss.h"
 #include"DeltaTimer/DeltaTimer.h"
 #include"RandomNum/RandomNum.h"
 
-BossIdle::BossIdle(ALBoss* boss)
+BossIdle::BossIdle(Boss* boss)
 {
 	boss_ = boss;
 }
@@ -26,10 +26,10 @@ void BossIdle::Update()
 
 		//ランダムで攻撃か移動か変更
 		if (rand < 0.5f) {
-			boss_->behaviorReq_ = ALBoss::Behavior::MOVE;
+			boss_->behaviorReq_ = Boss::Behavior::MOVE;
 		}
 		else {
-			boss_->behaviorReq_ = ALBoss::Behavior::ATK;
+			boss_->behaviorReq_ = Boss::Behavior::ATK;
 			//boss_->behaviorReq_ = ALBoss::Behavior::MOVE;
 		}
 		

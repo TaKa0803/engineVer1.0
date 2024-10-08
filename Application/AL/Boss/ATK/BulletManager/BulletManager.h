@@ -8,11 +8,11 @@ struct BossBulletData {
 	Vector3 velo;
 };
 
-class ALBoss;
+class Boss;
 class BulletManager :public InstancingGameObject{
 public:
 
-	BulletManager(ALBoss* boss);
+	BulletManager(Boss* boss);
 	~BulletManager() = default;
 
 	void Init();

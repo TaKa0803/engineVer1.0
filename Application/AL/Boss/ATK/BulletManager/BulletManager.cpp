@@ -1,7 +1,7 @@
 #include "BulletManager.h"
 
 
-BulletManager::BulletManager(ALBoss* boss)
+BulletManager::BulletManager(Boss* boss)
 {
 	boss;
 

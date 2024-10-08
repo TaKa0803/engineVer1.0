@@ -110,15 +110,16 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Application\AL\ALBoss\ALBoss.cpp" />
-    <ClCompile Include="Application\AL\ALBoss\ATK\BulletManager\BulletManager.cpp" />
-    <ClCompile Include="Application\AL\ALBoss\ATK\Normal\BossNormal.cpp" />
-    <ClCompile Include="Application\AL\ALBoss\ATK\BossATK.cpp" />
-    <ClCompile Include="Application\AL\ALBoss\ATK\Normal\Charge\BossCharge.cpp" />
-    <ClCompile Include="Application\AL\ALBoss\ATK\Normal\ShotBullet\ShotBullet.cpp" />
-    <ClCompile Include="Application\AL\ALBoss\ATK\Normal\Stump\BossNormalStump.cpp" />
-    <ClCompile Include="Application\AL\ALBoss\Idle\BossIdle.cpp" />
-    <ClCompile Include="Application\AL\ALBoss\Move\BossMove.cpp" />
+    <ClCompile Include="Application\AL\Boss\ATK\Normal\Charge\BossCharge.cpp" />
+    <ClCompile Include="Application\AL\Boss\Boss.cpp" />
+    <ClCompile Include="Application\AL\Boss\ATK\BulletManager\BulletManager.cpp" />
+    <ClCompile Include="Application\AL\Boss\ATK\IATK\IATK.cpp" />
+    <ClCompile Include="Application\AL\Boss\ATK\Normal\BossNormalATKManager.cpp" />
+    <ClCompile Include="Application\AL\Boss\ATK\BossATK.cpp" />
+    <ClCompile Include="Application\AL\Boss\ATK\Normal\Stump\BossStump.cpp" />
+    <ClCompile Include="Application\AL\Boss\ATK\Normal\ShotBullet\ShotBullet.cpp" />
+    <ClCompile Include="Application\AL\Boss\Idle\BossIdle.cpp" />
+    <ClCompile Include="Application\AL\Boss\Move\BossMove.cpp" />
     <ClCompile Include="Application\AL\ALScene\ALGameScene.cpp" />
     <ClCompile Include="Application\AL\ALScene\ALTitleScene.cpp" />
     <ClCompile Include="Application\AL\ALScene\GameOverScene.cpp" />
@@ -142,8 +143,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\GameScene\GameScene.cpp" />
     <ClCompile Include="Application\SceneManager\SceneManager.cpp" />
     <ClCompile Include="Application\Scenes\DebugScene.cpp" />
-    <ClCompile Include="Application\Scenes\IScene.cpp" />
-    <ClCompile Include="Application\Scenes\MT4Scene.cpp" />
+    <ClCompile Include="Application\IScene\IScene.cpp" />
     <ClCompile Include="Engine\2d\SpriteManager\SpriteManager.cpp" />
     <ClCompile Include="Engine\2d\SpritePSO\SpritePSO.cpp" />
     <ClCompile Include="Engine\3d\Collider\ColliderOBB\OBBCollider.cpp" />
@@ -373,15 +373,16 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application\AL\ALBoss\ALBoss.h" />
-    <ClInclude Include="Application\AL\ALBoss\ATK\BulletManager\BulletManager.h" />
-    <ClInclude Include="Application\AL\ALBoss\ATK\Normal\BossNormal.h" />
-    <ClInclude Include="Application\AL\ALBoss\ATK\BossATK.h" />
-    <ClInclude Include="Application\AL\ALBoss\ATK\Normal\Charge\BossCharge.h" />
-    <ClInclude Include="Application\AL\ALBoss\ATK\Normal\ShotBullet\ShotBullet.h" />
-    <ClInclude Include="Application\AL\ALBoss\ATK\Normal\Stump\BossNormalStump.h" />
-    <ClInclude Include="Application\AL\ALBoss\Idle\BossIdle.h" />
-    <ClInclude Include="Application\AL\ALBoss\Move\BossMove.h" />
+    <ClInclude Include="Application\AL\Boss\ATK\Normal\Charge\BossCharge.h" />
+    <ClInclude Include="Application\AL\Boss\Boss.h" />
+    <ClInclude Include="Application\AL\Boss\ATK\BulletManager\BulletManager.h" />
+    <ClInclude Include="Application\AL\Boss\ATK\IATK\IATK.h" />
+    <ClInclude Include="Application\AL\Boss\ATK\Normal\BossNormalATKManager.h" />
+    <ClInclude Include="Application\AL\Boss\ATK\BossATK.h" />
+    <ClInclude Include="Application\AL\Boss\ATK\Normal\Stump\BossStump.h" />
+    <ClInclude Include="Application\AL\Boss\ATK\Normal\ShotBullet\ShotBullet.h" />
+    <ClInclude Include="Application\AL\Boss\Idle\BossIdle.h" />
+    <ClInclude Include="Application\AL\Boss\Move\BossMove.h" />
     <ClInclude Include="Application\AL\ALScene\ALGameScene.h" />
     <ClInclude Include="Application\AL\ALScene\ALTitleScene.h" />
     <ClInclude Include="Application\AL\ALScene\GameOverScene.h" />
@@ -404,9 +405,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\AL\Plane\Plane.h" />
     <ClInclude Include="Application\Effect\Impact\Impact.h" />
     <ClInclude Include="Application\GameScene\GameScene.h" />
+    <ClInclude Include="Application\IScene\IScene.h" />
     <ClInclude Include="Application\SceneManager\SceneManager.h" />
     <ClInclude Include="Application\Scenes\DebugScene.h" />
-    <ClInclude Include="Application\Scenes\MT4Scene.h" />
     <ClInclude Include="Engine\2d\SpriteManager\SpriteManager.h" />
     <ClInclude Include="Engine\2d\SpritePSO\SpritePSO.h" />
     <ClInclude Include="Engine\3d\Collider\ColliderOBB\OBBCollider.h" />

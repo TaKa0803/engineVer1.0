@@ -1,15 +1,15 @@
 #pragma once
-#include"AL/ALBoss/ATK/Normal/BossNormal.h"
+#include"AL/Boss/ATK/Normal/BossNormalATKManager.h"
 #include<iostream>
 
-class ALBoss;
+class Boss;
 
-//ボスの棒立ちor試案処理
-class BossATK {
+//ボスの攻撃管理クラス
+class BossATKManager {
 public:
 
-	BossATK(ALBoss* boss);
-	~BossATK() = default;
+	BossATKManager(Boss* boss);
+	~BossATKManager() = default;
 
 	//シーンでの初期化
 	void SceneInit();
@@ -20,7 +20,7 @@ public:
 
 private:
 
-	ALBoss* boss_;
+	Boss* boss_;
 
 private://**ボス攻撃タイプによる変化**//
 	enum ModeTypes {
@@ -32,14 +32,15 @@ private://**ボス攻撃タイプによる変化**//
 
 	ModeTypes modeType = Normal;
 
-	static void(BossATK::* TypeInit[]) ();
-	static void(BossATK::* TypeUpdate[]) ();
+	static void(BossATKManager::* TypeInit[]) ();
+	static void(BossATKManager::* TypeUpdate[]) ();
+
 
 	void InitNormal();
 	void UpdateNormal();
 
 	//通常状態の攻撃処理
-	std::unique_ptr<BossNormal>normal_;
+	std::unique_ptr<BossNormalATKManager>normal_;
 
 
 private://**変数**//

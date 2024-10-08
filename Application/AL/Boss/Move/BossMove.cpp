@@ -1,10 +1,10 @@
 #include "BossMove.h"
-#include"AL/ALBoss/ALBoss.h"
+#include"AL/Boss/Boss.h"
 #include"DeltaTimer/DeltaTimer.h"
 #include"RandomNum/RandomNum.h"
 #include<numbers>
 
-BossMove::BossMove(ALBoss* boss)
+BossMove::BossMove(Boss* boss)
 {
 	boss_ = boss;
 }
@@ -63,10 +63,10 @@ void BossMove::Update()
 		float rand = RandomNumber::Get(0.0f, 1.0f);
 
 		if (rand < 0.5f) {
-			boss_->behaviorReq_ = ALBoss::Behavior::IDLE;
+			boss_->behaviorReq_ = Boss::Behavior::IDLE;
 		}
 		else {
-			boss_->behaviorReq_ = ALBoss::Behavior::ATK;
+			boss_->behaviorReq_ = Boss::Behavior::ATK;
 			//boss_->behaviorReq_ = ALBoss::Behavior::IDLE;
 		}
 	}
