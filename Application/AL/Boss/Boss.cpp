@@ -2,14 +2,20 @@
 #include"ImGuiManager/ImGuiManager.h"
 #include"AL/Boss//ATK/IATK/IATK.h"
 
+#include<numbers>
+
 Boss::Boss(ALPlayer* player)
 {
+	//プレイヤーポインタ取得
 	player_ = player;
-
 
 	//一回しかしない初期化情報
 	input_ = Input::GetInstance();
 	input_->SetDeadLine(0.3f);
+
+	//弾マネージャのインスタンス取得
+	bulletM_ = BossBulletManager::GetInstance();
+	bulletM_->SetUp();
 
 	GameObject::Initialize("box");
 	model_->SetAnimationActive(true);
@@ -28,7 +34,7 @@ Boss::Boss(ALPlayer* player)
 
 	idle_ = std::make_unique<BossIdle>(this);
 	move_ = std::make_unique<BossMove>(this);
-	atk_ = std::make_unique<BossATKManager>(this);
+	atk_ = std::make_unique<BossATKTypeManager>(this);
 
 
 	atkCollider_ = std::make_unique<SphereCollider>();
@@ -39,12 +45,12 @@ Boss::Boss(ALPlayer* player)
 }
 
 
-Boss::~Boss()
-{
-}
 
-void Boss::Initilaize()
+
+void Boss::Init()
 {
+	bulletM_->Init();
+
 	world_.Initialize();
 	world_.translate_ = { 0,0,10 };
 	world_.scale_ = { 5,5,5 };
@@ -79,6 +85,7 @@ void Boss::Update()
 	//状態の更新
 	(this->*BehaviorUpdate[(int)behavior_])();
 
+	bulletM_->Update();
 	GameObject::Update();
 	shadow_->Update();
 
@@ -121,7 +128,18 @@ Vector3 Boss::GetBoss2PlayerDirection()
 	return player_->GetWorld().GetWorldTranslate() - world_.GetWorldTranslate();
 }
 
+void Boss::SetDirection2Player()
+{
+	//プレイヤー方向を見続ける
+	Vector3 direc = GetBoss2PlayerDirection();
+
+	if (direc != Vector3(0, 0, 0)) {
+		world_.rotate_.y = GetYRotate({ direc.x,direc.z }) + ((float)std::numbers::pi);
+	}
+}
+
 #pragma region 各状態初期化と更新
+
 void Boss::InitIdle() { idle_->Initialize(); }
 
 void Boss::InitMove() { move_->Initialize(); }

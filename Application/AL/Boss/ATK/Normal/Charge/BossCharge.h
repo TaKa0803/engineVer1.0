@@ -2,10 +2,11 @@
 #include"AL/Boss/ATK/IATK/IATK.h"
 #include"Vector3.h"
 
-class BossCharge1 : public IATK {
+class BossCharge : public IATK {
 public:
 
-	BossCharge1()=default;
+	BossCharge()=default;
+	~BossCharge() = default;
 
 	//void Init() override;
 	//void Update()override;

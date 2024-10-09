@@ -3,36 +3,36 @@
 #include"AL//Boss/Boss.h"
 #include<numbers>
 
-void BossCharge1::InitAIMing()
+void BossCharge::InitAIMing()
 {
 	currentCount_ = 0;
 }
 
-void BossCharge1::InitWarning()
+void BossCharge::InitWarning()
 {
 	currentCount_ = 0;
 	//ダッシュ方向指定
 	data_.dash.velo = Vector3{ boss_->GetPlayerWorldTranslate() - boss_->GetWorld().translate_ }.SetNormalize() * data_.dash.spd;
 }
 
-void BossCharge1::InitATK()
+void BossCharge::InitATK()
 {
 	currentCount_ = 0;
 	data_.dash.prePos = boss_->world_.translate_;
 	data_.dash.length = boss_->GetBoss2PlayerDirection().GetLength();
 }
 
-void BossCharge1::InitStiffness()
+void BossCharge::InitStiffness()
 {
 	currentCount_ = 0;
 }
 
-void BossCharge1::InitBack()
+void BossCharge::InitBack()
 {
 	currentCount_ = 0;
 }
 
-void BossCharge1::UpdateAIMing()
+void BossCharge::UpdateAIMing()
 {
 	//プレイヤー方向を見続ける
 	Vector3 direc = boss_->GetBoss2PlayerDirection();
@@ -47,7 +47,7 @@ void BossCharge1::UpdateAIMing()
 	}
 }
 
-void BossCharge1::UpdateWarning()
+void BossCharge::UpdateWarning()
 {
 	currentCount_ += (float)DeltaTimer::deltaTime_;
 	if (currentCount_ >= data_.warning.maxSec) {
@@ -55,7 +55,7 @@ void BossCharge1::UpdateWarning()
 	}
 }
 
-void BossCharge1::UpdateATK()
+void BossCharge::UpdateATK()
 {
 	//プレイヤー方向にダッシュ
 	boss_->world_.translate_ += data_.dash.velo * (float)DeltaTimer::deltaTime_;
@@ -69,7 +69,7 @@ void BossCharge1::UpdateATK()
 	}
 }
 
-void BossCharge1::UpdateStiffness()
+void BossCharge::UpdateStiffness()
 {
 	currentCount_ += (float)DeltaTimer::deltaTime_;
 	if (currentCount_ >= data_.warning.maxSec) {
@@ -87,6 +87,6 @@ void BossCharge1::UpdateStiffness()
 	}
 }
 
-void BossCharge1::UpdateBack()
+void BossCharge::UpdateBack()
 {
 }

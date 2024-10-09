@@ -5,11 +5,11 @@
 class Boss;
 
 //ボスの攻撃管理クラス
-class BossATKManager {
+class BossATKTypeManager {
 public:
 
-	BossATKManager(Boss* boss);
-	~BossATKManager() = default;
+	BossATKTypeManager(Boss* boss);
+	~BossATKTypeManager() = default;
 
 	//シーンでの初期化
 	void SceneInit();
@@ -19,7 +19,7 @@ public:
 	void Update();
 
 private:
-
+	//ボスのポインタ
 	Boss* boss_;
 
 private://**ボス攻撃タイプによる変化**//
@@ -32,8 +32,8 @@ private://**ボス攻撃タイプによる変化**//
 
 	ModeTypes modeType = Normal;
 
-	static void(BossATKManager::* TypeInit[]) ();
-	static void(BossATKManager::* TypeUpdate[]) ();
+	static void(BossATKTypeManager::* TypeInit[]) ();
+	static void(BossATKTypeManager::* TypeUpdate[]) ();
 
 
 	void InitNormal();

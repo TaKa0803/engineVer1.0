@@ -30,12 +30,14 @@ public:
 
 
 public://状態のデータ
+	//各状態の初期化
 	virtual void InitAIMing() = 0;
 	virtual void InitWarning() = 0;
 	virtual void InitATK() = 0;
 	virtual void InitStiffness() = 0;
 	virtual void InitBack() = 0;
 
+	//各状態の更新
 	virtual void UpdateAIMing() = 0;
 	virtual void UpdateWarning() = 0;
 	virtual void UpdateATK() = 0;
@@ -57,11 +59,11 @@ public://**変数
 	//各状態の待機時間（利用しなくても可
 	struct BehaviorCountSec
 	{
-		float aimingSec;
-		float warningSec;
-		float ATKSec;
-		float stiffnessSec;
-		float backSec;
+		float aimingSec;		//AIM状態の時間
+		float warningSec;		//Warning状態の時間
+		float ATKSec;			//ATK状態の時間
+		float stiffnessSec;		//Stiffness状態の時間
+		float backSec;			//終了状態の時間
 	}parameters_;
 
 	//経過カウント

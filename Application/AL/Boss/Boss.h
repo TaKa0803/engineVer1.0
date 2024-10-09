@@ -7,48 +7,79 @@
 
 #include"AL/Boss/Idle/BossIdle.h"
 #include"AL/Boss/Move/BossMove.h"
-#include"AL/Boss/ATK/BossATK.h"
+#include"AL/Boss/ATK/BossATKTypeManager.h"
+#include"AL/Boss/BulletManager/BossBulletManager.h"
 
+//ボスクラス
 class Boss : public GameObject {
 
+public://パブリック変数：状態管理関係
 
-public:
-	Boss(ALPlayer* player);
-	~Boss();
-
-	void Initilaize();
-
-	void Update();
-
-	void Draw();
-
-	//攻撃ヒット時の処理
-	void OnCollision();
-
-	SphereCollider& GetBodyCollider()& { return *collider_.get(); }
-
-	SphereCollider& GetATKCollider()& { return *atkCollider_.get(); }
-
-	//プレイヤー方向への向きベクトルを取得
-	Vector3 GetBoss2PlayerDirection();
-
-	Vector3 GetPlayerWorldTranslate() { return player_->GetWorld().GetWorldTranslate(); };
-public://状態管理
-#pragma region 状態
-
-	enum Behavior {
+	//ボスの状態
+	enum class Behavior {
 		IDLE,	//待機状態
 		MOVE,	//移動
 		ATK,    //攻撃
 		_CountBehavior
 	};
 
-	//プレイヤーの状態
-	Behavior behavior_ = Behavior::IDLE;
-	//状態リクエスト
-	std::optional<Behavior>behaviorReq_ = std::nullopt;
-
+	//攻撃終了感知フラグ
 	bool isFinishedATK_ = false;
+
+public://パブリック関数
+	Boss(ALPlayer* player);
+	~Boss()=default;
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Init();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw();
+
+	//攻撃ヒット時の処理
+	void OnCollision();
+
+public://ゲッター
+
+	//体コライダー取得
+	SphereCollider& GetBodyCollider()& { return *collider_.get(); }
+
+	//攻撃用コライダー取得
+	SphereCollider& GetATKCollider()& { return *atkCollider_.get(); }
+
+	/// <summary>
+	/// プレイヤー方向への向きベクトルを取得
+	/// </summary>
+	/// <returns>プレイヤー方向の向きベクトル</returns>
+	Vector3 GetBoss2PlayerDirection();
+
+	/// <summary>
+	/// プレイヤーのワールド座標取得
+	/// </summary>
+	/// <returns></returns>
+	Vector3 GetPlayerWorldTranslate() { return player_->GetWorld().GetWorldTranslate(); };
+
+public://セッター
+
+	/// <summary>
+	/// 状態リクエスト送信
+	/// </summary>
+	/// <param name="behavior">リクエストしたい状態</param>
+	void SetBehavior(Behavior behavior) { behaviorReq_ = behavior; }
+
+	/// <summary>
+	/// プレイヤー方向を向く
+	/// </summary>
+	void SetDirection2Player();
 private://状態管理
 
 	//状態ごとの初期化テーブル
@@ -66,14 +97,22 @@ private://状態管理
 	void UpdateMove();
 	void UpdateATK();
 #pragma endregion
-
-#pragma endregion
 private://**参照
+
+	//入力
 	Input* input_ = nullptr;
 
+	//プレイヤー
 	ALPlayer*player_;
 
+	//弾マネージャ
+	BossBulletManager* bulletM_;
 private://**変数
+
+	//ボスーの状態
+	Behavior behavior_ = Behavior::IDLE;
+	//状態リクエスト
+	std::optional<Behavior>behaviorReq_ = std::nullopt;
 
 	std::unique_ptr<CirccleShadow>shadow_;
 
@@ -82,7 +121,7 @@ private://**変数
 	//各処理
 	std::unique_ptr<BossIdle>idle_;
 	std::unique_ptr<BossMove>move_;
-	std::unique_ptr<BossATKManager>atk_;
+	std::unique_ptr<BossATKTypeManager>atk_;
 	
 
 	std::unique_ptr<SphereCollider>atkCollider_;

@@ -15,7 +15,7 @@ BossNormalATKManager::BossNormalATKManager(Boss* boss)
 	typeArr_.resize((size_t)ATKType::CountOfATKData);
 
 	typeArr_[(int)ATKType::Stump] = std::make_unique<BossStump>();
-	typeArr_[(int)ATKType::Charge] = std::make_unique<BossCharge1>();
+	typeArr_[(int)ATKType::Charge] = std::make_unique<BossCharge>();
 
 }
 
@@ -45,8 +45,6 @@ void BossNormalATKManager::Update()
 {
 	//更新処理
 	typeArr_[(int)type_]->Update();
-
-
 }
 
 

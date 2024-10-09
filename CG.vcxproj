@@ -111,13 +111,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application\AL\Boss\ATK\Normal\Charge\BossCharge.cpp" />
+    <ClCompile Include="Application\AL\Boss\ATK\Normal\ShotBullet\BossShotBullet.cpp" />
     <ClCompile Include="Application\AL\Boss\Boss.cpp" />
-    <ClCompile Include="Application\AL\Boss\ATK\BulletManager\BulletManager.cpp" />
+    <ClCompile Include="Application\AL\Boss\BulletManager\BossBulletManager.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\IATK\IATK.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\Normal\BossNormalATKManager.cpp" />
-    <ClCompile Include="Application\AL\Boss\ATK\BossATK.cpp" />
+    <ClCompile Include="Application\AL\Boss\ATK\BossATKTypeManager.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\Normal\Stump\BossStump.cpp" />
-    <ClCompile Include="Application\AL\Boss\ATK\Normal\ShotBullet\ShotBullet.cpp" />
     <ClCompile Include="Application\AL\Boss\Idle\BossIdle.cpp" />
     <ClCompile Include="Application\AL\Boss\Move\BossMove.cpp" />
     <ClCompile Include="Application\AL\ALScene\ALGameScene.cpp" />
@@ -249,6 +249,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="resources\shaders\PostEffect\Bloom.PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="resources\shaders\PostEffect\CopyImage.PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -374,13 +380,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Boss\ATK\Normal\Charge\BossCharge.h" />
+    <ClInclude Include="Application\AL\Boss\ATK\Normal\ShotBullet\BossShotBullet.h" />
     <ClInclude Include="Application\AL\Boss\Boss.h" />
-    <ClInclude Include="Application\AL\Boss\ATK\BulletManager\BulletManager.h" />
+    <ClInclude Include="Application\AL\Boss\BulletManager\BossBulletManager.h" />
     <ClInclude Include="Application\AL\Boss\ATK\IATK\IATK.h" />
     <ClInclude Include="Application\AL\Boss\ATK\Normal\BossNormalATKManager.h" />
-    <ClInclude Include="Application\AL\Boss\ATK\BossATK.h" />
+    <ClInclude Include="Application\AL\Boss\ATK\BossATKTypeManager.h" />
     <ClInclude Include="Application\AL\Boss\ATK\Normal\Stump\BossStump.h" />
-    <ClInclude Include="Application\AL\Boss\ATK\Normal\ShotBullet\ShotBullet.h" />
     <ClInclude Include="Application\AL\Boss\Idle\BossIdle.h" />
     <ClInclude Include="Application\AL\Boss\Move\BossMove.h" />
     <ClInclude Include="Application\AL\ALScene\ALGameScene.h" />

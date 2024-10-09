@@ -4,11 +4,8 @@
 
 class BossStump : public IATK {
 public:
-
-	BossStump();
-
-	void Init() override;
-	void Update()override;
+	BossStump() = default;
+	~BossStump() = default;
 
 public://状態のデータ
 	void InitAIMing()override;
@@ -70,7 +67,6 @@ private:
 		StiffnessData stiffnrss;
 		BackData back;
 
-		float currentCount = 0.0f;
 
 	}data_{};
 };

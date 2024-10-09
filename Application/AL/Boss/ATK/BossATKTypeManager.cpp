@@ -1,25 +1,25 @@
-#include "BossATK.h"
+#include "BossATKTypeManager.h"
 #include"AL/Boss/Boss.h"
 
-BossATKManager::BossATKManager(Boss* boss)
+BossATKTypeManager::BossATKTypeManager(Boss* boss)
 {
 	boss_ = boss;
 	normal_ = std::make_unique<BossNormalATKManager>(boss);
 }
 
-void BossATKManager::SceneInit()
+void BossATKTypeManager::SceneInit()
 {
 	modeType = Normal;
 }
 
-void BossATKManager::Initialize()
+void BossATKTypeManager::Initialize()
 {
 	boss_->isFinishedATK_ = false;
 	//実際の初期化処理
 	(this->*TypeInit[(int)modeType])();
 }
 
-void BossATKManager::Update()
+void BossATKTypeManager::Update()
 {
 	//状態の更新
 	(this->*TypeUpdate[(int)modeType])();
@@ -29,23 +29,22 @@ void BossATKManager::Update()
 	if (boss_->isFinishedATK_) {
 		boss_->isFinishedATK_ = false;
 		//とりあえずの命令終了
-
-		boss_->behaviorReq_ = Boss::IDLE;
+		boss_->SetBehavior(Boss::Behavior::IDLE);
 	}
 }
 
 
 
-void (BossATKManager::* BossATKManager::TypeInit[])() {
-	&BossATKManager::InitNormal,
+void (BossATKTypeManager::* BossATKTypeManager::TypeInit[])() {
+	&BossATKTypeManager::InitNormal,
 };
-void (BossATKManager::* BossATKManager::TypeUpdate[])() {
-	&BossATKManager::UpdateNormal
+void (BossATKTypeManager::* BossATKTypeManager::TypeUpdate[])() {
+	&BossATKTypeManager::UpdateNormal
 };
 
 
 #pragma region 各状態の初期化と更新
-void BossATKManager::InitNormal() { normal_->Initialize(); }
-void BossATKManager::UpdateNormal() { normal_->Update(); }
+void BossATKTypeManager::InitNormal() { normal_->Initialize(); }
+void BossATKTypeManager::UpdateNormal() { normal_->Update(); }
 #pragma endregion
 

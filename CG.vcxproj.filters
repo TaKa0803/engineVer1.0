@@ -28,6 +28,7 @@
     <FxCompile Include="resources\shaders\ComputeShader\Particle.CS.hlsl" />
     <FxCompile Include="resources\shaders\ComputeShader\InitializeParticle.CS.hlsl" />
     <FxCompile Include="resources\shaders\ComputeShader\ParticleEmiter.CS.hlsl" />
+    <FxCompile Include="resources\shaders\PostEffect\Bloom.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\AL\Plane\Plane.cpp" />
@@ -125,16 +126,16 @@
     <ClCompile Include="Application\AL\CirccleShadow\CirccleShadow.cpp" />
     <ClCompile Include="Application\AL\Boss\Idle\BossIdle.cpp" />
     <ClCompile Include="Application\AL\Boss\Move\BossMove.cpp" />
-    <ClCompile Include="Application\AL\Boss\ATK\BossATK.cpp" />
+    <ClCompile Include="Application\AL\Boss\ATK\BossATKTypeManager.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\Normal\BossNormalATKManager.cpp" />
-    <ClCompile Include="Application\AL\Boss\ATK\Normal\ShotBullet\ShotBullet.cpp" />
-    <ClCompile Include="Application\AL\Boss\ATK\BulletManager\BulletManager.cpp" />
+    <ClCompile Include="Application\AL\Boss\BulletManager\BossBulletManager.cpp" />
     <ClCompile Include="Application\AL\Player\Behavior\PlayerATKManager\PlayerATKManager.cpp" />
     <ClCompile Include="Application\AL\Player\Behavior\ATKData\PlayerPunch.cpp" />
     <ClCompile Include="Application\AL\ALScene\GameOverScene.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\IATK\IATK.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\Normal\Stump\BossStump.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\Normal\Charge\BossCharge.cpp" />
+    <ClCompile Include="Application\AL\Boss\ATK\Normal\ShotBullet\BossShotBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -234,10 +235,9 @@
     <ClInclude Include="Application\AL\CirccleShadow\CirccleShadow.h" />
     <ClInclude Include="Application\AL\Boss\Idle\BossIdle.h" />
     <ClInclude Include="Application\AL\Boss\Move\BossMove.h" />
-    <ClInclude Include="Application\AL\Boss\ATK\BossATK.h" />
+    <ClInclude Include="Application\AL\Boss\ATK\BossATKTypeManager.h" />
     <ClInclude Include="Application\AL\Boss\ATK\Normal\BossNormalATKManager.h" />
-    <ClInclude Include="Application\AL\Boss\ATK\Normal\ShotBullet\ShotBullet.h" />
-    <ClInclude Include="Application\AL\Boss\ATK\BulletManager\BulletManager.h" />
+    <ClInclude Include="Application\AL\Boss\BulletManager\BossBulletManager.h" />
     <ClInclude Include="Application\AL\Player\Behavior\PlayerATKManager\PlayerATKManager.h" />
     <ClInclude Include="Application\AL\Player\Behavior\ATKData\PlayerPunch.h" />
     <ClInclude Include="Application\AL\ALScene\GameOverScene.h" />
@@ -245,6 +245,7 @@
     <ClInclude Include="Application\AL\Boss\ATK\Normal\Stump\BossStump.h" />
     <ClInclude Include="Application\IScene\IScene.h" />
     <ClInclude Include="Application\AL\Boss\ATK\Normal\Charge\BossCharge.h" />
+    <ClInclude Include="Application\AL\Boss\ATK\Normal\ShotBullet\BossShotBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

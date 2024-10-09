@@ -57,17 +57,17 @@ void BossMove::Update()
 
 	boss_->world_.translate_ += v.GetNormalizeNum()*data_.spdSec*(float)DeltaTimer::deltaTime_;
 
+
 	//カウント過ぎれば処理
 	data_.currentSec += (float)DeltaTimer::deltaTime_;
 	if (data_.currentSec >= data_.moveSec) {
 		float rand = RandomNumber::Get(0.0f, 1.0f);
 
 		if (rand < 0.5f) {
-			boss_->behaviorReq_ = Boss::Behavior::IDLE;
+			boss_->SetBehavior(Boss::Behavior::IDLE);
 		}
 		else {
-			boss_->behaviorReq_ = Boss::Behavior::ATK;
-			//boss_->behaviorReq_ = ALBoss::Behavior::IDLE;
+			boss_->SetBehavior(Boss::Behavior::ATK);
 		}
 	}
 }

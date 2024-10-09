@@ -72,7 +72,7 @@ void ALGameScene::Initialize() {
 
 	plane_->Initialize();
 
-	boss_->Initilaize();
+	boss_->Init();
 
 	followCamera_->Initialize();
 

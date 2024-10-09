@@ -26,11 +26,10 @@ void BossIdle::Update()
 
 		//ランダムで攻撃か移動か変更
 		if (rand < 0.5f) {
-			boss_->behaviorReq_ = Boss::Behavior::MOVE;
+			boss_->SetBehavior(Boss::Behavior::MOVE);
 		}
 		else {
-			boss_->behaviorReq_ = Boss::Behavior::ATK;
-			//boss_->behaviorReq_ = ALBoss::Behavior::MOVE;
+			boss_->SetBehavior(Boss::Behavior::ATK);
 		}
 		
 	}
