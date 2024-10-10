@@ -45,6 +45,9 @@ private:
 	/// </summary>
 	std::vector<std::unique_ptr<IScene>> sceneArr_;
 
+	/// <summary>
+	/// シーンの名前
+	/// </summary>
 	std::vector<std::string> sceneName_;
 
 

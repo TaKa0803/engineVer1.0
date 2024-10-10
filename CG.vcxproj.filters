@@ -136,6 +136,7 @@
     <ClCompile Include="Application\AL\Boss\ATK\Normal\Stump\BossStump.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\Normal\Charge\BossCharge.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\Normal\ShotBullet\BossShotBullet.cpp" />
+    <ClCompile Include="IState\IState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -246,6 +247,7 @@
     <ClInclude Include="Application\IScene\IScene.h" />
     <ClInclude Include="Application\AL\Boss\ATK\Normal\Charge\BossCharge.h" />
     <ClInclude Include="Application\AL\Boss\ATK\Normal\ShotBullet\BossShotBullet.h" />
+    <ClInclude Include="IState\IState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

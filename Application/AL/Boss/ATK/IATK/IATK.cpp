@@ -1,13 +1,12 @@
 #include "IATK.h"
+#include"DeltaTimer/DeltaTimer.h"
 
-bool IATK::isEnd_ = false;
+bool IBossATK::isEnd_ = false;
 
-Boss* IATK::boss_ = nullptr;
+Boss* IBossATK::boss_ = nullptr;
 
-void IATK::InitIATK()
+void IBossATK::InitIATK()
 {
-
-
 
 	//最初の状態に変更
 	behaviReq_ = AIMing;
@@ -17,7 +16,7 @@ void IATK::InitIATK()
 	isEnd_ = false;
 }
 
-void IATK::BehaviorUpdating()
+void IBossATK::UpdateBehavior()
 {
 	//状態の初期化処理
 	if (behaviReq_) {
@@ -25,41 +24,47 @@ void IATK::BehaviorUpdating()
 		behaviReq_ = std::nullopt;
 		//実際の初期化処理
 		(this->*behaviorInit[(int)behavior_])();
+
+		//カウント初期化
+		currentCount_ = 0;
 	}
+
+	//カウント増加
+	currentCount_ += (float)DeltaTimer::deltaTime_;
 
 	//状態の更新
 	(this->*behaviorUpdate[(int)behavior_])();
 }
 
-void IATK::SetBossPointer(Boss* boss)
+void IBossATK::SetBossPointer(Boss* boss)
 {
 	boss_ = boss;
 }
 
-void IATK::Init()
+void IBossATK::Init()
 {
 	//共通パラ初期化
 	InitIATK();
 }
 
-void IATK::Update()
+void IBossATK::Update()
 {
 	//更新
-	BehaviorUpdating();
+	UpdateBehavior();
 }
 
-void (IATK::* IATK::behaviorInit[])() {
-	& IATK::InitAIMing,
-	& IATK::InitWarning,
-	& IATK::InitATK,
-	& IATK::InitStiffness,
-	& IATK::InitBack
+void (IBossATK::* IBossATK::behaviorInit[])() {
+	& IBossATK::InitAIMing,
+	& IBossATK::InitWarning,
+	& IBossATK::InitATK,
+	& IBossATK::InitStiffness,
+	& IBossATK::InitBack
 };
 
-void(IATK::* IATK::behaviorUpdate[])() {
-	& IATK::UpdateAIMing,
-	& IATK::UpdateWarning,
-	& IATK::UpdateATK,
-	& IATK::UpdateStiffness,
-	& IATK::UpdateBack
+void(IBossATK::* IBossATK::behaviorUpdate[])() {
+	& IBossATK::UpdateAIMing,
+	& IBossATK::UpdateWarning,
+	& IBossATK::UpdateATK,
+	& IBossATK::UpdateStiffness,
+	& IBossATK::UpdateBack
 };

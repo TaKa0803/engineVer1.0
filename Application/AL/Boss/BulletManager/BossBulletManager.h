@@ -8,7 +8,7 @@ struct BossBulletData {
 	Vector3 velo;
 };
 
-class BossBulletManager :public InstancingGameObject{
+class BossBulletManager :private InstancingGameObject{
 
 public:
 	static BossBulletManager* GetInstance();
@@ -53,6 +53,15 @@ public:
 	/// <param name="co">弾群と判定を取るコライダー</param>
 	/// <returns></returns>
 	bool CheckCollision(const SphereCollider* co);
+
+public://ゲッター
+
+	/// <summary>
+	/// 弾の数取得
+	/// </summary>
+	/// <returns></returns>
+	int GetBulletCount() { return (int)datas_.size(); }
+
 private:
 
 	//データ群
@@ -63,9 +72,18 @@ private:
 		//コライダーデータ
 		std::unique_ptr<SphereCollider> collider;
 
+		//死ぬまでのカウント
+		float deadCount = 0;
+
 		//ヒットフラグ
 		bool ishit = false;
 	};
 
 	std::vector<std::unique_ptr<Datas>>datas_;
+
+private://パラメータ
+	float spd_=30.0f;
+
+	//死亡までの時間
+	float maxDeadSec_ = 1.0f;
 };

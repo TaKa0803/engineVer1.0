@@ -6,32 +6,11 @@
 #pragma region 各状態初期化
 void BossStump::InitAIMing()
 {
-	//使用する変数を初期化
-	currentCount_ = 0.0f;
-
 	//開始地点を取得
 	data_.aim.stPos = boss_->world_.translate_;
 }
 
-void BossStump::InitWarning()
-{
-	currentCount_ = 0.0f;
-}
 
-void BossStump::InitATK()
-{
-	currentCount_ = 0.0f;
-}
-
-void BossStump::InitStiffness()
-{
-	currentCount_ = 0.0f;
-}
-
-void BossStump::InitBack()
-{
-	currentCount_ = 0.0f;
-}
 #pragma endregion
 
 #pragma region 各状態更新
@@ -39,8 +18,6 @@ void BossStump::UpdateAIMing()
 {
 	//狙う処理の変数取得
 	AIMData& aim = data_.aim;
-	//値の加算処理
-	currentCount_ += (float)DeltaTimer::deltaTime_;
 
 	//高さの処理
 	float hT = currentCount_ / aim.goTopSec;
@@ -76,8 +53,6 @@ void BossStump::UpdateAIMing()
 
 void BossStump::UpdateWarning()
 {
-	//値の加算処理
-	currentCount_ += (float)DeltaTimer::deltaTime_;
 
 	if (currentCount_ >= data_.warning.maxWarning) {
 		behaviReq_ = ATK;
@@ -97,8 +72,6 @@ void BossStump::UpdateATK()
 
 void BossStump::UpdateStiffness()
 {
-	//値の加算処理
-	currentCount_ += (float)DeltaTimer::deltaTime_;
 
 	if (currentCount_ >= data_.stiffnrss.stifnessSec) {
 		behaviReq_ = Back;
@@ -107,8 +80,6 @@ void BossStump::UpdateStiffness()
 
 void BossStump::UpdateBack()
 {
-	//値の加算処理
-	currentCount_ += (float)DeltaTimer::deltaTime_;
 
 	if (currentCount_ >= data_.back.maxBackSec) {
 		//攻撃が終了したことを伝える

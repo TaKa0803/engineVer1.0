@@ -3,34 +3,21 @@
 #include"AL//Boss/Boss.h"
 #include<numbers>
 
-void BossCharge::InitAIMing()
-{
-	currentCount_ = 0;
-}
+
 
 void BossCharge::InitWarning()
 {
-	currentCount_ = 0;
 	//ダッシュ方向指定
 	data_.dash.velo = Vector3{ boss_->GetPlayerWorldTranslate() - boss_->GetWorld().translate_ }.SetNormalize() * data_.dash.spd;
 }
 
 void BossCharge::InitATK()
 {
-	currentCount_ = 0;
 	data_.dash.prePos = boss_->world_.translate_;
 	data_.dash.length = boss_->GetBoss2PlayerDirection().GetLength();
 }
 
-void BossCharge::InitStiffness()
-{
-	currentCount_ = 0;
-}
 
-void BossCharge::InitBack()
-{
-	currentCount_ = 0;
-}
 
 void BossCharge::UpdateAIMing()
 {
@@ -41,7 +28,6 @@ void BossCharge::UpdateAIMing()
 		boss_->world_.rotate_.y = GetYRotate({ direc.x,direc.z }) + ((float)std::numbers::pi);
 	}
 
-	currentCount_ += (float)DeltaTimer::deltaTime_;
 	if (currentCount_ >= data_.aim.maxSec) {
 		behaviReq_ = Warning;
 	}
@@ -49,7 +35,7 @@ void BossCharge::UpdateAIMing()
 
 void BossCharge::UpdateWarning()
 {
-	currentCount_ += (float)DeltaTimer::deltaTime_;
+
 	if (currentCount_ >= data_.warning.maxSec) {
 		behaviReq_ = ATK;
 	}
@@ -71,10 +57,9 @@ void BossCharge::UpdateATK()
 
 void BossCharge::UpdateStiffness()
 {
-	currentCount_ += (float)DeltaTimer::deltaTime_;
+
 	if (currentCount_ >= data_.warning.maxSec) {
 		boss_->isFinishedATK_ = true;
-		behaviReq_ = Back;
 	}
 	else {
 		float t = currentCount_ / data_.stiffness.sec;
@@ -87,6 +72,3 @@ void BossCharge::UpdateStiffness()
 	}
 }
 
-void BossCharge::UpdateBack()
-{
-}

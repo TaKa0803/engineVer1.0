@@ -2,7 +2,7 @@
 #include"AL/Boss/ATK/IATK/IATK.h"
 #include"Vector3.h"
 
-class BossCharge : public IATK {
+class BossCharge : public IBossATK {
 public:
 
 	BossCharge()=default;
@@ -12,17 +12,17 @@ public:
 	//void Update()override;
 
 public://状態のデータ
-	void InitAIMing()override;
+	void InitAIMing()override {};
 	void InitWarning()override;
 	void InitATK() override;
-	void InitStiffness() override;
-	void InitBack() override;
+	void InitStiffness() override {};
+	void InitBack() override {};
 
 	void UpdateAIMing() override;
 	void UpdateWarning() override;
 	void UpdateATK()  override;
 	void UpdateStiffness() override;
-	void UpdateBack()  override;
+	void UpdateBack()  override {};
 
 private://変数
 

@@ -57,6 +57,8 @@ void Boss::Init()
 	shadow_->SetShadowScale(GetAllScaleX(world_));
 	atk_->SceneInit();
 	isDead_ = false;
+
+	behaviorReq_ = Behavior::IDLE;
 }
 
 void Boss::Update()
@@ -109,6 +111,8 @@ void Boss::Draw()
 {
 	shadow_->Draw();
 	GameObject::Draw();
+
+	bulletM_->Draw();
 
 	collider_->Draw();
 	//atkCollider_->Draw();

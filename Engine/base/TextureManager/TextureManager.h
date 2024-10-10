@@ -55,6 +55,14 @@ public:
 	static ReturnData LoadTex(const std::string& filePath);
 
 	/// <summary>
+	/// resources/Texture/のショートパスで読み込み
+	/// </summary>
+	/// <param name="filePath">画像パス</param>
+	/// <returns></returns>
+	static ReturnData LoadTexShortPath(const std::string& filePath);
+
+
+	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="DXF_"></param>
@@ -87,10 +95,13 @@ private://メンバ関数
 	ReturnData GetDataFromPath(const std::string& path);
 private://メンバ変数
 
-	//
+	//インスタンス
 	DirectXFunc* DXF=nullptr;
 
+	//簡易パス
+	std::string shortPath_ = "resources/Texture/";
 
+	//画像データ
 	struct Texturedata {
 		//パスに対応したイテレータ番号
 		int texManagementNumber;

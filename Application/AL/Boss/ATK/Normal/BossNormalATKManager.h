@@ -22,6 +22,8 @@ private://参照してきたもの
 	Boss* boss_;
 
 private://**ノーマルの攻撃手段
+
+	//攻撃タイプ
 	enum class ATKType {
 		Stump,			//潰す攻撃
 		ShotBullet,		//弾発射
@@ -29,12 +31,11 @@ private://**ノーマルの攻撃手段
 		CountOfATKData
 	};
 
+	//攻撃タイプ
 	ATKType type_=ATKType::Stump;
 
-
-
 	//仮追加
-	std::vector<std::unique_ptr<IATK>> typeArr_;
+	std::vector<std::unique_ptr<IBossATK>> typeArr_;
 public:
 	bool isFinished_ = false;
 };

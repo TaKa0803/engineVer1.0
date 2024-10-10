@@ -3,7 +3,7 @@
 
 class Boss;
 
-class IATK {
+class IBossATK {
 
 protected:
 	//終了フラグ
@@ -12,22 +12,31 @@ protected:
 	static Boss* boss_;
 public:
 
-	//IATKの内容初期化(必要
+	/// <summary>
+	/// ボスポインタ取得（一回のみ
+	/// </summary>
+	/// <param name="boss"></param>
+	static void SetBossPointer(Boss* boss);
+
+	/// <summary>
+	/// IATKの内容初期化(必須
+	/// </summary>
 	void InitIATK();
 
-	//状態の初期化と更新(必須
-	void BehaviorUpdating();
+	/// <summary>
+	/// 状態の初期化と更新(必須
+	/// </summary>
+	void UpdateBehavior();
 
-	static void SetBossPointer(Boss*boss);
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	virtual void Init();
+
 	/// <summary>
 	/// 更新
 	/// </summary>
 	virtual void Update();
-
 
 public://状態のデータ
 	//各状態の初期化
@@ -53,7 +62,6 @@ public://**変数
 		CountOfATKBehavior
 	};
 
-	Behavior behavior_ = AIMing;
 	std::optional<Behavior>behaviReq_ = std::nullopt;
 
 	//各状態の待機時間（利用しなくても可
@@ -71,7 +79,11 @@ public://**変数
 
 
 private:
-	static void (IATK::* behaviorInit[])();
-	static void (IATK::* behaviorUpdate[])();
+	//現在の状態
+	Behavior behavior_ = AIMing;
+
+	//関数テーブル
+	static void (IBossATK::* behaviorInit[])();
+	static void (IBossATK::* behaviorUpdate[])();
 
 };

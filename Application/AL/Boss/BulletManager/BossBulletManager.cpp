@@ -1,5 +1,5 @@
 #include "BossBulletManager.h"
-
+#include"DeltaTimer/DeltaTimer.h"
 
 BossBulletManager* BossBulletManager::GetInstance()
 {
@@ -12,14 +12,12 @@ BossBulletManager* BossBulletManager::GetInstance()
 void BossBulletManager::SetUp()
 {
 	datas_.reserve(10);
-	InstancingGameObject::Initialize("bossBullet");
+	InstancingGameObject::Initialize("Wall");
 }
 
 void BossBulletManager::Init()
 {
-
 	datas_.clear();
-
 }
 
 void BossBulletManager::Update()
@@ -27,14 +25,31 @@ void BossBulletManager::Update()
 
 	//進んでワールド更新
 	for (auto& d : datas_) {
-		d->data.world.translate_ += d->data.velo;
-		d->data.world.UpdateMatrix();
 
-		d->collider->Update();
+		//死亡チェック
+		if (d->deadCount >= maxDeadSec_||d->ishit) {
+			d->ishit = true;
+		}
+		else {
+			//座標更新
+			d->data.world.translate_ += d->data.velo * (float)DeltaTimer::deltaTime_;
+			d->data.world.UpdateMatrix();
+			//コライダー更新
+			d->collider->Update();
+
+			//死亡カウント増加
+			d->deadCount += (float)DeltaTimer::deltaTime_;
+		}
 	}
 
+	//死亡済データ削除
 	datas_.erase(std::remove_if(datas_.begin(), datas_.end(),
-		[&](std::unique_ptr<Datas>& data) {if (data->ishit) { return true; }; return false; }),
+		[&](std::unique_ptr<Datas>& data) {
+			//ヒット判定フラグONで削除
+			if (data->ishit) {
+				return true; 
+			};
+			return false; }),
 		datas_.end());
 }
 
@@ -53,6 +68,8 @@ void BossBulletManager::SetData(const BossBulletData& data)
 
 	std::unique_ptr<Datas> newd = std::make_unique<Datas>();
 	newd->data = data;
+	newd->data.velo.SetNormalize();
+	newd->data.velo *= spd_;
 	newd->collider = std::make_unique<SphereCollider>();
 	newd->collider->Initialize("bossB",newd->data.world);
 	newd->collider->SetRadius(1.0f);

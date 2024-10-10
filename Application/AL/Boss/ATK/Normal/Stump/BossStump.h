@@ -2,17 +2,17 @@
 #include"AL/Boss/ATK/IATK/IATK.h"
 #include"Vector3.h"
 
-class BossStump : public IATK {
+class BossStump : public IBossATK {
 public:
 	BossStump() = default;
 	~BossStump() = default;
 
 public://状態のデータ
 	void InitAIMing()override;
-	void InitWarning()override;
-	void InitATK() override;
-	void InitStiffness() override;
-	void InitBack() override;
+	void InitWarning()override {};
+	void InitATK() override {};
+	void InitStiffness() override {};
+	void InitBack()override{};
 
 	void UpdateAIMing() override;
 	void UpdateWarning() override;

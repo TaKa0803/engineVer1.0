@@ -11,6 +11,7 @@
 #include"PostEffect/PEs/PEHSVFilter.h"
 #include"PostEffect/PEs/PEVignetting.h"
 #include"ColliderOBB/OBBCollider.h"
+#include"AL/Boss/BulletManager/BossBulletManager.h"
 
 ALGameScene::ALGameScene() {
 	input_ = Input::GetInstance();
@@ -21,7 +22,7 @@ ALGameScene::ALGameScene() {
 	followCamera_ = std::make_unique<FollowCamera>(&player_->GetWorld());
 
 	boss_ = std::make_unique<Boss>(player_.get());
-	IATK::SetBossPointer(boss_.get());
+	IBossATK::SetBossPointer(boss_.get());
 
 	gameUI_ = std::make_unique<GameUI>();
 
@@ -257,6 +258,11 @@ void ALGameScene::Collision() {
 		player_->OnCollision();
 		boss_->GetATKCollider().isActive_ = false;
 
+	}
+
+	//プレイヤーとボスの弾野と判定
+	if (BossBulletManager::GetInstance()->CheckCollision(player_->GetCollider())) {
+		player_->OnCollision();
 	}
 }
 

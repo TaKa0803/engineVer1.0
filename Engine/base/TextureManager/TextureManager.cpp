@@ -154,6 +154,28 @@ ReturnData TextureManager::LoadTex(const std::string& filePath)
 	}
 }
 
+ReturnData TextureManager::LoadTexShortPath(const std::string& filePath)
+{
+	DirectXFunc* DXF = DirectXFunc::GetInstance();
+
+	//パスがすでに呼ばれているかチェック
+	if (!TextureManager::GetInstance()->CheckSameData(filePath)) {
+
+		DirectX::ScratchImage mipImages = LoadTexture(filePath);
+
+
+
+		//入れた画像の管理番号を返す
+		return TextureManager::GetInstance()->CreateData(filePath, mipImages);
+
+	}
+	else {
+		//呼ばれている場合
+
+		return TextureManager::GetInstance()->GetDataFromPath(filePath);
+	}
+}
+
 
 ReturnData TextureManager::CreateData(const std::string& filePath,const DirectX::ScratchImage& mipImages) {
 

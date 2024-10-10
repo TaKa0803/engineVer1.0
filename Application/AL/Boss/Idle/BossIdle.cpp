@@ -32,6 +32,7 @@ void BossIdle::Update()
 			boss_->SetBehavior(Boss::Behavior::ATK);
 		}
 		
+		boss_->SetBehavior(Boss::Behavior::ATK);
 	}
 
 
