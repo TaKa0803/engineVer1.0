@@ -39,7 +39,7 @@ void CGScnene::Initialize()
 	//object->Initialize("sphere");
 	//object->Initialize("walk");
 	//object->Initialize("Player");
-	object->Initialize("human");
+	object->Initialize("Models/mm/multiMesh.obj");
 
 	terrain->Initialize("terrain");
 
