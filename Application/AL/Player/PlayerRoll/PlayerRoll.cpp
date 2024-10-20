@@ -41,7 +41,7 @@ void PlayerRoll::Initialize()
 	data_.stPos = player_->world_.GetWorldTranslate();	
 	data_.currentStop = 0;
 
-	player_->SetAnimation((int)AnimationData::Roll, 0.1f, 1.0f, false);
+	player_->SetAnimation((int)ALPlayer::AnimationData::Roll, 0.1f, 1.0f, false);
 	//player_->SetAnimeTime(true);
 }
 
@@ -69,7 +69,7 @@ void PlayerRoll::Update()
 		else {
 			float t = data_.currentStop / data_.stopSec;
 			player_->SetAnimeTime(true, t);
-			player_->SetAnimation(RollEnd, 0, 1, false);
+			player_->SetAnimation(ALPlayer::RollEnd, 0, 1, false);
 		}
 	}
 	else {

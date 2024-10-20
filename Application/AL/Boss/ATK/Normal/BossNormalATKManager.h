@@ -24,7 +24,7 @@ private://参照してきたもの
 private://**ノーマルの攻撃手段
 
 	//攻撃タイプ
-	enum class ATKType {
+	enum ATKType {
 		Stump,			//潰す攻撃
 		ShotBullet,		//弾発射
 		Charge,			//突撃

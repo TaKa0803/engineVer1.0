@@ -3,16 +3,21 @@
 #include"AL//Boss/Boss.h"
 #include<numbers>
 
-
+void BossCharge::InitAIMing() {
+	boss_->SetAnimation((int)Boss::Animation::PreCharge, 0.2f, 1, false);
+}
 
 void BossCharge::InitWarning()
 {
+	boss_->SetAnimation((int)Boss::Animation::Charging, 0.2f, 1,false);
 	//ダッシュ方向指定
 	data_.dash.velo = Vector3{ boss_->GetPlayerWorldTranslate() - boss_->GetWorld().translate_ }.SetNormalize() * data_.dash.spd;
 }
 
 void BossCharge::InitATK()
 {
+	boss_->SetAnimation((int)Boss::Animation::Charging, 0.2f, 1, false);
+
 	data_.dash.prePos = boss_->world_.translate_;
 	data_.dash.length = boss_->GetBoss2PlayerDirection().GetLength();
 }

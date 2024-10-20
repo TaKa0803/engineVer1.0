@@ -37,5 +37,6 @@ enum SCENE {
 	ALTITLE,
 	ALGAME,
 	GAMEOVER,
+	GAMECLEAR,
 	SceneCount	//使うな
 };

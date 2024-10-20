@@ -68,6 +68,7 @@ void BossBulletManager::SetData(const BossBulletData& data)
 
 	std::unique_ptr<Datas> newd = std::make_unique<Datas>();
 	newd->data = data;
+	newd->data.world.scale_ = { 0.2f,0.2f ,0.2f };
 	newd->data.velo.SetNormalize();
 	newd->data.velo *= spd_;
 	newd->collider = std::make_unique<SphereCollider>();

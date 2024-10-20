@@ -17,7 +17,7 @@ Boss::Boss(ALPlayer* player)
 	bulletM_ = BossBulletManager::GetInstance();
 	bulletM_->SetUp();
 
-	GameObject::Initialize("box");
+	GameObject::Initialize("Boss");
 	model_->SetAnimationActive(true);
 	model_->SetAnimeSecond(10);
 
@@ -26,7 +26,7 @@ Boss::Boss(ALPlayer* player)
 
 
 	collider_ = std::make_unique<SphereCollider>();
-	collider_->Initialize("boss", world_);
+	collider_->Initialize("Boss", world_);
 	collider_->SetRadius(2.0f);
 	collider_->SetTranslate({ 0,1.4f,0 });
 
@@ -53,7 +53,7 @@ void Boss::Init()
 
 	world_.Initialize();
 	world_.translate_ = { 0,0,10 };
-	world_.scale_ = { 5,5,5 };
+	world_.scale_ = { 1,1,1 };
 	shadow_->SetShadowScale(GetAllScaleX(world_));
 	atk_->SceneInit();
 	isDead_ = false;
@@ -80,6 +80,7 @@ void Boss::Update()
 		behavior_ = behaviorReq_.value();
 		behaviorReq_ = std::nullopt;
 		atkCollider_->isActive_ = false;
+		SetAnimeTime(false);
 		//実際の初期化処理
 		(this->*BehaviorInitialize[(int)behavior_])();
 	}
@@ -115,7 +116,7 @@ void Boss::Draw()
 	bulletM_->Draw();
 
 	collider_->Draw();
-	//atkCollider_->Draw();
+	atkCollider_->Draw();
 }
 
 void Boss::OnCollision()
@@ -140,6 +141,13 @@ void Boss::SetDirection2Player()
 	if (direc != Vector3(0, 0, 0)) {
 		world_.rotate_.y = GetYRotate({ direc.x,direc.z }) + ((float)std::numbers::pi);
 	}
+}
+
+void Boss::SetAnimation(int animeNum, float sec, float loopSec, bool isLoop)
+{
+	model_->ChangeAnimation(animeNum, sec);
+	model_->SetAnimationRoop(isLoop);
+	model_->animationRoopSecond_ = loopSec;
 }
 
 #pragma region 各状態初期化と更新

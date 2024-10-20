@@ -48,7 +48,7 @@ void SphereCollider::Update() {
 
 void SphereCollider::Draw() {
 #ifdef _DEBUG
-	if (isDraw_) {
+	if (isDraw_&&isActive_) {
 		InstancingModelManager::GetInstance()->SetData(tag_, world_,0, color_);
 	}
 #endif // _DEBUG

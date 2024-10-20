@@ -12,7 +12,7 @@ public:
 	//void Update()override;
 
 public://状態のデータ
-	void InitAIMing()override {};
+	void InitAIMing()override;
 	void InitWarning()override;
 	void InitATK() override;
 	void InitStiffness() override {};

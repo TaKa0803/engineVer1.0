@@ -15,6 +15,25 @@ class Boss : public GameObject {
 
 public://パブリック変数：状態管理関係
 
+	enum class Animation {
+		Charging,
+		Down,
+		Fly2Stump,
+		Idle1,
+		Idle2,
+		Idle3,
+		EdCharge,
+		EdStump,
+		PreCharge,
+		Preshot,
+		PreStump,
+		Shot,
+		RevShot,
+		Stump,
+		Walk,
+		CountAnimation
+	};
+
 	//ボスの状態
 	enum class Behavior {
 		IDLE,	//待機状態
@@ -80,6 +99,18 @@ public://セッター
 	/// プレイヤー方向を向く
 	/// </summary>
 	void SetDirection2Player();
+
+	/// <summary>
+	/// アニメーションのセット
+	/// </summary>
+	/// <param name="animeNum">アニメーション番号</param>
+	/// <param name="sec">変わりきるまでの秒数</param>
+	/// <param name="loopSec">ループ時間</param>
+	/// <param name="isLoop">ループフラグ</param>
+	void SetAnimation(int animeNum, float sec, float loopSec, bool isLoop = true);
+
+	///アニメーション進行をこちらで管理する処理
+	void SetAnimeTime(bool active, float t = 0) { model_->SetAnimationTime(active, t); }
 private://状態管理
 
 	//状態ごとの初期化テーブル

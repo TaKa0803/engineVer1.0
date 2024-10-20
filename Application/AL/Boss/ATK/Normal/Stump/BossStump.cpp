@@ -6,8 +6,31 @@
 #pragma region 各状態初期化
 void BossStump::InitAIMing()
 {
-	//開始地点を取得
-	data_.aim.stPos = boss_->world_.translate_;
+	boss_->SetAnimation((int)Boss::Animation::PreStump, 1, 1);
+}
+
+void BossStump::InitWarning()
+{
+	boss_->SetAnimation((int)Boss::Animation::Fly2Stump, 1, 1);
+	data_.warning.stPos = boss_->world_.translate_;
+}
+
+void BossStump::InitATK()
+{
+	boss_->SetAnimeTime(false);
+	boss_->SetAnimation((int)Boss::Animation::Stump, 0.0f, 1.0f,false);
+	data_.stump.velo=boss_->GetBoss2PlayerDirection().GetNormalizeNum();
+}
+
+void BossStump::InitStiffness()
+{
+	boss_->SetAnimeTime(false);
+	boss_->SetAnimation((int)Boss::Animation::EdStump, 0.0f, 2.0f,false);
+}
+
+void BossStump::InitBack()
+{
+	boss_->SetAnimation((int)Boss::Animation::Idle1, 1, 1);
 }
 
 
@@ -19,35 +42,36 @@ void BossStump::UpdateAIMing()
 	//狙う処理の変数取得
 	AIMData& aim = data_.aim;
 
-	//高さの処理
-	float hT = currentCount_ / aim.goTopSec;
-	if (hT > 1.0f) {
-		hT = 1.0f;
-	}
-	//高さを取得
-	float height = Lerp(aim.stPos.y, boss_->GetPlayerWorldTranslate().y + aim.height, hT);
+	////高さの処理
+	//float hT = currentCount_ / aim.goTopSec;
+	//if (hT > 1.0f) {
+	//	hT = 1.0f;
+	//}
+	////高さを取得
+	//float height = Lerp(aim.stPos.y, boss_->GetPlayerWorldTranslate().y + aim.height, hT);
 
-	//横移動の値
-	float wT = currentCount_ / aim.xzSetSec;
-	if (wT > 1.0f) {
-		wT = 1.0f;
-	}
-	//横移動の値取得
-	Vector3 pos = Lerp(aim.stPos, boss_->GetPlayerWorldTranslate(), wT);
+	////横移動の値
+	//float wT = currentCount_ / aim.xzSetSec;
+	//if (wT > 1.0f) {
+	//	wT = 1.0f;
+	//}
+	////横移動の値取得
+	//Vector3 pos = Lerp(aim.stPos, boss_->GetPlayerWorldTranslate(), wT);
 
-	//先ほど求めた高さの値を代入
-	pos.y = height;
+	////先ほど求めた高さの値を代入
+	//pos.y = height;
 
-	//値を合わせる
-	boss_->world_.translate_ = pos;
+	////値を合わせる
+	//boss_->world_.translate_ = pos;
 
 	//シーン転換処理
 	if (currentCount_ >= aim.maxGoTop) {
-
-		pos = boss_->GetPlayerWorldTranslate();
-		pos.y += aim.height;
-		boss_->world_.translate_ = pos;
 		behaviReq_ = Warning;
+	}
+	else {
+
+		float t = currentCount_ / aim.maxGoTop;
+		boss_->SetAnimeTime(true, t);
 	}
 }
 
@@ -56,6 +80,33 @@ void BossStump::UpdateWarning()
 
 	if (currentCount_ >= data_.warning.maxWarning) {
 		behaviReq_ = ATK;
+	}
+	else {
+
+		float t = currentCount_ / data_.warning.maxWarning;
+
+		//プレイヤー方向にとびかかる
+		//プレイヤー方向をみる
+		boss_->SetDirection2Player();
+
+		//とびかかり処理
+		Vector3 bossP, playerP;
+		bossP = boss_->GetWorld().GetWorldTranslate();
+		playerP = boss_->GetPlayerWorldTranslate();
+
+		//高さを無視する
+		bossP.y = 0;
+		playerP.y = 0;
+
+		//プレイヤーからボス方向の向き取得
+		Vector3 leng = Vector3(bossP - playerP).GetNormalizeNum();
+
+		//長さから目標位置取得
+		leng = playerP + leng;
+		leng.y = data_.warning.height;
+
+		//座標適応
+		boss_->world_.translate_ = Lerp(data_.warning.stPos, leng, t);
 	}
 }
 
@@ -68,6 +119,7 @@ void BossStump::UpdateATK()
 
 		behaviReq_ = Stiffness;
 	}
+
 }
 
 void BossStump::UpdateStiffness()

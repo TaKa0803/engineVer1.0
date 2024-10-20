@@ -110,6 +110,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application\AL\ALScene\GameClearScene.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\Normal\Charge\BossCharge.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\Normal\ShotBullet\BossShotBullet.cpp" />
     <ClCompile Include="Application\AL\Boss\Boss.cpp" />
@@ -131,6 +132,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\AL\GameUI\GameUI.cpp" />
     <ClCompile Include="Application\AL\Player\Behavior\ATKData\PlayerPunch.cpp" />
     <ClCompile Include="Application\AL\Player\Behavior\PlayerATKManager\PlayerATKManager.cpp" />
+    <ClCompile Include="Application\AL\Player\Down\PlayerDown.cpp" />
     <ClCompile Include="Application\AL\Player\PlayerRoll\PlayerRoll.cpp" />
     <ClCompile Include="Application\Effect\EffectMove\EffectMove.cpp" />
     <ClCompile Include="Application\Effect\Impact\Impact.cpp" />
@@ -381,6 +383,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application\AL\ALScene\GameClearScene.h" />
     <ClInclude Include="Application\AL\Boss\ATK\Normal\Charge\BossCharge.h" />
     <ClInclude Include="Application\AL\Boss\ATK\Normal\ShotBullet\BossShotBullet.h" />
     <ClInclude Include="Application\AL\Boss\Boss.h" />
@@ -404,6 +407,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\AL\Player\ALPlayer.h" />
     <ClInclude Include="Application\AL\Player\Behavior\ATKData\PlayerPunch.h" />
     <ClInclude Include="Application\AL\Player\Behavior\PlayerATKManager\PlayerATKManager.h" />
+    <ClInclude Include="Application\AL\Player\Down\PlayerDown.h" />
     <ClInclude Include="Application\AL\Player\PlayerRoll\PlayerRoll.h" />
     <ClInclude Include="Application\CG\CGScene.h" />
     <ClInclude Include="Application\Effect\dZoneE\DZone.h" />

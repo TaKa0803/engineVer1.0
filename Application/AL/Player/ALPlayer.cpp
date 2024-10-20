@@ -3,6 +3,7 @@
 #include"AudioManager/AudioManager.h"
 #include"TextureManager/TextureManager.h"
 #include"DeltaTimer/DeltaTimer.h"
+#include"AL/Boss/Boss.h"
 #include<imgui.h>
 #include<json.hpp>
 #include<cassert>
@@ -96,6 +97,11 @@ void ALPlayer::Initialize() {
 	behaviorReq_ = State::Move;
 }
 
+void ALPlayer::GetBoss(const Boss* boss)
+{
+	boss_ = boss;
+}
+
 void ALPlayer::Update() {
 
 #ifdef _DEBUG
@@ -159,19 +165,15 @@ void (ALPlayer::* ALPlayer::BehaviorUpdate[])() = {
 	&ALPlayer::UpdateRolling,		//回避
 	&ALPlayer::UpdateATK,			//攻撃
 	&ALPlayer::UpdateHitAction		//被攻撃
-
 };
 
 void ALPlayer::Draw() {
 
 	//各モデル描画
-
 	shadow_->Draw();
 	GameObject::Draw();
-
 	
-
-	//collider_->Draw();
+	collider_->Draw();
 	atkCollider_->Draw();
 
 }
@@ -257,6 +259,11 @@ Vector3 ALPlayer::SetInputDirection(bool&isZero)
 	
 
 	return move;
+}
+
+const Vector3 ALPlayer::GetP2BossVelo()
+{
+	return boss_->world_.GetWorldTranslate() - world_.GetWorldTranslate();
 }
 
 bool ALPlayer::GetATKInput()

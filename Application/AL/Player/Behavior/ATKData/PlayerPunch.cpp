@@ -11,7 +11,7 @@ PlayerPunch::PlayerPunch(ALPlayer* player)
 	kickSound_ = AudioManager::LoadSoundNum("com2");
 	drilSound_ = AudioManager::LoadSoundNum("com3");
 }
-
+ 
 void PlayerPunch::Initialize()
 {
 	//攻撃の状態取得
@@ -48,16 +48,16 @@ void PlayerPunch::Update()
 			if (!parameters_.isInit) {
 				parameters_.isInit = true;
 				//アニメーションをセット
-				player_->SetAnimation(PrePunch1, 0.1f, 1, false);
+				player_->SetAnimation(ALPlayer::PrePunch1, 0.1f, 1, false);
 
 			}
 			else {
 				//アニメーションの更新速度をこちらで調整
 				if (state_ == Atk) {
-					player_->SetAnimation(Punch1, 0.1f, 1, false);
+					player_->SetAnimation(ALPlayer::Punch1, 0.1f, 1, false);
 				}
 				else if (state_ == Ed) {
-					player_->SetAnimation(Idle, 0.1f, 1, false);
+					player_->SetAnimation(ALPlayer::Idle, 0.1f, 1, false);
 				}
 			}
 		}
@@ -66,16 +66,16 @@ void PlayerPunch::Update()
 			if (!parameters_.isInit) {
 				parameters_.isInit = true;
 				//アニメーションをセット
-				player_->SetAnimation(PrePunch2, 0.1f, 1, false);
+				player_->SetAnimation(ALPlayer::PrePunch2, 0.1f, 1, false);
 
 			}
 			else {
 				//アニメーションの更新速度をこちらで調整
 				if (state_ == Atk) {
-					player_->SetAnimation(Punch2, 0.1f, 1, false);
+					player_->SetAnimation(ALPlayer::Punch2, 0.1f, 1, false);
 				}
 				else if (state_ == Ed) {
-					player_->SetAnimation(Idle, 0.5f, 1, false);
+					player_->SetAnimation(ALPlayer::Idle, 0.5f, 1, false);
 				}
 			}
 		}
@@ -84,16 +84,16 @@ void PlayerPunch::Update()
 			if (!parameters_.isInit) {
 				parameters_.isInit = true;
 				//アニメーションをセット
-				player_->SetAnimation(PrePunch3, 0.5f, 1, false);
+				player_->SetAnimation(ALPlayer::PrePunch3, 0.5f, 1, false);
 
 			}
 			else {
 				//アニメーションの更新速度をこちらで調整
 				if (state_ == Atk) {
-					player_->SetAnimation(Punch3, 0.1f, 1, false);
+					player_->SetAnimation(ALPlayer::Punch3, 0.1f, 1, false);
 				}
 				else if (state_ == Ed) {
-					player_->SetAnimation(Idle, 0.5f, 1, false);
+					player_->SetAnimation(ALPlayer::Idle, 0.5f, 1, false);
 				}
 			}
 		}

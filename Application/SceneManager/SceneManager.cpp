@@ -9,6 +9,7 @@
 #include"AL/ALScene/ALTitleScene.h"
 #include"AL/ALScene/ALGameScene.h"
 #include"AL/ALScene/GameOverScene.h"
+#include"AL/ALScene/GameClearScene.h"
 #pragma endregion
 
 
@@ -32,7 +33,7 @@ void SceneManager::Initialize()
 	sceneArr_[ALTITLE] = std::make_unique<ALTitleScene>();
 	sceneArr_[ALGAME] = std::make_unique<ALGameScene>();
 	sceneArr_[GAMEOVER] = std::make_unique<GameOverScene>();
-
+	sceneArr_[GAMECLEAR] = std::make_unique<GameClearScene>();
 	
 	sceneName_.clear();
 	sceneName_.push_back("DEBUG");
@@ -40,6 +41,7 @@ void SceneManager::Initialize()
 	sceneName_.push_back("ALTITLE");
 	sceneName_.push_back("ALGAME");
 	sceneName_.push_back("GAMEOVER");
+	sceneName_.push_back("GAMECLEAR");
 
 
 	//初期シーン設定

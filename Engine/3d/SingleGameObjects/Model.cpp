@@ -135,6 +135,19 @@ void Model::UpdateAnimation()
 
 }
 
+Joint Model::GetJoint(const std::string& name)
+{
+	for (auto& jointW : modelData_.skeleton.joints) {
+
+		if (jointW.name == name) {
+			return jointW;
+		}
+
+	}
+	assert(false);
+	return Joint{};
+}
+
 void Model::Initialize(
 	ModelAllData data,
 	std::string name,
@@ -529,7 +542,7 @@ void Model::DebugParameter(const char* name)
 	materialData_->enablePointLight = usePointLight;
 
 	if (animeNum_ != anum) {
-		ChangeAnimation(anum, 60);
+		ChangeAnimation(anum, 1);
 	}
 #endif // _DEBUG
 

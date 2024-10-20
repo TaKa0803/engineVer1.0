@@ -13,11 +13,11 @@ public:
 	//void Update()override;
 
 public://状態のデータ
-	void InitAIMing()override {};
+	void InitAIMing()override;
 	void InitWarning()override;
 	void InitATK() override {};
 	void InitStiffness()override {};
-	void InitBack()override {};
+	void InitBack()override;
 
 	void UpdateAIMing() override;
 	void UpdateWarning() override;
@@ -32,7 +32,11 @@ private://変数
 
 private://パラメータ
 
-
+	//手のボーン名
+	//右
+	const std::string rHandBoneName_ = "Bone.007";
+	//左
+	const std::string lHandBoneName_ = "Bone.010";
 
 	//弾の発射数
 	float shotNum_ = 5;

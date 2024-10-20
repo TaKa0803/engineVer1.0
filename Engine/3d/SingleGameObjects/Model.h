@@ -112,6 +112,8 @@ public:
 
 	const Material* GetMaterialData() { return materialData_; }
 
+	//ジョイント取得
+	Joint GetJoint(const std::string& name);
 private:
 
 	//初期化

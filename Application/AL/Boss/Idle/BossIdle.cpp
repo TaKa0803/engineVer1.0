@@ -13,6 +13,7 @@ void BossIdle::Initialize()
 	//待機時間カウントリセット
 	data_.currentSec = 0;
 
+	boss_->SetAnimation((int)Boss::Animation::Idle1, 1, 1);
 }
 
 void BossIdle::Update()
@@ -33,6 +34,11 @@ void BossIdle::Update()
 		}
 		
 		boss_->SetBehavior(Boss::Behavior::ATK);
+	}
+	else {
+		float t = data_.currentSec / data_.idleSec;
+
+		boss_->SetAnimeTime(true,t);
 	}
 
 

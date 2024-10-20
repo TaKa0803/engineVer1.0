@@ -29,6 +29,13 @@ void BossNormalATKManager::Initialize()
 	//ランダムな技を選択して使用
 	//ここでtypeを変える処理
 	//思考処理をここに記述
+
+	//一旦確立
+	int ans = (int)RandomNumber::Get(0, (int)ATKType::CountOfATKData);
+	if (ans == (int)ATKType::CountOfATKData) {
+		ans--;
+	}
+
 	if (RandomNumber::Get(0, 1) > 0.5f) {
 		type_ = ATKType::Stump;
 	}
@@ -36,7 +43,7 @@ void BossNormalATKManager::Initialize()
 		type_ = ATKType::Charge;
 	}
 
-	type_ = ATKType::ShotBullet;
+	type_ = (ATKType)ans;
 
 	//初期化
 	typeArr_[(int)type_]->Init();

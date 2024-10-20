@@ -8,11 +8,11 @@ public:
 	~BossStump() = default;
 
 public://状態のデータ
-	void InitAIMing()override;
-	void InitWarning()override {};
-	void InitATK() override {};
-	void InitStiffness() override {};
-	void InitBack()override{};
+	void InitAIMing()override;		//溜め
+	void InitWarning()override;		//ジャンプ
+	void InitATK() override;		//落下
+	void InitStiffness() override;	//硬直
+	void InitBack()override;		//復帰
 
 	void UpdateAIMing() override;
 	void UpdateWarning() override;
@@ -23,30 +23,29 @@ public://状態のデータ
 private:
 
 	struct AIMData {
-		//開始時の座標
-		Vector3 stPos{};
-
-		//どれくらいの高さまで上がるか
-		float height = 10;
-
 		//次の状態に行くまでの時間
 		float maxGoTop = 3.0f;
-
-
-		//高さがどれくらい早く到着するか
-		float goTopSec = 1.0f;
-		//XZがどれくらい早く合うか
-		float xzSetSec = 2.0f;
 	};
 
 	struct  WarningData {
 		float maxWarning = 1.0f;//何秒後に落ちるか
+
+		//最高高度
+		float height = 15.0f;
+
+		//この距離感でプレイヤーに落下
+		float length = 5.0f;
+
+		//パラメータ
+		//開始位置
+		Vector3 stPos;
+
 	};
 
 	struct StumpData
 	{
 		Vector3 velo{ 0,-1,0 };
-		float spd = 80;
+		float spd = 60;
 	};
 
 	struct StiffnessData
@@ -61,6 +60,9 @@ private:
 
 	struct Data
 	{
+		//ターゲット座標
+		Vector3 stPos{};
+
 		AIMData aim;
 		WarningData warning;
 		StumpData stump;

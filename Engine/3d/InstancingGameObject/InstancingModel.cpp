@@ -158,7 +158,7 @@ void InstancingModel::Draw(int texture) {
 	int index = 0;
 	for (auto& data : instancingDatas_) {
 
-		data.world.UpdateMatrix();
+		//data.world.UpdateMatrix();
 		Matrix4x4 WVP = data.world.matWorld_ * camera->GetViewProjectionMatrix();;
 
 		//ボーンアニメーション以外は動く

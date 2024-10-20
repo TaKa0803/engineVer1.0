@@ -13,22 +13,9 @@
 
 #include<vector>
 
-#pragma region アニメーション関係
-enum AnimationData {
-	Dash,
-	Idle,
-	PrePunch1,
-	PrePunch2,
-	PrePunch3,
-	Punch1,
-	Punch2,
-	Punch3,
-	Roll,
-	RollEnd,
-	Run,
-	_countAnime
-};
-#pragma endregion
+class Boss;
+
+
 
 //攻撃のデータ構造体
 struct ATKData {
@@ -48,10 +35,31 @@ struct ATKData {
 class ALPlayer :public GameObject {
 
 public:
+#pragma region アニメーション関係
+	enum  AnimationData {
+		Dash,
+		Dawn,
+		DawnBack,
+		Idle,
+		PrePunch1,
+		PrePunch2,
+		PrePunch3,
+		Punch1,
+		Punch2,
+		Punch3,
+		Roll,
+		RollEnd,
+		Run,
+		_countAnime
+	};
+#pragma endregion
+public:
 	ALPlayer();
 	~ALPlayer();
 
 	void Initialize();
+
+	void GetBoss(const Boss* boss);
 
 	void Update();
 
@@ -85,6 +93,9 @@ public:
 		if (behavior_ == State::ATK) { return true; }
 		return false;
 	}
+
+	//プレイヤーからボスへの向きベクトル
+	const Vector3 GetP2BossVelo();
 
 	//攻撃入力の取得処理まとめ
 	bool GetATKInput();
@@ -204,6 +215,8 @@ private:
 	Input* input_ = nullptr;
 
 	const Camera* camera_ = nullptr;
+
+	const Boss* boss_;
 
 	std::unique_ptr<SphereCollider> collider_;
 	std::unique_ptr<SphereCollider> atkCollider_;

@@ -138,6 +138,8 @@
     <ClCompile Include="Application\AL\Boss\ATK\Normal\ShotBullet\BossShotBullet.cpp" />
     <ClCompile Include="IState\IState.cpp" />
     <ClCompile Include="Engine\GVariables\GVaribles.cpp" />
+    <ClCompile Include="Application\AL\ALScene\GameClearScene.cpp" />
+    <ClCompile Include="Application\AL\Player\Down\PlayerDown.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\AL\Plane\Plane.h" />
@@ -250,6 +252,8 @@
     <ClInclude Include="Application\AL\Boss\ATK\Normal\ShotBullet\BossShotBullet.h" />
     <ClInclude Include="IState\IState.h" />
     <ClInclude Include="Engine\GVariables\GVaribles.h" />
+    <ClInclude Include="Application\AL\ALScene\GameClearScene.h" />
+    <ClInclude Include="Application\AL\Player\Down\PlayerDown.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />
