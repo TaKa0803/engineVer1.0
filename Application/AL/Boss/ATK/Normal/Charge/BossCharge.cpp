@@ -16,12 +16,17 @@ void BossCharge::InitWarning()
 
 void BossCharge::InitATK()
 {
-	boss_->SetAnimation((int)Boss::Animation::Charging, 0.2f, 1, false);
+	boss_->SetAnimation((int)Boss::Animation::Charging, 0.2f, 0.5f, false);
+	boss_->SetAnimeTime(false);
 
 	data_.dash.prePos = boss_->world_.translate_;
 	data_.dash.length = boss_->GetBoss2PlayerDirection().GetLength();
 }
 
+void BossCharge::InitStiffness() {
+	boss_->SetAnimation((int)Boss::Animation::EdCharge, 0.2f, 1, false);
+
+}
 
 
 void BossCharge::UpdateAIMing()
@@ -36,6 +41,10 @@ void BossCharge::UpdateAIMing()
 	if (currentCount_ >= data_.aim.maxSec) {
 		behaviReq_ = Warning;
 	}
+	else {
+		float t = currentCount_ / data_.aim.maxSec;
+		boss_->SetAnimeTime(true, t);
+	}
 }
 
 void BossCharge::UpdateWarning()
@@ -43,6 +52,10 @@ void BossCharge::UpdateWarning()
 
 	if (currentCount_ >= data_.warning.maxSec) {
 		behaviReq_ = ATK;
+	}
+	else {
+		float t = currentCount_ / data_.warning.maxSec;
+		boss_->SetAnimeTime(true, t);
 	}
 }
 
@@ -67,13 +80,17 @@ void BossCharge::UpdateStiffness()
 		boss_->isFinishedATK_ = true;
 	}
 	else {
-		float t = currentCount_ / data_.stiffness.sec;
+		float t = currentCount_ / data_.warning.maxSec;
 		Vector3 velo = Lerp(data_.dash.velo, { 0,0,0 }, t);
 
-		//プレイヤー方向にダッシュ
+		//ベクトル方向に移動
 		boss_->world_.translate_ += velo * (float)DeltaTimer::deltaTime_;
 
 		data_.dash.velo = velo;
+
+		
+		boss_->SetAnimeTime(true, t);
+	
 	}
 }
 

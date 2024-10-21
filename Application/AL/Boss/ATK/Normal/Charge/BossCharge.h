@@ -15,7 +15,7 @@ public://状態のデータ
 	void InitAIMing()override;
 	void InitWarning()override;
 	void InitATK() override;
-	void InitStiffness() override {};
+	void InitStiffness() override;
 	void InitBack() override {};
 
 	void UpdateAIMing() override;
@@ -28,7 +28,7 @@ private://変数
 
 	struct AIMData
 	{
-		float maxSec = 1.0f;
+		float maxSec = 0.5f;
 	};
 	struct WarningData
 	{
@@ -39,7 +39,7 @@ private://変数
 		Vector3 prePos;
 		Vector3 velo;
 		float length = 0;
-		float spd = 30.0f;
+		float spd = 40.0f;
 	};
 	struct StiffnessData {
 		float sec = 0.5f;
