@@ -174,7 +174,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3d\InstancingGameObject\InstancingGameObject.cpp" />
     <ClCompile Include="Engine\base\Log\Log.cpp" />
     <ClCompile Include="Engine\base\MainSystem\MainSystem.cpp" />
-    <ClCompile Include="Engine\GVariables\GVaribles.cpp" />
+    <ClCompile Include="Engine\GVariableManager\GVaribleManager.cpp" />
+    <ClCompile Include="Engine\GvariGroup\GvariGroup.cpp" />
     <ClCompile Include="Engine\LightManager\LightManager.cpp" />
     <ClCompile Include="Engine\MapLoader\MapLoader.cpp" />
     <ClCompile Include="Engine\Math\Matirx.cpp" />
@@ -449,7 +450,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\3d\InstancingGameObject\InstancingGameObject.h" />
     <ClInclude Include="Engine\base\Log\Log.h" />
     <ClInclude Include="Engine\base\MainSystem\MainSystem.h" />
-    <ClInclude Include="Engine\GVariables\GVaribles.h" />
+    <ClInclude Include="Engine\GVariableManager\GVaribleManager.h" />
+    <ClInclude Include="Engine\GVariableManager\GVariDatas.h" />
+    <ClInclude Include="Engine\GvariGroup\GvariGroup.h" />
     <ClInclude Include="Engine\LightManager\LightManager.h" />
     <ClInclude Include="Engine\MapLoader\MapLoader.h" />
     <ClInclude Include="Engine\Math\Matrix.h" />

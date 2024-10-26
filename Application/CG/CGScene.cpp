@@ -5,11 +5,16 @@
 #include"LightManager/LightManager.h"
 #include"PostEffect/PostEffectManager/PostEffectManager.h"
 #include"PostEffect/PEs/PEHSVFilter.h"
+#include"GvariGroup/GvariGroup.h"
 
 CGScnene::CGScnene()
 {
 
 	input_ = Input::GetInstance();
+
+	agvM_ = GlobalVariableManager::GetInstance();
+	agvM_->LoadAllSaveData();
+
 	camera_ = Camera::GetInstance();
 
 	object = std::make_unique<GameObject>();
@@ -26,6 +31,23 @@ CGScnene::CGScnene()
 	
 	particleManager_ = std::make_unique<ParticleManager>();
 	particleManager_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
+
+	std::unique_ptr<GVariGroup> gvg = std::make_unique<GVariGroup>("CGScene");
+
+	gvg->SetValue("ball", &ball);
+
+	GVariTree treedata = GVariTree("data");
+	treedata.SetValue("ball", &ball);
+
+	GVariTree treedata2 = GVariTree("data2");
+	treedata2.SetValue("ball", &ball);
+	
+	gvg->SetTreeData(treedata2.treeName_,treedata2.datas_);
+	gvg->SetTreeData(treedata.treeName_, treedata.datas_);
+
+
+
+	agvM_->SetLoadGroupData("CGScene");
 }
 
 CGScnene::~CGScnene() { 
@@ -57,6 +79,9 @@ void CGScnene::Initialize()
 void CGScnene::Update()
 {
 	Debug();
+
+	agvM_->Update();
+
 	particleManager_->Debug("particle");
 
 	Vector3 move = input_->GetAllArrowKey();
@@ -123,6 +148,8 @@ void CGScnene::Debug()
 	camera_->DrawDebugWindow("camera");
 
 	ImGui::Begin("Light");
+
+	ImGui::DragInt("ball", &ball);
 	ImGui::Text("PointLight");
 	ImGui::DragFloat("p light intencity", &pointLight_.intensity, 0.01f);
 	ImGui::DragFloat3("p light pos", &pointLight_.position.x, 0.1f);

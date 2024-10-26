@@ -6,6 +6,8 @@
 #include"SingleGameObjects/GameObject.h"
 #include"SkyBoxModel/SkyBoxModel.h"
 #include"ParticleData/ParticleManager.h"
+#include"GVariableManager/GVaribleManager.h"
+
 
 class CGScnene : public IScene {
 
@@ -26,6 +28,8 @@ private:
 
 	//キー入力
 	Input* input_ = nullptr;
+
+	GlobalVariableManager* agvM_;
 
 	Camera* camera_;
 
