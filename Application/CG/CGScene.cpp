@@ -35,6 +35,7 @@ CGScnene::CGScnene()
 	std::unique_ptr<GVariGroup> gvg = std::make_unique<GVariGroup>("CGScene");
 
 	gvg->SetValue("ball", &ball);
+	gvg->SetMonitorValue("ball", &ball);
 
 	GVariTree treedata = GVariTree("data");
 	treedata.SetValue("ball", &ball);

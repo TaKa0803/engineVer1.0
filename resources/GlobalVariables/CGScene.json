@@ -1,11 +1,11 @@
 {
     "CGScene": {
-        "ball": 4,
+        "ball": 24,
         "data": {
-            "ball": 4
+            "ball": 24
         },
         "data2": {
-            "ball": 4
+            "ball": 24
         }
     }
 }

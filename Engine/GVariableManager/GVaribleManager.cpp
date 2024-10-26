@@ -22,9 +22,44 @@ void ItemImGui(const std::string name, std::variant<int32_t*, float*, Vector3*> 
 	}
 }
 
+void MonitorItemImGui(const std::string name, std::variant<int32_t*, float*, Vector3*> value) {
+
+
+	//intの場合
+	if (std::holds_alternative<int32_t*>(value)) {
+		int32_t* ptr = *std::get_if<int32_t*>(&value);
+		std::string text = name + " : %d";
+		ImGui::Text(text.c_str(), *ptr);
+	}//floatの場合
+	else if (std::holds_alternative<float*>(value)) {
+		float* ptr = *std::get_if<float*>(&value);
+		std::string text = name + " : %4.1f";
+		ImGui::Text(text.c_str(), *ptr, 0.01f);
+	}//Vector3の場合
+	else if (std::holds_alternative<Vector3*>(value)) {
+		Vector3* ptr = *std::get_if<Vector3*>(&value);
+		std::string text = name + " :  %4.1f / %4.1f / %4.1f";
+		ImGui::Text(text.c_str(), *reinterpret_cast<float*>(ptr), 0.01f);
+	}
+}
+
 void TreeImGui(const std::string& name, TreeData& treeData) {
 
 	if (ImGui::TreeNode(name.c_str())) {
+
+
+		//ツリー内に含まれるvalue登場
+		for (auto& tabValue : treeData.monitorValue) {
+
+			//タブ値の名前
+			std::string name = tabValue.first;
+			//値
+			ItemData& item = tabValue.second;
+
+
+			//値の条件で処理変化
+			MonitorItemImGui(name, item.value);
+		}
 
 		//ツリー内に含まれるvalue登場
 		for (auto& tabValue : treeData.value) {
@@ -38,6 +73,7 @@ void TreeImGui(const std::string& name, TreeData& treeData) {
 			//値の条件で処理変化
 			ItemImGui(name, item.value);
 		}
+
 
 
 		//子ツリーの存在検知
@@ -94,6 +130,18 @@ void GlobalVariableManager::Update()
 					MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
 				}
 
+				//ツリー内に含まれるvalue登場
+				for (auto& tabValue : data.second.monitorData) {
+
+					//タブ値の名前
+					std::string name = tabValue.first;
+					//値
+					ItemData& item = tabValue.second;
+
+
+					//値の条件で処理変化
+					MonitorItemImGui(name, item.value);
+				}
 
 				//タブの値を表示
 				for (auto& tabValue : data.second.data) {
@@ -253,34 +301,6 @@ void GlobalVariableManager::SetLoadGroupData(const std::string& groupName)
 			std::variant<int32_t*, float*, Vector3*>& saveV = saveData.data[itemname].value;
 			std::variant<int32_t*, float*, Vector3*>& dataV = groupdata.data[itemname].value;
 
-
-			// sValueのポインタが指す値をvalueのポインタが指す先に代入
-			//std::visit([](auto&& src, auto&& dest) {
-			//	if constexpr (std::is_same_v<decltype(src), int32_t*> && std::is_same_v<decltype(dest), int32_t*>) {
-			//		 *dest = src;
-			//	}
-			//	else if constexpr (std::is_same_v<decltype(src), float*> && std::is_same_v<decltype(dest), float*>) {
-			//		 *dest = src;
-			//	}
-			//	else if constexpr (std::is_same_v<decltype(src), Vector3*> && std::is_same_v<decltype(dest), Vector3*>) {
-			//		 *dest = src;
-			//	}
-
-			//}, saveV, groupdata.data[itemname].value);
-
-			////intの場合
-			//if (std::holds_alternative<int32_t*>(value)) {
-			//	int32_t* ptr = *std::get_if<int32_t*>(&value);
-			//	ImGui::DragInt(name.c_str(), ptr);
-			//}//floatの場合
-			//else if (std::holds_alternative<float*>(value)) {
-			//	float* ptr = *std::get_if<float*>(&value);
-			//	ImGui::DragFloat(name.c_str(), ptr, 0.01f);
-			//}//Vector3の場合
-			//else if (std::holds_alternative<Vector3*>(value)) {
-			//	Vector3* ptr = *std::get_if<Vector3*>(&value);
-			//	ImGui::DragFloat3(name.c_str(), reinterpret_cast<float*>(ptr), 0.01f);
-			//}
 
 			if (std::holds_alternative<int32_t*>(saveV)&& std::holds_alternative<int32_t*>(dataV)) {
 				int32_t* savePtr = *std::get_if<int32_t*>(&saveV);

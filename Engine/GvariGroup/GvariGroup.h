@@ -17,6 +17,14 @@ public:
 
 	void SetValue(const std::string& name, Vector3* value);
 
+	//値を監視する変数を追加
+	void SetMonitorValue(const std::string& name, int32_t* value);
+
+	void SetMonitorValue(const std::string& name, float* value);
+
+	void SetMonitorValue(const std::string& name, Vector3* value);
+
+
 
 	//ツリーデータ格納
 	void SetTreeData(const std::string&name,TreeData&data);

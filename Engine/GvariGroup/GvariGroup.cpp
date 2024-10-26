@@ -31,6 +31,21 @@ void GVariGroup::SetValue(const std::string& name, Vector3* value)
 	datas_.data[name].value = value;
 }
 
+void GVariGroup::SetMonitorValue(const std::string& name, int32_t* value)
+{
+	datas_.monitorData[name].value = value;
+}
+
+void GVariGroup::SetMonitorValue(const std::string& name, float* value)
+{
+	datas_.monitorData[name].value = value;
+}
+
+void GVariGroup::SetMonitorValue(const std::string& name, Vector3* value)
+{
+	datas_.monitorData[name].value = value;
+}
+
 
 void GVariGroup::SetTreeData(const std::string& name, TreeData& data)
 {
