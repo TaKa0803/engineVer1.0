@@ -50,6 +50,8 @@ private:
 	/// </summary>
 	std::vector<std::string> sceneName_;
 
+	//現在のシーン
+	std::string scenename_="";
 
 	///呼び出すステージの管理
 	//現在のシーン

@@ -41,7 +41,6 @@
     <ClCompile Include="Engine\Camera\Camera.cpp" />
     <ClCompile Include="Engine\base\DirectXFunc\DirectXFunc.cpp" />
     <ClCompile Include="Engine\base\functions\function.cpp" />
-    <ClCompile Include="Engine\GlobalVariables\GlobalVariables.cpp" />
     <ClCompile Include="Engine\3d\SingleGameObjects\ObjectPSO.cpp" />
     <ClCompile Include="Engine\3d\SingleGameObjects\GameObject.cpp" />
     <ClCompile Include="Engine\base\ImGuiManager\ImGuiManager.cpp" />
@@ -153,7 +152,6 @@
     <ClInclude Include="Engine\Camera\Camera.h" />
     <ClInclude Include="Engine\base\DirectXFunc\DirectXFunc.h" />
     <ClInclude Include="Engine\base\functions\function.h" />
-    <ClInclude Include="Engine\GlobalVariables\GlobalVariables.h" />
     <ClInclude Include="Engine\3d\SingleGameObjects\ObjectPSO.h" />
     <ClInclude Include="Engine\3d\SingleGameObjects\GameObject.h" />
     <ClInclude Include="Engine\base\ImGuiManager\ImGuiManager.h" />

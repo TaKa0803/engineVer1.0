@@ -1,5 +1,5 @@
 #include"SceneManager/SceneManager.h"
-
+#include"GvariGroup/GvariGroup.h"
 #include<imgui.h>
 
 
@@ -16,6 +16,10 @@
 
 SceneManager::SceneManager()
 {
+	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("SceneManager");
+
+	gvg->SetValue("scene Value", &currentSceneNo_);
+	gvg->SetMonitorValue("scene", &scenename_);
 }
 
 SceneManager::~SceneManager()
@@ -43,6 +47,7 @@ void SceneManager::Initialize()
 	sceneName_.push_back("GAMEOVER");
 	sceneName_.push_back("GAMECLEAR");
 
+	scenename_ = sceneName_[currentSceneNo_].c_str();
 
 	//初期シーン設定
 	IScene::SetSceneNo(ALTITLE);
@@ -84,6 +89,8 @@ void SceneManager::Draw()
 void SceneManager::DebugWindow()
 {
 #ifdef _DEBUG
+
+	scenename_ = sceneName_[currentSceneNo_];
 
 	int num = IScene::GetSceneNo();
 

@@ -12,9 +12,6 @@ CGScnene::CGScnene()
 
 	input_ = Input::GetInstance();
 
-	agvM_ = GlobalVariableManager::GetInstance();
-	agvM_->LoadAllSaveData();
-
 	camera_ = Camera::GetInstance();
 
 	object = std::make_unique<GameObject>();
@@ -48,7 +45,6 @@ CGScnene::CGScnene()
 
 
 
-	agvM_->SetLoadGroupData("CGScene");
 }
 
 CGScnene::~CGScnene() { 
@@ -81,7 +77,7 @@ void CGScnene::Update()
 {
 	Debug();
 
-	agvM_->Update();
+
 
 	particleManager_->Debug("particle");
 

@@ -1,6 +1,5 @@
 #include "MainSystem.h"
 
-#include"GlobalVariables/GlobalVariables.h"
 #include"RandomNum/RandomNum.h"
 #include"AudioManager/AudioManager.h"
 #include"RTVManager/RTVManager.h"
@@ -11,6 +10,9 @@
 #include"SpriteManager/SpriteManager.h"
 #include"PostEffect/PostEffectManager/PostEffectManager.h"
 #include"UAVManager/UAVManager.h"
+#include"GVariableManager/GVaribleManager.h"
+#include"GvariGroup/GvariGroup.h"
+
 
 MainSystem* MainSystem::GetInstance() {
 	static MainSystem instance;
@@ -89,13 +91,14 @@ void MainSystem::Initializes() {
 	SpriteManager::GetInstance()->Initialize();
 
 
+	GlobalVariableManager::GetInstance()->LoadAllSaveData();
+
 
 }
 
 void MainSystem::MainRoop() {
 
-	//保存データ取得
-	GlobalVariables::GetInstance()->LoadFiles();
+
 
 	//モデルデータ関係読み込み
 	ModelManager::GetInstance()->LoadAllModels();
@@ -104,13 +107,14 @@ void MainSystem::MainRoop() {
 
 	//音声データ読み込み
 	
+
 	//ゲームシーン初期化
 	std::unique_ptr<GameScene> gameScene_;
 	gameScene_ = std::make_unique<GameScene>();
 	gameScene_->Initialize();
 
-
-
+	//セットされたデータに保存したものがあればそれを適応する
+	GlobalVariableManager::GetInstance()->SetAllLoadData();
 	
 
 	while (winApp_->ProcessMessage()) {
@@ -124,16 +128,10 @@ void MainSystem::MainRoop() {
 		input_->Update();
 		///=以下更新=//
 
-#ifdef _DEBUG
-		//GlobalVariableデータの更新処理
-		GlobalVariables::GetInstance()->Update();
-		
-
-		ImGui::Begin("Engine");
-		ImGui::Text("deltaTime %4.5f", deitaTimer_->deltaTime_);
-		ImGui::End();
-#endif // _DEBUG
 		DXF_->Update();
+
+		//Gvariの更新
+		GlobalVariableManager::GetInstance()->Update();
 
 		//ゲームシーン更新
 		gameScene_->Update();

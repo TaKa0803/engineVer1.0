@@ -24,6 +24,7 @@ public:
 
 	void SetMonitorValue(const std::string& name, Vector3* value);
 
+	void SetMonitorValue(const std::string& name, std::string* value);
 
 
 	//ツリーデータ格納

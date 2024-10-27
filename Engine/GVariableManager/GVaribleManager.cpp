@@ -22,7 +22,7 @@ void ItemImGui(const std::string name, std::variant<int32_t*, float*, Vector3*> 
 	}
 }
 
-void MonitorItemImGui(const std::string name, std::variant<int32_t*, float*, Vector3*> value) {
+void MonitorItemImGui(const std::string name, std::variant<int32_t*, float*, Vector3*, std::string*> value) {
 
 
 	//intの場合
@@ -41,6 +41,12 @@ void MonitorItemImGui(const std::string name, std::variant<int32_t*, float*, Vec
 		std::string text = name + " :  %4.1f / %4.1f / %4.1f";
 		ImGui::Text(text.c_str(), *reinterpret_cast<float*>(ptr), 0.01f);
 	}
+	else if (std::holds_alternative<std::string*>(value)) {
+		// char* の場合
+		std::string* ptr = *std::get_if<std::string*>(&value);
+		std::string text = name + " : %s";
+		ImGui::Text(text.c_str(), ptr->c_str());
+	}
 }
 
 void TreeImGui(const std::string& name, TreeData& treeData) {
@@ -54,7 +60,7 @@ void TreeImGui(const std::string& name, TreeData& treeData) {
 			//タブ値の名前
 			std::string name = tabValue.first;
 			//値
-			ItemData& item = tabValue.second;
+			MonitorItemData& item = tabValue.second;
 
 
 			//値の条件で処理変化
@@ -136,7 +142,7 @@ void GlobalVariableManager::Update()
 					//タブ値の名前
 					std::string name = tabValue.first;
 					//値
-					ItemData& item = tabValue.second;
+					MonitorItemData& item = tabValue.second;
 
 
 					//値の条件で処理変化
@@ -302,11 +308,12 @@ void GlobalVariableManager::SetLoadGroupData(const std::string& groupName)
 			std::variant<int32_t*, float*, Vector3*>& dataV = groupdata.data[itemname].value;
 
 
-			if (std::holds_alternative<int32_t*>(saveV)&& std::holds_alternative<int32_t*>(dataV)) {
+			if (std::holds_alternative<int32_t*>(saveV) && std::holds_alternative<int32_t*>(dataV)) {
 				int32_t* savePtr = *std::get_if<int32_t*>(&saveV);
 				int32_t* dataPtr = *std::get_if<int32_t*>(&dataV);
 				*dataPtr = *savePtr;
-			}else if (std::holds_alternative<float*>(saveV) && std::holds_alternative<float*>(dataV)) {
+			}
+			else if (std::holds_alternative<float*>(saveV) && std::holds_alternative<float*>(dataV)) {
 				float* savePtr = *std::get_if<float*>(&saveV);
 				float* dataPtr = *std::get_if<float*>(&dataV);
 				*dataPtr = *savePtr;
@@ -371,6 +378,7 @@ void LoadTreeData(TreeData& treeData, const nlohmann::json& jsonNode) {
 
 void GlobalVariableManager::LoadGroupData(const std::string& groupName)
 {
+
 	//よみこむJSONファイルのフルパスを合成する
 	std::string filepath = kDirectoryPath + groupName + ".json";
 	//読み込み用ファイルストリーム
@@ -483,10 +491,14 @@ void GlobalVariableManager::LoadAllSaveData()
 	}
 }
 
-void GlobalVariableManager::SetLoadData()
+void GlobalVariableManager::SetAllLoadData()
 {
 
+	for (auto& data : saveDatas_) {
+		std::string name = data.first;
 
+		SetLoadGroupData(name);
+	}
 
 
 }

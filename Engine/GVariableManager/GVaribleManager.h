@@ -25,9 +25,9 @@ public://パブリック関数
 	void LoadAllSaveData();
 
 	//全セーブデータのセット
-	void SetLoadData();
+	void SetAllLoadData();
 
-	//グループデータ読み込み
+	//グループセーブデータ読み込み
 	void SetLoadGroupData(const std::string& groupName);
 private:
 
@@ -48,4 +48,7 @@ private:
 
 	//グローバル変数の保存先ファイルパス
 	const std::string kDirectoryPath = "Resources/GlobalVariables/";
+
+
+	
 };
