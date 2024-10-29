@@ -3,6 +3,7 @@
 
 #include<variant>
 #include<string>
+
 #include<map>
 
 
@@ -13,7 +14,7 @@ struct ItemData {
 
 struct MonitorItemData {
 	//値
-	std::variant<int32_t*, float*, Vector3*,std::string*> value;
+	std::variant<bool*, int32_t*, float*, Vector3*,std::string*> value;
 };
 
 

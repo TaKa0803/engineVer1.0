@@ -7,6 +7,12 @@
 BossMove::BossMove(Boss* boss)
 {
 	boss_ = boss;
+
+	tree.SetValue("移動時間/s", &data_.moveSec);
+	tree.SetValue("移動速度/s", &data_.spdSec);
+
+	tree.SetMonitorValue("移動時間カウント", &data_.currentSec);
+
 }
 
 void BossMove::Initialize()

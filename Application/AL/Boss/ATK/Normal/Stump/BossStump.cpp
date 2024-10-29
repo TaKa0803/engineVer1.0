@@ -4,6 +4,20 @@
 
 
 #pragma region 各状態初期化
+BossStump::BossStump()
+{
+	treeData_.SetName("落下攻撃");
+
+	treeData_.SetValue("構え時間", &data_.aim.maxGoTop);
+	treeData_.SetValue("ジャンプ到達時間", &data_.warning.maxWarning);
+	treeData_.SetValue("ジャンプ高度", &data_.warning.height);
+	treeData_.SetValue("落下開始までの距離", &data_.warning.length);
+
+	treeData_.SetValue("落下速度", &data_.stump.spd);
+
+	treeData_.SetValue("落下硬直時間/s", &data_.stiffnrss.stifnessSec);
+	treeData_.SetValue("硬直復帰時間/2", &data_.back.maxBackSec);
+}
 void BossStump::InitAIMing()
 {
 	boss_->SetAnimation((int)Boss::Animation::PreStump, 1, 1);

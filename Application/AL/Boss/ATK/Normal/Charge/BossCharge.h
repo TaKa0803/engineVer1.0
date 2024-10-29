@@ -5,7 +5,7 @@
 class BossCharge : public IBossATK {
 public:
 
-	BossCharge()=default;
+	BossCharge();
 	~BossCharge() = default;
 
 	//void Init() override;

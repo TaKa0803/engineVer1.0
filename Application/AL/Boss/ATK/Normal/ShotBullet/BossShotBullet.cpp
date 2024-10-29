@@ -10,6 +10,14 @@ BossShotBullet::BossShotBullet()
 	//各状態時間設定
 	parameters_.aimingSec = 0.5f;
 	parameters_.warningSec = 2.0f;
+
+	//デバッグ設定
+	treeData_.SetName("弾発射");
+
+	treeData_.SetValue("弾の数", &shotNum_);
+	treeData_.SetValue("ターゲット時間/s", &parameters_.aimingSec);
+	treeData_.SetValue("発射時間/s", &parameters_.warningSec);
+	treeData_.SetValue("復帰時間/s", &parameters_.backSec);
 }
 
 

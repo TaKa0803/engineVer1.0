@@ -144,9 +144,9 @@ private://**変数
 	Behavior behavior_ = Behavior::IDLE;
 	//状態リクエスト
 	std::optional<Behavior>behaviorReq_ = std::nullopt;
-
+	//簡易影
 	std::unique_ptr<CirccleShadow>shadow_;
-
+	//コライダー
 	std::unique_ptr<SphereCollider> collider_;
 
 	//各処理
@@ -154,7 +154,7 @@ private://**変数
 	std::unique_ptr<BossMove>move_;
 	std::unique_ptr<BossATKTypeManager>atk_;
 	
-
+	//攻撃コライダー
 	std::unique_ptr<SphereCollider>atkCollider_;
 
 public://**パラメータ
@@ -170,4 +170,6 @@ private://ImGui用
 		"Move",
 		"ATK"
 	};
+	//現在の状態の名前
+	std::string nowBehaviorName_="";
 };

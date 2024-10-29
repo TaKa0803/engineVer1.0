@@ -6,6 +6,6 @@ bool IScene::leaveGame = false;
 
 IScene::~IScene() {}
 
-int IScene::GetSceneNo() { return sceneNo; }
+int& IScene::GetSceneNo() { return sceneNo; }
 
 void IScene::SetSceneNo(int num) { sceneNo = num; }

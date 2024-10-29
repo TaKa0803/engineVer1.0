@@ -1,4 +1,5 @@
 #pragma once
+#include"GvariGroup/GvariGroup.h"
 #include<optional>
 
 class Boss;
@@ -11,6 +12,8 @@ protected:
 	//プレイヤーポインタ
 	static Boss* boss_;
 public:
+
+	IBossATK();
 
 	/// <summary>
 	/// ボスポインタ取得（一回のみ
@@ -38,6 +41,8 @@ public:
 	/// </summary>
 	virtual void Update();
 
+	GVariTree& GetTree() { return treeData_; }
+
 public://状態のデータ
 	//各状態の初期化
 	virtual void InitAIMing() = 0;
@@ -53,6 +58,7 @@ public://状態のデータ
 	virtual void UpdateStiffness() = 0;
 	virtual void UpdateBack() = 0;
 public://**変数
+
 	enum Behavior {
 		AIMing,		//プレイヤーを狙う処理
 		Warning,	//警告処理
@@ -77,13 +83,28 @@ public://**変数
 	//経過カウント
 	float currentCount_ = 0;
 
-
-private:
+private://状態関係
 	//現在の状態
 	Behavior behavior_ = AIMing;
 
 	//関数テーブル
 	static void (IBossATK::* behaviorInit[])();
 	static void (IBossATK::* behaviorUpdate[])();
+
+public://デバッグ関連
+
+	//
+	GVariTree treeData_ = GVariTree("");
+	
+private://デバッグ関係
+
+	std::string behaviorName_[CountOfATKBehavior] = {
+		"狙う",
+		"攻撃前",
+		"実攻撃",
+		"攻撃後硬直",
+		"硬直後復帰"
+	};
+	std::string nowBehavior_ = "";
 
 };

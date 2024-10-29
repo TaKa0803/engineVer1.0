@@ -18,7 +18,7 @@ SceneManager::SceneManager()
 {
 	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("SceneManager");
 
-	gvg->SetValue("scene Value", &currentSceneNo_);
+	gvg->SetValue("scene Value", &IScene::GetSceneNo());
 	gvg->SetMonitorValue("scene", &scenename_);
 }
 

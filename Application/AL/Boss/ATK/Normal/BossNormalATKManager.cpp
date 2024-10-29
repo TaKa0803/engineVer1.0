@@ -22,6 +22,15 @@ BossNormalATKManager::BossNormalATKManager(Boss* boss)
 	typeArr_[(int)ATKType::ShotBullet] = std::make_unique<BossShotBullet>();
 	typeArr_[(int)ATKType::Charge] = std::make_unique<BossCharge>();
 
+	//デバッグ設定
+	tree.SetMonitorValue("ATK type", &nowAtkName_);
+	tree.SetMonitorValue("攻撃指定", &isDesignate_);
+	tree.SetValue("攻撃指定値", &designateType_);
+	
+	for (auto& arr : typeArr_) {
+		tree.SetTreeData(arr->GetTree());
+	}
+
 }
 
 void BossNormalATKManager::Initialize()
@@ -35,19 +44,15 @@ void BossNormalATKManager::Initialize()
 	if (ans == (int)ATKType::CountOfATKData) {
 		ans--;
 	}
-
-	if (RandomNumber::Get(0, 1) > 0.5f) {
-		type_ = ATKType::Stump;
-	}
-	else {
-		type_ = ATKType::Charge;
-	}
-
 	type_ = (ATKType)ans;
+
+	//デバッグ時のタイプ指定など
+	Debug();
 
 	//初期化
 	typeArr_[(int)type_]->Init();
 	
+	//攻撃修了確認処理オフ
 	isFinished_ = false;
 }
 
@@ -55,6 +60,34 @@ void BossNormalATKManager::Update()
 {
 	//更新処理
 	typeArr_[(int)type_]->Update();
+}
+
+void BossNormalATKManager::Debug()
+{
+#ifdef _DEBUG
+	//名前を現在の状態に
+	nowAtkName_ = atkTypeName_[type_];
+
+	//攻撃を指定していた場合
+	if (isDesignate_) {
+
+		//指定された値が範囲外なら範囲内へ
+		if (designateType_ < 0) {
+			designateType_ = 0;
+		}
+		else if (designateType_ > Charge) {
+			designateType_ = Charge;
+		}
+
+		//名前指定
+		nowAtkName_ = atkTypeName_[designateType_];
+
+		//タイプ指定
+		type_ = (ATKType)designateType_;
+	}
+#endif // _DEBUG
+
+
 }
 
 

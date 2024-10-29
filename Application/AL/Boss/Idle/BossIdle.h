@@ -1,4 +1,5 @@
 #pragma once
+#include"GvariGroup/GvariGroup.h"
 
 class Boss;
 
@@ -13,6 +14,7 @@ public:
 
 	void Update();
 
+	GVariTree& GetTree() { return tree; };
 private:
 
 	Boss* boss_;
@@ -26,4 +28,7 @@ private:
 	};
 
 	Data data_;
+
+private://ImGui関係
+	GVariTree tree = GVariTree("Idle");
 };

@@ -3,9 +3,15 @@
 #include"DeltaTimer/DeltaTimer.h"
 #include"RandomNum/RandomNum.h"
 
+
 BossIdle::BossIdle(Boss* boss)
 {
 	boss_ = boss;
+	
+	
+	tree.SetValue("sec", &data_.idleSec);
+	tree.SetMonitorValue("current sec", &data_.currentSec);
+	
 }
 
 void BossIdle::Initialize()
@@ -43,3 +49,5 @@ void BossIdle::Update()
 
 
 }
+
+

@@ -18,6 +18,12 @@ void IBossATK::InitIATK()
 
 void IBossATK::UpdateBehavior()
 {
+
+#ifdef _DEBUG
+	nowBehavior_ = behaviorName_[behavior_];
+#endif // _DEBUG
+
+
 	//状態の初期化処理
 	if (behaviReq_) {
 		behavior_ = behaviReq_.value();
@@ -34,6 +40,12 @@ void IBossATK::UpdateBehavior()
 
 	//状態の更新
 	(this->*behaviorUpdate[(int)behavior_])();
+}
+
+IBossATK::IBossATK()
+{
+	//デバッグ設定
+	treeData_.SetMonitorValue("状態", &nowBehavior_);
 }
 
 void IBossATK::SetBossPointer(Boss* boss)

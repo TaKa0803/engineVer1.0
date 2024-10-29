@@ -1,4 +1,5 @@
 #pragma once
+#include"GvariGroup/GvariGroup.h"
 
 class Boss;
 
@@ -12,6 +13,8 @@ public:
 	void Initialize();
 
 	void Update();
+
+	GVariTree& GetTree() { return tree; };
 
 private:
 
@@ -31,4 +34,8 @@ private:
 	};
 
 	Data data_;
+
+private://デバッグ
+	GVariTree tree = GVariTree("Move");
+
 };

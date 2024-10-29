@@ -1,6 +1,6 @@
 #pragma once
 #include"AL/Boss/ATK/IATK/IATK.h"
-
+#include"GvariGroup/GvariGroup.h"
 #include<iostream>
 #include<vector>
 
@@ -16,6 +16,12 @@ public:
 	void Initialize();
 
 	void Update();
+
+	GVariTree& GetTree() { return tree; };
+
+private:
+	//デバッグ
+	void Debug();
 
 private://参照してきたもの
 
@@ -34,8 +40,24 @@ private://**ノーマルの攻撃手段
 	//攻撃タイプ
 	ATKType type_=ATKType::Stump;
 
-	//仮追加
+	//攻撃状態管理
 	std::vector<std::unique_ptr<IBossATK>> typeArr_;
 public:
 	bool isFinished_ = false;
+
+private://デバッグ
+	GVariTree tree = GVariTree("normal");
+
+	std::string atkTypeName_[CountOfATKData]={
+		"落下攻撃",
+		"弾発射",
+		"タックル"
+	};
+
+	std::string nowAtkName_ = "";
+
+	//攻撃指定
+	bool isDesignate_ = false;
+	//指定攻撃
+	int designateType_ = 0;
 };

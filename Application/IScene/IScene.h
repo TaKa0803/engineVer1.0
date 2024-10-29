@@ -20,7 +20,7 @@ public:
 	/// シーン番号取得
 	/// </summary>
 	/// <returns>シーン番号</returns>
-	static int GetSceneNo();
+	static int &GetSceneNo();
 
 	//シーンセット
 	static void SetSceneNo(int scene);

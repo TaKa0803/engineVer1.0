@@ -3,6 +3,17 @@
 #include"AL//Boss/Boss.h"
 #include<numbers>
 
+BossCharge::BossCharge()
+{
+	treeData_.SetName("タックル");
+	treeData_.SetValue("狙う時間/s", &data_.aim.maxSec);
+	treeData_.SetValue("警告時間/s", &data_.warning.maxSec);
+	treeData_.SetValue("ダッシュ速度", &data_.dash.spd);
+
+	treeData_.SetValue("硬直時間/s", &data_.stiffness.sec);
+	treeData_.SetValue("復帰時間/s", &data_.back.sec);
+}
+
 void BossCharge::InitAIMing() {
 	boss_->SetAnimation((int)Boss::Animation::PreCharge, 0.2f, 1, false);
 }

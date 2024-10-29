@@ -22,11 +22,14 @@ void ItemImGui(const std::string name, std::variant<int32_t*, float*, Vector3*> 
 	}
 }
 
-void MonitorItemImGui(const std::string name, std::variant<int32_t*, float*, Vector3*, std::string*> value) {
+void MonitorItemImGui(const std::string name, std::variant<bool* ,int32_t*, float*, Vector3*, std::string*> value) {
 
 
 	//intの場合
-	if (std::holds_alternative<int32_t*>(value)) {
+	if (std::holds_alternative<bool*>(value)) {
+		bool* ptr = *std::get_if<bool*>(&value);
+		ImGui::Checkbox(name.c_str(), ptr);
+	}else if (std::holds_alternative<int32_t*>(value)) {
 		int32_t* ptr = *std::get_if<int32_t*>(&value);
 		std::string text = name + " : %d";
 		ImGui::Text(text.c_str(), *ptr);
@@ -53,7 +56,7 @@ void TreeImGui(const std::string& name, TreeData& treeData) {
 
 	if (ImGui::TreeNode(name.c_str())) {
 
-
+		ImGui::Text("--モニター値---");
 		//ツリー内に含まれるvalue登場
 		for (auto& tabValue : treeData.monitorValue) {
 
@@ -66,6 +69,9 @@ void TreeImGui(const std::string& name, TreeData& treeData) {
 			//値の条件で処理変化
 			MonitorItemImGui(name, item.value);
 		}
+
+		ImGui::Text("");//空白
+		ImGui::Text("--パラメータ---");
 
 		//ツリー内に含まれるvalue登場
 		for (auto& tabValue : treeData.value) {
@@ -122,19 +128,21 @@ void GlobalVariableManager::Update()
 			//タブを作成
 			if (ImGui::BeginTabItem(data.first.c_str())) {
 				//保存処理
-				if (ImGui::Button("Save")) {
+				if (ImGui::Button("パラメータの保存")) {
 					SaveGroupData(data.first);
 					std::string message = std::format("{}.json saved.", data.first);
 					MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
 				}
 
 				//読み込み処理
-				if (ImGui::Button("LoadSaveData")) {
+				if (ImGui::Button("保存されてるパラメータの読み込み")) {
 					LoadAllSaveData();
 					SetLoadGroupData(data.first);
 					std::string message = std::format("{}.json loaded.", data.first);
 					MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
 				}
+
+				ImGui::Text("--モニター値---");
 
 				//ツリー内に含まれるvalue登場
 				for (auto& tabValue : data.second.monitorData) {
@@ -148,6 +156,9 @@ void GlobalVariableManager::Update()
 					//値の条件で処理変化
 					MonitorItemImGui(name, item.value);
 				}
+
+				ImGui::Text("");//空白
+				ImGui::Text("--パラメータ---");
 
 				//タブの値を表示
 				for (auto& tabValue : data.second.data) {

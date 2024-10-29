@@ -1,10 +1,18 @@
 #include "BossATKTypeManager.h"
 #include"AL/Boss/Boss.h"
+#include"GvariGroup/GvariGroup.h"
+
 
 BossATKTypeManager::BossATKTypeManager(Boss* boss)
 {
 	boss_ = boss;
 	normal_ = std::make_unique<BossNormalATKManager>(boss);
+
+	//デバッグ設定
+	std::unique_ptr<GVariGroup> gvg = std::make_unique<GVariGroup>("BossATKManager");
+	gvg->SetMonitorValue("behavior", &nowTypeName_);
+	gvg->SetTreeData(normal_->GetTree());
+
 }
 
 void BossATKTypeManager::SceneInit()
@@ -21,6 +29,11 @@ void BossATKTypeManager::Initialize()
 
 void BossATKTypeManager::Update()
 {
+
+#ifdef _DEBUG
+	nowTypeName_ = typeName_[modeType];
+#endif // _DEBUG
+
 	//状態の更新
 	(this->*TypeUpdate[(int)modeType])();
 

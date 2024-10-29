@@ -1,6 +1,7 @@
 #include "Boss.h"
 #include"ImGuiManager/ImGuiManager.h"
 #include"AL/Boss//ATK/IATK/IATK.h"
+#include"GvariGroup/GvariGroup.h"
 
 #include<numbers>
 
@@ -42,6 +43,16 @@ Boss::Boss(ALPlayer* player)
 	atkCollider_->SetRadius(1.0f);
 	atkCollider_->SetTranslate({ 0.0f,1.4f,0.0f });
 	atkCollider_->isActive_ = false;
+
+	//Gvari設定
+	std::unique_ptr<GVariGroup> gvg = std::make_unique<GVariGroup>("Boss");
+	gvg->SetMonitorValue("behavior",&nowBehaviorName_);
+	gvg->SetValue("HP", &HP_);
+
+	gvg->SetTreeData(idle_->GetTree());
+	gvg->SetTreeData(move_->GetTree());
+
+
 }
 
 
@@ -64,13 +75,11 @@ void Boss::Init()
 void Boss::Update()
 {
 #ifdef _DEBUG
-	ImGui::Begin("Boss");
-	ImGui::Text("behavior : %s", behaviorName_[(int)behavior_].c_str());
-	ImGui::DragInt("体力:", &HP_);
-	ImGui::End();
+
+	nowBehaviorName_ = behaviorName_[(int)behavior_];
 
 	model_->DebugParameter("Boss");
-	collider_->Debug("Boss");
+	collider_->Debug("BossCollider");
 	atkCollider_->Debug("BossATK");
 #endif // _DEBUG
 

@@ -30,7 +30,7 @@ public:
 	/// 描画処理
 	/// </summary>
 	void Draw();
-	
+
 private:
 
 	/// <summary>
@@ -51,13 +51,13 @@ private:
 	std::vector<std::string> sceneName_;
 
 	//現在のシーン
-	std::string scenename_="";
+	std::string scenename_ = "";
 
 	///呼び出すステージの管理
 	//現在のシーン
-	int currentSceneNo_=0;
+	int currentSceneNo_ = 0;
 	//1F前のシーン
-	int prevSceneNo_=-1;
+	int prevSceneNo_ = -1;
 
 
 };

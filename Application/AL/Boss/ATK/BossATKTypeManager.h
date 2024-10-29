@@ -1,5 +1,6 @@
 #pragma once
 #include"AL/Boss/ATK/Normal/BossNormalATKManager.h"
+
 #include<iostream>
 
 class Boss;
@@ -45,4 +46,12 @@ private://**ボス攻撃タイプによる変化**//
 
 private://**変数**//
 
+private://デバッグ
+	std::string typeName_[_countModeType]{
+		"Normal",
+		"Katana",
+		"Bow"
+	};
+
+	std::string nowTypeName_ = "";
 };

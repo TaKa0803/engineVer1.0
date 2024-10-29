@@ -4,7 +4,7 @@
 
 class BossStump : public IBossATK {
 public:
-	BossStump() = default;
+	BossStump();
 	~BossStump() = default;
 
 public://状態のデータ
@@ -68,7 +68,5 @@ private:
 		StumpData stump;
 		StiffnessData stiffnrss;
 		BackData back;
-
-
 	}data_{};
 };
