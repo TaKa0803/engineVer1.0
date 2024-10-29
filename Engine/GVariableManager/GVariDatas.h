@@ -3,7 +3,7 @@
 
 #include<variant>
 #include<string>
-
+#include<vector>
 #include<map>
 
 
@@ -26,9 +26,14 @@ struct TreeData {
 	//監視する値
 	std::map<std::string, MonitorItemData>monitorValue;
 
-
 	//ツリーデータ
 	std::map<std::string, TreeData>tree;
+
+	//順に表示する用のキー
+	std::vector<std::string>valueKeys;
+	std::vector<std::string>monitorKeys;
+	std::vector<std::string>treeKeys;
+
 };
 
 struct GroupData
@@ -41,5 +46,10 @@ struct GroupData
 
 	//ツリーデータ
 	std::map<std::string, TreeData>tree;
+
+	//順に表示する用のキー
+	std::vector<std::string>valueKeys;
+	std::vector<std::string>monitorKeys;
+	std::vector<std::string>treeKeys;
 
 };

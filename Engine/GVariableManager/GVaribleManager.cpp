@@ -22,14 +22,15 @@ void ItemImGui(const std::string name, std::variant<int32_t*, float*, Vector3*> 
 	}
 }
 
-void MonitorItemImGui(const std::string name, std::variant<bool* ,int32_t*, float*, Vector3*, std::string*> value) {
+void MonitorItemImGui(const std::string name, std::variant<bool*, int32_t*, float*, Vector3*, std::string*> value) {
 
 
 	//intの場合
 	if (std::holds_alternative<bool*>(value)) {
 		bool* ptr = *std::get_if<bool*>(&value);
 		ImGui::Checkbox(name.c_str(), ptr);
-	}else if (std::holds_alternative<int32_t*>(value)) {
+	}
+	else if (std::holds_alternative<int32_t*>(value)) {
 		int32_t* ptr = *std::get_if<int32_t*>(&value);
 		std::string text = name + " : %d";
 		ImGui::Text(text.c_str(), *ptr);
@@ -56,43 +57,59 @@ void TreeImGui(const std::string& name, TreeData& treeData) {
 
 	if (ImGui::TreeNode(name.c_str())) {
 
-		ImGui::Text("--モニター値---");
-		//ツリー内に含まれるvalue登場
-		for (auto& tabValue : treeData.monitorValue) {
+		//モニター値の表示
+		if (!treeData.monitorKeys.empty()) {
+			if (ImGui::TreeNode("--モニター値---")) {
+				//ツリー内に含まれるvalue登場
+				for (auto& key : treeData.monitorKeys) {
 
-			//タブ値の名前
-			std::string name = tabValue.first;
-			//値
-			MonitorItemData& item = tabValue.second;
+					//タブ値の名前
+					std::string name = key;
+					//値
+					MonitorItemData& item = treeData.monitorValue[key];
 
 
-			//値の条件で処理変化
-			MonitorItemImGui(name, item.value);
+					//値の条件で処理変化
+					MonitorItemImGui(name, item.value);
+				}
+
+
+				ImGui::TreePop();
+			}
 		}
 
-		ImGui::Text("");//空白
-		ImGui::Text("--パラメータ---");
+		if (!treeData.valueKeys.empty()) {
+			if (ImGui::TreeNode("--パラメータ---")) {
 
-		//ツリー内に含まれるvalue登場
-		for (auto& tabValue : treeData.value) {
+				//ツリー内に含まれるvalue登場
+				for (auto& key : treeData.valueKeys) {
 
-			//タブ値の名前
-			std::string name = tabValue.first;
-			//値
-			ItemData& item = tabValue.second;
+					//タブ値の名前
+					std::string name = key;
+					//値
+					ItemData& item = treeData.value[key];
 
 
-			//値の条件で処理変化
-			ItemImGui(name, item.value);
+					//値の条件で処理変化
+					ItemImGui(name, item.value);
+				}
+
+				ImGui::TreePop();
+			}
 		}
-
 
 
 		//子ツリーの存在検知
 		if (treeData.tree.size() != 0) {
-			//子ツリーの表示
-			for (auto& tree : treeData.tree) {
-				TreeImGui(tree.first.c_str(), tree.second);
+
+			if (ImGui::TreeNode("--子ツリー--")) {
+
+				//子ツリーの表示
+				for (auto& key : treeData.treeKeys) {
+					TreeImGui(key, treeData.tree[key]);
+				}
+
+				ImGui::TreePop();
 			}
 		}
 
@@ -142,42 +159,53 @@ void GlobalVariableManager::Update()
 					MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
 				}
 
-				ImGui::Text("--モニター値---");
 
-				//ツリー内に含まれるvalue登場
-				for (auto& tabValue : data.second.monitorData) {
+				if (!data.second.monitorKeys.empty()) {
+					if (ImGui::TreeNode("--モニター値--")) {
 
-					//タブ値の名前
-					std::string name = tabValue.first;
-					//値
-					MonitorItemData& item = tabValue.second;
+						//ツリー内に含まれるvalue登場
+						for (auto& key : data.second.monitorKeys) {
+
+							//タブ値の名前
+							std::string name = key;
+							//値
+							MonitorItemData& item = data.second.monitorData[key];
 
 
-					//値の条件で処理変化
-					MonitorItemImGui(name, item.value);
+							//値の条件で処理変化
+							MonitorItemImGui(name, item.value);
+						}
+						ImGui::TreePop();
+					}
 				}
 
-				ImGui::Text("");//空白
-				ImGui::Text("--パラメータ---");
+				if (!data.second.valueKeys.empty()) {
+					if (ImGui::TreeNode("--パラメータ--")) {
+						//タブの値を表示
+						for (auto& key : data.second.valueKeys) {
 
-				//タブの値を表示
-				for (auto& tabValue : data.second.data) {
+							//タブ値の名前
+							std::string name = key;
+							//値
+							ItemData& item = data.second.data[key];
 
-					//タブ値の名前
-					std::string name = tabValue.first;
-					//値
-					ItemData& item = tabValue.second;
+							//値の条件で処理変化
+							ItemImGui(name, item.value);
 
-					//値の条件で処理変化
-					ItemImGui(name, item.value);
-
+						}
+						ImGui::TreePop();
+					}
 				}
+
 
 				//子ツリーの存在検知
 				if (data.second.tree.size() != 0) {
-					//子ツリーの表示
-					for (auto& tree : data.second.tree) {
-						TreeImGui(tree.first.c_str(), tree.second);
+					if (ImGui::TreeNode("--子ツリー--")) {
+						//子ツリーの表示
+						for (auto& key : data.second.treeKeys) {
+							TreeImGui(key, data.second.tree[key]);
+						}
+						ImGui::TreePop();
 					}
 				}
 

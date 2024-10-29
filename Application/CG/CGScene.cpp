@@ -40,8 +40,8 @@ CGScnene::CGScnene()
 	GVariTree treedata2 = GVariTree("data2");
 	treedata2.SetValue("ball", &ball);
 	
-	gvg->SetTreeData(treedata2.treeName_,treedata2.datas_);
-	gvg->SetTreeData(treedata.treeName_, treedata.datas_);
+	gvg->SetTreeData(treedata2);
+	gvg->SetTreeData(treedata);
 
 
 
