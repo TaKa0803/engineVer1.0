@@ -81,8 +81,8 @@
     <ClCompile Include="Application\Effect\dZoneE\DZone.cpp" />
     <ClCompile Include="Application\CG\CGScene.cpp" />
     <ClCompile Include="Application\AL\Player\ALPlayer.cpp" />
-    <ClCompile Include="Application\AL\ALScene\ALGameScene.cpp" />
-    <ClCompile Include="Application\AL\ALScene\ALTitleScene.cpp" />
+    <ClCompile Include="Application\AL\Scene\ALGameScene.cpp" />
+    <ClCompile Include="Application\AL\Scene\ALTitleScene.cpp" />
     <ClCompile Include="Application\AL\BrokenBody\BrokenBody.cpp" />
     <ClCompile Include="Application\AL\Enemy\ALEnemy.cpp" />
     <ClCompile Include="Application\AL\EnemyPopManager\EnemyPopManager.cpp" />
@@ -130,13 +130,13 @@
     <ClCompile Include="Application\AL\Boss\BulletManager\BossBulletManager.cpp" />
     <ClCompile Include="Application\AL\Player\Behavior\PlayerATKManager\PlayerATKManager.cpp" />
     <ClCompile Include="Application\AL\Player\Behavior\ATKData\PlayerPunch.cpp" />
-    <ClCompile Include="Application\AL\ALScene\GameOverScene.cpp" />
+    <ClCompile Include="Application\AL\Scene\GameOverScene.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\IATK\IATK.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\Normal\Stump\BossStump.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\Normal\Charge\BossCharge.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\Normal\ShotBullet\BossShotBullet.cpp" />
     <ClCompile Include="Engine\GVariableManager\GVaribleManager.cpp" />
-    <ClCompile Include="Application\AL\ALScene\GameClearScene.cpp" />
+    <ClCompile Include="Application\AL\Scene\GameClearScene.cpp" />
     <ClCompile Include="Application\AL\Player\Down\PlayerDown.cpp" />
     <ClCompile Include="Engine\GvariGroup\GvariGroup.cpp" />
   </ItemGroup>
@@ -191,8 +191,8 @@
     <ClInclude Include="Application\CG\CGScene.h" />
     <ClInclude Include="Application\AL\items.h" />
     <ClInclude Include="Application\AL\Player\ALPlayer.h" />
-    <ClInclude Include="Application\AL\ALScene\ALGameScene.h" />
-    <ClInclude Include="Application\AL\ALScene\ALTitleScene.h" />
+    <ClInclude Include="Application\AL\Scene\ALGameScene.h" />
+    <ClInclude Include="Application\AL\Scene\ALTitleScene.h" />
     <ClInclude Include="Application\AL\BrokenBody\BrokenBody.h" />
     <ClInclude Include="Application\AL\Enemy\ALEnemy.h" />
     <ClInclude Include="Application\AL\EnemyPopManager\EnemyPopManager.h" />
@@ -242,14 +242,14 @@
     <ClInclude Include="Application\AL\Boss\BulletManager\BossBulletManager.h" />
     <ClInclude Include="Application\AL\Player\Behavior\PlayerATKManager\PlayerATKManager.h" />
     <ClInclude Include="Application\AL\Player\Behavior\ATKData\PlayerPunch.h" />
-    <ClInclude Include="Application\AL\ALScene\GameOverScene.h" />
+    <ClInclude Include="Application\AL\Scene\GameOverScene.h" />
     <ClInclude Include="Application\AL\Boss\ATK\IATK\IATK.h" />
     <ClInclude Include="Application\AL\Boss\ATK\Normal\Stump\BossStump.h" />
     <ClInclude Include="Application\IScene\IScene.h" />
     <ClInclude Include="Application\AL\Boss\ATK\Normal\Charge\BossCharge.h" />
     <ClInclude Include="Application\AL\Boss\ATK\Normal\ShotBullet\BossShotBullet.h" />
     <ClInclude Include="Engine\GVariableManager\GVaribleManager.h" />
-    <ClInclude Include="Application\AL\ALScene\GameClearScene.h" />
+    <ClInclude Include="Application\AL\Scene\GameClearScene.h" />
     <ClInclude Include="Application\AL\Player\Down\PlayerDown.h" />
     <ClInclude Include="Engine\GvariGroup\GvariGroup.h" />
     <ClInclude Include="Engine\GVariableManager\GVariDatas.h" />

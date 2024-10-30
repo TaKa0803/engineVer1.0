@@ -6,10 +6,10 @@
 #pragma region シーンのh
 #include"Scenes/DebugScene.h"
 #include"CG/CGScene.h"
-#include"AL/ALScene/ALTitleScene.h"
-#include"AL/ALScene/ALGameScene.h"
-#include"AL/ALScene/GameOverScene.h"
-#include"AL/ALScene/GameClearScene.h"
+#include"AL/Scene/ALTitleScene.h"
+#include"AL/Scene/ALGameScene.h"
+#include"AL/Scene/GameOverScene.h"
+#include"AL/Scene/GameClearScene.h"
 #pragma endregion
 
 

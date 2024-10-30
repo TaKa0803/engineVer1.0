@@ -110,7 +110,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Application\AL\ALScene\GameClearScene.cpp" />
+    <ClCompile Include="Application\AL\Scene\GameClearScene.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\Normal\Charge\BossCharge.cpp" />
     <ClCompile Include="Application\AL\Boss\ATK\Normal\ShotBullet\BossShotBullet.cpp" />
     <ClCompile Include="Application\AL\Boss\Boss.cpp" />
@@ -121,9 +121,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\AL\Boss\ATK\Normal\Stump\BossStump.cpp" />
     <ClCompile Include="Application\AL\Boss\Idle\BossIdle.cpp" />
     <ClCompile Include="Application\AL\Boss\Move\BossMove.cpp" />
-    <ClCompile Include="Application\AL\ALScene\ALGameScene.cpp" />
-    <ClCompile Include="Application\AL\ALScene\ALTitleScene.cpp" />
-    <ClCompile Include="Application\AL\ALScene\GameOverScene.cpp" />
+    <ClCompile Include="Application\AL\Scene\ALGameScene.cpp" />
+    <ClCompile Include="Application\AL\Scene\ALTitleScene.cpp" />
+    <ClCompile Include="Application\AL\Scene\GameOverScene.cpp" />
     <ClCompile Include="Application\AL\BrokenBody\BrokenBody.cpp" />
     <ClCompile Include="Application\AL\CirccleShadow\CirccleShadow.cpp" />
     <ClCompile Include="Application\AL\EnemyPopManager\EnemyPopManager.cpp" />
@@ -382,7 +382,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application\AL\ALScene\GameClearScene.h" />
+    <ClInclude Include="Application\AL\Scene\GameClearScene.h" />
     <ClInclude Include="Application\AL\Boss\ATK\Normal\Charge\BossCharge.h" />
     <ClInclude Include="Application\AL\Boss\ATK\Normal\ShotBullet\BossShotBullet.h" />
     <ClInclude Include="Application\AL\Boss\Boss.h" />
@@ -393,9 +393,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\AL\Boss\ATK\Normal\Stump\BossStump.h" />
     <ClInclude Include="Application\AL\Boss\Idle\BossIdle.h" />
     <ClInclude Include="Application\AL\Boss\Move\BossMove.h" />
-    <ClInclude Include="Application\AL\ALScene\ALGameScene.h" />
-    <ClInclude Include="Application\AL\ALScene\ALTitleScene.h" />
-    <ClInclude Include="Application\AL\ALScene\GameOverScene.h" />
+    <ClInclude Include="Application\AL\Scene\ALGameScene.h" />
+    <ClInclude Include="Application\AL\Scene\ALTitleScene.h" />
+    <ClInclude Include="Application\AL\Scene\GameOverScene.h" />
     <ClInclude Include="Application\AL\BrokenBody\BrokenBody.h" />
     <ClInclude Include="Application\AL\CirccleShadow\CirccleShadow.h" />
     <ClInclude Include="Application\AL\EnemyPopManager\EnemyPopManager.h" />
