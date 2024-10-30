@@ -41,6 +41,8 @@ private:
 	DirectionalLight dLight_;
 
 	int ball;
+	float fl = 0;
+	Vector3 vec{};
 
 	std::unique_ptr<ParticleManager>particleManager_;
 };

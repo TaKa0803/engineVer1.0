@@ -34,13 +34,19 @@ CGScnene::CGScnene()
 	gvg->SetValue("ball", &ball);
 	gvg->SetMonitorValue("ball", &ball);
 
-	GVariTree treedata = GVariTree("data");
-	treedata.SetValue("ball", &ball);
+	GVariTree treedata = GVariTree("でーた");
+	treedata.SetValue("ぼーる", &ball);
 
-	GVariTree treedata2 = GVariTree("data2");
-	treedata2.SetValue("ball", &ball);
+	GVariTree treedata2 = GVariTree("de-ta");
+	treedata2.SetValue("ぼーる２", &ball);
 	
-	gvg->SetTreeData(treedata2);
+	GVariTree treedata3 = GVariTree("統計");
+	treedata3.SetValue("急", &ball);
+	treedata3.SetValue("flo", &fl);
+	treedata3.SetValue("vec", &vec);
+
+	treedata2.SetTreeData(treedata3);
+	treedata.SetTreeData(treedata2);
 	gvg->SetTreeData(treedata);
 
 

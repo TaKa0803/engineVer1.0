@@ -374,43 +374,71 @@ void LoadTreeData(TreeData& treeData, const nlohmann::json& jsonNode) {
 	for (auto itItem = jsonNode.begin(); itItem != jsonNode.end(); ++itItem) {
 		const std::string& itemName = itItem.key();
 
-		// int 型を保持している場合
-		if (itItem->is_number_integer()) {
-			//値取得
-			int32_t value = itItem->get<int32_t>();
+		if (treeData.value.find(itemName) != treeData.value.end()) {
 
-			// ポインタで取得	
-			int32_t* ptr = std::get<int32_t*>(treeData.value[itemName].value);
-			if (ptr == nullptr) {
-				ptr = new int32_t;  // メモリを動的に確保
+
+
+			// int 型を保持している場合
+			if (itItem->is_number_integer()) {
+				//値取得
+				int32_t value = itItem->get<int32_t>();
+
+				// ポインタで取得	
+				int32_t* ptr = *std::get_if<int32_t*>(&treeData.value[itemName].value);
+				if (ptr == nullptr) {
+					ptr = new int32_t;  // メモリを動的に確保
+					treeData.value[itemName].value = ptr;
+				}
+				*ptr = value;  // 値を代入
 			}
-			*ptr = value;  // 値を代入
+			// float 型を保持している場合
+			else if (itItem->is_number_float()) {
+				float value = itItem->get<float>();
+				float** ptr = std::get_if<float*>(&treeData.value[itemName].value);
+				if (ptr == nullptr) {
+					float* newP = new float;  // メモリを動的に確保
+					treeData.value[itemName].value = newP;
+
+					ptr = std::get_if<float*>(&treeData.value[itemName].value);
+				}
+
+				if (ptr) {
+					**ptr = value;
+				}
+				else {
+					assert(false);
+				}
+
+				**ptr = value;  // 値を代入
+			}// Vector3 (3 要素の配列) を保持している場合
+			else if (itItem->is_array() && itItem->size() == 3) {
+				Vector3 value = { itItem->at(0).get<float>(), itItem->at(1).get<float>(), itItem->at(2).get<float>() };
+
+				Vector3** ptr = std::get_if<Vector3*>(&treeData.value[itemName].value);
+				if (ptr == nullptr) {
+					Vector3* newP = new Vector3;  // メモリを動的に確保
+					treeData.value[itemName].value = newP;
+					ptr = std::get_if<Vector3*>(&treeData.value[itemName].value);
+				}
+				if (ptr) {
+					**ptr = value;
+				}
+				else {
+					assert(false);
+				}
+
+				**ptr = value;  // 値を代入
+
+			}
 		}
-		// float 型を保持している場合
-		else if (itItem->is_number_float()) {
-			float value = itItem->get<float>();
-			float* ptr = std::get<float*>(treeData.value[itemName].value);
-			if (ptr == nullptr) {
-				ptr = new float;  // メモリを動的に確保
+		else if (treeData.tree.find(itemName) != treeData.tree.end()) {
+			// 子ツリーの処理
+			if (itItem->is_object()) {
+				// 子ツリーを再帰的に処理
+				TreeData newTree;
+				LoadTreeData(newTree, *itItem);
+				treeData.tree[itemName] = newTree;
 			}
-			*ptr = value;  // 値を代入
-		}// Vector3 (3 要素の配列) を保持している場合
-		else if (itItem->is_array() && itItem->size() == 3) {
-			Vector3 value = { itItem->at(0).get<float>(), itItem->at(1).get<float>(), itItem->at(2).get<float>() };
-
-			Vector3* ptr = std::get<Vector3*>(treeData.value[itemName].value);
-			if (ptr == nullptr) {
-				ptr = new Vector3;  // メモリを動的に確保
-			}
-			*ptr = value;  // 値を代入
-
-		}
-		// 子ツリーの処理
-		else if (itItem->is_object()) {
-			// 子ツリーを再帰的に処理
-			TreeData newTree;
-			LoadTreeData(newTree, *itItem);
-			treeData.tree[itemName] = newTree;
 		}
 	}
 }

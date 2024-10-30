@@ -1,8 +1,6 @@
 #include "Plane.h"
 #include<imgui.h>
 
-#include "GlobalVariables/GlobalVariables.h"
-
 Plane::Plane() {
 	GameObject::Initialize("plane");
 }
