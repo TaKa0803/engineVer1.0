@@ -20,8 +20,6 @@ DirectX12での自作エンジンです
 
 ## ゲーム部分のコードについて
 
-アプリケーションでのすべてのシーンは[Application/SceneManager](https://github.com/TaKa0803/engineVer1.0/tree/master/Application/SceneManager)でシーン管理されています。
+アプリケーションでのすべてのシーンは[Application/SceneManager](Application/SceneManager/)でシーン管理されています。
 
-[こちら](Application/SceneManager/)
-
-ゲーム部分の各シーンは[Application/AL/Scene](https://github.com/TaKa0803/engineVer1.0/tree/master/Application/AL/Scene)にまとめられています
+ゲーム部分の各シーンは[Application/AL/Scene](Application/AL/Scene)にまとめられています
