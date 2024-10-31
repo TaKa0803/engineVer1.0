@@ -32,7 +32,7 @@ public://パブリック関数
 private:
 
 	//グループデータデータ保存
-	void SaveGroupData(const std::string& groupName);
+	void SaveGroupItemData(const std::string& groupName);
 
 	//ファイルよみこみ(１ファイル
 	void LoadGroupData(const std::string& groupName);
@@ -43,7 +43,7 @@ private:
 
 	std::map<std::string, GroupData> datas_;
 
-	std::map<std::string, GroupData> saveDatas_;
+	std::map<std::string, SavedGroupData> saveDatas_;
 
 
 	//グローバル変数の保存先ファイルパス

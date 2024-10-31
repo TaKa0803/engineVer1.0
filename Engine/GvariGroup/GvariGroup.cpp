@@ -18,7 +18,7 @@ GVariGroup::~GVariGroup()
 
 void GVariGroup::SetValue(const std::string& name, std::variant<int32_t*, float*, Vector3*> value)
 {
-	datas_.data[name].value = value;
+	datas_.value[name].value = value;
 	datas_.valueKeys.push_back(name);
 }
 

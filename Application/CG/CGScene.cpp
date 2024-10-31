@@ -33,6 +33,8 @@ CGScnene::CGScnene()
 
 	gvg->SetValue("ball", &ball);
 	gvg->SetMonitorValue("ball", &ball);
+	//gvg->SetValue("flo", &fl);
+	//gvg->SetValue("vec", &vec);
 
 	GVariTree treedata = GVariTree("でーた");
 	treedata.SetValue("ぼーる", &ball);

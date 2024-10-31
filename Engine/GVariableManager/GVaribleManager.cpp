@@ -146,7 +146,7 @@ void GlobalVariableManager::Update()
 			if (ImGui::BeginTabItem(data.first.c_str())) {
 				//保存処理
 				if (ImGui::Button("パラメータの保存")) {
-					SaveGroupData(data.first);
+					SaveGroupItemData(data.first);
 					std::string message = std::format("{}.json saved.", data.first);
 					MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
 				}
@@ -187,7 +187,7 @@ void GlobalVariableManager::Update()
 							//タブ値の名前
 							std::string name = key;
 							//値
-							ItemData& item = data.second.data[key];
+							ItemData& item = data.second.value[key];
 
 							//値の条件で処理変化
 							ItemImGui(name, item.value);
@@ -284,7 +284,7 @@ void ProcessTree(nlohmann::json& jsonNode, const std::map<std::string, TreeData>
 	}
 }
 
-void GlobalVariableManager::SaveGroupData(const std::string& groupName)
+void GlobalVariableManager::SaveGroupItemData(const std::string& groupName)
 {
 	//グループを検索
 	std::map<std::string, GroupData>::iterator itGroup = datas_.find(groupName);
@@ -298,7 +298,7 @@ void GlobalVariableManager::SaveGroupData(const std::string& groupName)
 	root[groupName] = nlohmann::json::object();
 
 	//valueの処理
-	SaveItemData(root[groupName], itGroup->second.data);
+	SaveItemData(root[groupName], itGroup->second.value);
 	//ツリーの処理
 	ProcessTree(root[groupName], itGroup->second.tree);
 
@@ -330,116 +330,134 @@ void GlobalVariableManager::SaveGroupData(const std::string& groupName)
 	ofs.close();
 }
 
+
+void SetLoadTreeData(TreeData& groupData, SavedTreeData& saveData) {
+
+	//現在データからループで参照(value
+	for (auto itItem = groupData.value.begin(); itItem != groupData.value.end(); ++itItem) {
+		//アイテム名
+		const std::string itemname = itItem->first;
+
+		//	セーブデータに同名のデータを検索
+		if (saveData.value.end() != saveData.value.find(itemname)) {
+
+			//値取得
+			std::variant<int32_t, float, Vector3>& saveV = saveData.value[itemname].value;
+			std::variant<int32_t*, float*, Vector3*>& dataV = groupData.value[itemname].value;
+
+			//合致する値を保存
+			if (std::holds_alternative<int32_t>(saveV) && std::holds_alternative<int32_t*>(dataV)) {
+				int32_t savePtr = *std::get_if<int32_t>(&saveV);
+				int32_t* dataPtr = *std::get_if<int32_t*>(&dataV);
+				*dataPtr = savePtr;
+			}
+			else if (std::holds_alternative<float>(saveV) && std::holds_alternative<float*>(dataV)) {
+				float savePtr = *std::get_if<float>(&saveV);
+				float* dataPtr = *std::get_if<float*>(&dataV);
+				*dataPtr = savePtr;
+			}
+			else if (std::holds_alternative<Vector3>(saveV) && std::holds_alternative<Vector3*>(dataV)) {
+				Vector3 savePtr = *std::get_if<Vector3>(&saveV);
+				Vector3* dataPtr = *std::get_if<Vector3*>(&dataV);
+				*dataPtr = savePtr;
+			}
+		}
+	}
+
+	//ツリーの処理
+	for (auto itItem = groupData.tree.begin(); itItem != groupData.tree.end(); ++itItem) {
+		//アイテム名
+		const std::string itemname = itItem->first;
+
+		if (saveData.tree.end() != saveData.tree.find(itemname)) {
+			SetLoadTreeData(groupData.tree[itemname], saveData.tree[itemname]);
+		}
+	}
+}
+
 void GlobalVariableManager::SetLoadGroupData(const std::string& groupName)
 {
 	GroupData& groupdata = datas_[groupName];
 
-	GroupData& saveData = saveDatas_[groupName];
+	SavedGroupData& saveData = saveDatas_[groupName];
 
 	//現在データからループで参照(value
-	for (auto itItem = groupdata.data.begin(); itItem != groupdata.data.end(); ++itItem) {
+	for (auto itItem = groupdata.value.begin(); itItem != groupdata.value.end(); ++itItem) {
 		//アイテム名
 		const std::string itemname = itItem->first;
-		//キーの存在チェック
-		if (saveData.data.end() != saveData.data.find(itemname)) {
 
-			std::variant<int32_t*, float*, Vector3*>& saveV = saveData.data[itemname].value;
-			std::variant<int32_t*, float*, Vector3*>& dataV = groupdata.data[itemname].value;
+		//	セーブデータに同名のデータを検索
+		if (saveData.value.end() != saveData.value.find(itemname)) {
 
+			//値取得
+			std::variant<int32_t, float, Vector3>& saveV = saveData.value[itemname].value;
+			std::variant<int32_t*, float*, Vector3*>& dataV = groupdata.value[itemname].value;
 
-			if (std::holds_alternative<int32_t*>(saveV) && std::holds_alternative<int32_t*>(dataV)) {
-				int32_t* savePtr = *std::get_if<int32_t*>(&saveV);
+			//合致する値を保存
+			if (std::holds_alternative<int32_t>(saveV) && std::holds_alternative<int32_t*>(dataV)) {
+				int32_t savePtr = *std::get_if<int32_t>(&saveV);
 				int32_t* dataPtr = *std::get_if<int32_t*>(&dataV);
-				*dataPtr = *savePtr;
+				*dataPtr = savePtr;
 			}
-			else if (std::holds_alternative<float*>(saveV) && std::holds_alternative<float*>(dataV)) {
-				float* savePtr = *std::get_if<float*>(&saveV);
+			else if (std::holds_alternative<float>(saveV) && std::holds_alternative<float*>(dataV)) {
+				float savePtr = *std::get_if<float>(&saveV);
 				float* dataPtr = *std::get_if<float*>(&dataV);
-				*dataPtr = *savePtr;
+				*dataPtr = savePtr;
 			}
-			else if (std::holds_alternative<Vector3*>(saveV) && std::holds_alternative<Vector3*>(dataV)) {
-				Vector3* savePtr = *std::get_if<Vector3*>(&saveV);
+			else if (std::holds_alternative<Vector3>(saveV) && std::holds_alternative<Vector3*>(dataV)) {
+				Vector3 savePtr = *std::get_if<Vector3>(&saveV);
 				Vector3* dataPtr = *std::get_if<Vector3*>(&dataV);
-				*dataPtr = *savePtr;
+				*dataPtr = savePtr;
 			}
 
 		}
 
 	}
+	//同名ツリー処理
+		//ツリーの処理
+	for (auto itItem = groupdata.tree.begin(); itItem != groupdata.tree.end(); ++itItem) {
+		//アイテム名
+		const std::string itemname = itItem->first;
+
+		if (saveData.tree.end() != saveData.tree.find(itemname)) {
+			SetLoadTreeData(itItem->second, saveData.tree[itemname]);
+		}
+	}
 }
 
 
-void LoadTreeData(TreeData& treeData, const nlohmann::json& jsonNode) {
+void LoadTreeData(SavedTreeData& treeData, const nlohmann::json& jsonNode) {
 	// 各アイテムについて
 	for (auto itItem = jsonNode.begin(); itItem != jsonNode.end(); ++itItem) {
 		const std::string& itemName = itItem.key();
 
-		if (treeData.value.find(itemName) != treeData.value.end()) {
+		SavedItemData& data = treeData.value[itemName];
 
+		// int 型を保持している場合
+		if (itItem->is_number_integer()) {
+			//値取得
+			int32_t value = itItem->get<int32_t>();
+			data.value = value;
 
-
-			// int 型を保持している場合
-			if (itItem->is_number_integer()) {
-				//値取得
-				int32_t value = itItem->get<int32_t>();
-
-				// ポインタで取得	
-				int32_t* ptr = *std::get_if<int32_t*>(&treeData.value[itemName].value);
-				if (ptr == nullptr) {
-					ptr = new int32_t;  // メモリを動的に確保
-					treeData.value[itemName].value = ptr;
-				}
-				*ptr = value;  // 値を代入
-			}
-			// float 型を保持している場合
-			else if (itItem->is_number_float()) {
-				float value = itItem->get<float>();
-				float** ptr = std::get_if<float*>(&treeData.value[itemName].value);
-				if (ptr == nullptr) {
-					float* newP = new float;  // メモリを動的に確保
-					treeData.value[itemName].value = newP;
-
-					ptr = std::get_if<float*>(&treeData.value[itemName].value);
-				}
-
-				if (ptr) {
-					**ptr = value;
-				}
-				else {
-					assert(false);
-				}
-
-				**ptr = value;  // 値を代入
-			}// Vector3 (3 要素の配列) を保持している場合
-			else if (itItem->is_array() && itItem->size() == 3) {
-				Vector3 value = { itItem->at(0).get<float>(), itItem->at(1).get<float>(), itItem->at(2).get<float>() };
-
-				Vector3** ptr = std::get_if<Vector3*>(&treeData.value[itemName].value);
-				if (ptr == nullptr) {
-					Vector3* newP = new Vector3;  // メモリを動的に確保
-					treeData.value[itemName].value = newP;
-					ptr = std::get_if<Vector3*>(&treeData.value[itemName].value);
-				}
-				if (ptr) {
-					**ptr = value;
-				}
-				else {
-					assert(false);
-				}
-
-				**ptr = value;  // 値を代入
-
-			}
 		}
-		else if (treeData.tree.find(itemName) != treeData.tree.end()) {
-			// 子ツリーの処理
-			if (itItem->is_object()) {
-				// 子ツリーを再帰的に処理
-				TreeData newTree;
-				LoadTreeData(newTree, *itItem);
-				treeData.tree[itemName] = newTree;
-			}
+		// float 型を保持している場合
+		else if (itItem->is_number_float()) {
+			float value = itItem->get<float>();
+			data.value = value;
+
+		}// Vector3 (3 要素の配列) を保持している場合
+		else if (itItem->is_array() && itItem->size() == 3) {
+			Vector3 value = { itItem->at(0).get<float>(), itItem->at(1).get<float>(), itItem->at(2).get<float>() };
+			data.value = value;
+
+
 		}
+		else if (itItem->is_object()) {
+			// 子ツリーを再帰的に処理
+			SavedTreeData& newTree = treeData.tree[itemName];
+			LoadTreeData(newTree, *itItem);
+		}
+
 	}
 }
 
@@ -473,57 +491,31 @@ void GlobalVariableManager::LoadGroupData(const std::string& groupName)
 	//未登録チェック
 	assert(itGroup != root.end());
 
+	saveDatas_[groupName].value.clear();
+	saveDatas_[groupName].tree.clear();
+
+
 	//各アイテムについて
 	for (nlohmann::json::iterator itItem = itGroup->begin(); itItem != itGroup->end(); ++itItem) {
 		//アイテム名を取得
 		const std::string& itemName = itItem.key();
 
+		SavedItemData& data = saveDatas_[groupName].value[itemName];
 
 		//int型を保持していた場合
 		if (itItem->is_number_integer()) {
 			int32_t value = itItem->get<int32_t>();
-
-			// ポインタの初期化チェック
-			if (std::holds_alternative<int32_t*>(saveDatas_[groupName].data[itemName].value)) {
-
-				int32_t* ptr = std::get<int32_t*>(saveDatas_[groupName].data[itemName].value);
-				if (ptr == nullptr) {
-					ptr = new int32_t;  // メモリを動的に確保
-				}
-				*ptr = value;  // 値を代入
-				saveDatas_[groupName].data[itemName].value = ptr;  // variantにポインタを再設定
-
-			}
-
-
+			data.value = value;
 		}
 		else if (itItem->is_number_float()) {// float型を保持していた場合
-			double value = itItem->get<double>();
-			float fValue = static_cast<float>(value);
+			float value = itItem->get<float>();
 
-			// ポインタの初期化チェック
-			if (std::holds_alternative<float*>(saveDatas_[groupName].data[itemName].value)) {
-				float* ptr = std::get<float*>(saveDatas_[groupName].data[itemName].value);
-				if (ptr == nullptr) {
-					ptr = new float;  // メモリを動的に確保
-				}
-				*ptr = fValue;  // 値を代入
-				saveDatas_[groupName].data[itemName].value = ptr;  // variantにポインタを再設定
-			}
-
+			data.value = value;
 		}
 		else if (itItem->is_array() && itItem->size() == 3) { // 要素数３の配列であれば
 			Vector3 value = { itItem->at(0), itItem->at(1), itItem->at(2) };
 
-			// ポインタの初期化チェック
-			if (std::holds_alternative<Vector3*>(saveDatas_[groupName].data[itemName].value)) {
-				Vector3* ptr = std::get<Vector3*>(saveDatas_[groupName].data[itemName].value);
-				if (ptr == nullptr) {
-					ptr = new Vector3;  // メモリを動的に確保
-				}
-				*ptr = value;  // 値を代入
-				saveDatas_[groupName].data[itemName].value = ptr;  // variantにポインタを再設定
-			}
+			data.value = value;
 
 
 		}        // 子ツリーの読み込み処理
