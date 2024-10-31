@@ -23,4 +23,4 @@ DirectX12での自作エンジンです
 
 アプリケーションでのすべてのシーンは[Application/SceneManager](Application/SceneManager/)でシーン管理されています。
 
-ゲーム部分の各シーンは[Application/AL/Scene](Application/AL/Scene)にまとめられています
+ゲーム部分の各シーンは[Application/Game/Scene](Application/AL/Scene)にまとめられています
