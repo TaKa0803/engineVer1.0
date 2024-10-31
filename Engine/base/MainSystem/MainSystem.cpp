@@ -6,7 +6,7 @@
 #include"DSVManager/DSVManager.h"
 #include"SingleGameObjects/ObjectPSO.h"
 #include"DXC/DXCManager.h"
-#include"GameScene/GameScene.h"
+#include"AppScene/AppScene.h"
 #include"SpriteManager/SpriteManager.h"
 #include"PostEffect/PostEffectManager/PostEffectManager.h"
 #include"UAVManager/UAVManager.h"
@@ -109,8 +109,8 @@ void MainSystem::MainRoop() {
 	
 
 	//ゲームシーン初期化
-	std::unique_ptr<GameScene> gameScene_;
-	gameScene_ = std::make_unique<GameScene>();
+	std::unique_ptr<AppScene> gameScene_;
+	gameScene_ = std::make_unique<AppScene>();
 	gameScene_->Initialize();
 
 	//セットされたデータに保存したものがあればそれを適応する

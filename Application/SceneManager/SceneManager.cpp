@@ -4,12 +4,11 @@
 
 
 #pragma region シーンのh
-#include"Scenes/DebugScene.h"
-#include"CG/CGScene.h"
-#include"AL/Scene/ALTitleScene.h"
-#include"AL/Scene/ALGameScene.h"
-#include"AL/Scene/GameOverScene.h"
-#include"AL/Scene/GameClearScene.h"
+#include"Debug/DebugScene.h"
+#include"Game/Scene/ALTitleScene.h"
+#include"Game/Scene/ALGameScene.h"
+#include"Game/Scene/GameOverScene.h"
+#include"Game/Scene/GameClearScene.h"
 #pragma endregion
 
 
@@ -32,8 +31,7 @@ void SceneManager::Initialize()
 	sceneArr_.resize((size_t)SCENE::SceneCount);
 
 	//各シーンの情報設定
-	sceneArr_[DEBUG] = std::make_unique<DebugScene>();
-	sceneArr_[CG] = std::make_unique<CGScnene>();
+	sceneArr_[Debug] = std::make_unique<DebugScnene>();
 	sceneArr_[ALTITLE] = std::make_unique<ALTitleScene>();
 	sceneArr_[ALGAME] = std::make_unique<ALGameScene>();
 	sceneArr_[GAMEOVER] = std::make_unique<GameOverScene>();

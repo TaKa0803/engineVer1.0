@@ -32,8 +32,7 @@ public:
 
 //シーン
 enum SCENE {
-	DEBUG,
-	CG,
+	Debug,
 	ALTITLE,
 	ALGAME,
 	GAMEOVER,
