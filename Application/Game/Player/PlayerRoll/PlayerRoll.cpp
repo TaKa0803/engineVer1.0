@@ -1,16 +1,22 @@
 #include "PlayerRoll.h"
-#include"AL/Player/ALPlayer.h"
+#include"Game/Player/Player.h"
 #include"DeltaTimer/DeltaTimer.h"
 #include"ImGuiManager/ImGuiManager.h"
 
 
-PlayerRoll::PlayerRoll(ALPlayer* player)
+PlayerRoll::PlayerRoll(Player* player)
 {
 	//プレイヤー取得
 	player_ = player;
 
 	inp_ = Input::GetInstance();
 	camera_ = Camera::GetInstance();
+
+	tree_.SetValue("速度", &data_.spd);
+	tree_.SetValue("距離", &data_.length);
+	tree_.SetValue("完全停止までの時間/s", &data_.stopSec);
+
+	tree_.SetMonitorValue("停止時のカウント", &data_.currentStop);
 }
 
 void PlayerRoll::Initialize()
@@ -41,7 +47,7 @@ void PlayerRoll::Initialize()
 	data_.stPos = player_->world_.GetWorldTranslate();	
 	data_.currentStop = 0;
 
-	player_->SetAnimation((int)ALPlayer::AnimationData::Roll, 0.1f, 1.0f, false);
+	player_->SetAnimation((int)Player::AnimationData::Roll, 0.1f, 1.0f, false);
 	//player_->SetAnimeTime(true);
 }
 
@@ -63,13 +69,13 @@ void PlayerRoll::Update()
 		data_.currentStop += (float)DeltaTimer::deltaTime_;
 		//カウントMAXで歩行状態へ移行
 		if (data_.currentStop >= data_.stopSec) {
-			player_->behaviorReq_ = ALPlayer::State::Move;
+			player_->behaviorReq_ = Player::State::Move;
 			player_->data_.velo_.SetZero();
 		}
 		else {
 			float t = data_.currentStop / data_.stopSec;
 			player_->SetAnimeTime(true, t);
-			player_->SetAnimation(ALPlayer::RollEnd, 0, 1, false);
+			player_->SetAnimation(Player::RollEnd, 0, 1, false);
 		}
 	}
 	else {

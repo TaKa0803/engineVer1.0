@@ -113,8 +113,7 @@ void MainSystem::MainRoop() {
 	gameScene_ = std::make_unique<AppScene>();
 	gameScene_->Initialize();
 
-	//セットされたデータに保存したものがあればそれを適応する
-	GlobalVariableManager::GetInstance()->SetAllLoadData();
+
 	
 
 	while (winApp_->ProcessMessage()) {

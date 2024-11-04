@@ -1,23 +1,24 @@
-#include"ALPlayer.h"
+#include"Player.h"
 
 #include"AudioManager/AudioManager.h"
 #include"TextureManager/TextureManager.h"
 #include"DeltaTimer/DeltaTimer.h"
 #include"Game/Boss/Boss.h"
+#include"GvariGroup/GvariGroup.h"
 #include<imgui.h>
 #include<json.hpp>
 #include<cassert>
 #include<fstream>
 #include<numbers>
 
-void ALPlayer::StaminaUpdate()
+void Player::StaminaUpdate()
 {
 	StaminaData& data = data_.stamina;
 	data.currentCharge += (float)DeltaTimer::deltaTime_;
 
 	//待機カウント以上で回復処理
-	if (data.currentCharge >= data.reChargeSec) {
-		data.currentCharge = data.reChargeSec;
+	if (data.currentCharge >= data.rechargeSec) {
+		data.currentCharge = data.rechargeSec;
 
 		//回復処理
 		data.currentStamina += data.healSec * (float)DeltaTimer::deltaTime_;
@@ -29,7 +30,7 @@ void ALPlayer::StaminaUpdate()
 	}
 }
 
-ALPlayer::ALPlayer() {
+Player::Player() {
 	//一回しかしない初期化情報
 	input_ = Input::GetInstance();
 
@@ -62,14 +63,34 @@ ALPlayer::ALPlayer() {
 	rolling_ = std::make_unique<PlayerRoll>(this);
 	atkM_ = std::make_unique<PlayerATKManager>(this);
 
+	//Gvariの値設定
+	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("Player");
+
+	gvg->SetValue("体力", &data_.HP_);
+	gvg->SetValue("移動速度", &data_.spd_);
+	gvg->SetValue("ダッシュ時の速度倍率", &data_.dashMultiply);
+	gvg->SetValue("落下速度", &data_.fallSpd_);
+	
+	//スタミナ関係
+	StaminaData& sData = data_.stamina;
+	GVariTree staminaTree = GVariTree("スタミナ");
+	staminaTree.SetValue("最大スタミナ", &sData.maxStamina);
+	staminaTree.SetValue("回復開始までの時間", &sData.rechargeSec);
+	staminaTree.SetValue("一秒間の回復量", &sData.healSec);
+	staminaTree.SetValue("回転時の消費量", &sData.rollCost);
+	staminaTree.SetValue("ダッシュ時の消費量/1s", &sData.dashCostSec);
+	staminaTree.SetValue("攻撃時の消費量", &sData.atkCost);
+
+	//ツリーセット
+	gvg->SetTreeData(staminaTree);
+	gvg->SetTreeData(rolling_->GetTree());
+}
+
+Player::~Player() {
 
 }
 
-ALPlayer::~ALPlayer() {
-
-}
-
-void ALPlayer::Initialize() {
+void Player::Initialize() {
 	//中身データ初期化
 	world_.Initialize();
 	world_.translate_.z = 2;
@@ -97,12 +118,12 @@ void ALPlayer::Initialize() {
 	behaviorReq_ = State::Move;
 }
 
-void ALPlayer::GetBoss(const Boss* boss)
+void Player::GetBoss(const Boss* boss)
 {
 	boss_ = boss;
 }
 
-void ALPlayer::Update() {
+void Player::Update() {
 
 #ifdef _DEBUG
 	rolling_->Debug();
@@ -153,21 +174,21 @@ void ALPlayer::Update() {
 
 }
 
-void (ALPlayer::* ALPlayer::BehaviorInitialize[])() = {
-	&ALPlayer::InitMove,		//移動
-	&ALPlayer::InitRolling,		//回避
-	&ALPlayer::InitATK,			//攻撃
-	&ALPlayer::InitHitAction	//被攻撃
+void (Player::* Player::BehaviorInitialize[])() = {
+	&Player::InitMove,		//移動
+	&Player::InitRolling,		//回避
+	&Player::InitATK,			//攻撃
+	&Player::InitHitAction	//被攻撃
 };
 
-void (ALPlayer::* ALPlayer::BehaviorUpdate[])() = {
-	&ALPlayer::UpdateMove,			//移動
-	&ALPlayer::UpdateRolling,		//回避
-	&ALPlayer::UpdateATK,			//攻撃
-	&ALPlayer::UpdateHitAction		//被攻撃
+void (Player::* Player::BehaviorUpdate[])() = {
+	&Player::UpdateMove,			//移動
+	&Player::UpdateRolling,		//回避
+	&Player::UpdateATK,			//攻撃
+	&Player::UpdateHitAction		//被攻撃
 };
 
-void ALPlayer::Draw() {
+void Player::Draw() {
 
 	//各モデル描画
 	shadow_->Draw();
@@ -178,12 +199,12 @@ void ALPlayer::Draw() {
 
 }
 
-void ALPlayer::DrawParticle()
+void Player::DrawParticle()
 {
 	peM_->Draw();
 }
 
-void ALPlayer::DebugWindow(const char* name) {
+void Player::DebugWindow(const char* name) {
 
 	float cScale = collider_->GetRadius();
 
@@ -203,11 +224,11 @@ void ALPlayer::DebugWindow(const char* name) {
 	collider_->SetRadius(cScale);
 }
 
-void ALPlayer::OnCollision()
+void Player::OnCollision()
 {
 }
 
-void ALPlayer::OnCollisionBack(const Vector3& backV)
+void Player::OnCollisionBack(const Vector3& backV)
 {
 	world_.translate_ += backV;
 	world_.UpdateMatrix();
@@ -219,7 +240,7 @@ void ALPlayer::OnCollisionBack(const Vector3& backV)
 	}
 }
 
-Vector3 ALPlayer::SetInputDirection(bool&isZero)
+Vector3 Player::SetInputDirection(bool&isZero)
 {
 	//入力方向をチェック
 	Vector3 move = input_->GetWASD().SetNormalize();
@@ -261,12 +282,12 @@ Vector3 ALPlayer::SetInputDirection(bool&isZero)
 	return move;
 }
 
-const Vector3 ALPlayer::GetP2BossVelo()
+const Vector3 Player::GetP2BossVelo()
 {
 	return boss_->world_.GetWorldTranslate() - world_.GetWorldTranslate();
 }
 
-bool ALPlayer::GetATKInput()
+bool Player::GetATKInput()
 {
 	int isATK = 0;
 
@@ -284,7 +305,7 @@ bool ALPlayer::GetATKInput()
 	return (bool)isATK;
 }
 
-bool ALPlayer::GetRollInput()
+bool Player::GetRollInput()
 {
 
 	int ans = input_->TriggerKey(DIK_SPACE);
@@ -296,7 +317,7 @@ bool ALPlayer::GetRollInput()
 	return ans;
 }
 
-bool ALPlayer::GetDashInput()
+bool Player::GetDashInput()
 {
 	int ans = input_->PushKey(DIK_LSHIFT);
 	if (input_->IsControllerActive()) {
@@ -305,7 +326,7 @@ bool ALPlayer::GetDashInput()
 	return ans;
 }
 
-void ALPlayer::Move() {
+void Player::Move() {
 
 	Vector3 move{};
 	//ダッシュチェック
@@ -346,7 +367,7 @@ void ALPlayer::Move() {
 	ModelRoop(isMoveInput,isDash);
 }
 
-void ALPlayer::ModelRoop(bool ismove,bool isDash)
+void Player::ModelRoop(bool ismove,bool isDash)
 {
 	if (!ismove) {
 		//待機状態になる
@@ -366,7 +387,7 @@ void ALPlayer::ModelRoop(bool ismove,bool isDash)
 
 }
 
-void ALPlayer::SetAnimation(int animeNum, float count, float loopSec, bool isLoop)
+void Player::SetAnimation(int animeNum, float count, float loopSec, bool isLoop)
 {
 	model_->ChangeAnimation(animeNum, count);
 	model_->SetAnimationRoop(isLoop);
@@ -382,19 +403,19 @@ void ALPlayer::SetAnimation(int animeNum, float count, float loopSec, bool isLoo
 #pragma region 各状態初期化処理
 
 
-void ALPlayer::InitMove() {
+void Player::InitMove() {
 
 	SetAnimation(3, 0.1f, 1.0f);
 }
 
-void ALPlayer::InitRolling() {
+void Player::InitRolling() {
 
 	rolling_->Initialize();
 	data_.stamina.currentStamina -= data_.stamina.rollCost;
 	data_.stamina.currentCharge = 0;
 }
 
-void ALPlayer::InitATK() {
+void Player::InitATK() {
 	data_.stamina.currentStamina -= data_.stamina.atkCost;
 	data_.stamina.currentCharge = 0;
 
@@ -403,7 +424,7 @@ void ALPlayer::InitATK() {
 	atkCollider_->isActive_ = true;
 }
 
-void ALPlayer::InitHitAction() {
+void Player::InitHitAction() {
 
 }
 
@@ -413,7 +434,7 @@ void ALPlayer::InitHitAction() {
 
 #pragma region 各状態更新処理
 
-void ALPlayer::UpdateMove() {
+void Player::UpdateMove() {
 	//移動処理
 	Move();
 
@@ -434,14 +455,14 @@ void ALPlayer::UpdateMove() {
 	
 }
 
-void ALPlayer::UpdateRolling()
+void Player::UpdateRolling()
 {
 	rolling_->Update();
 }
 
 
 
-void ALPlayer::UpdateATK() {
+void Player::UpdateATK() {
 
 	//攻撃の処理
 	atkM_->Update();
@@ -452,7 +473,7 @@ void ALPlayer::UpdateATK() {
 	}
 }
 
-void ALPlayer::UpdateHitAction() {
+void Player::UpdateHitAction() {
 
 }
 

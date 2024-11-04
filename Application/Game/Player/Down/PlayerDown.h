@@ -1,13 +1,13 @@
 #pragma once
 #include"Vector3.h"
 
-class ALPlayer;
+class Player;
 
 class PlayerDown {
 
 public:
 
-	PlayerDown(ALPlayer* player);
+	PlayerDown(Player* player);
 	~PlayerDown() = default;
 
 	void Initialize();
@@ -16,7 +16,7 @@ public:
 
 private:
 
-	ALPlayer* player_;
+	Player* player_;
 
 	//吹きとび向き
 	Vector3 velo_;

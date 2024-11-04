@@ -5,7 +5,7 @@
 
 #include<numbers>
 
-Boss::Boss(ALPlayer* player)
+Boss::Boss(Player* player)
 {
 	//プレイヤーポインタ取得
 	player_ = player;

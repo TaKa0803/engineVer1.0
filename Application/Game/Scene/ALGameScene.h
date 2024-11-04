@@ -9,7 +9,7 @@
 #include"Camera/Camera.h"
 
 #include"Game/Boss/Boss.h"
-#include"Game/Player/ALPlayer.h"
+#include"Game/Player/Player.h"
 #include"Game/Plane/Plane.h"
 #include"Game/Enemy/ALEnemy.h"
 #include"Game/EnemyPopManager/EnemyPopManager.h"
@@ -53,7 +53,7 @@ private:
 	std::unique_ptr<FollowCamera> followCamera_;
 
 	///以下ゲーム実装
-	std::unique_ptr<ALPlayer>player_;
+	std::unique_ptr<Player>player_;
 
 	std::unique_ptr<Boss> boss_;
 

@@ -136,7 +136,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\Game\Player\PlayerRoll\PlayerRoll.cpp" />
     <ClCompile Include="Application\Effect\EffectMove\EffectMove.cpp" />
     <ClCompile Include="Application\Effect\Impact\Impact.cpp" />
-    <ClCompile Include="Application\Game\Player\ALPlayer.cpp" />
+    <ClCompile Include="Application\Game\Player\Player.cpp" />
     <ClCompile Include="Application\Debug\DebugScene.cpp" />
     <ClCompile Include="Application\Effect\dZoneE\DZone.cpp" />
     <ClCompile Include="Application\Effect\EffectExplosion.cpp" />
@@ -402,7 +402,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\Game\FollowCamera\FollowCamera.h" />
     <ClInclude Include="Application\Game\GameUI\GameUI.h" />
     <ClInclude Include="Application\Game\items.h" />
-    <ClInclude Include="Application\Game\Player\ALPlayer.h" />
+    <ClInclude Include="Application\Game\Player\Player.h" />
     <ClInclude Include="Application\Game\Player\Behavior\ATKData\PlayerPunch.h" />
     <ClInclude Include="Application\Game\Player\Behavior\PlayerATKManager\PlayerATKManager.h" />
     <ClInclude Include="Application\Game\Player\Down\PlayerDown.h" />

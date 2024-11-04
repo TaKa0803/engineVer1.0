@@ -1,13 +1,14 @@
 #pragma once
 #include"Game/Player/Behavior/ATKData/PlayerPunch.h"
+#include"GvariGroup/GvariGroup.h"
 #include<iostream>
 
-class ALPlayer;
+class Player;
 
 class PlayerATKManager {
 
 public:
-	PlayerATKManager(ALPlayer* player);
+	PlayerATKManager(Player* player);
 	~PlayerATKManager() = default;
 
 	void Initialize();
@@ -22,7 +23,7 @@ public://パブリック変数
 	//攻撃のタイプ指定
 	enum ATKType {
 		Punch,
-		_countATKType
+		CountATKType
 	};
 
 	//攻撃タイプ
@@ -40,6 +41,15 @@ private://各状態まとめ
 private://プライベート変数
 
 	//プレイヤーのポインタ
-	ALPlayer* player_;
+	Player* player_;
 
+private://デバッグ関係
+	GVariTree tree_;
+
+
+	std::string typeName_[CountATKType ] = {
+		"パンチ"
+	};
+
+	std::string nowType_ = "";
 };

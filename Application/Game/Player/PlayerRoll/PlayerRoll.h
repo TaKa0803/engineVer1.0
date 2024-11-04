@@ -1,13 +1,15 @@
 #pragma once
 #include"Input/Input.h"
 #include"Camera/Camera.h"
+#include"GvariGroup/GvariGroup.h"
+
 //前方宣言
-class ALPlayer;
+class Player;
 
 class PlayerRoll {
 
 public:
-	PlayerRoll(ALPlayer* player);
+	PlayerRoll(Player* player);
 	~PlayerRoll() = default;
 
 	void Initialize();
@@ -15,6 +17,8 @@ public:
 	void Update();
 
 	void Debug();
+
+	GVariTree& GetTree() { return tree_; }
 public:
 	//データ
 	struct Data {
@@ -32,11 +36,15 @@ public:
 	Data data_{};
 private:
 	//プレイヤー参照ポインタ
-	ALPlayer* player_;
+	Player* player_;
 
 	//入力
 	Input* inp_;
 
 	//カメラ
 	Camera* camera_;
+
+private://デバッグ
+	GVariTree tree_ = GVariTree("roll");
+
 };

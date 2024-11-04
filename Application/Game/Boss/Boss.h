@@ -1,7 +1,7 @@
 #pragma once
 #include"SingleGameObjects/GameObject.h"
 #include"Input/Input.h"
-#include"Game/Player/ALPlayer.h"
+#include"Game/Player/Player.h"
 #include"Game/CirccleShadow/CirccleShadow.h"
 #include"SphereCollider/SphereCollider.h"
 
@@ -46,7 +46,7 @@ public://パブリック変数：状態管理関係
 	bool isFinishedATK_ = false;
 
 public://パブリック関数
-	Boss(ALPlayer* player);
+	Boss(Player* player);
 	~Boss()=default;
 
 	/// <summary>
@@ -134,7 +134,7 @@ private://**参照
 	Input* input_ = nullptr;
 
 	//プレイヤー
-	ALPlayer*player_;
+	Player*player_;
 
 	//弾マネージャ
 	BossBulletManager* bulletM_;

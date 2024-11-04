@@ -15,24 +15,7 @@
 
 class Boss;
 
-
-
-//攻撃のデータ構造体
-struct ATKData {
-	float extraTime = 0;	//予備動作
-	float AttackTime = 0;	//攻撃動作
-	float RigorTime = 0;	//硬直時間
-
-	int isYATK = false;	//Yボタン攻撃か
-
-	float spd = 0;
-
-	ModelAnimeParts parts;
-
-	std::vector<ATKData>ATKDerivation;	//攻撃の派生
-};
-
-class ALPlayer :public GameObject {
+class Player :public GameObject {
 
 public:
 #pragma region アニメーション関係
@@ -54,8 +37,8 @@ public:
 	};
 #pragma endregion
 public:
-	ALPlayer();
-	~ALPlayer();
+	Player();
+	~Player();
 
 	void Initialize();
 
@@ -135,10 +118,10 @@ private://状態管理関数
 
 
 	//状態ごとの初期化テーブル
-	static void (ALPlayer::* BehaviorInitialize[])();
+	static void (Player::* BehaviorInitialize[])();
 
 	//状態ごとの更新テーブル
-	static void (ALPlayer::* BehaviorUpdate[])();
+	static void (Player::* BehaviorUpdate[])();
 
 
 	void InitMove();
@@ -168,7 +151,7 @@ public:
 		float currentStamina = StaminaData::maxStamina;
 
 		//回復開始カウント
-		float reChargeSec = 1.0f;
+		float rechargeSec = 1.0f;
 		float currentCharge = 0.0f;
 
 		//回復速度

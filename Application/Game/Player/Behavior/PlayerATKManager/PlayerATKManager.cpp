@@ -1,10 +1,13 @@
 #include "PlayerATKManager.h"
-#include"Game/Player/ALPlayer.h"
+#include"Game/Player/Player.h"
 
-PlayerATKManager::PlayerATKManager(ALPlayer* player) {
+PlayerATKManager::PlayerATKManager(Player* player) {
 	player_ = player;
 
 	punch_ = std::make_unique<PlayerPunch>(player);
+
+	tree_.SetMonitorValue("攻撃状態", &nowType_);
+
 }
 
 void PlayerATKManager::Initialize()
@@ -12,6 +15,8 @@ void PlayerATKManager::Initialize()
 	isEnd_ = false;
 	//状態の初期化
 	(this->*TypeInit[(int)type_])();
+
+	nowType_ = typeName_[(int)type_];
 }
 
 void PlayerATKManager::Update()

@@ -79,7 +79,7 @@
     <ClCompile Include="Engine\Math\Vector4.cpp" />
     <ClCompile Include="Application\Effect\dZoneE\DZone.cpp" />
     <ClCompile Include="Application\Debug\DebugScene.cpp" />
-    <ClCompile Include="Application\Game\Player\ALPlayer.cpp" />
+    <ClCompile Include="Application\Game\Player\Player.cpp" />
     <ClCompile Include="Application\Game\Scene\ALGameScene.cpp" />
     <ClCompile Include="Application\Game\Scene\ALTitleScene.cpp" />
     <ClCompile Include="Application\Game\BrokenBody\BrokenBody.cpp" />
@@ -188,7 +188,7 @@
     <ClInclude Include="Application\Effect\dZoneE\DZone.h" />
     <ClInclude Include="Application\Debug\DebugScene.h" />
     <ClInclude Include="Application\Game\items.h" />
-    <ClInclude Include="Application\Game\Player\ALPlayer.h" />
+    <ClInclude Include="Application\Game\Player\Player.h" />
     <ClInclude Include="Application\Game\Scene\ALGameScene.h" />
     <ClInclude Include="Application\Game\Scene\ALTitleScene.h" />
     <ClInclude Include="Application\Game\BrokenBody\BrokenBody.h" />

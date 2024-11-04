@@ -1,8 +1,8 @@
 #include "PlayerDown.h"
-#include"AL/Player/ALPlayer.h"
+#include"Game/Player/Player.h"
 #include"DeltaTimer/DeltaTimer.h"
 
-PlayerDown::PlayerDown(ALPlayer* player)
+PlayerDown::PlayerDown(Player* player)
 {
 	player_ = player;
 }
@@ -30,6 +30,6 @@ void PlayerDown::Update()
 	if (player_->world_.translate_.y <= 0) {
 		player_->world_.translate_.y = 0;
 
-		player_->behaviorReq_ = ALPlayer::State::Move;
+		player_->behaviorReq_ = Player::State::Move;
 	}
 }

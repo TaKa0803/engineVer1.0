@@ -1,9 +1,9 @@
 #include "PlayerPunch.h"
-#include"AL/Player/ALPlayer.h"
+#include"Game/Player/Player.h"
 #include"DeltaTimer/DeltaTimer.h"
 #include"AudioManager/AudioManager.h"
 
-PlayerPunch::PlayerPunch(ALPlayer* player)
+PlayerPunch::PlayerPunch(Player* player)
 {
 	player_ = player;
 
@@ -48,16 +48,16 @@ void PlayerPunch::Update()
 			if (!parameters_.isInit) {
 				parameters_.isInit = true;
 				//アニメーションをセット
-				player_->SetAnimation(ALPlayer::PrePunch1, 0.1f, 1, false);
+				player_->SetAnimation(Player::PrePunch1, 0.1f, 1, false);
 
 			}
 			else {
 				//アニメーションの更新速度をこちらで調整
 				if (state_ == Atk) {
-					player_->SetAnimation(ALPlayer::Punch1, 0.1f, 1, false);
+					player_->SetAnimation(Player::Punch1, 0.1f, 1, false);
 				}
 				else if (state_ == Ed) {
-					player_->SetAnimation(ALPlayer::Idle, 0.1f, 1, false);
+					player_->SetAnimation(Player::Idle, 0.1f, 1, false);
 				}
 			}
 		}
@@ -66,16 +66,16 @@ void PlayerPunch::Update()
 			if (!parameters_.isInit) {
 				parameters_.isInit = true;
 				//アニメーションをセット
-				player_->SetAnimation(ALPlayer::PrePunch2, 0.1f, 1, false);
+				player_->SetAnimation(Player::PrePunch2, 0.1f, 1, false);
 
 			}
 			else {
 				//アニメーションの更新速度をこちらで調整
 				if (state_ == Atk) {
-					player_->SetAnimation(ALPlayer::Punch2, 0.1f, 1, false);
+					player_->SetAnimation(Player::Punch2, 0.1f, 1, false);
 				}
 				else if (state_ == Ed) {
-					player_->SetAnimation(ALPlayer::Idle, 0.5f, 1, false);
+					player_->SetAnimation(Player::Idle, 0.5f, 1, false);
 				}
 			}
 		}
@@ -84,16 +84,16 @@ void PlayerPunch::Update()
 			if (!parameters_.isInit) {
 				parameters_.isInit = true;
 				//アニメーションをセット
-				player_->SetAnimation(ALPlayer::PrePunch3, 0.5f, 1, false);
+				player_->SetAnimation(Player::PrePunch3, 0.5f, 1, false);
 
 			}
 			else {
 				//アニメーションの更新速度をこちらで調整
 				if (state_ == Atk) {
-					player_->SetAnimation(ALPlayer::Punch3, 0.1f, 1, false);
+					player_->SetAnimation(Player::Punch3, 0.1f, 1, false);
 				}
 				else if (state_ == Ed) {
-					player_->SetAnimation(ALPlayer::Idle, 0.5f, 1, false);
+					player_->SetAnimation(Player::Idle, 0.5f, 1, false);
 				}
 			}
 		}

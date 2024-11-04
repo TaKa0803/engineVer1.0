@@ -1,11 +1,11 @@
 #pragma once
 
-class ALPlayer;
+class Player;
 
 class PlayerPunch {
 
 public://パブリック関数
-	PlayerPunch(ALPlayer* player);
+	PlayerPunch(Player* player);
 	~PlayerPunch() = default;
 
 	void Initialize();
@@ -21,7 +21,7 @@ public:
 	bool isEnd_ = false;
 
 private://プライベート変数
-	ALPlayer* player_;
+	Player* player_;
 
 	//最大攻撃回数
 	const int maxAtkCount_ = 3;

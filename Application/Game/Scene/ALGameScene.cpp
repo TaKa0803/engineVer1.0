@@ -17,7 +17,7 @@ ALGameScene::ALGameScene() {
 	input_ = Input::GetInstance();
 
 	camera_ = Camera::GetInstance();
-	player_ = std::make_unique<ALPlayer>();
+	player_ = std::make_unique<Player>();
 	player_->SetCamera(camera_);
 	followCamera_ = std::make_unique<FollowCamera>(&player_->GetWorld());
 
