@@ -46,7 +46,7 @@ Player::Player() {
 
 	atkCollider_ = std::make_unique<SphereCollider>();
 	atkCollider_->Initialize("player atk", world_);
-	atkCollider_->SetRadius(1.5f);
+	atkCollider_->SetRadius(4.0f);
 	atkCollider_->SetTranslate({ 0,1.4f,0.5f });
 
 	GameObject::Initialize("human");
@@ -131,6 +131,8 @@ void Player::Update() {
 	ImGui::Begin("Player");
 	ImGui::Text("Stamina : %4.1f", data_.stamina.currentStamina);
 	ImGui::End();
+
+	atkCollider_->Debug("playerATKCollider");
 #endif // _DEBUG
 
 
@@ -226,6 +228,7 @@ void Player::DebugWindow(const char* name) {
 
 void Player::OnCollision()
 {
+	data_.HP_--;
 }
 
 void Player::OnCollisionBack(const Vector3& backV)

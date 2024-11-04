@@ -38,7 +38,7 @@ void MainSystem::Run() {
 void MainSystem::Initializes() {
 	//windowsアプリケーション
 	winApp_ = WindowApp::GetInstance();
-	winApp_->Initialize(L"LE2A_07_キクチ",1280,720);
+	winApp_->Initialize(L"ウイルス討伐作戦！",1280,720);
 
 	//DXCマネージャ
 	DXCManager* DXC = DXCManager::GetInstance();

@@ -23,12 +23,12 @@ Boss::Boss(Player* player)
 	model_->SetAnimeSecond(10);
 
 	model_->IsEnableTexture(false);
-	model_->SetColor({ 1,1,1,1 });
+	model_->SetColor({ 0.8f,0,0,1 });
 
 
 	collider_ = std::make_unique<SphereCollider>();
 	collider_->Initialize("Boss", world_);
-	collider_->SetRadius(2.0f);
+	collider_->SetRadius(4.0f);
 	collider_->SetTranslate({ 0,1.4f,0 });
 
 	shadow_ = std::make_unique<CirccleShadow>(world_);

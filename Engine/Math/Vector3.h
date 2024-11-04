@@ -37,7 +37,7 @@ public:
 	Vector3 SetNormalize();
 
 	//正規化した値を返す（値は変化しない
-	Vector3 GetNormalizeNum();
+	const Vector3 GetNormalizeNum()const;
 
 	float GetLength();
 

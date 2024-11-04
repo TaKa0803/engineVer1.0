@@ -23,7 +23,7 @@ void Camera::Initialize() {
 	CameraMotionSupport_.rotate_ = { 0.6f,0.0f,0.0f };
 
 	//親子関係の処理
-	mainCamera_.parent_ = (&CameraMotionSupport_);
+	//mainCamera_.parent_ = (&CameraMotionSupport_);
 
 	//行列更新
 	CameraMotionSupport_.UpdateMatrix();

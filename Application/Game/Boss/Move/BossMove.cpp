@@ -1,5 +1,5 @@
 #include "BossMove.h"
-#include"AL/Boss/Boss.h"
+#include"Game/Boss/Boss.h"
 #include"DeltaTimer/DeltaTimer.h"
 #include"RandomNum/RandomNum.h"
 #include<numbers>

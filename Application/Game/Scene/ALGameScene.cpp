@@ -19,10 +19,11 @@ ALGameScene::ALGameScene() {
 	camera_ = Camera::GetInstance();
 	player_ = std::make_unique<Player>();
 	player_->SetCamera(camera_);
-	followCamera_ = std::make_unique<FollowCamera>(&player_->GetWorld());
 
 	boss_ = std::make_unique<Boss>(player_.get());
 	IBossATK::SetBossPointer(boss_.get());
+	followCamera_ = std::make_unique<FollowCamera>(&player_->GetWorld(), &boss_->GetWorld());
+
 
 	gameUI_ = std::make_unique<GameUI>();
 

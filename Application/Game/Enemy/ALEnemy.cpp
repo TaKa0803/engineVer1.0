@@ -1,9 +1,9 @@
-#include"AL/Enemy/ALEnemy.h"
+#include"Game/Enemy/ALEnemy.h"
 
 #include"RandomNum/RandomNum.h"
 #include"TextureManager/TextureManager.h"
 #include"AudioManager/AudioManager.h"
-#include"AL/BrokenBody/BrokenBody.h"
+#include"Game/BrokenBody/BrokenBody.h"
 
 #include<numbers>
 

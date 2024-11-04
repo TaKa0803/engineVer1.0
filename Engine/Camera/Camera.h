@@ -20,6 +20,10 @@ private:
 
 public:
 
+	//カメラ本体
+	EulerWorldTransform mainCamera_;
+public:
+
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
@@ -100,8 +104,7 @@ public:
 	//カメラから見たベクトル方向に変換
 	Vector3 SetDirection4Camera(const Vector3&velo)const;
 private:
-	//カメラ本体
-	EulerWorldTransform mainCamera_;
+
 
 	//カメラの平行移動
 	Vector3 camerapos_{};
