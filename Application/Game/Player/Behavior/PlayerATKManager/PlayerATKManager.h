@@ -44,7 +44,7 @@ private://プライベート変数
 	Player* player_;
 
 private://デバッグ関係
-	GVariTree tree_;
+	GVariTree tree_ = GVariTree("PlayerATK");
 
 
 	std::string typeName_[CountATKType ] = {
