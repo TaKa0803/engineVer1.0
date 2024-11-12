@@ -189,6 +189,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\ParticleData\Initialize\ParticleInitialize.cpp" />
     <ClCompile Include="Engine\ParticleData\ParticleManager.cpp" />
     <ClCompile Include="Engine\ParticleData\ParticlePSO\ParticlePSO.cpp" />
+    <ClCompile Include="Engine\PostEffect\PEs\PEBloom.cpp" />
     <ClCompile Include="Engine\PostEffect\PostEffectManager\PostEffectManager.cpp" />
     <ClCompile Include="Engine\PostEffect\PEs\PEDepthBasedOutline.cpp" />
     <ClCompile Include="Engine\PostEffect\PEs\PEDissolve.cpp" />
@@ -202,6 +203,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\PostEffect\PEs\PESepia.cpp" />
     <ClCompile Include="Engine\PostEffect\PEs\PESmoothing.cpp" />
     <ClCompile Include="Engine\PostEffect\PEs\PEVignetting.cpp" />
+    <ClCompile Include="Engine\PostEffect\SimplePostEffect\SimplePostEffect.cpp" />
     <ClCompile Include="Engine\RandomNum\RandomNum.cpp" />
     <ClCompile Include="Engine\3d\Collider\SphereCollider\SphereCollider.cpp" />
     <ClCompile Include="Engine\2d\Sprite\Sprite.cpp" />
@@ -324,6 +326,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="resources\shaders\PostEffect\LightOutline.PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\PostEffect\PickHighLuminance.PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -463,6 +471,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\ParticleData\ParticleManager.h" />
     <ClInclude Include="Engine\ParticleData\ParticleData.h" />
     <ClInclude Include="Engine\ParticleData\ParticlePSO\ParticlePSO.h" />
+    <ClInclude Include="Engine\PostEffect\PEs\PEBloom.h" />
     <ClInclude Include="Engine\PostEffect\PostEffectManager\PostEffectManager.h" />
     <ClInclude Include="Engine\PostEffect\IPipelineStateObject.h" />
     <ClInclude Include="Engine\PostEffect\PEs\PEDepthBasedOutline.h" />
@@ -477,6 +486,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\PostEffect\PEs\PESepia.h" />
     <ClInclude Include="Engine\PostEffect\PEs\PESmoothing.h" />
     <ClInclude Include="Engine\PostEffect\PEs\PEVignetting.h" />
+    <ClInclude Include="Engine\PostEffect\SimplePostEffect\SimpleSostEffect.h" />
     <ClInclude Include="Engine\RandomNum\RandomNum.h" />
     <ClInclude Include="Engine\3d\Collider\SphereCollider\SphereCollider.h" />
     <ClInclude Include="Engine\2d\Sprite\Sprite.h" />

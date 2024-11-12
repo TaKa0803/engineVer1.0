@@ -32,7 +32,8 @@ public:
 		kDissolve,
 		kRandom,
 		kHSV,
-		_countOfEffectType
+		kBloom,
+		CountOfEffectType
 	};
 
 	/// <summary>
@@ -69,6 +70,8 @@ private:
 	DirectXFunc* DXF_;
 
 	//OffScreenRendering* offScreen_ = nullptr;
+
+	bool effective_ = true;
 
 	//後続演出フラグ
 	bool isEffectReqeat_ = false;

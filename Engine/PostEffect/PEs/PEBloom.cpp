@@ -1,13 +1,12 @@
-#include "PEVignetting.h"
+#include "PEBloom.h"
+#include"ImGuiManager/ImGuiManager.h"
 #include"Log/Log.h"
 #include"functions/function.h"
 #include"DXC/DXCManager.h"
 #include"ImGuiManager/ImGuiManager.h"
 #include<cassert>
 
-PEVignetting::PEMaterialData* PEVignetting::materialData_ = nullptr;
-
-void PEVignetting::Initialize()
+void PEBloom::Initialize()
 {
 	if (DXF_ == nullptr) {
 		DXF_ = DirectXFunc::GetInstance();
@@ -23,10 +22,12 @@ void PEVignetting::Initialize()
 	//RootParameter作成。PixelShaderのMAterialとVertexShaderのTransform
 	D3D12_ROOT_PARAMETER rootParameters[2] = {};
 
+
 	//マテリアル
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;		//PixelShaderで使う
 	rootParameters[1].Descriptor.ShaderRegister = 0;						//レジスタ番号０とバインド
+
 
 #pragma region ディスクリプタレンジ
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
@@ -78,6 +79,7 @@ void PEVignetting::Initialize()
 
 #pragma endregion
 #pragma region InputLayoutの設定
+
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = nullptr;
 	inputLayoutDesc.NumElements = 0;// _countof(inputElementDescs);
@@ -157,14 +159,16 @@ void PEVignetting::Initialize()
 	//マテリアルにデータを書き込む
 	//書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
-	materialData_->value = 16.0f;
-	materialData_->darkness = 0.8f;
-	materialData_->effective = 1.0f;
-	Log("Complete VignettingPSO Initialized!\n");
+	materialData_->value = 1.0f;
+
+
+	Log("Complete HighLuminancePSO Initialized!\n");
+
+
 }
 
-void PEVignetting::PreDraw()
-{	
+void PEBloom::PreDraw()
+{
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	DXF_->GetCMDList()->SetGraphicsRootSignature(rootSignature_);
 	DXF_->GetCMDList()->SetPipelineState(psoState_);
@@ -172,21 +176,21 @@ void PEVignetting::PreDraw()
 	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, materialResource_->GetGPUVirtualAddress());
 }
 
-void PEVignetting::Debug()
+void PEBloom::Debug()
 {
 #ifdef _DEBUG
-	if(ImGui::BeginMenu("PEVignetting")){
-	ImGui::DragFloat("value", &materialData_->value, 0.1f);
-	ImGui::DragFloat("darkness", &materialData_->darkness, 0.01f);
-	ImGui::SliderFloat("effective", &materialData_->effective, 0.0f,1.0f);
-	ImGui::EndMenu();
-}
+	if (ImGui::BeginMenu("Bloom")) {
+		ImGui::DragFloat("value", &materialData_->value,0.01f,0,5.0f);
+		ImGui::EndMenu();
+	}
 #endif // _DEBUG
 }
 
-void PEVignetting::Release()
+void PEBloom::Release()
 {
 	rootSignature_->Release();
 	psoState_->Release();
-	materialResource_->Release();
+
 }
+
+

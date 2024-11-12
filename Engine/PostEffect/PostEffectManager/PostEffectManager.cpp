@@ -17,7 +17,7 @@
 #include"PostEffect/PEs/PEDissolve.h"
 #include"PostEffect/PEs/PERandom.h"
 #include"PostEffect/PEs/PEHSVFilter.h"
-
+#include"PostEffect/PEs/PEBloom.h"
 #include"ImGuiManager/ImGuiManager.h"
 #include<cassert>
 
@@ -147,6 +147,9 @@ void PostEffectManager::Initialize()
 	peData_[kHSV] = new PEHSVFilter();
 	peData_[kHSV]->Initialize();
 
+	peData_[kBloom] = new PEBloom();
+	peData_[kBloom]->Initialize();
+
 	/*PEDissolve* d = dynamic_cast<PEDissolve*>(peData_[kDissolve]);
 	if (d) {
 
@@ -236,7 +239,7 @@ void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 	//RenderTextureをSwapchainに描画
 	//offScreen_->materialData_->type = (int)type;
 	//offScreen_->PreDraw();
-	if (type >= 0 && type <= _countOfEffectType) {
+	if (type >= 0 && type <= CountOfEffectType&&effective_) {
 		peData_[type]->PreDraw();
 	}
 	else {
@@ -297,6 +300,9 @@ void PostEffectManager::Debug()
 {
 #ifdef _DEBUG
 	ImGui::Begin("PostEffect");
+
+	ImGui::Checkbox("有効", &effective_);
+
 	ImGui::BeginChild("scloll");
 	for (auto& pe : peData_) {
 		pe.second->Debug();

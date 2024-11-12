@@ -25,6 +25,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     
     float32_t3 pColor = float32_t3(0.2125f, 0.7154f, 0.0721f);
     float32_t value = dot(output.color.rgb, pColor);
+    //強度
     output.color.rgb = lerp(float32_t3(output.color.rgb), float32_t3(value, value, value),gMaterial.value);
    
     return output;

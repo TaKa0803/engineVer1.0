@@ -113,8 +113,8 @@ void DebugScnene::Draw()
 
 
 	particleManager_->Draw();
-
-	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kHSV, true);
+	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kBloom, true);
 }
 
 void DebugScnene::Debug()

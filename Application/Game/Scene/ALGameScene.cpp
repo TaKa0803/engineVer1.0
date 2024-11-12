@@ -201,7 +201,7 @@ void ALGameScene::Draw() {
 
 		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
 
-		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kHSV, true);
+		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kBloom, true);
 
 		if (Count >= 200) {
 			PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kRadialBlur, true);

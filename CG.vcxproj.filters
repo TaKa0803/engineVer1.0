@@ -29,6 +29,7 @@
     <FxCompile Include="resources\shaders\ComputeShader\InitializeParticle.CS.hlsl" />
     <FxCompile Include="resources\shaders\ComputeShader\ParticleEmiter.CS.hlsl" />
     <FxCompile Include="resources\shaders\PostEffect\Bloom.PS.hlsl" />
+    <FxCompile Include="resources\shaders\PostEffect\PickHighLuminance.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\Game\Plane\Plane.cpp" />
@@ -138,6 +139,8 @@
     <ClCompile Include="Application\Game\Scene\GameClearScene.cpp" />
     <ClCompile Include="Application\Game\Player\Down\PlayerDown.cpp" />
     <ClCompile Include="Engine\GvariGroup\GvariGroup.cpp" />
+    <ClCompile Include="Engine\PostEffect\PEs\PEBloom.cpp" />
+    <ClCompile Include="Engine\PostEffect\SimplePostEffect\SimplePostEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Game\Plane\Plane.h" />
@@ -251,6 +254,8 @@
     <ClInclude Include="Application\Game\Player\Down\PlayerDown.h" />
     <ClInclude Include="Engine\GvariGroup\GvariGroup.h" />
     <ClInclude Include="Engine\GVariableManager\GVariDatas.h" />
+    <ClInclude Include="Engine\PostEffect\PEs\PEBloom.h" />
+    <ClInclude Include="Engine\PostEffect\SimplePostEffect\SimpleSostEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />
