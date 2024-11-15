@@ -16,9 +16,6 @@ DirectX12での自作エンジンです
 ・externals
 >外部ライブラリが入っています
 
-・x64
->デバッグ、リリースのexeが入っています
-
 ## ゲーム部分のコードについて
 
 アプリケーションでのすべてのシーンは[Application/SceneManager](Application/SceneManager/)でシーン管理されています。
