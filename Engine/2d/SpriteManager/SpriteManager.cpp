@@ -8,14 +8,14 @@ SpriteManager* SpriteManager::GetInstance()
 
 void SpriteManager::Initialize()
 {
-	grarphics_ = new SpritePSO();
+	grarphics_ = std::make_unique<SpritePSO>();
 	grarphics_->Initialize();
 }
 
 void SpriteManager::Finalize()
 {
-	delete grarphics_;
-	grarphics_ = nullptr;
+	//delete grarphics_;
+	//grarphics_ = nullptr;
 }
 
 

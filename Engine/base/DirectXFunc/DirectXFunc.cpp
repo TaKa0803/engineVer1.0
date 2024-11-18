@@ -70,15 +70,9 @@ void DirectXFunc::Initialize(WindowApp* winApp)
 	Log("Complete DirectXFunc Initialize\n");
 }
 
-void DirectXFunc::InitializeOthher()
-{
 
-}
 
-void DirectXFunc::Update()
-{
-	
-}
+
 
 
 

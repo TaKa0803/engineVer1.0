@@ -42,7 +42,6 @@ ALGameScene::ALGameScene() {
 	}
 
 
-	brokenBody_ = BrokenBody::GetInstance();
 
 	int texture = TextureManager::LoadTex(white).texNum;
 	sceneC_.reset(Sprite::Create(texture, { 1,1 }, { 1,1 }, { 1280,720 }));
@@ -60,7 +59,6 @@ ALGameScene::ALGameScene() {
 }
 
 ALGameScene::~ALGameScene() {
-	brokenBody_->Finalize();
 }
 
 void ALGameScene::Initialize() {
@@ -92,7 +90,6 @@ void ALGameScene::Initialize() {
 	serchComplete_ = false;
 
 
-	brokenBody_->Initialize();
 
 	sceneXhangeCount_ = maxSceneChangeCount_;
 	isSceneChange_ = false;
@@ -142,8 +139,7 @@ void ALGameScene::Update() {
 		//当たり判定
 		Collision();
 
-		//壊れた体の演出
-		brokenBody_->Update();
+
 
 #pragma endregion
 
@@ -179,9 +175,6 @@ void ALGameScene::Draw() {
 
 	//
 	boss_->Draw();
-
-	//砕けた体描画
-	brokenBody_->Draw();
 
 	//インスタンシングのモデルを全描画
 	InstancingModelManager::GetInstance()->DrawAllModel();

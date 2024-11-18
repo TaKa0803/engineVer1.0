@@ -120,6 +120,7 @@ void TextureManager::Initialize(DirectXFunc* DXF_)
 
 void TextureManager::Finalize() {
 	tagNumDatas_.clear();
+
 	texDatas_.clear();
 }
 

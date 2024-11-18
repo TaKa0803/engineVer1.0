@@ -92,3 +92,9 @@ void DXCManager::Initialize()
 	assert(SUCCEEDED(hr));
 #pragma endregion
 }
+
+void DXCManager::Release()
+{
+	dxcUtils->Release();
+	dxcCompiler->Release();
+}

@@ -28,11 +28,16 @@ public:
 
 	void Initialize();
 
-	IDxcUtils* GetDxcUtils() { return dxcUtils; }
-	IDxcCompiler3* GetDxcCompiler() { return dxcCompiler; }
-	IDxcIncludeHandler* GetIncludeHandler() { return includeHandler; }
+	void Release();
+
+	IDxcUtils* GetDxcUtils() { return dxcUtils.Get(); }
+	IDxcCompiler3* GetDxcCompiler() { return dxcCompiler.Get(); }
+	IDxcIncludeHandler* GetIncludeHandler() { return includeHandler.Get(); }
 private:
-	IDxcUtils* dxcUtils = nullptr;
-	IDxcCompiler3* dxcCompiler = nullptr;
-	IDxcIncludeHandler* includeHandler = nullptr;
+
+	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
+
+	ComPtr<IDxcUtils> dxcUtils = nullptr;
+	ComPtr<IDxcCompiler3> dxcCompiler = nullptr;
+	ComPtr<IDxcIncludeHandler> includeHandler = nullptr;
 };

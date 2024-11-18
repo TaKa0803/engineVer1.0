@@ -47,7 +47,6 @@ void MainSystem::Initializes() {
 	//DirectXマネージャ初期化
 	DXF_ = DirectXFunc::GetInstance();
 	DXF_->Initialize(winApp_);
-	DXF_->InitializeOthher();
 
 	//SRVインスタンス取得
 	SRVM_ = SRVManager::GetInstance();
@@ -126,8 +125,6 @@ void MainSystem::MainRoop() {
 		//キー入力
 		input_->Update();
 		///=以下更新=//
-
-		DXF_->Update();
 
 		//Gvariの更新
 		GlobalVariableManager::GetInstance()->Update();

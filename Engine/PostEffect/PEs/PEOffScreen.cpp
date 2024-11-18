@@ -11,7 +11,6 @@ PEOffScreen::PEOffScreen()
 
 PEOffScreen::~PEOffScreen()
 {
-
 }
 
 void PEOffScreen::Initialize()

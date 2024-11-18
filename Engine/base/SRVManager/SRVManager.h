@@ -109,6 +109,11 @@ private:
 
 	ID3D12Device* DXF_ = nullptr;
 
+private:
+
+	
+	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 	//SRV用のヒープでディスクリプタの数は１２８。SRVはSHADER内で触るものなので、ShaderVisibleはtrue
 	ID3D12DescriptorHeap* srvDescriptorHeap = nullptr;
 	uint32_t descriptorSizeSRV = 0u;

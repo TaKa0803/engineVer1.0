@@ -26,6 +26,6 @@ public:
 private:
 	//
 
-	SpritePSO* grarphics_;
+	std::unique_ptr<SpritePSO> grarphics_;
 
 };

@@ -124,10 +124,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\Game\Scene\ALGameScene.cpp" />
     <ClCompile Include="Application\Game\Scene\ALTitleScene.cpp" />
     <ClCompile Include="Application\Game\Scene\GameOverScene.cpp" />
-    <ClCompile Include="Application\Game\BrokenBody\BrokenBody.cpp" />
     <ClCompile Include="Application\Game\CirccleShadow\CirccleShadow.cpp" />
-    <ClCompile Include="Application\Game\EnemyPopManager\EnemyPopManager.cpp" />
-    <ClCompile Include="Application\Game\Enemy\ALEnemy.cpp" />
     <ClCompile Include="Application\Game\FollowCamera\FollowCamera.cpp" />
     <ClCompile Include="Application\Game\GameUI\GameUI.cpp" />
     <ClCompile Include="Application\Game\Player\Behavior\ATKData\PlayerPunch.cpp" />
@@ -403,10 +400,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\Game\Scene\ALGameScene.h" />
     <ClInclude Include="Application\Game\Scene\ALTitleScene.h" />
     <ClInclude Include="Application\Game\Scene\GameOverScene.h" />
-    <ClInclude Include="Application\Game\BrokenBody\BrokenBody.h" />
     <ClInclude Include="Application\Game\CirccleShadow\CirccleShadow.h" />
-    <ClInclude Include="Application\Game\EnemyPopManager\EnemyPopManager.h" />
-    <ClInclude Include="Application\Game\Enemy\ALEnemy.h" />
     <ClInclude Include="Application\Game\FollowCamera\FollowCamera.h" />
     <ClInclude Include="Application\Game\GameUI\GameUI.h" />
     <ClInclude Include="Application\Game\items.h" />
@@ -437,6 +431,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\base\DeltaTimer\DeltaTimer.h" />
     <ClInclude Include="Engine\base\DSVManager\DSVManager.h" />
     <ClInclude Include="Engine\base\DXC\DXCManager.h" />
+    <ClInclude Include="Engine\base\memoryReakChecker.h" />
     <ClInclude Include="Engine\base\RTVManager\RTVManager.h" />
     <ClInclude Include="Engine\base\UAVManager\UAVManager.h" />
     <ClInclude Include="Engine\Camera\Camera.h" />

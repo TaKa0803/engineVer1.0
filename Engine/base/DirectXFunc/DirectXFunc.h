@@ -22,14 +22,8 @@ private://シングルトンパターン
 	DirectXFunc(const DirectXFunc& o) = delete;
 	const DirectXFunc& operator=(const DirectXFunc& o) = delete;
 
-
-public:	//静的メンバ変数
-
-
-
 public:
 
-	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 	/// <summary>
 	/// イニシャライズ
@@ -37,9 +31,6 @@ public:
 	/// <param name="winApp"></param>
 	void Initialize(WindowApp* winApp);
 
-	void InitializeOthher();
-
-	void Update();
 
 	void PreDraw();
 
@@ -101,6 +92,10 @@ private://メンバ関数
 #pragma endregion
 
 private://メンバ変数
+
+
+	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 #ifdef _DEBUG
 	ComPtr<ID3D12InfoQueue> infoQueue = nullptr;
 #endif // _DEBUG
@@ -135,18 +130,9 @@ private://メンバ変数
 
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
 
-	
-
 	//描画先のRTVとDSVを設定する
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
 
-
-
-	//VignettingPSO* offScreen_ = nullptr;
-
-
-	
-	ID3D12Resource* texResource_;
 
 	//フェンス
 	ComPtr<ID3D12Fence> fence = nullptr;

@@ -168,6 +168,8 @@ void PostEffectManager::Finalize()
 		data.second->Release();
 	}
 
+	peData_.clear();
+
 }
 
 void PostEffectManager::SystemPreDraw(D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle)

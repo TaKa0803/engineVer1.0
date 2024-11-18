@@ -12,11 +12,11 @@ SpritePSO::SpritePSO()
 
 SpritePSO::~SpritePSO()
 {
-	rootSignature_->Release();
-	for (auto& pso : psoState_) {
-		pso->Release();
-		pso = nullptr;
-	}
+	//rootSignature_->Release();
+	//for (auto& pso : psoState_) {
+	//	pso->Release();
+	//	pso = nullptr;
+	//}
 }
 
 void SpritePSO::Initialize()
@@ -227,7 +227,7 @@ void SpritePSO::Initialize()
 #pragma region PSOを生成
 			//psoDesc
 			D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-			graphicsPipelineStateDesc.pRootSignature = rootSignature_;	//RootSignature
+			graphicsPipelineStateDesc.pRootSignature = rootSignature_.Get();	//RootSignature
 			graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;	//InputLayout
 			graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),
 				vertexShaderBlob->GetBufferSize() };
@@ -261,6 +261,6 @@ void SpritePSO::Initialize()
 void SpritePSO::PreDraw(BlendMode blendMode)
 {
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
-	DXF_->GetCMDList()->SetGraphicsRootSignature(rootSignature_);
-	DXF_->GetCMDList()->SetPipelineState(psoState_[static_cast<int>(blendMode)]);
+	DXF_->GetCMDList()->SetGraphicsRootSignature(rootSignature_.Get());
+	DXF_->GetCMDList()->SetPipelineState(psoState_[static_cast<int>(blendMode)].Get());
 }

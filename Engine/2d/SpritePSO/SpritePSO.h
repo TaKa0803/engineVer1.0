@@ -2,6 +2,7 @@
 
 //#include<dxcapi.h>
 #include<d3d12.h>
+#include<wrl.h>
 #include"struct.h"
 
 #include"DirectXFunc/DirectXFunc.h"
@@ -29,8 +30,8 @@ private:
 	DirectXFunc* DXF_;
 
 	//ルートシグネチャ
-	ID3D12RootSignature* rootSignature_=nullptr;
+	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_=nullptr;
 
 	//パイプライン
-	ID3D12PipelineState*psoState_[int(BlendMode::kCountOfBlendMode)] = { nullptr };
+	Microsoft::WRL::ComPtr<ID3D12PipelineState>psoState_[int(BlendMode::kCountOfBlendMode)] = { nullptr };
 };

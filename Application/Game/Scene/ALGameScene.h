@@ -11,10 +11,8 @@
 #include"Game/Boss/Boss.h"
 #include"Game/Player/Player.h"
 #include"Game/Plane/Plane.h"
-#include"Game/Enemy/ALEnemy.h"
-#include"Game/EnemyPopManager/EnemyPopManager.h"
 #include"Sprite/Sprite.h"
-#include"Game/BrokenBody/BrokenBody.h"
+
 #include"ParticleData/ParticleManager.h"
 #include"Game/FollowCamera/FollowCamera.h"
 #include"Game/GameUI/GameUI.h"
@@ -89,9 +87,6 @@ private:
 	float nowFrameCountEnemy_ = 0;
 
 	bool serchComplete_ = false;
-
-
-	BrokenBody* brokenBody_;
 
 	//シーンチェンジ用
 	std::string white = "resources/Texture/SystemResources/white.png";

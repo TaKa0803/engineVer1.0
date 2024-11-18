@@ -190,7 +190,7 @@ void PEBloom::Release()
 {
 	rootSignature_->Release();
 	psoState_->Release();
-
+	materialResource_->Release();
 }
 
 
