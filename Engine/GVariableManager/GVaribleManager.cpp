@@ -593,7 +593,7 @@ void GlobalVariableManager::LoadAllSaveData()
 	}
 }
 
-void GlobalVariableManager::SetAllLoadData()
+void GlobalVariableManager::SetLoadAllData()
 {
 
 	for (auto& data : saveDatas_) {

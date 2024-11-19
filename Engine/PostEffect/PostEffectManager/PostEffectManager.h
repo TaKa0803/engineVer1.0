@@ -2,6 +2,7 @@
 #include"Vector4.h"
 #include"DirectXFunc/DirectXFunc.h"
 #include"PostEffect/IPipelineStateObject.h"
+#include"ExtractionScene/ExtractionScene.h"
 
 #include<d3d12.h>
 #include<stdint.h>
@@ -32,6 +33,7 @@ public:
 		kDissolve,
 		kRandom,
 		kHSV,
+		kHighLuminance,
 		kBloom,
 		CountOfEffectType
 	};
@@ -69,8 +71,9 @@ public:
 private:
 	DirectXFunc* DXF_;
 
-	//OffScreenRendering* offScreen_ = nullptr;
+	ExtractionScene* rxtractionScene_=nullptr;
 
+	
 	bool effective_ = true;
 
 	//後続演出フラグ

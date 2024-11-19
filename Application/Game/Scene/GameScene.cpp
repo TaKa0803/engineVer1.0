@@ -10,6 +10,7 @@
 #include"PostEffect/PEs/PEVignetting.h"
 #include"ColliderOBB/OBBCollider.h"
 #include"Game/Boss/BulletManager/BossBulletManager.h"
+#include"GVariableManager/GVaribleManager.h"
 
 GameScene::GameScene() {
 	input_ = Input::GetInstance();
@@ -62,7 +63,7 @@ void GameScene::Initialize() {
 
 	followCamera_->Initialize();
 
-
+	GlobalVariableManager::GetInstance()->SetLoadAllData();
 
 
 

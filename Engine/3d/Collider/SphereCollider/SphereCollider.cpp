@@ -40,15 +40,18 @@ void SphereCollider::Initialize(const std::string& tag)
 
 
 void SphereCollider::Update() {
+
 	preWorld_ = world_;
 	
+	world_.scale_ = { scale_,scale_,scale_ };
+
 	world_.UpdateMatrix();
 	
 }
 
 void SphereCollider::Draw() {
 #ifdef _DEBUG
-	if (isDraw_&&isActive_) {
+	if (isDraw_) {
 		InstancingModelManager::GetInstance()->SetData(tag_, world_,0, color_);
 	}
 #endif // _DEBUG
@@ -227,31 +230,7 @@ bool SphereCollider::IsCollision(OBBCollider& obb, Vector3& backVec, float divis
 
 }
 
-void SphereCollider::Debug(const char* name) {
-#ifdef _DEBUG
-	std::string cName = name;
-	cName = cName + " collider";
 
-	float radius = world_.scale_.x;
-
-	if (ImGui::BeginMenu(cName.c_str())) {
-		world_.DrawDebug(cName.c_str());
-		ImGui::DragFloat("alpha", &alpha_, 0.01f);
-		ImGui::DragFloat("radius", &radius, 0.1f);
-		ImGui::Checkbox("isDrawAll", &isDraw_);
-		ImGui::EndMenu();
-	}
-
-	IMM_->SetAlpha(tag_, alpha_);
-
-	world_.scale_ = { radius,radius,radius };
-
-#endif // _DEBUG
-
-
-
-
-}
 
 void SphereCollider::SetColor(bool hit)
 {
@@ -267,6 +246,23 @@ void SphereCollider::UpdateMatrix()
 {
 	world_.UpdateMatrix();
 }
+
+GVariTree& SphereCollider::GetDebugTree(const std::string& name)
+{
+
+	tree_.treeName_ = name;
+
+	tree_.SetTreeData(world_.GetDebugTree());
+	tree_.SetValue("有効", &isActive_);
+	tree_.SetValue("描画", &isDraw_);
+	tree_.SetValue("通常色", &normalColor);
+	tree_.SetValue("ヒット色", &hitColor);
+	tree_.SetValue("サイズ", &scale_);
+
+	return tree_;
+}
+
+
 
 float SphereCollider::GetRadius()
 {

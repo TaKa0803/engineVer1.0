@@ -2,6 +2,13 @@
 #include<cassert>
 #include<imgui.h>
 
+GVariTree& InstancingGameObject::GetDebugTree(const std::string& name)
+{
+	tree_.treeName_ = name;
+	tree_.SetTreeData(world_.GetDebugMonitorTree());
+	return tree_;
+}
+
 InstancingGameObject::~InstancingGameObject() {
 }
 
@@ -39,7 +46,7 @@ void InstancingGameObject::Debug(const char* name)
 
 			IMM_->Debug(tag_, name);
 
-			world_.DrawDebug(name);
+			//world_.DrawDebug(name);
 
 			ImGui::EndMenu();
 		}

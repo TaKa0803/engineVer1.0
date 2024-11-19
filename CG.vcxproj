@@ -169,6 +169,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3d\InstancingGameObject\InstancingGameObject.cpp" />
     <ClCompile Include="Engine\base\Log\Log.cpp" />
     <ClCompile Include="Engine\base\MainSystem\MainSystem.cpp" />
+    <ClCompile Include="Engine\ExtractionScene\ExtractionScene.cpp" />
     <ClCompile Include="Engine\GVariableManager\GVaribleManager.cpp" />
     <ClCompile Include="Engine\GvariGroup\GvariGroup.cpp" />
     <ClCompile Include="Engine\LightManager\LightManager.cpp" />
@@ -187,6 +188,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\ParticleData\ParticleManager.cpp" />
     <ClCompile Include="Engine\ParticleData\ParticlePSO\ParticlePSO.cpp" />
     <ClCompile Include="Engine\PostEffect\PEs\PEBloom.cpp" />
+    <ClCompile Include="Engine\PostEffect\PEs\PEHighLuminance.cpp" />
     <ClCompile Include="Engine\PostEffect\PostEffectManager\PostEffectManager.cpp" />
     <ClCompile Include="Engine\PostEffect\PEs\PEDepthBasedOutline.cpp" />
     <ClCompile Include="Engine\PostEffect\PEs\PEDissolve.cpp" />
@@ -299,6 +301,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="resources\shaders\PostEffect\Dissolve.PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\PostEffect\GaussianBlur.PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -448,6 +456,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\3d\InstancingGameObject\InstancingGameObject.h" />
     <ClInclude Include="Engine\base\Log\Log.h" />
     <ClInclude Include="Engine\base\MainSystem\MainSystem.h" />
+    <ClInclude Include="Engine\ExtractionScene\ExtractionScene.h" />
     <ClInclude Include="Engine\GVariableManager\GVaribleManager.h" />
     <ClInclude Include="Engine\GVariableManager\GVariDatas.h" />
     <ClInclude Include="Engine\GvariGroup\GvariGroup.h" />
@@ -467,6 +476,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\ParticleData\ParticleData.h" />
     <ClInclude Include="Engine\ParticleData\ParticlePSO\ParticlePSO.h" />
     <ClInclude Include="Engine\PostEffect\PEs\PEBloom.h" />
+    <ClInclude Include="Engine\PostEffect\PEs\PEHighLuminance.h" />
     <ClInclude Include="Engine\PostEffect\PostEffectManager\PostEffectManager.h" />
     <ClInclude Include="Engine\PostEffect\IPipelineStateObject.h" />
     <ClInclude Include="Engine\PostEffect\PEs\PEDepthBasedOutline.h" />

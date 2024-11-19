@@ -17,7 +17,9 @@
 #include"PostEffect/PEs/PEDissolve.h"
 #include"PostEffect/PEs/PERandom.h"
 #include"PostEffect/PEs/PEHSVFilter.h"
+#include"PostEffect/PEs/PEHighLuminance.h"
 #include"PostEffect/PEs/PEBloom.h"
+
 #include"ImGuiManager/ImGuiManager.h"
 #include<cassert>
 
@@ -29,55 +31,17 @@ PostEffectManager* PostEffectManager::GetInstance()
 }
 
 
-ID3D12Resource* CreateRenderTextureResource(ID3D12Device* device, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor) {
-
-
-	D3D12_RESOURCE_DESC resourceDesc{};
-	resourceDesc.Width = width;											//Textureの幅
-	resourceDesc.Height = height;										//Textureの高さ
-	resourceDesc.MipLevels = 1;											//mipmapの数
-	resourceDesc.DepthOrArraySize = 1;									//奥行き　or 配列Textureの配列数
-	resourceDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;				//DepthStencilとして利用可能なフォーマット
-	resourceDesc.SampleDesc.Count = 1;									//サンプリングカウント、１固定
-	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;		//２次元
-	resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;		//RenderTargetとして使う通知
-
-
-	//Heap生成
-	D3D12_HEAP_PROPERTIES heapProperties{};
-	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
-
-	D3D12_CLEAR_VALUE clearValue;
-	clearValue.Format = format;
-	clearValue.Color[0] = clearColor.x;
-	clearValue.Color[1] = clearColor.y;
-	clearValue.Color[2] = clearColor.z;
-	clearValue.Color[3] = clearColor.w;
-
-	ID3D12Resource* resource = nullptr;
-	HRESULT hr = device->CreateCommittedResource(
-		&heapProperties,
-		D3D12_HEAP_FLAG_NONE,
-		&resourceDesc,
-		D3D12_RESOURCE_STATE_RENDER_TARGET,	//これから描画することを前提としたTextureなのでRenderTargetとして使うことから始める
-		&clearValue,						//clear最適値、ClearRenderTargetをこの色でClearするようにする。最適化されているので最速
-		IID_PPV_ARGS(&resource)
-	);
-
-	assert(SUCCEEDED(hr));
-
-	return resource;
-}
 
 
 void PostEffectManager::Initialize()
 {
+	rxtractionScene_ = ExtractionScene::GetInstance();
+	rxtractionScene_->Initialize();
+
 	DXF_ = DirectXFunc::GetInstance();
 
-	renderTexture_[0] = CreateRenderTextureResource(DXF_->GetDevice(), WindowApp::kClientWidth, WindowApp::kClientHeight,
-		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTClearValue);
-	renderTexture_[1] = CreateRenderTextureResource(DXF_->GetDevice(), WindowApp::kClientWidth, WindowApp::kClientHeight,
-		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTClearValue);
+	renderTexture_[0] = DXF_->CreateRenderTextureResource(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTClearValue);
+	renderTexture_[1] = DXF_->CreateRenderTextureResource(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTClearValue);
 
 	D3D12_RENDER_TARGET_VIEW_DESC rtDesc{};
 	rtDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
@@ -147,6 +111,9 @@ void PostEffectManager::Initialize()
 	peData_[kHSV] = new PEHSVFilter();
 	peData_[kHSV]->Initialize();
 
+	peData_[kHighLuminance] = new PEHighLuminace();
+	peData_[kHighLuminance]->Initialize();
+
 	peData_[kBloom] = new PEBloom();
 	peData_[kBloom]->Initialize();
 
@@ -161,6 +128,8 @@ void PostEffectManager::Initialize()
 
 void PostEffectManager::Finalize()
 {
+	rxtractionScene_->Finalize();
+
 	renderTexture_[0]->Release();
 	renderTexture_[1]->Release();
 
@@ -191,6 +160,7 @@ void PostEffectManager::SystemPreDraw(D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle)
 
 void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 {
+
 	//描画先
 	int drawNum;
 	if (resourceNum_ == 0) {
@@ -198,6 +168,16 @@ void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 	}
 	else {
 		drawNum = 0;
+	}
+
+	if (type == kBloom) {
+		//現在の画面ヲコピー
+		rxtractionScene_->LoadSceneTexture(renderTexture_[resourceNum_], cHandle_[resourceNum_],gHandle_[resourceNum_], dsvHandle_);
+		//高光度のみ取得
+		PostEffectDraw(kHighLuminance,true);
+		//ブラー処理
+		PostEffectDraw(kGaussianFilter, true);
+
 	}
 
 #pragma region 書いているところをリソースにして片方に描画

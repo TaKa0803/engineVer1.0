@@ -2,21 +2,11 @@
 Texture2D<float32_t4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
+
 struct PixelShaderOutput
 {
     float32_t4 color : SV_TARGET0;
 };
-
-
-float32_t4 CheckHighLuminance(float32_t4 color)
-{
-    float32_t3 pColor = float32_t3(0.2125f, 0.7154f, 0.0721f);
-    float32_t grayScale = dot(color.rgb, pColor);
-    
-    float32_t extract = smoothstep(0.6f, 0.9f, grayScale);
-    
-    return color * extract;
-}
 
 float32_t4 ApplyGaussianBlur(float32_t2 uv)
 {
@@ -27,8 +17,8 @@ float32_t4 ApplyGaussianBlur(float32_t2 uv)
     //画像サイズ
     float32_t2 texelSize;
     
-    texelSize.x = 1.0f/1280.0f;
-    texelSize.y = 1.0f/720.0f;
+    texelSize.x = 1.0f / 1280.0f;
+    texelSize.y = 1.0f / 720.0f;
     
     // 水平方向のブラー
     for (int i = -2; i <= 2; i++)
@@ -49,10 +39,10 @@ float32_t4 ApplyGaussianBlur(float32_t2 uv)
 PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
-    // Step 1: 元の画像から高輝度部分を抽出
-    float32_t4 color = gTexture.Sample(gSampler, input.texcoord);
-    float32_t4 highLuminanceColor = CheckHighLuminance(color);
 
-    output.color = highLuminanceColor;
+    // Step 2: 高輝度部分に対してガウシアンブラーを適用
+    float32_t4 blurredHighLuminance = ApplyGaussianBlur(input.texcoord);
+
+    output.color = blurredHighLuminance;
     return output;
 }

@@ -11,6 +11,10 @@ public:
 	GVariTree(const std::string& treeName);
 	~GVariTree() = default;
 
+	/// <summary>
+	/// ツリー名設定
+	/// </summary>
+	/// <param name="name"></param>
 	void SetName(const std::string& name);
 
 	//値追加
@@ -39,18 +43,29 @@ private:
 class GVariGroup {
 
 public:
+	/// <summary>
+	/// 生成（日本語だと出力名がバグるので注意)
+	/// </summary>
+	/// <param name="groupName"></param>
 	GVariGroup(const std::string&groupName);
 	//削除時データを送る
 	~GVariGroup();
 
 
-	//値追加
+	//デバッグ値追加
 	void SetValue(const std::string& name, std::variant<bool*,int32_t*, float*, Vector3*, Vector4*> value);
 
-	//監視値追加
+	/// <summary>
+	/// 保存されないデバッグ値の追加
+	/// </summary>
+	/// <param name="name">値の名前</param>
+	/// <param name="value">値</param>
 	void SetMonitorValue(const std::string& name, std::variant<bool*, int32_t*, float*, Vector3*, std::string*> value);
 
-
+	/// <summary>
+	/// ツリーデータ格納
+	/// </summary>
+	/// <param name="tree"></param>
 	void SetTreeData(GVariTree& tree);
 private:
 

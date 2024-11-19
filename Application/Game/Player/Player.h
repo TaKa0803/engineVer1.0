@@ -50,8 +50,6 @@ public:
 
 	void DrawParticle();
 
-	void DebugWindow(const char* name);
-
 	void SetCamera(Camera* camera) { camera_ = camera; }
 
 	void OnCollision();

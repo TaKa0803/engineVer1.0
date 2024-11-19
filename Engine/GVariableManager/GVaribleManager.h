@@ -24,10 +24,12 @@ public://パブリック関数
 	//セーブデータすべて読み込み
 	void LoadAllSaveData();
 
-	//全セーブデータのセット
-	void SetAllLoadData();
 
-	//グループセーブデータ読み込み
+
+	//全セーブデータのセット
+	void SetLoadAllData();
+
+	//グループセーブデータのセット
 	void SetLoadGroupData(const std::string& groupName);
 private:
 

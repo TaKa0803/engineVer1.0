@@ -39,6 +39,8 @@ public:
 
 	void SetColor(const Vector4& color) { color_ = color; }
 
+	GVariTree& GetDebugTree(const std::string&name = "オブジェクト");
+
 	//開放処理
 	virtual ~InstancingGameObject();
 
@@ -56,5 +58,9 @@ public:
 	virtual void Draw(int anime=0);
 
 	virtual void Debug(const char*name);
+
+private:
+
+	GVariTree tree_ = GVariTree("");
 };
 

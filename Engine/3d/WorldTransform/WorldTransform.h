@@ -32,13 +32,6 @@ public:
 	/// 更新
 	/// </summary>
 	Matrix4x4 UpdateMatrix();
-
-	/// <summary>
-	/// パラメータデバッグ表示
-	/// </summary>
-	void DrawDebug(const char*name);
-
-
 #pragma region ゲッター
 public://Getter
 
@@ -55,7 +48,9 @@ public://Getter
 		return matTranslation;
 	};
 
-	GVariTree& GetDebugTree(const std::string& name = "モデル");
+	GVariTree& GetDebugTree(const std::string& name = "ワールド");
+
+	GVariTree& GetDebugMonitorTree(const std::string& name = "ワールド");
 
 public:
 	/// <summary>

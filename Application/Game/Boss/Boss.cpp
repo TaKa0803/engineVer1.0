@@ -2,6 +2,7 @@
 #include"ImGuiManager/ImGuiManager.h"
 #include"Game/Boss//ATK/IATK/IATK.h"
 #include"GvariGroup/GvariGroup.h"
+#include"GVariableManager/GVaribleManager.h"
 
 #include<numbers>
 
@@ -45,9 +46,14 @@ Boss::Boss(Player* player)
 	atkCollider_->isActive_ = false;
 
 	//Gvari設定
-	std::unique_ptr<GVariGroup> gvg = std::make_unique<GVariGroup>("Boss");
+	std::unique_ptr<GVariGroup> gvg = std::make_unique<GVariGroup>(groupName_);
+	gvg->SetMonitorValue("思考", &brein_);
+	gvg->SetMonitorValue("当たり判定", &hit_);
 	gvg->SetMonitorValue("behavior",&nowBehaviorName_);
 	gvg->SetValue("HP", &HP_);
+
+	gvg->SetTreeData(collider_->GetDebugTree("体コライダー"));
+	gvg->SetTreeData(atkCollider_->GetDebugTree("攻撃コライダー"));
 
 	gvg->SetTreeData(idle_->GetTree());
 	gvg->SetTreeData(move_->GetTree());
@@ -61,6 +67,7 @@ Boss::Boss(Player* player)
 
 void Boss::Init()
 {
+
 	bulletM_->Init();
 
 	world_.Initialize();
@@ -71,6 +78,9 @@ void Boss::Init()
 	isDead_ = false;
 
 	behaviorReq_ = Behavior::IDLE;
+
+
+	GlobalVariableManager::GetInstance()->SetLoadGroupData(groupName_);
 }
 
 void Boss::Update()
@@ -84,19 +94,21 @@ void Boss::Update()
 	//atkCollider_->Debug("BossATK");
 #endif // _DEBUG
 
+	if (brein_) {
+		//状態の初期化処理
+		if (behaviorReq_) {
+			behavior_ = behaviorReq_.value();
+			behaviorReq_ = std::nullopt;
+			atkCollider_->isActive_ = false;
+			SetAnimeTime(false);
+			//実際の初期化処理
+			(this->*BehaviorInitialize[(int)behavior_])();
+		}
 
-	//状態の初期化処理
-	if (behaviorReq_) {
-		behavior_ = behaviorReq_.value();
-		behaviorReq_ = std::nullopt;
-		atkCollider_->isActive_ = false;
-		SetAnimeTime(false);
-		//実際の初期化処理
-		(this->*BehaviorInitialize[(int)behavior_])();
+		//状態の更新
+		(this->*BehaviorUpdate[(int)behavior_])();
+
 	}
-
-	//状態の更新
-	(this->*BehaviorUpdate[(int)behavior_])();
 
 	bulletM_->Update();
 	GameObject::Update();
@@ -131,11 +143,15 @@ void Boss::Draw()
 
 void Boss::OnCollision()
 {
-	HP_--;
-	if (HP_ <= 0) {
-		isDead_ = true;
-	}
 
+	if (hit_) {
+
+		HP_--;
+		if (HP_ <= 0) {
+			isDead_ = true;
+		}
+
+	}
 }
 
 Vector3 Boss::GetBoss2PlayerDirection()

@@ -17,7 +17,7 @@ void AppScene::Initialize()
 	sceneManager->Initialize();
 
 	//セットされたデータに保存したものがあればそれを適応する
-	GlobalVariableManager::GetInstance()->SetAllLoadData();
+	GlobalVariableManager::GetInstance()->SetLoadAllData();
 }
 
 void AppScene::Update()

@@ -26,6 +26,5 @@ public:
 
 	virtual void Draw( int tex = -1);
 
-	virtual void Debug(const char* name);
 };
 

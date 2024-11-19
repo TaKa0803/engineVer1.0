@@ -21,18 +21,7 @@ Matrix4x4 EulerWorldTransform::UpdateMatrix() {
 	return matWorld_;
 }
 
-void EulerWorldTransform::DrawDebug(const char*name) {
-#ifdef _DEBUG
 
-	if (ImGui::BeginMenu(name)) {
-		ImGui::DragFloat3("座標", &translate_.x, 0.01f);
-		ImGui::DragFloat3("回転", &rotate_.x, 0.01f);
-		ImGui::DragFloat3("拡縮", &scale_.x, 0.01f);
-		ImGui::EndMenu();
-	}
-
-#endif // _DEBUG
-}
 
 GVariTree& EulerWorldTransform::GetDebugTree(const std::string& name)
 {
@@ -41,6 +30,17 @@ GVariTree& EulerWorldTransform::GetDebugTree(const std::string& name)
 	tree_.SetValue("座標", &translate_);
 	tree_.SetValue("回転", &rotate_);
 	tree_.SetValue("スケール", &scale_);
+
+	return tree_;
+}
+
+GVariTree& EulerWorldTransform::GetDebugMonitorTree(const std::string& name)
+{
+	tree_.SetName(name);
+
+	tree_.SetMonitorValue("座標", &translate_);
+	tree_.SetMonitorValue("回転", &rotate_);
+	tree_.SetMonitorValue("スケール", &scale_);
 
 	return tree_;
 }

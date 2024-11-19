@@ -450,3 +450,46 @@ void DirectXFunc::Finalize()
 	CloseHandle(fenceEvent);
 }
 
+ID3D12Resource* DirectXFunc::CreateRenderTextureResource( DXGI_FORMAT format, const Vector4& clearColor)
+{
+
+
+		D3D12_RESOURCE_DESC resourceDesc{};
+		resourceDesc.Width = winApp_->kClientWidth;											//Textureの幅
+		resourceDesc.Height = winApp_->kClientHeight;										//Textureの高さ
+		resourceDesc.MipLevels = 1;											//mipmapの数
+		resourceDesc.DepthOrArraySize = 1;									//奥行き　or 配列Textureの配列数
+		resourceDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;				//DepthStencilとして利用可能なフォーマット
+		resourceDesc.SampleDesc.Count = 1;									//サンプリングカウント、１固定
+		resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;		//２次元
+		resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;		//RenderTargetとして使う通知
+
+
+		//Heap生成
+		D3D12_HEAP_PROPERTIES heapProperties{};
+		heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+
+		D3D12_CLEAR_VALUE clearValue;
+		clearValue.Format = format;
+		clearValue.Color[0] = clearColor.x;
+		clearValue.Color[1] = clearColor.y;
+		clearValue.Color[2] = clearColor.z;
+		clearValue.Color[3] = clearColor.w;
+
+		ID3D12Resource* resource = nullptr;
+		HRESULT hr = device->CreateCommittedResource(
+			&heapProperties,
+			D3D12_HEAP_FLAG_NONE,
+			&resourceDesc,
+			D3D12_RESOURCE_STATE_RENDER_TARGET,	//これから描画することを前提としたTextureなのでRenderTargetとして使うことから始める
+			&clearValue,						//clear最適値、ClearRenderTargetをこの色でClearするようにする。最適化されているので最速
+			IID_PPV_ARGS(&resource)
+		);
+
+		assert(SUCCEEDED(hr));
+
+		return resource;
+	
+
+}
+

@@ -164,6 +164,14 @@ public://**パラメータ
 	bool isDead_ = false;
 private://ImGui用
 
+	//思考処理
+	bool brein_ = true;
+
+	bool hit_ = true;
+
+	//デバッググループ名
+	const std::string groupName_ = "ボス";
+
 	//
 	std::string behaviorName_[(int)Behavior::_CountBehavior] = {
 		"Idle",

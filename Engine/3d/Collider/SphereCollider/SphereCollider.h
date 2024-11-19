@@ -37,8 +37,7 @@ public:
 	/// <returns>引数の押し出しベクトルに値を渡して成否チェック</returns>
 	bool IsCollision(OBBCollider& obb, Vector3& backVec, float divisionVolume);
 
-	//デバッグImGui
-	void Debug(const char* name);
+
 
 	//透明度設定
 	void SetAlpha(const float alpha) { alpha_ = alpha; }
@@ -54,6 +53,8 @@ public:
 
 	//当たった時に行列更新するといい
 	void UpdateMatrix();
+
+	GVariTree& GetDebugTree(const std::string& name = "円コライダー");
 public:
 
 	//半径取得
@@ -93,7 +94,11 @@ private:
 	//ヒット時色
 	Vector4 hitColor = { 1,0,0,alpha_ };
 
+	//円サイズ
+	float scale_ = 1.0f;
 
+	//デバッグ用ツリー
+	GVariTree tree_=GVariTree("");
 public:
 
 	//有効処理

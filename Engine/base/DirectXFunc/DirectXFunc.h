@@ -51,6 +51,9 @@ public:
 	/// </summary>
 	void Finalize();
 
+	ID3D12Resource* CreateRenderTextureResource( DXGI_FORMAT format, const Vector4& clearColor);
+
+
 #pragma region ゲッター
 	ID3D12Device* GetDevice()const { return device.Get(); }
 

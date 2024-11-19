@@ -26,7 +26,6 @@ static const float32_t2 kIndex10x10[9][9] =
     { { -4.0f, 2.0f },  { -3.0f, 2.0f },  { -2.0f, 2.0f },  { -1.0f, 2.0f },  { 0.0f, 2.0f },  { 1.0f, 2.0f },  { 2.0f, 2.0f },  { 3.0f, 2.0f },  { 4.0f, 2.0f } },
     { { -4.0f, 3.0f },  { -3.0f, 3.0f },  { -2.0f, 3.0f },  { -1.0f, 3.0f },  { 0.0f, 3.0f },  { 1.0f, 3.0f },  { 2.0f, 3.0f },  { 3.0f, 3.0f },  { 4.0f, 3.0f } },
     { { -4.0f, 4.0f },  { -3.0f, 4.0f },  { -2.0f, 4.0f },  { -1.0f, 4.0f },  { 0.0f, 4.0f },  { 1.0f, 4.0f },  { 2.0f, 4.0f },  { 3.0f, 4.0f },  { 4.0f, 4.0f } },
-  
 };
 
 
@@ -46,12 +45,27 @@ PixelShaderOutput main(VertexShaderOutput input)
     
     //kenrnelを求める、weightはあと
     float32_t weight = 0.0f;
-    float32_t kernel5x[10][10];
-    for (int32_t x = 0; x < 10; ++x)
-    {
-        for (int32_t y = 0; y < 10; ++y)
-        {
-            kernel5x[x][y] = gauss(kIndex10x10[x][y].x, kIndex10x10[x][y].y, gMaterial.value); //最終引数が標準偏差
+    
+    //奇数で作成
+    const int kernel = 11;
+    
+    float32_t2 kIndex[kernel][kernel];
+    //インデックス計算
+    for (int32_t ky = 0; ky < kernel; ++ky) {
+        for (int32_t kx = 0; kx < kernel; ++kx) {
+
+            float32_t xNum = (-(kernel - 1) / 2) + kx;
+            float32_t yNum = (-(kernel - 1) / 2) + ky;
+            
+            kIndex[ky][kx] = float32_t2( xNum, yNum );
+
+        }
+    }
+    
+        float32_t kernel5x[kernel][kernel];
+    for (int32_t x = 0; x < kernel; ++x){
+        for (int32_t y = 0; y < kernel; ++y){
+            kernel5x[x][y] = gauss(kIndex[x][y].x, kIndex[x][y].y, gMaterial.value); //最終引数が標準偏差
             weight += kernel5x[x][y];
         }
     }
@@ -64,18 +78,20 @@ PixelShaderOutput main(VertexShaderOutput input)
     output.color.a = 1.0f;
         
         //5x5ループ
-    for (int32_t xx = 0; xx < 10; ++xx)
+    for (int32_t xx = 0; xx < kernel; ++xx)
     {
-        for (int32_t yy = 0; yy < 10; ++yy)
+        for (int32_t yy = 0; yy < kernel; ++yy)
         {
                 //現在のtexcoord算出
-            float32_t2 texcoord = input.texcoord + kIndex10x10[xx][yy] * uvStepSize;
+            float32_t2 texcoord = input.texcoord + kIndex[xx][yy] * uvStepSize;
                 //色に1/9かけてタス
             float32_t3 fetchColor = gTexture.Sample(gSampler, texcoord).rgb;
             output.color.rgb += fetchColor * kernel5x[xx][yy];
         }
     }
         
+    
+    
     output.color.rgb *= rcp(weight);
     
     return output;

@@ -88,6 +88,8 @@ Player::Player() {
 	gvg->SetTreeData(staminaTree);
 	gvg->SetTreeData(rolling_->GetTree());
 	gvg->SetTreeData(model_->SetDebugParam("model"));
+	gvg->SetTreeData(collider_->GetDebugTree("体コライダー"));
+	gvg->SetTreeData(atkCollider_->GetDebugTree("攻撃コライダー"));
 }
 
 Player::~Player() {
@@ -206,24 +208,7 @@ void Player::DrawParticle()
 	moveE_->Draw();
 }
 
-void Player::DebugWindow(const char* name) {
 
-	float cScale = collider_->GetRadius();
-
-	ImGui::Begin(name);
-	ImGui::DragFloat("spd", &data_.spd_, 0.01f);
-	ImGui::DragFloat("fall spd", &data_.fallSpd_, 0.01f);
-
-	world_.DrawDebug(name);
-	collider_->Debug(name);
-
-	ImGui::DragFloat("collider scale", &cScale, 0.1f, 1, 10);
-
-	//model_->DebugParameter(name);
-	ImGui::End();
-
-	collider_->SetRadius(cScale);
-}
 
 void Player::OnCollision()
 {

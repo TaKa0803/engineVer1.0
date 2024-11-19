@@ -1,7 +1,6 @@
 #include "DebugScene.h"
 #include"TextureManager/TextureManager.h"
 #include"ImGuiManager/ImGuiManager.h"
-#include"MapLoader/MapLoader.h"
 #include"LightManager/LightManager.h"
 #include"PostEffect/PostEffectManager/PostEffectManager.h"
 #include"PostEffect/PEs/PEHSVFilter.h"
@@ -75,9 +74,7 @@ void DebugScnene::Update()
 	skybox_->Update();
 	camera_->Update();
 
-	//MapLoader::GetInstance()->UpdateLevelData();
 
-	Leveldata* data = MapLoader::GetInstance()->GetLevelData();
 
 	LightManager::GetInstance()->SetPLight(pointLight_);
 	LightManager::GetInstance()->SetDLight(dLight_);
@@ -114,6 +111,8 @@ void DebugScnene::Draw()
 
 	particleManager_->Draw();
 	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
+	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kHighLuminance, true);
+	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGaussianFilter, true);
 	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kBloom, true);
 }
 
@@ -123,9 +122,6 @@ void DebugScnene::Debug()
 	PostEffectManager::GetInstance()->Debug();
 	//PostEffectManager::GetInstance()->Debug(PostEffectManager::kVinetting);
 
-
-	object->Debug("object");
-	terrain->Debug("terrain");
 	camera_->DrawDebugWindow("camera");
 
 	ImGui::Begin("Light");

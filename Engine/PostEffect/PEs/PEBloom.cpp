@@ -1,10 +1,11 @@
-#include "PEBloom.h"
-#include"ImGuiManager/ImGuiManager.h"
+#include"PEBloom.h"
 #include"Log/Log.h"
 #include"functions/function.h"
 #include"DXC/DXCManager.h"
 #include"ImGuiManager/ImGuiManager.h"
+#include"ExtractionScene/ExtractionScene.h"
 #include<cassert>
+
 
 void PEBloom::Initialize()
 {
@@ -20,14 +21,12 @@ void PEBloom::Initialize()
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 #pragma region RootParameter 
 	//RootParameter作成。PixelShaderのMAterialとVertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameters[2] = {};
-
+	D3D12_ROOT_PARAMETER rootParameters[3] = {};
 
 	//マテリアル
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;		//PixelShaderで使う
 	rootParameters[1].Descriptor.ShaderRegister = 0;						//レジスタ番号０とバインド
-
 
 #pragma region ディスクリプタレンジ
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
@@ -36,13 +35,26 @@ void PEBloom::Initialize()
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;			//SRVを使う
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//offsetを自動計算	
 #pragma endregion
-
 #pragma region ディスクリプタテーブル
 	//DescriptorTable
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;		//DescriptorHeapを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;					//PixelShaderで使う 
 	rootParameters[0].DescriptorTable.pDescriptorRanges = descriptorRange;				//tableの中身の配列を指定
 	rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);	//tableで利用する
+#pragma endregion
+
+#pragma region マスク画像
+	D3D12_DESCRIPTOR_RANGE descriptorRangeHighLumi[1] = {};
+	descriptorRangeHighLumi[0].BaseShaderRegister = 1;								//0から始まる
+	descriptorRangeHighLumi[0].NumDescriptors = 1;									//数
+	descriptorRangeHighLumi[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;			//SRVを使う
+	descriptorRangeHighLumi[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//offsetを自動計算	
+
+	//DescriptorTable
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;		//DescriptorHeapを使う
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;					//PixelShaderで使う 
+	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRangeHighLumi;				//tableの中身の配列を指定
+	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeHighLumi);	//tableで利用する
 #pragma endregion
 
 	descriptionRootSignature.pParameters = rootParameters;					//ルートパラメータ配列へのポインタ
@@ -79,7 +91,7 @@ void PEBloom::Initialize()
 
 #pragma endregion
 #pragma region InputLayoutの設定
-
+	//InputLayout
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = nullptr;
 	inputLayoutDesc.NumElements = 0;// _countof(inputElementDescs);
@@ -161,29 +173,30 @@ void PEBloom::Initialize()
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->value = 1.0f;
 
-
-	Log("Complete HighLuminancePSO Initialized!\n");
-
-
+	Log("Complete GaussianFilterPSO Initialized!\n");
 }
 
 void PEBloom::PreDraw()
 {
+	texture_ = ExtractionScene::GetInstance()->GetTexHandle();
+
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	DXF_->GetCMDList()->SetGraphicsRootSignature(rootSignature_);
 	DXF_->GetCMDList()->SetPipelineState(psoState_);
 	//マテリアルCBufferの場所を設定
 	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, materialResource_->GetGPUVirtualAddress());
+	DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, texture_);
 }
 
 void PEBloom::Debug()
 {
 #ifdef _DEBUG
 	if (ImGui::BeginMenu("Bloom")) {
-		ImGui::DragFloat("value", &materialData_->value,0.01f,0,5.0f);
+		ImGui::SliderFloat("value", &materialData_->value, 0.0f, 10.0f);
 		ImGui::EndMenu();
 	}
 #endif // _DEBUG
+
 }
 
 void PEBloom::Release()
@@ -192,5 +205,3 @@ void PEBloom::Release()
 	psoState_->Release();
 	materialResource_->Release();
 }
-
-
