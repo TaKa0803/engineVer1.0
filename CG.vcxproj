@@ -121,8 +121,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\Game\Boss\ATK\Normal\Stump\BossStump.cpp" />
     <ClCompile Include="Application\Game\Boss\Idle\BossIdle.cpp" />
     <ClCompile Include="Application\Game\Boss\Move\BossMove.cpp" />
-    <ClCompile Include="Application\Game\Scene\ALGameScene.cpp" />
-    <ClCompile Include="Application\Game\Scene\ALTitleScene.cpp" />
+    <ClCompile Include="Application\Game\Scene\GameScene.cpp" />
+    <ClCompile Include="Application\Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Application\Game\Scene\GameOverScene.cpp" />
     <ClCompile Include="Application\Game\CirccleShadow\CirccleShadow.cpp" />
     <ClCompile Include="Application\Game\FollowCamera\FollowCamera.cpp" />
@@ -397,8 +397,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\Game\Boss\ATK\Normal\Stump\BossStump.h" />
     <ClInclude Include="Application\Game\Boss\Idle\BossIdle.h" />
     <ClInclude Include="Application\Game\Boss\Move\BossMove.h" />
-    <ClInclude Include="Application\Game\Scene\ALGameScene.h" />
-    <ClInclude Include="Application\Game\Scene\ALTitleScene.h" />
+    <ClInclude Include="Application\Game\Scene\GameScene.h" />
+    <ClInclude Include="Application\Game\Scene\TitleScene.h" />
     <ClInclude Include="Application\Game\Scene\GameOverScene.h" />
     <ClInclude Include="Application\Game\CirccleShadow\CirccleShadow.h" />
     <ClInclude Include="Application\Game\FollowCamera\FollowCamera.h" />

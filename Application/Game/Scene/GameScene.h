@@ -17,13 +17,13 @@
 #include"Game/FollowCamera/FollowCamera.h"
 #include"Game/GameUI/GameUI.h"
 
-class ALGameScene : public IScene {
+class GameScene : public IScene {
 
 public:
 
-	ALGameScene();
+	GameScene();
 
-	~ALGameScene();
+	~GameScene();
 
 	void Initialize() override;
 

@@ -1,10 +1,10 @@
-#include"ALTitleScene.h"
+#include"TitleScene.h"
 #include"TextureManager/TextureManager.h"
 #include"AudioManager/AudioManager.h"
 #include"ImGuiManager/ImGuiManager.h"
 #include"PostEffect/PostEffectManager/PostEffectManager.h"
 
-ALTitleScene::ALTitleScene() {
+TitleScene::TitleScene() {
 	input_ = Input::GetInstance();
 
 	int texture = TextureManager::LoadTex("resources/Texture/AL/Title.png").texNum;
@@ -28,11 +28,11 @@ ALTitleScene::ALTitleScene() {
 
 }
 
-ALTitleScene::~ALTitleScene() {
+TitleScene::~TitleScene() {
 
 }
 
-void ALTitleScene::Initialize() {
+void TitleScene::Initialize() {
 	sceneXhangeCount_ = maxSceneChangeCount_;
 	isSceneChange_ = false;
 	preSceneChange_ = false;
@@ -46,7 +46,7 @@ void ALTitleScene::Initialize() {
 	AudioManager::PlaySoundData(titleSound_,0.08f);
 }
 
-void ALTitleScene::Update() {
+void TitleScene::Update() {
 
 
 	Debug();
@@ -72,7 +72,7 @@ void ALTitleScene::Update() {
 	
 }
 
-void ALTitleScene::Draw() {
+void TitleScene::Draw() {
 	
 	sprite_->Draw();
 
@@ -87,7 +87,7 @@ void ALTitleScene::Draw() {
 	
 }
 
-void ALTitleScene::Debug() {
+void TitleScene::Debug() {
 
 	Vector3 pos = pressSp_->GetPosition();
 	Vector3 scale = pressSp_->GetScale();
@@ -104,7 +104,7 @@ void ALTitleScene::Debug() {
 
 }
 
-void ALTitleScene::SceneChange()
+void TitleScene::SceneChange()
 {
 	if (input_->TriggerKey(DIK_SPACE)) {
 		isSceneChange_ = true;

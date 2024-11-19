@@ -3,13 +3,13 @@
 #include"Input/Input.h"
 #include"Sprite/Sprite.h"
 
-class ALTitleScene : public IScene {
+class TitleScene : public IScene {
 
 public:
 
-	ALTitleScene();
+	TitleScene();
 
-	~ALTitleScene();
+	~TitleScene();
 
 	void Initialize() override;
 

@@ -1,6 +1,4 @@
-#include"ALGameScene.h"
-
-#include<imgui.h>
+#include"GameScene.h"
 
 #include"InstancingModelManager/InstancingModelManager.h"
 #include"TextureManager/TextureManager.h"
@@ -13,7 +11,7 @@
 #include"ColliderOBB/OBBCollider.h"
 #include"Game/Boss/BulletManager/BossBulletManager.h"
 
-ALGameScene::ALGameScene() {
+GameScene::GameScene() {
 	input_ = Input::GetInstance();
 
 	camera_ = Camera::GetInstance();
@@ -47,10 +45,10 @@ ALGameScene::ALGameScene() {
 	emit->speed = { 0.1f,1.5f };
 }
 
-ALGameScene::~ALGameScene() {
+GameScene::~GameScene() {
 }
 
-void ALGameScene::Initialize() {
+void GameScene::Initialize() {
 
 	limitMinute = maxmilitMinute;
 
@@ -100,7 +98,7 @@ void ALGameScene::Initialize() {
 
 
 
-void ALGameScene::Update() {
+void GameScene::Update() {
 
 	PostEffectManager::GetInstance()->Debug();
 
@@ -142,7 +140,7 @@ void ALGameScene::Update() {
 
 }
 
-void ALGameScene::Draw() {
+void GameScene::Draw() {
 
 	//地面
 	//MapLoader::GetInstance()->DrawLevelData();
@@ -183,7 +181,7 @@ void ALGameScene::Draw() {
 
 
 
-void ALGameScene::Collision() {
+void GameScene::Collision() {
 
 	//ボスの体との接触判定
 	Vector3 vec;
@@ -205,43 +203,34 @@ void ALGameScene::Collision() {
 	}
 }
 
-void ALGameScene::SceneChange() {
+void GameScene::SceneChange() {
 
 
 
-
-		if (boss_->HP_ <= 0) {
-			isSceneChange_ = true;
-			AudioManager::GetInstance()->StopAllSounds();
-			AudioManager::PlaySoundData(bgmClear_, 0.08f);
-
-
-			//if (scene_ == ALGameScene::Game && boss_->isDead_) {
-			//	scene_ = Clear;
-			//	AudioManager::GetInstance()->StopAllSounds();
-			//	AudioManager::PlaySoundData(bgmClear_, 0.08f);
-			//	sceneC_->SetColorAlpha(1);
-			//	sceneNo = ALTITLE;
-			//}
-		}
-
-		if (player_->data_.HP_ <= 0) {
-			sceneNo = GAMEOVER;
-			AudioManager::GetInstance()->StopAllSounds();
-		}
-
-
-
-
-
-
+	//ボス死亡
+	if (boss_->isDead_) {
+		isSceneChange_ = true;
+		AudioManager::GetInstance()->StopAllSounds();
+		AudioManager::PlaySoundData(bgmClear_, 0.08f);		
+		sceneC_->SetColorAlpha(1);
+	}
 	
 
+	//プレイヤ死亡
+	if (player_->data_.HP_ <= 0) {
+		sceneNo = GAMEOVER;
+		AudioManager::GetInstance()->StopAllSounds();
+	}
 
+
+
+
+	//ゲーム終了処理
 	if (input_->TriggerKey(DIK_ESCAPE)) {
 		leaveGame = true;
 	}
 
+	//次シーン進行処理
 	if (isSceneChange_) {
 
 		float alpha = float(sceneXhangeCount_ / maxSceneChangeCount_);
@@ -250,12 +239,13 @@ void ALGameScene::SceneChange() {
 
 		if (sceneXhangeCount_++ >= maxSceneChangeCount_) {
 			sceneC_->SetColorAlpha(1);
-			sceneNo = TITLE;
+			sceneNo = GAMECLEAR;
 
 		}
 	}
 	else {
 
+		//シーン到達時処理
 		if (!preSceneChange_) {
 
 			float alpha = float(sceneXhangeCount_ / maxSceneChangeCount_);
