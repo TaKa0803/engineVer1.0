@@ -2,6 +2,7 @@
 //#include"struct.h"
 #include"Math/Matrix.h"
 #include"Quaternion.h"
+#include"GvariGroup/GvariGroup.h"
 
 class EulerWorldTransform {
 public://変数
@@ -52,7 +53,9 @@ public://Getter
 			matWorld_.m[3][2]
 		};
 		return matTranslation;
-	}
+	};
+
+	GVariTree& GetDebugTree(const std::string& name = "モデル");
 
 public:
 	/// <summary>
@@ -62,8 +65,11 @@ public:
 	void SetScale(float radius) { scale_ = { radius,radius,radius }; }
 
 	void SetScale(Vector3 scale) { scale_ = scale; }
-#pragma endregion
 
+#pragma endregion
+	
+	//デバッグ用ツリー
+	GVariTree tree_ = GVariTree("");
 
 };
 
@@ -129,6 +135,9 @@ public:
 
 	void SetScale(Vector3 scale) { scale_ = scale; }
 #pragma endregion
+
+private:
+
 
 
 };

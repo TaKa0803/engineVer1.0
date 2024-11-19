@@ -7,7 +7,7 @@
 #include"AudioManager/AudioManager.h"
 #include"RandomNum/RandomNum.h"
 #include"PostEffect/PostEffectManager/PostEffectManager.h"
-#include"MapLoader/MapLoader.h"
+//#include"MapLoader/MapLoader.h"
 #include"PostEffect/PEs/PEHSVFilter.h"
 #include"PostEffect/PEs/PEVignetting.h"
 #include"ColliderOBB/OBBCollider.h"
@@ -30,17 +30,6 @@ ALGameScene::ALGameScene() {
 	plane_ = std::make_unique<Plane>();
 	plane_->model_->SetUVScale({ 500, 500 });
 
-	MapLoader::GetInstance()->LoadLevelEditor("untitled", ".json");
-	MapLoader::GetInstance()->CreateModel(0);
-	std::vector<std::unique_ptr<OBBCollider>>& datas = MapLoader::GetInstance()->GetColliderData();
-
-	for (auto& data : datas) {
-		if (data->colliderTag_ == "plane c") {
-			data->isActive_ = false;
-			break;
-		}
-	}
-
 
 
 	int texture = TextureManager::LoadTex(white).texNum;
@@ -53,8 +42,8 @@ ALGameScene::ALGameScene() {
 
 
 
-	peM_ = std::make_unique<ParticleManager>();
-	EmiterSphere* emit = peM_->GetEmiterData();
+	particleM_ = std::make_unique<ParticleManager>();
+	EmiterSphere* emit = particleM_->GetEmiterData();
 	emit->speed = { 0.1f,1.5f };
 }
 
@@ -63,7 +52,6 @@ ALGameScene::~ALGameScene() {
 
 void ALGameScene::Initialize() {
 
-	scene_ = Game;
 	limitMinute = maxmilitMinute;
 
 	player_->Initialize();
@@ -103,9 +91,9 @@ void ALGameScene::Initialize() {
 	PEHSVFilter::materialData_->saturation = 0.3f;
 	PEVignetting::materialData_->darkness = 0.3f;
 
-	peM_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
-	peM_->SetOnlyImpact(true);
-	EmiterSphere* emit = peM_->GetEmiterData();
+	particleM_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
+	particleM_->SetOnlyImpact(true);
+	EmiterSphere* emit = particleM_->GetEmiterData();
 
 	emit->color = { 0,0,1,1 };
 }
@@ -116,40 +104,31 @@ void ALGameScene::Update() {
 
 	PostEffectManager::GetInstance()->Debug();
 
-	peM_->Update();
+	particleM_->Update();
 
-	switch (scene_) {
-	case ALGameScene::Game:
+
 
 #pragma region ゲームシーン
-		//デバッグウィンドウ表示
-		DebugWindows();
 
-		//マップデータ更新
-		MapLoader::GetInstance()->UpdateLevelData();
+	//マップデータ更新
+	//MapLoader::GetInstance()->UpdateLevelData();
 
-		//プレイヤー更新
-		player_->Update();
+	//プレイヤー更新
+	player_->Update();
 
-		boss_->Update();
+	boss_->Update();
 
-		//追従カメラ更新
-		followCamera_->Update(isShake_);
+	//追従カメラ更新
+	followCamera_->Update(isShake_);
 
-		//当たり判定
-		Collision();
+	//当たり判定
+	Collision();
 
 
 
 #pragma endregion
 
-		break;
-	case ALGameScene::Clear:
 
-		break;
-	default:
-		break;
-	}
 
 
 	camera_->Update();
@@ -180,63 +159,29 @@ void ALGameScene::Draw() {
 	InstancingModelManager::GetInstance()->DrawAllModel();
 
 
-	peM_->Draw();
+	particleM_->Draw();
 	player_->DrawParticle();
 
 	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
 
 
 
-	int Count = 0;
-	switch (scene_) {
-	case ALGameScene::Game:
-		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kLightOutline, true);
-
-		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
-
-		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kBloom, true);
-
-		if (Count >= 200) {
-			PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kRadialBlur, true);
-		}
-		gameUI_->DrawGame();
-
-		break;
-	case ALGameScene::Clear:
-		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDepthBasedOutline, true);
-
-		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGaussianFilter, true);
 
 
-		PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kLightOutline, true);
 
-		gameUI_->DrawClear();
-		break;
-	default:
-		break;
-	}
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
+
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kBloom, true);
 
 
-	sceneC_->Draw();
+	gameUI_->DrawGame();
+
+
+
 }
 
-void ALGameScene::DebugWindows() {
 
-#ifdef _DEBUG
-
-	//カメラのデバッグ表示
-	camera_->DrawDebugWindow("camera");
-
-	//プレイヤーデバッグ表示
-	player_->DebugWindow("player");
-
-	plane_->DebagWindow();
-
-
-
-#endif // _DEBUG
-
-}
 
 void ALGameScene::Collision() {
 
@@ -264,10 +209,9 @@ void ALGameScene::SceneChange() {
 
 
 
-	switch (scene_) {
-	case (int)ALGameScene::Game:
+
 		if (boss_->HP_ <= 0) {
-			scene_ = Clear;
+			isSceneChange_ = true;
 			AudioManager::GetInstance()->StopAllSounds();
 			AudioManager::PlaySoundData(bgmClear_, 0.08f);
 
@@ -281,23 +225,17 @@ void ALGameScene::SceneChange() {
 			//}
 		}
 
-		if (player_->data_.HP_<=0) {
-			sceneNo =GAMEOVER;
+		if (player_->data_.HP_ <= 0) {
+			sceneNo = GAMEOVER;
 			AudioManager::GetInstance()->StopAllSounds();
 		}
 
 
-		break;
-	case (int)ALGameScene::Clear:
 
-		if (input_->TriggerKey(DIK_SPACE) || input_->IsTriggerButton(kButtonB)) {
-			isSceneChange_ = true;
-		}
 
-		break;
-	default:
-		break;
-	}
+
+
+	
 
 
 	if (input_->TriggerKey(DIK_ESCAPE)) {
@@ -312,7 +250,7 @@ void ALGameScene::SceneChange() {
 
 		if (sceneXhangeCount_++ >= maxSceneChangeCount_) {
 			sceneC_->SetColorAlpha(1);
-			sceneNo = ALTITLE;
+			sceneNo = TITLE;
 
 		}
 	}

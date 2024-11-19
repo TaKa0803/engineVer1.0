@@ -39,11 +39,11 @@ void GameUI::Initialize()
 void GameUI::Update()
 {
 #ifdef _DEBUG
-	resultText_->DrawDebugImGui("taosita");
+	//resultText_->DrawDebugImGui("taosita");
 
-	skillSp_->DrawDebugImGui("skill");
-	BButton_->DrawDebugImGui("BButton");
-	punchSp_->DrawDebugImGui("punch");
+	//skillSp_->DrawDebugImGui("skill");
+	//BButton_->DrawDebugImGui("BButton");
+	//punchSp_->DrawDebugImGui("punch");
 #endif // _DEBUG
 
 

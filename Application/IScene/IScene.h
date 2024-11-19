@@ -33,8 +33,8 @@ public:
 //シーン
 enum SCENE {
 	Debug,
-	ALTITLE,
-	ALGAME,
+	TITLE,
+	GAME,
 	GAMEOVER,
 	GAMECLEAR,
 	SceneCount	//使うな

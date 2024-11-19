@@ -85,13 +85,3 @@ void PlayerRoll::Update()
 	}
 }
 
-void PlayerRoll::Debug()
-{
-#ifdef _DEBUG
-	ImGui::Begin("dash");
-	ImGui::DragFloat("spd", &data_.spd, 0.01f);
-	ImGui::DragFloat("length", &data_.length, 0.01f);
-	ImGui::DragFloat("stopSec", &data_.stopSec, 0.01f);
-	ImGui::End();
-#endif // _DEBUG
-}

@@ -36,7 +36,7 @@ Player::Player() {
 
 	input_->SetDeadLine(0.3f);
 
-	peM_ = std::make_unique<EffectMove>();
+	moveE_ = std::make_unique<EffectMove>();
 
 
 	collider_ = std::make_unique<SphereCollider>();
@@ -66,6 +66,7 @@ Player::Player() {
 	//Gvariの値設定
 	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("Player");
 
+	gvg->SetMonitorValue("ヒットフラグ", &isHit_);
 	gvg->SetValue("体力", &data_.HP_);
 	gvg->SetValue("移動速度", &data_.spd_);
 	gvg->SetValue("ダッシュ時の速度倍率", &data_.dashMultiply);
@@ -80,10 +81,13 @@ Player::Player() {
 	staminaTree.SetValue("回転時の消費量", &sData.rollCost);
 	staminaTree.SetValue("ダッシュ時の消費量/1s", &sData.dashCostSec);
 	staminaTree.SetValue("攻撃時の消費量", &sData.atkCost);
+	staminaTree.SetMonitorValue("現スタミナ", &sData.currentStamina);
+
 
 	//ツリーセット
 	gvg->SetTreeData(staminaTree);
 	gvg->SetTreeData(rolling_->GetTree());
+	gvg->SetTreeData(model_->SetDebugParam("model"));
 }
 
 Player::~Player() {
@@ -98,7 +102,7 @@ void Player::Initialize() {
 
 	model_->ChangeAnimation(3,0);
 
-	peM_->Initialize({ 1,1,1,1 });
+	moveE_->Initialize({ 1,1,1,1 });
 
 
 
@@ -126,13 +130,9 @@ void Player::GetBoss(const Boss* boss)
 void Player::Update() {
 
 #ifdef _DEBUG
-	rolling_->Debug();
+;
 
-	ImGui::Begin("Player");
-	ImGui::Text("Stamina : %4.1f", data_.stamina.currentStamina);
-	ImGui::End();
-
-	atkCollider_->Debug("playerATKCollider");
+	//atkCollider_->Debug("playerATKCollider");
 #endif // _DEBUG
 
 
@@ -149,7 +149,7 @@ void Player::Update() {
 		(this->*BehaviorInitialize[(int)behavior_])();
 	}
 
-	peM_->Update();
+	moveE_->Update();
 
 	//状態の更新
 	(this->*BehaviorUpdate[(int)behavior_])();
@@ -203,7 +203,7 @@ void Player::Draw() {
 
 void Player::DrawParticle()
 {
-	peM_->Draw();
+	moveE_->Draw();
 }
 
 void Player::DebugWindow(const char* name) {
@@ -216,7 +216,6 @@ void Player::DebugWindow(const char* name) {
 
 	world_.DrawDebug(name);
 	collider_->Debug(name);
-	model_->DebugParameter(name);
 
 	ImGui::DragFloat("collider scale", &cScale, 0.1f, 1, 10);
 
@@ -228,7 +227,10 @@ void Player::DebugWindow(const char* name) {
 
 void Player::OnCollision()
 {
-	data_.HP_--;
+
+	if (isHit_) {
+		data_.HP_--;
+	}
 }
 
 void Player::OnCollisionBack(const Vector3& backV)
@@ -360,7 +362,7 @@ void Player::Move() {
 	if (isMoveInput) {
 
 		//歩行エフェクト出現
-		peM_->SpawnE(world_.GetWorldTranslate());
+		moveE_->SpawnE(world_.GetWorldTranslate());
 
 		//加算
 		world_.translate_ += move*(float)DeltaTimer::deltaTime_;

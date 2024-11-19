@@ -16,8 +16,6 @@ public:
 
 	void Update();
 
-	void Debug();
-
 	GVariTree& GetTree() { return tree_; }
 public:
 	//データ

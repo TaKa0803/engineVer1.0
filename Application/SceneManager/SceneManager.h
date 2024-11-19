@@ -34,13 +34,6 @@ public:
 private:
 
 	/// <summary>
-	/// デバッグウィンドウ表示
-	/// </summary>
-	void DebugWindow();
-
-private:
-
-	/// <summary>
 	/// 各種シーン管理
 	/// </summary>
 	std::vector<std::unique_ptr<IScene>> sceneArr_;

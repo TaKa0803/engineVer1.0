@@ -23,7 +23,7 @@ void GameOverScene::Initialize()
 void GameOverScene::Update()
 {
 	if (inp_->TriggerKey(DIK_SPACE) || inp_->IsTriggerButton(kPadButton::kButtonB)) {
-		sceneNo = ALTITLE;
+		sceneNo = TITLE;
 	}
 }
 

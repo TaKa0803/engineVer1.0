@@ -463,89 +463,121 @@ void Model::ChangeAnimation(int animeNum, float count)
 	}
 }
 
-void Model::DebugParameter(const char* name)
+//void Model::DebugParameter(const char* name)
+//{
+//#ifdef _DEBUG
+//	bool useTexture = materialData_->enableTexture;
+//	bool useShader = materialData_->enableLighting;
+//	bool useHalf = materialData_->enableHalfLambert;
+//	Vector4 color = materialData_->color;
+//
+//	BlendMode blend = blendMode_;
+//	const char* items[] = { "None","Normal","Add","Subtract","Multiply","Screen" };
+//	int currentItem = static_cast<int>(blend);
+//
+//	FillMode fill = fillMode_;
+//	const char* fitems[] = { "Solid","WireFrame" };
+//	int currentfItem = static_cast<int>(fill);
+//
+//
+//	float discardnum = materialData_->discardNum;
+//
+//	bool usePhong = materialData_->enablePhongReflection;
+//	float shininess = materialData_->shininess;
+//
+//	bool usePointLight = materialData_->enablePointLight;
+//
+//	int anum = animeNum_;
+//
+//	bool EnvironmentTexture = materialData_->enableEnvironmentMap;
+//
+//	if (ImGui::BeginMenu(name)) {
+//		ImGui::Checkbox("Texture", &useTexture);
+//		ImGui::Checkbox("Shader", &useShader);
+//		ImGui::Checkbox("HalfLambert", &useHalf);
+//		ImGui::Checkbox("PhongReflection", &usePhong);
+//		ImGui::Checkbox("enable pointlight", &usePointLight);
+//		ImGui::Checkbox("draw model", &drawModel_);
+//		ImGui::Checkbox("draw joint", &drawJoint_);
+//
+//		ImGui::ColorEdit4("Material color", &color.x);
+//		if (ImGui::Combo("blendmode", &currentItem, items, IM_ARRAYSIZE(items))) {
+//			blend = static_cast<BlendMode>(currentItem);
+//		}
+//		if (ImGui::Combo("fillmode", &currentfItem, fitems, IM_ARRAYSIZE(fitems))) {
+//			fill = static_cast<FillMode>(currentfItem);
+//		}
+//		ImGui::DragFloat("discardNum", &discardnum, 0.01f);
+//
+//		ImGui::Text("UV");
+//		ImGui::DragFloat2("uv pos", &uvWorld_.translate_.x, 0.1f);
+//		ImGui::DragFloat("uv rotate", &uvWorld_.rotate_.z, 0.1f);
+//		ImGui::DragFloat2("uv scale", &uvWorld_.scale_.x, 0.1f);
+//
+//		ImGui::Text("Animation");
+//		ImGui::Checkbox("animeActive", &isAnimationActive_);
+//		ImGui::Checkbox("animeRoop", &isAnimeRoop_);
+//		ImGui::DragFloat("Roop second", &animationRoopSecond_, 0.1f);
+//		ImGui::SliderInt("AnimeNum", &anum, 0, (int)(modelData_.animation.size())-1);
+//
+//		ImGui::Text("Blinn Phong Reflection");
+//		ImGui::DragFloat("Shininess", &shininess);
+//
+//		ImGui::Checkbox("金属光沢処理", &EnvironmentTexture);
+//		ImGui::SliderFloat("光沢度", &materialData_->enviromentCoefficient, 0, 1);
+//		ImGui::EndMenu();
+//	}
+//
+//	//materialData_->enableEnvironmentMap = EnvironmentTexture;
+//
+//	//materialData_->enableTexture = useTexture;
+//	//materialData_->enableLighting = useShader;
+//	//materialData_->enableHalfLambert = useHalf;
+//	//materialData_->color = color;
+//	//blendMode_ = blend;
+//	//fillMode_ = fill;
+//	//materialData_->discardNum = discardnum;
+//	//materialData_->enablePhongReflection = usePhong;
+//	//materialData_->shininess = shininess;
+//	//materialData_->enablePointLight = usePointLight;
+//
+//	//if (animeNum_ != anum) {
+//	//	ChangeAnimation(anum, 1);
+//	//}
+//#endif // _DEBUG
+//
+//}
+GVariTree& Model::SetDebugParam(const std::string& treeName)
 {
-#ifdef _DEBUG
-	bool useTexture = materialData_->enableTexture;
-	bool useShader = materialData_->enableLighting;
-	bool useHalf = materialData_->enableHalfLambert;
-	Vector4 color = materialData_->color;
+	tree.SetValue("model", &drawModel_);
+	tree.SetValue("joint", &drawJoint_);
+	tree.SetValue("material color", &materialData_->color);
+	tree.SetValue("テクスチャ", &materialData_->enableTexture);
+	tree.SetValue("ディレクショナルライト", &materialData_->enableLighting);
+	tree.SetValue("ハーフランバート", &materialData_->enableHalfLambert);
+	
+	tree.SetValue("ポイントライト", &materialData_->enablePointLight);
+	tree.SetValue("キキャク", &materialData_->discardNum);
+	tree.SetValue("Phong Reflection", &materialData_->enablePhongReflection);
+	tree.SetValue("shiness", &materialData_->shininess);
 
-	BlendMode blend = blendMode_;
-	const char* items[] = { "None","Normal","Add","Subtract","Multiply","Screen" };
-	int currentItem = static_cast<int>(blend);
+	tree.SetValue("金属光沢",&materialData_->enableEnvironmentMap);
+	tree.SetValue("光沢度", &materialData_->enviromentCoefficient);
 
-	FillMode fill = fillMode_;
-	const char* fitems[] = { "Solid","WireFrame" };
-	int currentfItem = static_cast<int>(fill);
+	GVariTree uvTree = GVariTree("UV");
+	uvTree.SetValue("座標", &uvWorld_.translate_);
+	uvTree.SetValue("回転", &uvWorld_.rotate_);
+	uvTree.SetValue("サイズ", &uvWorld_.scale_);
 
+	GVariTree animation = GVariTree("アニメーション");
+	animation.SetValue("有効", &isAnimationActive_);
+	animation.SetValue("ループ", &isAnimeRoop_);
+	animation.SetValue("ループ時間", &animationRoopSecond_);
+	
+	tree.SetTreeData(uvTree);
+	tree.SetTreeData(animation);
 
-	float discardnum = materialData_->discardNum;
-
-	bool usePhong = materialData_->enablePhongReflection;
-	float shininess = materialData_->shininess;
-
-	bool usePointLight = materialData_->enablePointLight;
-
-	int anum = animeNum_;
-
-	bool EnvironmentTexture = materialData_->enableEnvironmentMap;
-
-	if (ImGui::BeginMenu(name)) {
-		ImGui::Checkbox("Texture", &useTexture);
-		ImGui::Checkbox("Shader", &useShader);
-		ImGui::Checkbox("HalfLambert", &useHalf);
-		ImGui::Checkbox("PhongReflection", &usePhong);
-		ImGui::Checkbox("enable pointlight", &usePointLight);
-		ImGui::Checkbox("draw model", &drawModel_);
-		ImGui::Checkbox("draw joint", &drawJoint_);
-
-		ImGui::ColorEdit4("Material color", &color.x);
-		if (ImGui::Combo("blendmode", &currentItem, items, IM_ARRAYSIZE(items))) {
-			blend = static_cast<BlendMode>(currentItem);
-		}
-		if (ImGui::Combo("fillmode", &currentfItem, fitems, IM_ARRAYSIZE(fitems))) {
-			fill = static_cast<FillMode>(currentfItem);
-		}
-		ImGui::DragFloat("discardNum", &discardnum, 0.01f);
-
-		ImGui::Text("UV");
-		ImGui::DragFloat2("uv pos", &uvWorld_.translate_.x, 0.1f);
-		ImGui::DragFloat("uv rotate", &uvWorld_.rotate_.z, 0.1f);
-		ImGui::DragFloat2("uv scale", &uvWorld_.scale_.x, 0.1f);
-
-		ImGui::Text("Animation");
-		ImGui::Checkbox("animeActive", &isAnimationActive_);
-		ImGui::Checkbox("animeRoop", &isAnimeRoop_);
-		ImGui::DragFloat("Roop second", &animationRoopSecond_, 0.1f);
-		ImGui::SliderInt("AnimeNum", &anum, 0, (int)(modelData_.animation.size())-1);
-
-		ImGui::Text("Blinn Phong Reflection");
-		ImGui::DragFloat("Shininess", &shininess);
-
-		ImGui::Checkbox("金属光沢処理", &EnvironmentTexture);
-		ImGui::SliderFloat("光沢度", &materialData_->enviromentCoefficient, 0, 1);
-		ImGui::EndMenu();
-	}
-
-	materialData_->enableEnvironmentMap = EnvironmentTexture;
-
-	materialData_->enableTexture = useTexture;
-	materialData_->enableLighting = useShader;
-	materialData_->enableHalfLambert = useHalf;
-	materialData_->color = color;
-	blendMode_ = blend;
-	fillMode_ = fill;
-	materialData_->discardNum = discardnum;
-	materialData_->enablePhongReflection = usePhong;
-	materialData_->shininess = shininess;
-	materialData_->enablePointLight = usePointLight;
-
-	if (animeNum_ != anum) {
-		ChangeAnimation(anum, 1);
-	}
-#endif // _DEBUG
-
+	return tree;
 }
 #pragma endregion
 

@@ -205,7 +205,7 @@ private:
 	std::unique_ptr<SphereCollider> atkCollider_;
 
 
-	std::unique_ptr<EffectMove>peM_;
+	std::unique_ptr<EffectMove>moveE_;
 
 	std::unique_ptr<PlayerRoll>rolling_;
 
@@ -220,8 +220,8 @@ private:
 	int textureData = 0;
 #pragma endregion
 
-
-
+	//あたるかの判定
+	bool isHit_ = true;
 
 
 };

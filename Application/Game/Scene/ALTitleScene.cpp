@@ -127,7 +127,7 @@ void ALTitleScene::SceneChange()
 
 		if (sceneXhangeCount_++ >= maxSceneChangeCount_) {
 			sceneC_->SetColorAlpha(1);
-			sceneNo = ALGAME;
+			sceneNo = GAME;
 		}
 	}
 	else {

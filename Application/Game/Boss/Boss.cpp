@@ -52,6 +52,7 @@ Boss::Boss(Player* player)
 	gvg->SetTreeData(idle_->GetTree());
 	gvg->SetTreeData(move_->GetTree());
 
+	gvg->SetTreeData(model_->SetDebugParam("model"));
 
 }
 
@@ -78,9 +79,9 @@ void Boss::Update()
 
 	nowBehaviorName_ = behaviorName_[(int)behavior_];
 
-	model_->DebugParameter("Boss");
-	collider_->Debug("BossCollider");
-	atkCollider_->Debug("BossATK");
+	
+	//collider_->Debug("BossCollider");
+	//atkCollider_->Debug("BossATK");
 #endif // _DEBUG
 
 

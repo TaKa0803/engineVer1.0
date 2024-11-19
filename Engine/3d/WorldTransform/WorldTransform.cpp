@@ -34,6 +34,21 @@ void EulerWorldTransform::DrawDebug(const char*name) {
 #endif // _DEBUG
 }
 
+GVariTree& EulerWorldTransform::GetDebugTree(const std::string& name)
+{
+	tree_.SetName(name);
+
+	tree_.SetValue("座標", &translate_);
+	tree_.SetValue("回転", &rotate_);
+	tree_.SetValue("スケール", &scale_);
+
+	return tree_;
+}
+
+
+
+
+
 
 
 void QuaterinionWorldTransform::Initialize()

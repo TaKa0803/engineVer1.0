@@ -26,8 +26,6 @@ void GameObject::Debug(const char* name)
 {
 	if (ImGui::BeginMenu(name)) {
 
-		model_->DebugParameter(name);
-
 		world_.DrawDebug(name);
 
 		ImGui::EndMenu();

@@ -12,6 +12,7 @@
 #include"InstancingModelManager/InstancingModelManager.h"
 #include"LightManager/LightManager.h"
 #include"ComputeShaders/SkinningCS.h"
+#include"GvariGroup/GvariGroup.h"
 
 class Model {
 public:
@@ -63,7 +64,13 @@ public:
 	/// Debug用ImGui表示
 	/// </summary>
 	/// <param name="name"></param>
-	void DebugParameter(const char* name);
+	//void DebugParameter(const char* name);
+
+	/// <summary>
+	/// Gvariツリーの作成
+	/// </summary>
+	/// <param name="treeName">各パラメータの含まれたTreeの返却</param>
+	GVariTree& SetDebugParam(const std::string &treeName = "モデル");
 
 	/// <summary>
 	/// シェーダー処理の切り替え
@@ -232,6 +239,10 @@ private:
 
 	//モデルタイプ
 	ModelDataType modelType_;
+
+	private:
+
+	GVariTree tree = GVariTree("model");
 };
 
 

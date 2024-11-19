@@ -4,11 +4,14 @@
 #include<fstream>
 #include <iostream>
 
-void ItemImGui(const std::string name, std::variant<int32_t*, float*, Vector3*> value) {
+void ItemImGui(const std::string name, std::variant<bool*,int32_t*, float*, Vector3*, Vector4*> value) {
 
 
 	//intの場合
-	if (std::holds_alternative<int32_t*>(value)) {
+	if (std::holds_alternative<bool*>(value)) {
+		bool* ptr = *std::get_if<bool*>(&value);
+		ImGui::Checkbox(name.c_str(), ptr);
+	}else if (std::holds_alternative<int32_t*>(value)) {
 		int32_t* ptr = *std::get_if<int32_t*>(&value);
 		ImGui::DragInt(name.c_str(), ptr);
 	}//floatの場合
@@ -19,6 +22,10 @@ void ItemImGui(const std::string name, std::variant<int32_t*, float*, Vector3*> 
 	else if (std::holds_alternative<Vector3*>(value)) {
 		Vector3* ptr = *std::get_if<Vector3*>(&value);
 		ImGui::DragFloat3(name.c_str(), reinterpret_cast<float*>(ptr), 0.01f);
+	}
+	else if (std::holds_alternative<Vector4*>(value)) {
+		Vector4* ptr = *std::get_if<Vector4*>(&value);
+		ImGui::ColorEdit4(name.c_str(), &ptr->x);
 	}
 }
 
@@ -234,8 +241,12 @@ void SaveItemData(
 		const std::string& itemName = itItem->first;
 		//項目の参照を取得
 		ItemData& item = itItem->second;
+		
+		if (std::holds_alternative<bool*>(item.value)) {//int型の値を保持していれば
+			//int32_t型の値を登録
+			root[itemName] = *std::get<bool*>(item.value);
 
-		if (std::holds_alternative<int32_t*>(item.value)) {//int型の値を保持していれば
+		}else if (std::holds_alternative<int32_t*>(item.value)) {//int型の値を保持していれば
 			//int32_t型の値を登録
 			root[itemName] = *std::get<int32_t*>(item.value);
 
@@ -248,7 +259,10 @@ void SaveItemData(
 			Vector3 value = *std::get<Vector3*>(item.value);
 			root[itemName] = nlohmann::json::array({ value.x, value.y, value.z });
 		}
-
+		else if (std::holds_alternative<Vector4*>(item.value)) {//Vector3型の値を保持していれば
+			Vector4 value = *std::get<Vector4*>(item.value);
+			root[itemName] = nlohmann::json::array({ value.x, value.y, value.z,value.w });
+		}
 
 	}
 }
@@ -342,11 +356,15 @@ void SetLoadTreeData(TreeData& groupData, SavedTreeData& saveData) {
 		if (saveData.value.end() != saveData.value.find(itemname)) {
 
 			//値取得
-			std::variant<int32_t, float, Vector3>& saveV = saveData.value[itemname].value;
-			std::variant<int32_t*, float*, Vector3*>& dataV = groupData.value[itemname].value;
+			std::variant<bool,int32_t, float, Vector3,Vector4>& saveV = saveData.value[itemname].value;
+			std::variant<bool*,int32_t*, float*, Vector3*, Vector4*>& dataV = groupData.value[itemname].value;
 
 			//合致する値を保存
-			if (std::holds_alternative<int32_t>(saveV) && std::holds_alternative<int32_t*>(dataV)) {
+			if (std::holds_alternative<bool>(saveV) && std::holds_alternative<bool*>(dataV)) {
+				bool savePtr = *std::get_if<bool>(&saveV);
+				bool* dataPtr = *std::get_if<bool*>(&dataV);
+				*dataPtr = savePtr;
+			}else if (std::holds_alternative<int32_t>(saveV) && std::holds_alternative<int32_t*>(dataV)) {
 				int32_t savePtr = *std::get_if<int32_t>(&saveV);
 				int32_t* dataPtr = *std::get_if<int32_t*>(&dataV);
 				*dataPtr = savePtr;
@@ -359,6 +377,11 @@ void SetLoadTreeData(TreeData& groupData, SavedTreeData& saveData) {
 			else if (std::holds_alternative<Vector3>(saveV) && std::holds_alternative<Vector3*>(dataV)) {
 				Vector3 savePtr = *std::get_if<Vector3>(&saveV);
 				Vector3* dataPtr = *std::get_if<Vector3*>(&dataV);
+				*dataPtr = savePtr;
+			}
+			else if (std::holds_alternative<Vector4>(saveV) && std::holds_alternative<Vector4*>(dataV)) {
+				Vector4 savePtr = *std::get_if<Vector4>(&saveV);
+				Vector4* dataPtr = *std::get_if<Vector4*>(&dataV);
 				*dataPtr = savePtr;
 			}
 		}
@@ -390,11 +413,15 @@ void GlobalVariableManager::SetLoadGroupData(const std::string& groupName)
 		if (saveData.value.end() != saveData.value.find(itemname)) {
 
 			//値取得
-			std::variant<int32_t, float, Vector3>& saveV = saveData.value[itemname].value;
-			std::variant<int32_t*, float*, Vector3*>& dataV = groupdata.value[itemname].value;
+			std::variant<bool,int32_t, float, Vector3,Vector4>& saveV = saveData.value[itemname].value;
+			std::variant<bool*,int32_t*, float*, Vector3*, Vector4*>& dataV = groupdata.value[itemname].value;
 
 			//合致する値を保存
-			if (std::holds_alternative<int32_t>(saveV) && std::holds_alternative<int32_t*>(dataV)) {
+			if (std::holds_alternative<bool>(saveV) && std::holds_alternative<bool*>(dataV)) {
+				bool savePtr = *std::get_if<bool>(&saveV);
+				bool* dataPtr = *std::get_if<bool*>(&dataV);
+				*dataPtr = savePtr;
+			}else if (std::holds_alternative<int32_t>(saveV) && std::holds_alternative<int32_t*>(dataV)) {
 				int32_t savePtr = *std::get_if<int32_t>(&saveV);
 				int32_t* dataPtr = *std::get_if<int32_t*>(&dataV);
 				*dataPtr = savePtr;
@@ -409,7 +436,11 @@ void GlobalVariableManager::SetLoadGroupData(const std::string& groupName)
 				Vector3* dataPtr = *std::get_if<Vector3*>(&dataV);
 				*dataPtr = savePtr;
 			}
-
+			else if (std::holds_alternative<Vector4>(saveV) && std::holds_alternative<Vector4*>(dataV)) {
+				Vector4 savePtr = *std::get_if<Vector4>(&saveV);
+				Vector4* dataPtr = *std::get_if<Vector4*>(&dataV);
+				*dataPtr = savePtr;
+			}
 		}
 
 	}
@@ -434,11 +465,15 @@ void LoadTreeData(SavedTreeData& treeData, const nlohmann::json& jsonNode) {
 		SavedItemData& data = treeData.value[itemName];
 
 		// int 型を保持している場合
-		if (itItem->is_number_integer()) {
+		if (itItem->is_boolean()) {
+			//値取得
+			bool value = itItem->get<bool>();
+			data.value = value;
+		}
+		else if (itItem->is_number_integer()) {
 			//値取得
 			int32_t value = itItem->get<int32_t>();
 			data.value = value;
-
 		}
 		// float 型を保持している場合
 		else if (itItem->is_number_float()) {
@@ -449,8 +484,10 @@ void LoadTreeData(SavedTreeData& treeData, const nlohmann::json& jsonNode) {
 		else if (itItem->is_array() && itItem->size() == 3) {
 			Vector3 value = { itItem->at(0).get<float>(), itItem->at(1).get<float>(), itItem->at(2).get<float>() };
 			data.value = value;
-
-
+		}
+		else if (itItem->is_array() && itItem->size() == 4) {
+			Vector4 value = { itItem->at(0).get<float>(), itItem->at(1).get<float>(), itItem->at(2).get<float>(),itItem->at(3).get<float>() };
+			data.value = value;
 		}
 		else if (itItem->is_object()) {
 			// 子ツリーを再帰的に処理
@@ -503,7 +540,10 @@ void GlobalVariableManager::LoadGroupData(const std::string& groupName)
 		SavedItemData& data = saveDatas_[groupName].value[itemName];
 
 		//int型を保持していた場合
-		if (itItem->is_number_integer()) {
+		if (itItem->is_boolean()) {
+			bool value = itItem->get<bool>();
+			data.value = value;
+		}else if (itItem->is_number_integer()) {
 			int32_t value = itItem->get<int32_t>();
 			data.value = value;
 		}
@@ -516,9 +556,12 @@ void GlobalVariableManager::LoadGroupData(const std::string& groupName)
 			Vector3 value = { itItem->at(0), itItem->at(1), itItem->at(2) };
 
 			data.value = value;
+		}
+		else if (itItem->is_array() && itItem->size() == 4) { // 要素数３の配列であれば
+			Vector4 value = { itItem->at(0), itItem->at(1), itItem->at(2),itItem->at(3)};
 
-
-		}        // 子ツリーの読み込み処理
+			data.value = value;
+		}       // 子ツリーの読み込み処理
 		else if (itItem->is_object()) {
 			LoadTreeData(saveDatas_[groupName].tree[itemName], *itItem);
 		}

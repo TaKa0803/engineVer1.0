@@ -32,7 +32,6 @@ public:
 	void Draw() override;
 
 private:
-	void DebugWindows();
 
 	void Collision();
 
@@ -62,12 +61,7 @@ private:
 	int limitMinute = 0;
 	const int maxmilitMinute = 60 * 60;
 	
-	enum Scene {
-		Game,
-		Clear,
-	};
 
-	Scene scene_ = Game;
 
 	GameUI::ButtonState BState_ = GameUI::Wait;
 
@@ -109,5 +103,5 @@ private:
 	bool isShake_ = false;
 
 
-	std::unique_ptr<ParticleManager>peM_;
+	std::unique_ptr<ParticleManager>particleM_;
 };

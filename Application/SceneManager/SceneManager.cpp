@@ -19,6 +19,16 @@ SceneManager::SceneManager()
 
 	gvg->SetValue("scene Value", &IScene::GetSceneNo());
 	gvg->SetMonitorValue("scene", &scenename_);
+
+	sceneName_.clear();
+	sceneName_.push_back("DEBUG");
+	sceneName_.push_back("TITLE");
+	sceneName_.push_back("GAME");
+	sceneName_.push_back("GAMEOVER");
+	sceneName_.push_back("GAMECLEAR");
+
+	scenename_ = sceneName_[currentSceneNo_].c_str();
+
 }
 
 SceneManager::~SceneManager()
@@ -32,23 +42,15 @@ void SceneManager::Initialize()
 
 	//各シーンの情報設定
 	sceneArr_[Debug] = std::make_unique<DebugScnene>();
-	sceneArr_[ALTITLE] = std::make_unique<ALTitleScene>();
-	sceneArr_[ALGAME] = std::make_unique<ALGameScene>();
+	sceneArr_[TITLE] = std::make_unique<ALTitleScene>();
+	sceneArr_[GAME] = std::make_unique<ALGameScene>();
 	sceneArr_[GAMEOVER] = std::make_unique<GameOverScene>();
 	sceneArr_[GAMECLEAR] = std::make_unique<GameClearScene>();
 	
-	sceneName_.clear();
-	sceneName_.push_back("DEBUG");
-	sceneName_.push_back("CG");
-	sceneName_.push_back("ALTITLE");
-	sceneName_.push_back("ALGAME");
-	sceneName_.push_back("GAMEOVER");
-	sceneName_.push_back("GAMECLEAR");
 
-	scenename_ = sceneName_[currentSceneNo_].c_str();
 
 	//初期シーン設定
-	IScene::SetSceneNo(ALTITLE);
+	IScene::SetSceneNo(TITLE);
 
 }
 
@@ -58,9 +60,6 @@ void SceneManager::Update()
 	//シーンチェック
 	prevSceneNo_ = currentSceneNo_;
 	currentSceneNo_ = IScene::GetSceneNo();
-	
-	//デバッグ表示
-	DebugWindow();
 
 	//シーン変更チェック
 	if (prevSceneNo_ != currentSceneNo_)
@@ -70,6 +69,8 @@ void SceneManager::Update()
 		sceneArr_[currentSceneNo_]->Initialize();
 	}
 
+	//デバッグ用現シーン名に変更
+	scenename_ = sceneName_[currentSceneNo_].c_str();
 	
 	//シーン更新処理
 	sceneArr_[currentSceneNo_]->Update();
@@ -84,22 +85,5 @@ void SceneManager::Draw()
 
 }
 
-void SceneManager::DebugWindow()
-{
-#ifdef _DEBUG
 
-	scenename_ = sceneName_[currentSceneNo_];
-
-	int num = IScene::GetSceneNo();
-
-	ImGui::Begin("SceneManager");
-	ImGui::Text("SceneNo.%d", currentSceneNo_);
-	ImGui::Text("%s", sceneName_[currentSceneNo_].c_str());
-	ImGui::SliderInt("sceneNo", &num,0,SceneCount-1 );
-	ImGui::End();
-
-	IScene::SetSceneNo(num);
-#endif // _DEBUG
-
-}
 

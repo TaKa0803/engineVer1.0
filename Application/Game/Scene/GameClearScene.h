@@ -19,7 +19,7 @@ public:
 
 private:
 	//
-	Input* inp_;
+	Input* inp_=nullptr;
 
 	//ロゴ
 	std::unique_ptr<Sprite> logo_;

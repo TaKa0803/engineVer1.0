@@ -1,8 +1,12 @@
 #include "Plane.h"
+#include"GvariGroup/GvariGroup.h"
 #include<imgui.h>
 
 Plane::Plane() {
 	GameObject::Initialize("plane");
+
+	GVariGroup gvg = GVariGroup("Plane");
+	gvg.SetTreeData(model_->SetDebugParam());
 }
 
 Plane::~Plane()
@@ -10,19 +14,7 @@ Plane::~Plane()
 	
 }
 
-//void Plane::CaluclateInit()
-//{
-//	GlobalVariables* global = GlobalVariables::GetInstance();
-//
-//	
-//	// サイズ比
-//	// 3 : 20
-//	float stageSize = global->GetFloatvalue("StageWall", "Size");
-//	stageSize = stageSize / 20.0f;
-//
-//	world_.scale_.x = 3.0f * stageSize;
-//	world_.scale_.z = 3.0f * stageSize;
-//}
+
 
 void Plane::Initialize() {
 	
@@ -31,20 +23,7 @@ void Plane::Initialize() {
 	world_.UpdateMatrix();
 }
 
-void Plane::DebagWindow() {
-	
-#ifdef _DEBUG
-	float scale = world_.scale_.x;
 
-	ImGui::Begin("stage");
-	model_->DebugParameter("stage");
-	ImGui::DragFloat3("scale", &world_.scale_.x);
-	ImGui::End();
-
-	world_.UpdateMatrix();
-#endif // _DEBUG
-	
-}
 
 void Plane::Draw() {
 	world_.UpdateMatrix();

@@ -14,7 +14,7 @@ public:
 	void SetName(const std::string& name);
 
 	//値追加
-	void SetValue(const std::string& name, std::variant<int32_t*, float*, Vector3*> value);
+	void SetValue(const std::string& name, std::variant<bool* ,int32_t*, float*, Vector3*, Vector4*> value);
 
 	//監視値追加
 	void SetMonitorValue(const std::string& name, std::variant<bool* ,int32_t*, float*, Vector3*, std::string*> value);
@@ -45,7 +45,7 @@ public:
 
 
 	//値追加
-	void SetValue(const std::string& name, std::variant<int32_t*, float*, Vector3*> value);
+	void SetValue(const std::string& name, std::variant<bool*,int32_t*, float*, Vector3*, Vector4*> value);
 
 	//監視値追加
 	void SetMonitorValue(const std::string& name, std::variant<bool*, int32_t*, float*, Vector3*, std::string*> value);

@@ -1,5 +1,6 @@
 #include "GvariGroup.h"
 #include"GVariableManager/GVaribleManager.h"
+#include"Vector4.h"
 
 GVariGroup::GVariGroup(const std::string& groupName)
 {
@@ -16,7 +17,7 @@ GVariGroup::~GVariGroup()
 	//datas_.tree.clear();
 }
 
-void GVariGroup::SetValue(const std::string& name, std::variant<int32_t*, float*, Vector3*> value)
+void GVariGroup::SetValue(const std::string& name, std::variant<bool*,int32_t*, float*, Vector3*, Vector4*> value)
 {
 	datas_.value[name].value = value;
 	datas_.valueKeys.push_back(name);
@@ -48,7 +49,7 @@ void GVariTree::SetName(const std::string& name)
 	treeName_ = name;
 }
 
-void GVariTree::SetValue(const std::string& name, std::variant<int32_t*, float*, Vector3*> value)
+void GVariTree::SetValue(const std::string& name, std::variant<bool*,int32_t*, float*, Vector3*,Vector4*> value)
 {
 	datas_.value[name].value = value;
 	datas_.valueKeys.push_back(name);

@@ -12,8 +12,6 @@ public:
 
 	void Initialize();
 
-	void DebagWindow();
-
 	void Draw();
 
 
