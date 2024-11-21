@@ -404,6 +404,11 @@ void GlobalVariableManager::SetLoadGroupData(const std::string& groupName)
 
 	SavedGroupData& saveData = saveDatas_[groupName];
 
+	//同グループ名所持が一致しない場合
+	if (datas_.end() == datas_.find(groupName) || saveDatas_.end() == saveDatas_.find(groupName)) {
+		return;
+	}
+
 	//現在データからループで参照(value
 	for (auto itItem = groupdata.value.begin(); itItem != groupdata.value.end(); ++itItem) {
 		//アイテム名
@@ -596,7 +601,7 @@ void GlobalVariableManager::LoadAllSaveData()
 void GlobalVariableManager::SetLoadAllData()
 {
 
-	for (auto& data : saveDatas_) {
+	for (auto& data : datas_) {
 		std::string name = data.first;
 
 		SetLoadGroupData(name);

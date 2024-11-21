@@ -144,8 +144,6 @@ void GameScene::Update() {
 void GameScene::Draw() {
 
 	//地面
-	//MapLoader::GetInstance()->DrawLevelData();
-
 	plane_->Draw();
 
 	//プレイヤー
@@ -161,18 +159,11 @@ void GameScene::Draw() {
 	particleM_->Draw();
 	player_->DrawParticle();
 
-	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
 
-
-
-
-
-	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kLightOutline, true);
-
-	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
+	
 
 	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kBloom, true);
-
+	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
 
 	gameUI_->DrawGame();
 

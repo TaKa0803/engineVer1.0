@@ -30,12 +30,15 @@ FollowCamera::FollowCamera(const EulerWorldTransform* world, const EulerWorldTra
 	boss_ = target;
 
 	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("追従カメラ");
-	gvg->SetValue("カメラの追従位置の向き", &cameraHeight_);
+	gvg->SetValue("X軸のカメラ回転最大制限", &rotateLimitMax);
+	gvg->SetValue("X軸のカメラ回転最小制限", &rotateLimitMin);
+
+	gvg->SetValue("カメラの高さ", &cameraHeight_);
 	gvg->SetValue("ターゲット位置との距離", &length_);
 
 	gvg->SetValue("ボス座標のずれの値", &bDiffPos_);
 	gvg->SetValue("プレイヤー座標のずれの値", &pDiffPos_);
-
+	gvg->SetTreeData(camera_->mainCamera_.GetDebugTree());
 }
 
 void FollowCamera::Initialize()
@@ -52,7 +55,7 @@ void FollowCamera::Initialize()
 
 void FollowCamera::Update(bool& isShake)
 {
-	//InputUpdate();
+
 
 	//カメラ位置設定
 	Vector3 cPos = player_->GetWorldTranslate();
@@ -66,11 +69,13 @@ void FollowCamera::Update(bool& isShake)
 	//ボスと反対方向の向きベクトル(X,Z)追加
 	Vector3 direc = bpos - ppos;
 	direc *= -1;
-	direc.y = cameraHeight_;
+	direc.y = 0;
 	direc.SetNormalize();
 	
 	//距離分話した座標をカメラに追加
 	cPos += direc * length_;
+	cPos.y = cameraHeight_;
+
 	camera_->mainCamera_.translate_ = cPos+pDiffPos_;
 
 	//カメラ
@@ -98,25 +103,7 @@ void FollowCamera::Update(bool& isShake)
 	}
 }
 
-void FollowCamera::InputUpdate()
-{
-	//カメラ更新
-	Vector2 stick{};
-	//コントローラのアクセスチェック
-	if (input_->IsControllerActive()) {
-		stick += input_->GetjoyStickR();
-	}
 
-	Vector3 sti = input_->GetAllArrowKey();
-	stick += Vector2{ sti.x,sti.z };
-
-	//入力を正規化
-	stick.Normalize();
-	stick.x *= xrotateNum;
-	stick.y *= yrotatenum * -1.0f;
-	camera_->AddCameraR_X(stick.y);
-	camera_->AddCameraR_Y(stick.x);
-}
 
 void FollowCamera::SetFocusBoss()
 {
@@ -135,5 +122,13 @@ void FollowCamera::SetFocusBoss()
 	offset = camera_->SetDirection4Camera(offset);
 
 	Vector3 rotate = rotationToDirection(offset, direc);
+
+	if (rotate.x > rotateLimitMax) {
+		rotate.x = rotateLimitMax;
+	}
+	else if (rotate.x < rotateLimitMin) {
+		rotate.x = rotateLimitMin;
+	}
+
 	camera_->mainCamera_.rotate_ = rotate;
 }

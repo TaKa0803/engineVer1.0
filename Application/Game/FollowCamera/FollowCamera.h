@@ -14,7 +14,7 @@ public:
 
 private://関数
 
-	void InputUpdate();
+
 
 	void SetFocusBoss();
 private:
@@ -29,12 +29,14 @@ private:
 
 private://パラメータ変数
 
-	float xrotateNum = 0.05f;
-	float yrotatenum = 0.02f;
+	//カメラ本体の位置
+	float rotateLimitMax = 1.0f;
+	float rotateLimitMin = -1.0f;
+
 
 	//カメラの高さ
 	float cameraHeight_ = 1.0f;
-	//ターゲットとの距離
+	//プレイヤーとのXZ距離
 	float length_ = 40;
 
 	//ボス座標のずれの値

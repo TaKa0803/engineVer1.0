@@ -30,7 +30,6 @@
     <FxCompile Include="resources\shaders\ComputeShader\ParticleEmiter.CS.hlsl" />
     <FxCompile Include="resources\shaders\PostEffect\Bloom.PS.hlsl" />
     <FxCompile Include="resources\shaders\PostEffect\PickHighLuminance.PS.hlsl" />
-    <FxCompile Include="resources\shaders\PostEffect\GaussianBlur.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\Game\Plane\Plane.cpp" />
