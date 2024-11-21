@@ -51,7 +51,7 @@ Boss::Boss(Player* player)
 	gvg->SetMonitorValue("当たり判定", &hit_);
 	gvg->SetMonitorValue("behavior",&nowBehaviorName_);
 	gvg->SetValue("HP", &HP_);
-
+	gvg->SetValue("ボスサイズ", &world_.scale_);
 	gvg->SetTreeData(collider_->GetDebugTree("体コライダー"));
 	gvg->SetTreeData(atkCollider_->GetDebugTree("攻撃コライダー"));
 
@@ -89,9 +89,6 @@ void Boss::Update()
 
 	nowBehaviorName_ = behaviorName_[(int)behavior_];
 
-	
-	//collider_->Debug("BossCollider");
-	//atkCollider_->Debug("BossATK");
 #endif // _DEBUG
 
 	if (brein_) {
@@ -169,9 +166,9 @@ void Boss::SetDirection2Player()
 	}
 }
 
-void Boss::SetAnimation(int animeNum, float sec, float loopSec, bool isLoop)
+void Boss::SetAnimation(const std::string& animeName, float sec, float loopSec, bool isLoop)
 {
-	model_->ChangeAnimation(animeNum, sec);
+	model_->ChangeAnimation(animeName, sec);
 	model_->SetAnimationRoop(isLoop);
 	model_->animationRoopSecond_ = loopSec;
 }

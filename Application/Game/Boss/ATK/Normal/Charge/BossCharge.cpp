@@ -15,19 +15,19 @@ BossCharge::BossCharge()
 }
 
 void BossCharge::InitAIMing() {
-	boss_->SetAnimation((int)Boss::Animation::PreCharge, 0.2f, 1, false);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::PreCharge], 0.2f, 1, false);
 }
 
 void BossCharge::InitWarning()
 {
-	boss_->SetAnimation((int)Boss::Animation::Charging, 0.2f, 1,false);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Charging], 0.2f, 1,false);
 	//ダッシュ方向指定
 	data_.dash.velo = Vector3{ boss_->GetPlayerWorldTranslate() - boss_->GetWorld().translate_ }.SetNormalize() * data_.dash.spd;
 }
 
 void BossCharge::InitATK()
 {
-	boss_->SetAnimation((int)Boss::Animation::Charging, 0.2f, 0.5f, true);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Charging], 0.2f, 0.5f, true);
 	boss_->SetAnimeTime(false);
 
 	data_.dash.prePos = boss_->world_.translate_;
@@ -35,12 +35,12 @@ void BossCharge::InitATK()
 }
 
 void BossCharge::InitStiffness() {
-	boss_->SetAnimation((int)Boss::Animation::EdCharge, 0.2f, 1, false);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::EdCharge], 0.2f, 1, false);
 
 }
 
 void BossCharge::InitBack() {
-	boss_->SetAnimation((int)Boss::Animation::Idle1, data_.back.sec, 1, false);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Idle1], data_.back.sec, 1, false);
 }
 
 void BossCharge::UpdateAIMing()

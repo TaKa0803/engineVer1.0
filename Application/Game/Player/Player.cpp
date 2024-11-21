@@ -102,7 +102,7 @@ void Player::Initialize() {
 	world_.translate_.z = 2;
 	world_.UpdateMatrix();
 
-	model_->ChangeAnimation(3,0);
+	model_->ChangeAnimation(animeName_[Idle], 0);
 
 	moveE_->Initialize({ 1,1,1,1 });
 
@@ -361,25 +361,25 @@ void Player::ModelRoop(bool ismove,bool isDash)
 {
 	if (!ismove) {
 		//待機状態になる
-		SetAnimation(Idle, 0.1f, 1.0f);
+		SetAnimation(animeName_[Idle], 0.1f, 1.0f);
 	}
 	else {
 		//移動状態
 		if (!isDash) {
 			//歩き
-			SetAnimation(Run, 0.1f, 1.0f);
+			SetAnimation(animeName_[Run], 0.1f, 1.0f);
 		}
 		else {
 			//ダッシュ
-			SetAnimation(Dash,	0.1f, 1.0f);
+			SetAnimation(animeName_[Dash],	0.1f, 1.0f);
 		}
 	}
 
 }
 
-void Player::SetAnimation(int animeNum, float count, float loopSec, bool isLoop)
+void Player::SetAnimation(const std::string&animeName, float count, float loopSec, bool isLoop)
 {
-	model_->ChangeAnimation(animeNum, count);
+	model_->ChangeAnimation(animeName, count);
 	model_->SetAnimationRoop(isLoop);
 	model_->animationRoopSecond_ = loopSec;
 }
@@ -395,7 +395,7 @@ void Player::SetAnimation(int animeNum, float count, float loopSec, bool isLoop)
 
 void Player::InitMove() {
 
-	SetAnimation(3, 0.1f, 1.0f);
+	SetAnimation(animeName_[Idle], 0.1f, 1.0f);
 }
 
 void Player::InitRolling() {

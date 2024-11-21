@@ -68,20 +68,24 @@ Model* Model::CreateFromOBJ(const std::string& filePath)
 void Model::UpdateAnimation()
 {
 
+	if (nowAnimeName_ == "") {
+		return;
+	}
+
 	//OBJではない
 	if (modelType_ != kOBJModel) {
 		//アニメーションフラグON
 		if (isAnimationActive_) {
 			//
-			animationTime_ += animationRoopSecond_ * modelData_.animation[animeNum_].duration * (float)DeltaTimer::deltaTime_;
+			animationTime_ += animationRoopSecond_ * modelData_.animation[nowAnimeName_].duration * (float)DeltaTimer::deltaTime_;
 			//アニメーションループフラグON
 			if (isAnimeRoop_) {
-				animationTime_ = std::fmod(animationTime_, modelData_.animation[animeNum_].duration);//最後まで行ったら最初からリピート再生
+				animationTime_ = std::fmod(animationTime_, modelData_.animation[nowAnimeName_].duration);//最後まで行ったら最初からリピート再生
 			}
 			else {
 				//ループしない処理
-				if (animationTime_ > modelData_.animation[animeNum_].duration) {
-					animationTime_ = modelData_.animation[animeNum_].duration;
+				if (animationTime_ > modelData_.animation[nowAnimeName_].duration) {
+					animationTime_ = modelData_.animation[nowAnimeName_].duration;
 				}
 			}
 
@@ -91,7 +95,7 @@ void Model::UpdateAnimation()
 				if (animationTime_ < 0) {
 					//ループ処理
 					if (isAnimeRoop_) {
-						animationTime_ += modelData_.animation[animeNum_].duration;
+						animationTime_ += modelData_.animation[nowAnimeName_].duration;
 					}
 					else {
 						animationTime_ = 0;
@@ -101,13 +105,13 @@ void Model::UpdateAnimation()
 
 			//指定してた場合
 			if (isSetATime_) {
-				animationTime_ = Lerp(0, modelData_.animation[animeNum_].duration, setAt_);
+				animationTime_ = Lerp(0, modelData_.animation[nowAnimeName_].duration, setAt_);
 			}
 
 			//ボーンのあるモデルの場合
 			if (modelType_ == kSkinningGLTF) {
 				//animationの更新を行って骨ごとのローカル情報を更新
-				ApplyAnimation(modelData_.skeleton, modelData_.animation[animeNum_], animationTime_);
+				ApplyAnimation(modelData_.skeleton, modelData_.animation[nowAnimeName_], animationTime_);
 				//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
 				Update(modelData_.skeleton);
 				//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
@@ -115,7 +119,7 @@ void Model::UpdateAnimation()
 			}
 			else {
 				//ないanimationモデルの場合
-				NodeAnimation& rootNodeAnimation = modelData_.animation[animeNum_].nodeAnimations[modelData_.model.rootNode.name];
+				NodeAnimation& rootNodeAnimation = modelData_.animation[nowAnimeName_].nodeAnimations[modelData_.model.rootNode.name];
 				Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
 				Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
 				Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
@@ -125,7 +129,7 @@ void Model::UpdateAnimation()
 		else {
 			animationTime_ = 0;
 			//animationの更新を行って骨ごとのローカル情報を更新
-			ApplyAnimation(modelData_.skeleton, modelData_.animation[animeNum_], animationTime_);
+			ApplyAnimation(modelData_.skeleton, modelData_.animation[nowAnimeName_], animationTime_);
 			//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
 			Update(modelData_.skeleton);
 			//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
@@ -427,19 +431,17 @@ void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 }
 
 
-void Model::ChangeAnimation(int animeNum, float count)
-{
 
+void Model::ChangeAnimation(const std::string& animeName, float sec)
+{
 	//同じものならスキップ
-	if (animeNum_ == animeNum) {
+	if (animeName == nowAnimeName_) {
 		return;
 	}
 
-	//アニメーションの値内ならアニメーション変更と補完処理フラグON
-	if (animeNum <= modelData_.animation.size()) {
-		animeNum_ = animeNum;
-
-		if (count != 0) {
+	if (modelData_.animation.find(animeName) != modelData_.animation.end()) {
+		nowAnimeName_ = animeName;
+		if (sec != 0) {
 			//補完フラグON
 			isSupplementation_ = true;
 
@@ -453,7 +455,7 @@ void Model::ChangeAnimation(int animeNum, float count)
 
 			//
 			supplementationCount_ = 0;
-			maxSupplementationCount_ = count;
+			maxSupplementationCount_ = sec;
 		}
 		else {
 
@@ -461,92 +463,14 @@ void Model::ChangeAnimation(int animeNum, float count)
 
 		animationTime_ = 0;
 	}
+	else {
+	//見つからなかったのでエラー処理
+	assert(false);
+	}
+
 }
 
-//void Model::DebugParameter(const char* name)
-//{
-//#ifdef _DEBUG
-//	bool useTexture = materialData_->enableTexture;
-//	bool useShader = materialData_->enableLighting;
-//	bool useHalf = materialData_->enableHalfLambert;
-//	Vector4 color = materialData_->color;
-//
-//	BlendMode blend = blendMode_;
-//	const char* items[] = { "None","Normal","Add","Subtract","Multiply","Screen" };
-//	int currentItem = static_cast<int>(blend);
-//
-//	FillMode fill = fillMode_;
-//	const char* fitems[] = { "Solid","WireFrame" };
-//	int currentfItem = static_cast<int>(fill);
-//
-//
-//	float discardnum = materialData_->discardNum;
-//
-//	bool usePhong = materialData_->enablePhongReflection;
-//	float shininess = materialData_->shininess;
-//
-//	bool usePointLight = materialData_->enablePointLight;
-//
-//	int anum = animeNum_;
-//
-//	bool EnvironmentTexture = materialData_->enableEnvironmentMap;
-//
-//	if (ImGui::BeginMenu(name)) {
-//		ImGui::Checkbox("Texture", &useTexture);
-//		ImGui::Checkbox("Shader", &useShader);
-//		ImGui::Checkbox("HalfLambert", &useHalf);
-//		ImGui::Checkbox("PhongReflection", &usePhong);
-//		ImGui::Checkbox("enable pointlight", &usePointLight);
-//		ImGui::Checkbox("draw model", &drawModel_);
-//		ImGui::Checkbox("draw joint", &drawJoint_);
-//
-//		ImGui::ColorEdit4("Material color", &color.x);
-//		if (ImGui::Combo("blendmode", &currentItem, items, IM_ARRAYSIZE(items))) {
-//			blend = static_cast<BlendMode>(currentItem);
-//		}
-//		if (ImGui::Combo("fillmode", &currentfItem, fitems, IM_ARRAYSIZE(fitems))) {
-//			fill = static_cast<FillMode>(currentfItem);
-//		}
-//		ImGui::DragFloat("discardNum", &discardnum, 0.01f);
-//
-//		ImGui::Text("UV");
-//		ImGui::DragFloat2("uv pos", &uvWorld_.translate_.x, 0.1f);
-//		ImGui::DragFloat("uv rotate", &uvWorld_.rotate_.z, 0.1f);
-//		ImGui::DragFloat2("uv scale", &uvWorld_.scale_.x, 0.1f);
-//
-//		ImGui::Text("Animation");
-//		ImGui::Checkbox("animeActive", &isAnimationActive_);
-//		ImGui::Checkbox("animeRoop", &isAnimeRoop_);
-//		ImGui::DragFloat("Roop second", &animationRoopSecond_, 0.1f);
-//		ImGui::SliderInt("AnimeNum", &anum, 0, (int)(modelData_.animation.size())-1);
-//
-//		ImGui::Text("Blinn Phong Reflection");
-//		ImGui::DragFloat("Shininess", &shininess);
-//
-//		ImGui::Checkbox("金属光沢処理", &EnvironmentTexture);
-//		ImGui::SliderFloat("光沢度", &materialData_->enviromentCoefficient, 0, 1);
-//		ImGui::EndMenu();
-//	}
-//
-//	//materialData_->enableEnvironmentMap = EnvironmentTexture;
-//
-//	//materialData_->enableTexture = useTexture;
-//	//materialData_->enableLighting = useShader;
-//	//materialData_->enableHalfLambert = useHalf;
-//	//materialData_->color = color;
-//	//blendMode_ = blend;
-//	//fillMode_ = fill;
-//	//materialData_->discardNum = discardnum;
-//	//materialData_->enablePhongReflection = usePhong;
-//	//materialData_->shininess = shininess;
-//	//materialData_->enablePointLight = usePointLight;
-//
-//	//if (animeNum_ != anum) {
-//	//	ChangeAnimation(anum, 1);
-//	//}
-//#endif // _DEBUG
-//
-//}
+
 GVariTree& Model::SetDebugParam(const std::string& treeName)
 {
 	tree.SetValue("model", &drawModel_);

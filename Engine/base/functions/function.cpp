@@ -49,8 +49,8 @@ Quaternion CalculateValue(const std::vector<KayframeQuaternion>& keyframes, floa
 }
 
 
-std::vector<Animation> LoadAnimationFile(const std::string& directoryPath, const std::string& filename) {
-	std::vector<Animation> ans;
+std::map<std::string, Animation> LoadAnimationFile(const std::string& directoryPath, const std::string& filename) {
+	std::map<std::string, Animation> ans;
 
 	Assimp::Importer importer;
 	std::string filePath = directoryPath + "/" + filename;
@@ -60,11 +60,11 @@ std::vector<Animation> LoadAnimationFile(const std::string& directoryPath, const
 		return ans;
 	}
 
-	ans.reserve(scene->mNumAnimations);
-
 	for (uint32_t i = 0; i < scene->mNumAnimations; i++) {
 		aiAnimation* animationAssimp = scene->mAnimations[i];//最初のアニメーションのみ読み込み
 		Animation  result;
+		std::string name = animationAssimp->mName.C_Str();
+
 		result.duration = float(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);//時間の単位を秒に変換
 		//assimpでは個々のNodeのAnimationをchannelと読んでいるのでchannelを回してNodeAnimationの情報を取る
 		for (uint32_t channelIndex = 0; channelIndex < animationAssimp->mNumChannels; ++channelIndex) {
@@ -96,11 +96,13 @@ std::vector<Animation> LoadAnimationFile(const std::string& directoryPath, const
 			}
 		}
 
-		ans.emplace_back(result);
+		ans[name]=result;
 	}
 
 	return ans;
-}
+};
+
+
 
 Node ReadNode(aiNode* node) {
 	Node result;
@@ -282,6 +284,8 @@ void Update(SkinCluster& skinCluster, const Skeleton& skeleton) {
 			Transpose(Inverse(skinCluster.mappedPalette[jointIndex].skeletonSpaceMatrix));
 	}
 }
+
+
 
 ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& modelName) {
 	ModelAllData modeldata;//構築するModelData

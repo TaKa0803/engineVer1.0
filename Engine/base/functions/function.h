@@ -4,6 +4,7 @@
 
 #include<string>
 #include<vector>
+#include<map>
 #include<dxcapi.h>
 
 #include"struct.h"
@@ -15,7 +16,7 @@ Vector3 CalculateValue(const std::vector<KayframeVector3>& keyframes, float time
 Quaternion CalculateValue(const std::vector<KayframeQuaternion>& keyframes, float time);
 
 
-std::vector<Animation> LoadAnimationFile(const std::string& directoryPath, const std::string& filename);
+std::map<std::string,Animation> LoadAnimationFile(const std::string& directoryPath, const std::string& filename);
 
 ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& modelName);
 

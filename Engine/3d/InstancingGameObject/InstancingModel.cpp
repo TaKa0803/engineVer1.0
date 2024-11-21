@@ -73,23 +73,31 @@ void InstancingModel::AddInstancingData(const EulerWorldTransform& world, int an
 
 void InstancingModel::UpdateAnimationCount()
 {
+
+	if (nowAnimeName_ == "") {
+		return;
+	}
+
 	if (modelType_ != kOBJModel) {
 		if (isAnimationActive_) {
 
 			animationTime_ += animationRoopSecond_ / 60.0f;
+
+			Animation& anime = modelData_.animation[nowAnimeName_];
+
 			if (isAnimeRoop_) {
-				animationTime_ = std::fmod(animationTime_, modelData_.animation[animeNum_].duration);//最後まで行ったら最初からリピート再生
+				animationTime_ = std::fmod(animationTime_, anime.duration);//最後まで行ったら最初からリピート再生
 			}
 			else {
-				if (animationTime_ > modelData_.animation[animeNum_].duration) {
-					animationTime_ = modelData_.animation[animeNum_].duration;
+				if (animationTime_ > anime.duration) {
+					animationTime_ = anime.duration;
 				}
 			}
 			//マイナス領域の時の処理
 			if (animationRoopSecond_ < 0) {
 				if (animationTime_ < 0) {
 					if (isAnimeRoop_) {
-						animationTime_ += modelData_.animation[animeNum_].duration;
+						animationTime_ += anime.duration;
 					}
 					else {
 
@@ -103,16 +111,19 @@ void InstancingModel::UpdateAnimationCount()
 	}
 }
 
-void InstancingModel::UpdateAnimationBone(int animenum)
+void InstancingModel::UpdateAnimationBone(const std::string& animeName)
 {
 
 	if (modelType_ != kOBJModel) {
+
+		Animation& anime = modelData_.animation[animeName];
+
 		if (isAnimationActive_) {
 
 			//ボーンのあるモデルの場合
 			if (modelType_ == kSkinningGLTF) {
 				//animationの更新を行って骨ごとのローカル情報を更新
-				ApplyAnimation(modelData_.skeleton, modelData_.animation[animenum], animationTime_);
+				ApplyAnimation(modelData_.skeleton,anime , animationTime_);
 				//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
 				Update(modelData_.skeleton);
 				//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
@@ -120,7 +131,7 @@ void InstancingModel::UpdateAnimationBone(int animenum)
 			}
 			else {
 				//ないanimationモデルの場合
-				NodeAnimation& rootNodeAnimation = modelData_.animation[animenum].nodeAnimations[modelData_.model.rootNode.name];
+				NodeAnimation& rootNodeAnimation = anime.nodeAnimations[modelData_.model.rootNode.name];
 				Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationTime_);
 				Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime_);
 				Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframes, animationTime_);
@@ -130,7 +141,7 @@ void InstancingModel::UpdateAnimationBone(int animenum)
 		else {
 			animationTime_ = 0;
 			//animationの更新を行って骨ごとのローカル情報を更新
-			ApplyAnimation(modelData_.skeleton, modelData_.animation[animenum], animationTime_);
+			ApplyAnimation(modelData_.skeleton, anime, animationTime_);
 			//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
 			Update(modelData_.skeleton);
 			//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
@@ -143,7 +154,7 @@ void InstancingModel::Draw(int texture) {
 
 	UpdateAnimationCount();
 	//カウントに合わせたボーン状態に変更
-	UpdateAnimationBone(animeNum_);
+	UpdateAnimationBone(nowAnimeName_);
 
 
 	Camera* camera = Camera::GetInstance();

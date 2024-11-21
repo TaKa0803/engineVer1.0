@@ -53,7 +53,7 @@ public:
 	/// </summary>
 	/// <param name="animeNum">番号</param>
 	/// <param name="count">変わりきるまでの速度</param>
-	void ChangeAnimation(int animeNum, float sec);
+	void ChangeAnimation(const std::string&animeName, float sec);
 
 	//アニメーションループフラグ
 	void SetAnimationRoop(bool isLoop) { isAnimeRoop_ = isLoop; };
@@ -218,8 +218,9 @@ private:
 	//アニメーションをループするか
 	bool isAnimeRoop_ = true;
 
-	//アニメーション要素番号
-	int animeNum_ = 0;
+
+	//現在のアニメーション名
+	std::string nowAnimeName_="";
 
 	//ボーンのないanimationキューブ用のlocalMatrix
 	Matrix4x4 localM_;

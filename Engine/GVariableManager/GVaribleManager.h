@@ -51,6 +51,6 @@ private:
 	//グローバル変数の保存先ファイルパス
 	const std::string kDirectoryPath = "Resources/GlobalVariables/";
 
-
-	
+	//ノード表記にまとめ始める量
+	size_t nodeSize_ = 3;
 };

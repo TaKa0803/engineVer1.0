@@ -33,11 +33,13 @@ private://パラメータ変数
 	float rotateLimitMax = 1.0f;
 	float rotateLimitMin = -1.0f;
 
-
 	//カメラの高さ
 	float cameraHeight_ = 1.0f;
 	//プレイヤーとのXZ距離
 	float length_ = 40;
+
+	//カメラ移動の中心点
+	EulerWorldTransform cameraPoint_{};
 
 	//ボス座標のずれの値
 	Vector3 bDiffPos_;

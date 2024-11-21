@@ -50,7 +50,7 @@ public:
 	/// <summary>
 	/// アニメーション更新処理
 	/// </summary>
-	void UpdateAnimationBone(int animeNum);
+	void UpdateAnimationBone(const std::string& animeName);
 
 	/// <summary>
 	/// 描画
@@ -111,7 +111,7 @@ public:
 
 	void SetAnimationSecond( float sec, bool loop) { animationRoopSecond_ = sec; isAnimeRoop_ = loop; }
 
-	void SetAnimeNum(int num) { animeNum_ = num; }
+	void SetAnimeName(const std::string& name) { nowAnimeName_ = name; }
 #pragma endregion
 
 	/// <summary>
@@ -227,8 +227,10 @@ private:
 
 	bool isAnimeRoop_ = true;
 
-	//アニメーション要素番号
-	int animeNum_ = 0;
+
+
+	std::string nowAnimeName_ = "";
+
 	//ボーンのないanimationキューブ用のlocalMatrix
 	Matrix4x4 localM_;
 #pragma endregion

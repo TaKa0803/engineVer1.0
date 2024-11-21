@@ -60,13 +60,35 @@ void MonitorItemImGui(const std::string name, std::variant<bool*, int32_t*, floa
 	}
 }
 
-void TreeImGui(const std::string& name, TreeData& treeData) {
+void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 
 	if (ImGui::TreeNode(name.c_str())) {
 
 		//モニター値の表示
 		if (!treeData.monitorKeys.empty()) {
-			if (ImGui::TreeNode("--モニター値---")) {
+
+			if (treeData.monitorKeys.size() > size) {
+
+				if (ImGui::TreeNode("--モニター値---")) {
+					//ツリー内に含まれるvalue登場
+					for (auto& key : treeData.monitorKeys) {
+
+						//タブ値の名前
+						std::string name = key;
+						//値
+						MonitorItemData& item = treeData.monitorValue[key];
+
+
+						//値の条件で処理変化
+						MonitorItemImGui(name, item.value);
+					}
+
+
+					ImGui::TreePop();
+				}
+			}
+			else {
+				ImGui::Text("--モニター値---");
 				//ツリー内に含まれるvalue登場
 				for (auto& key : treeData.monitorKeys) {
 
@@ -79,14 +101,33 @@ void TreeImGui(const std::string& name, TreeData& treeData) {
 					//値の条件で処理変化
 					MonitorItemImGui(name, item.value);
 				}
-
-
-				ImGui::TreePop();
 			}
 		}
 
 		if (!treeData.valueKeys.empty()) {
-			if (ImGui::TreeNode("--パラメータ---")) {
+
+			if (treeData.valueKeys.size() > size) {
+
+				if (ImGui::TreeNode("--パラメータ---")) {
+
+					//ツリー内に含まれるvalue登場
+					for (auto& key : treeData.valueKeys) {
+
+						//タブ値の名前
+						std::string name = key;
+						//値
+						ItemData& item = treeData.value[key];
+
+
+						//値の条件で処理変化
+						ItemImGui(name, item.value);
+					}
+
+					ImGui::TreePop();
+				}
+			}
+			else {
+				ImGui::Text("--パラメータ---");
 
 				//ツリー内に含まれるvalue登場
 				for (auto& key : treeData.valueKeys) {
@@ -100,8 +141,6 @@ void TreeImGui(const std::string& name, TreeData& treeData) {
 					//値の条件で処理変化
 					ItemImGui(name, item.value);
 				}
-
-				ImGui::TreePop();
 			}
 		}
 
@@ -109,14 +148,24 @@ void TreeImGui(const std::string& name, TreeData& treeData) {
 		//子ツリーの存在検知
 		if (treeData.tree.size() != 0) {
 
-			if (ImGui::TreeNode("--子ツリー--")) {
+			if (treeData.tree.size() > size) {
 
+				if (ImGui::TreeNode("--子ツリー--")) {
+
+					//子ツリーの表示
+					for (auto& key : treeData.treeKeys) {
+						TreeImGui(key, treeData.tree[key],size);
+					}
+
+					ImGui::TreePop();
+				}
+			}
+			else {
+				ImGui::Text("--子ツリー--");
 				//子ツリーの表示
 				for (auto& key : treeData.treeKeys) {
-					TreeImGui(key, treeData.tree[key]);
+					TreeImGui(key, treeData.tree[key],size);
 				}
-
-				ImGui::TreePop();
 			}
 		}
 
@@ -168,7 +217,26 @@ void GlobalVariableManager::Update()
 
 
 				if (!data.second.monitorKeys.empty()) {
-					if (ImGui::TreeNode("--モニター値--")) {
+					if (data.second.monitorKeys.size() > nodeSize_) {
+						if (ImGui::TreeNode("--モニター値--")) {
+
+							//ツリー内に含まれるvalue登場
+							for (auto& key : data.second.monitorKeys) {
+
+								//タブ値の名前
+								std::string name = key;
+								//値
+								MonitorItemData& item = data.second.monitorData[key];
+
+
+								//値の条件で処理変化
+								MonitorItemImGui(name, item.value);
+							}
+							ImGui::TreePop();
+						}
+					}
+					else {
+						ImGui::Text("--モニター値--");
 
 						//ツリー内に含まれるvalue登場
 						for (auto& key : data.second.monitorKeys) {
@@ -182,12 +250,31 @@ void GlobalVariableManager::Update()
 							//値の条件で処理変化
 							MonitorItemImGui(name, item.value);
 						}
-						ImGui::TreePop();
+
 					}
 				}
 
 				if (!data.second.valueKeys.empty()) {
-					if (ImGui::TreeNode("--パラメータ--")) {
+					if (data.second.valueKeys.size() > nodeSize_) {
+						if (ImGui::TreeNode("--パラメータ--")) {
+							//タブの値を表示
+							for (auto& key : data.second.valueKeys) {
+
+								//タブ値の名前
+								std::string name = key;
+								//値
+								ItemData& item = data.second.value[key];
+
+								//値の条件で処理変化
+								ItemImGui(name, item.value);
+
+							}
+							ImGui::TreePop();
+						}
+					}
+					else {
+
+						ImGui::Text("--パラメータ--");
 						//タブの値を表示
 						for (auto& key : data.second.valueKeys) {
 
@@ -200,19 +287,30 @@ void GlobalVariableManager::Update()
 							ItemImGui(name, item.value);
 
 						}
-						ImGui::TreePop();
+
 					}
 				}
 
 
 				//子ツリーの存在検知
 				if (data.second.tree.size() != 0) {
-					if (ImGui::TreeNode("--子ツリー--")) {
+
+					if (data.second.tree.size() > nodeSize_) {
+
+						if (ImGui::TreeNode("--子ツリー--")) {
+							//子ツリーの表示
+							for (auto& key : data.second.treeKeys) {
+								TreeImGui(key, data.second.tree[key],nodeSize_);
+							}
+							ImGui::TreePop();
+						}
+					}
+					else {
+						ImGui::Text("--子ツリー--");
 						//子ツリーの表示
 						for (auto& key : data.second.treeKeys) {
-							TreeImGui(key, data.second.tree[key]);
+							TreeImGui(key, data.second.tree[key],nodeSize_);
 						}
-						ImGui::TreePop();
 					}
 				}
 

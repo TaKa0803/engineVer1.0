@@ -1,6 +1,7 @@
 #pragma once
 #include<stdint.h>
 #include<vector>
+#include<map>
 #include<string>
 #include<map>
 #include<optional>
@@ -122,6 +123,8 @@ struct NodeAnimation
 
 struct Animation
 {
+	//アニメーション名
+	std::string name;
 	//animation全体の尺
 	float duration;
 	//ノードanimation集合、Node名で引ける
@@ -172,7 +175,7 @@ struct SkinCluster {
 struct ModelAllData
 {
 	ModelData model;
-	std::vector<Animation> animation;
+	std::map<std::string,Animation> animation;
 
 	//スケルトンデータ
 	Skeleton skeleton;

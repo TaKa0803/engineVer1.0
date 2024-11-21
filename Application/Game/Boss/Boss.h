@@ -16,22 +16,54 @@ class Boss : public GameObject {
 public://パブリック変数：状態管理関係
 
 	enum class Animation {
-		Charging,
-		Down,
-		Fly2Stump,
 		Idle1,
 		Idle2,
 		Idle3,
-		EdCharge,
-		EdStump,
+
+		Walk,
+
 		PreCharge,
-		Preshot,
+		Charging,
+		EdCharge,
+
 		PreStump,
+		Fly2Stump,
+		Stump,
+		EdStump,
+
+		Down,
+
+		Preshot,
 		Shot,
 		RevShot,
-		Stump,
-		Walk,
+	
+
 		CountAnimation
+	};
+
+	std::string animeName_[(int)Animation::CountAnimation] = {
+
+		"Idle",
+		"Idle2",
+		"Idle3",
+		"walk",
+
+		"preCharge",
+		"Charge",
+		"nextCharge",
+
+		"preStump",
+		"flyStump",
+		"Stump",
+		"nextStump",
+
+		"DownBody",
+
+
+		"preShot",
+		"ShotSingle",
+		"Idle",
+
 	};
 
 	//ボスの状態
@@ -103,11 +135,11 @@ public://セッター
 	/// <summary>
 	/// アニメーションのセット
 	/// </summary>
-	/// <param name="animeNum">アニメーション番号</param>
+	/// <param name="animeNum">アニメーション名</param>
 	/// <param name="sec">変わりきるまでの秒数</param>
 	/// <param name="loopSec">ループ時間</param>
 	/// <param name="isLoop">ループフラグ</param>
-	void SetAnimation(int animeNum, float sec, float loopSec, bool isLoop = true);
+	void SetAnimation(const std::string& animeName, float sec, float loopSec, bool isLoop = true);
 
 	///アニメーション進行をこちらで管理する処理
 	void SetAnimeTime(bool active, float t = 0) { model_->SetAnimationTime(active, t); }

@@ -25,7 +25,7 @@ BossShotBullet::BossShotBullet()
 void BossShotBullet::InitAIMing()
 {
 	boss_->SetAnimeTime(true);
-	boss_->SetAnimation((int)Boss::Animation::Preshot, 1, 1);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Preshot], 1, 1);
 }
 
 void BossShotBullet::InitWarning()
@@ -40,7 +40,7 @@ void BossShotBullet::InitBack()
 {
 
 	boss_->SetAnimeTime(false);
-	boss_->SetAnimation((int)Boss::Animation::Idle1, 1, 1,false);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Idle1], 1, 1,false);
 }
 
 void BossShotBullet::UpdateAIMing()
@@ -107,10 +107,10 @@ void BossShotBullet::UpdateWarning()
 			shotCount_++;
 
 			if (0 == (int)shotCount_ % 2) {
-				boss_->SetAnimation((int)Boss::Animation::RevShot, 0.1f, 1, false);
+				boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::RevShot], 0.1f, 1, false);
 			}
 			else {
-				boss_->SetAnimation((int)Boss::Animation::Shot, 0.1f, 1, false);
+				boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Shot], 0.1f, 1, false);
 			}
 		}
 		else {

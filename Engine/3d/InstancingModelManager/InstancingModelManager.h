@@ -118,7 +118,7 @@ public:
 
 	void SetAnimationRoopFrame(const std::string& tag,float sec,bool animeLoop=true);
 
-	void SetAnimeNum(const std::string& tag, int num);
+	void SetAnimeNum(const std::string& tag, const std::string& animeName);
 private:
 
 	InstancingPSO* pso_;

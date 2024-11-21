@@ -12,6 +12,7 @@
 #include"PlayerRoll/PlayerRoll.h"
 
 #include<vector>
+//#include<string>
 
 class Boss;
 
@@ -20,21 +21,48 @@ class Player :public GameObject {
 public:
 #pragma region アニメーション関係
 	enum  AnimationData {
-		Dash,
-		Dawn,
-		DawnBack,
+
 		Idle,
+		Run,
+		Dash,
+
+		Roll,
+		RollEnd,
+
 		PrePunch1,
 		PrePunch2,
 		PrePunch3,
 		Punch1,
 		Punch2,
 		Punch3,
-		Roll,
-		RollEnd,
-		Run,
-		_countAnime
+
+		Dawn,
+		DawnBack,
+		CountAnime
 	};
+
+	std::string animeName_[CountAnime] = {
+		"Idle",
+		"walk",
+		"Dash",
+
+		"Rolling",
+		"RollingEnd",
+
+		"PrePunch",
+		"PrePunch2",
+		"PrePunch3",
+		"Punch",
+		"Punch2",
+		"Punch3",
+
+		"Down",
+		"DownBack",
+
+
+
+	};
+
 #pragma endregion
 public:
 	Player();
@@ -94,7 +122,7 @@ public:
 	};
 
 	//アニメーションのセット
-	void SetAnimation(int animeNum, float sec, float loopSec, bool isLoop = true);
+	void SetAnimation(const std::string& animeName, float sec, float loopSec, bool isLoop = true);
 	
 	///アニメーション進行をこちらで管理する処理
 	void SetAnimeTime(bool active, float t = 0) { model_->SetAnimationTime(active, t); }

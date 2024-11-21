@@ -34,7 +34,7 @@ void BossMove::Initialize()
 		data_.moveV = -1;
 	}
 
-	boss_->SetAnimation((int)Boss::Animation::Walk, 1, 1);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Walk], 1, 1);
 }
 
 // 2Dベクトル {0,1} を theta ラジアンだけ回転させる関数

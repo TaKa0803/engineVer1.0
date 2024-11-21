@@ -29,6 +29,8 @@ FollowCamera::FollowCamera(const EulerWorldTransform* world, const EulerWorldTra
 
 	boss_ = target;
 
+	camera_->mainCamera_.parent_ = &cameraPoint_;
+
 	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("追従カメラ");
 	gvg->SetValue("X軸のカメラ回転最大制限", &rotateLimitMax);
 	gvg->SetValue("X軸のカメラ回転最小制限", &rotateLimitMin);
@@ -101,6 +103,8 @@ void FollowCamera::Update(bool& isShake)
 		}
 
 	}
+
+	cameraPoint_.UpdateMatrix();
 }
 
 

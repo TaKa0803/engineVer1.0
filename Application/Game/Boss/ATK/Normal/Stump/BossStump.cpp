@@ -22,31 +22,31 @@ BossStump::BossStump()
 }
 void BossStump::InitAIMing()
 {
-	boss_->SetAnimation((int)Boss::Animation::PreStump, 1, 1);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::PreStump], 1, 1);
 }
 
 void BossStump::InitWarning()
 {
-	boss_->SetAnimation((int)Boss::Animation::Fly2Stump, 1, 1);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Fly2Stump], 1, 1);
 	data_.warning.stPos = boss_->world_.translate_;
 }
 
 void BossStump::InitATK()
 {
 	boss_->SetAnimeTime(false);
-	boss_->SetAnimation((int)Boss::Animation::Stump, 0.0f, 1.0f,false);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Stump], 0.0f, 1.0f,false);
 	data_.stump.velo=boss_->GetBoss2PlayerDirection().GetNormalizeNum();
 }
 
 void BossStump::InitStiffness()
 {
 	boss_->SetAnimeTime(false);
-	boss_->SetAnimation((int)Boss::Animation::EdStump, 0.0f, 2.0f,false);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::EdStump], 0.0f, 2.0f,false);
 }
 
 void BossStump::InitBack()
 {
-	boss_->SetAnimation((int)Boss::Animation::Idle1, 1, 1);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Idle1], 1, 1);
 }
 
 

@@ -254,7 +254,7 @@ void InstancingModelManager::SetAnimationRoopFrame(const std::string& tag, float
 	modelDatas_[tag]->SetAnimationSecond( sec,animeLoop);
 }
 
-void InstancingModelManager::SetAnimeNum(const std::string& tag, int num)
+void InstancingModelManager::SetAnimeNum(const std::string& tag, const std::string&animeName)
 {
-	modelDatas_[tag]->SetAnimeNum(num);
+	modelDatas_[tag]->SetAnimeName(animeName);
 }
