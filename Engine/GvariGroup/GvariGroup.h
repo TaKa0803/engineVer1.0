@@ -23,6 +23,15 @@ public:
 	//監視値追加
 	void SetMonitorValue(const std::string& name, std::variant<bool* ,int32_t*, float*, Vector3*, std::string*> value);
 
+
+
+	//ImGuiのコンボでデバッグ
+	void SetMonitorCombo(const std::string&name,  std::string*item,const std::vector<std::string>& items);
+
+	//ImGuiのコンボでデバッグ
+	void SetMonitorCombo(const std::string& name, int32_t* item, const std::vector<std::string>& items);
+
+
 	//ツリーデータ格納
 	void SetTreeData(GVariTree& tree);
 public:

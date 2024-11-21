@@ -495,6 +495,7 @@ GVariTree& Model::SetDebugParam(const std::string& treeName)
 
 	GVariTree animation = GVariTree("アニメーション");
 	animation.SetValue("有効", &isAnimationActive_);
+	animation.SetMonitorCombo("アニメーション", &nowAnimeName_,modelData_.name);
 	animation.SetValue("ループ", &isAnimeRoop_);
 	animation.SetValue("ループ時間", &animationRoopSecond_);
 	

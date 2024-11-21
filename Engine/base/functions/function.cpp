@@ -49,7 +49,7 @@ Quaternion CalculateValue(const std::vector<KayframeQuaternion>& keyframes, floa
 }
 
 
-std::map<std::string, Animation> LoadAnimationFile(const std::string& directoryPath, const std::string& filename) {
+std::map<std::string, Animation> LoadAnimationFile(const std::string& directoryPath, const std::string& filename,std::vector<std::string>&names) {
 	std::map<std::string, Animation> ans;
 
 	Assimp::Importer importer;
@@ -97,6 +97,8 @@ std::map<std::string, Animation> LoadAnimationFile(const std::string& directoryP
 		}
 
 		ans[name]=result;
+
+		names.push_back(name);
 	}
 
 	return ans;
@@ -297,7 +299,7 @@ ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& 
 
 	//animation読み込み
 	if (scene->mNumAnimations != 0) {
-		modeldata.animation = LoadAnimationFile(directoryPath, modelName);
+		modeldata.animation = LoadAnimationFile(directoryPath, modelName,modeldata.name);
 	}
 
 	assert(scene->HasMeshes());//メッシュがないのは非対応

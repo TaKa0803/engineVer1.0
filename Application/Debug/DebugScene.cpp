@@ -3,7 +3,7 @@
 #include"ImGuiManager/ImGuiManager.h"
 #include"LightManager/LightManager.h"
 #include"PostEffect/PostEffectManager/PostEffectManager.h"
-#include"PostEffect/PEs/PEHSVFilter.h"
+
 #include"GvariGroup/GvariGroup.h"
 
 DebugScnene::DebugScnene()
@@ -23,10 +23,11 @@ DebugScnene::DebugScnene()
 	//MapLoader::GetInstance()->LoadLevelEditor("untitled",".json");
 	//MapLoader::GetInstance()->CreateModel(0);
 
-	PEHSVFilter::materialData_->effective = 0.5f;
-	
+
 	particleManager_ = std::make_unique<ParticleManager>();
 	particleManager_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
+
+
 
 }
 
@@ -54,6 +55,9 @@ void DebugScnene::Initialize()
 	pointLight_ = PointLight();
 
 	particleManager_->SetOnlyImpact(true);
+
+	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("DebugScene");
+	gvg->SetTreeData(object->model_->SetDebugParam());
 }
 
 void DebugScnene::Update()

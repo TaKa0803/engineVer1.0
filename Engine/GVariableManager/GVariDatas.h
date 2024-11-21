@@ -17,6 +17,9 @@ struct ItemData {
 struct MonitorItemData {
 	//値
 	std::variant<bool*, int32_t*, float*, Vector3*,std::string*> value;
+
+	//コンボ時利用
+	std::vector<std::string> items;
 };
 
 

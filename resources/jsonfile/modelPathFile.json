@@ -6,11 +6,6 @@
     "ALPlayer": [ "ALPlayer", "ALPlayer.obj" ],
     "plane": [ "plane", "plane.obj" ],
     "player": [ "player", "player.obj" ],
-    "Head": [ "Object/Head", "Head.obj" ],
-    "LArm": [ "Object/LArm", "LArm.obj" ],
-    "RArm": [ "Object/RArm", "RArm.obj" ],
-    "LFoot": [ "Object/LFoot", "LFoot.obj" ],
-    "RFoot": [ "Object/RFoot", "RFoot.obj" ],
     "sphere": [ "SystemResources/sphere", "sphere.obj" ],
     "terrain": [ "terrain", "terrain.obj" ],
     "AnimeCube": [ "AnimatedCube", "AnimatedCube.gltf" ],
@@ -24,8 +19,6 @@
     "z+Plane": [ "SystemResources/normalZ+Plane", "normalZ+Plane.obj" ]
   },
   "InstancingmodelPathFile": {
-    "PlayerM3": [ "Object", "player.gltf", 1000 ],
-    "PlayerM4": [ "Object", "player.gltf", 1000 ],
     "Wall": [ "Wall", "Wall.obj", 100 ],
     "weapon": [ "Weapon", "Weapon.obj", 64 ],
     "wall": [ "Stage", "Stage.obj", 5 ],

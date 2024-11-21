@@ -28,3 +28,10 @@ public:
 
 };
 
+//if (ImGui::Combo("blendmode", &currentItem, items, IM_ARRAYSIZE(items))) {
+//	blend = static_cast<BlendMode>(currentItem);
+//}
+//
+//BlendMode blend = blendMode_;
+//const char* items[] = { "None","Normal","Add","Subtract","Multiply","Screen" };
+//int currentItem = static_cast<int>(blend);

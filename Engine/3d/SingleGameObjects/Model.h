@@ -208,6 +208,9 @@ private:
 
 #pragma region アニメーション関係
 
+	//現在のアニメ番号
+	//int animeNumber_ = 0;
+
 	bool isSetATime_ = false;
 	float setAt_ = 0;
 

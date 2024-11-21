@@ -61,6 +61,22 @@ void GVariTree::SetMonitorValue(const std::string& name, std::variant<bool*, int
 	datas_.monitorKeys.push_back(name);
 }
 
+void GVariTree::SetMonitorCombo(const std::string& name, std::string*item, const std::vector<std::string>& items)
+{
+	datas_.monitorValue[name].value = item;
+	datas_.monitorKeys.push_back(name);
+	datas_.monitorValue[name].items = items;
+}
+
+void GVariTree::SetMonitorCombo(const std::string& name, int32_t* item, const std::vector<std::string>& items)
+{
+	datas_.monitorValue[name].value = item;
+	datas_.monitorKeys.push_back(name);
+	datas_.monitorValue[name].items = items;
+}
+
+
+
 
 
 void GVariTree::SetTreeData(GVariTree& tree)

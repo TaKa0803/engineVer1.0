@@ -174,8 +174,12 @@ struct SkinCluster {
 
 struct ModelAllData
 {
+	//頂点などのデータ
 	ModelData model;
+	//アニメーション
 	std::map<std::string,Animation> animation;
+	//各アニメーションの名前
+	std::vector<std::string>name;
 
 	//スケルトンデータ
 	Skeleton skeleton;

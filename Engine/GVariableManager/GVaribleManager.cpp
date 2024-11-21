@@ -4,6 +4,17 @@
 #include<fstream>
 #include <iostream>
 
+const char** createCStringArray(const std::vector<std::string>& strings) {
+	size_t size = strings.size();
+	const char** cStrings = new const char* [size]; // 動的メモリ確保
+
+	for (size_t i = 0; i < size; ++i) {
+		cStrings[i] = strings[i].c_str(); // std::string を const char* に変換
+	}
+
+	return cStrings;
+}
+
 void ItemImGui(const std::string name, std::variant<bool*,int32_t*, float*, Vector3*, Vector4*> value) {
 
 
@@ -29,34 +40,87 @@ void ItemImGui(const std::string name, std::variant<bool*,int32_t*, float*, Vect
 	}
 }
 
-void MonitorItemImGui(const std::string name, std::variant<bool*, int32_t*, float*, Vector3*, std::string*> value) {
+void MonitorItemImGui(const std::string name, MonitorItemData&data) {
+
+	std::variant<bool*, int32_t*, float*, Vector3*, std::string*>& value = data.value;
+
+	if (data.items.empty()) {
+		//各ImGuiのテキスト表示
+
+		//intの場合
+		if (std::holds_alternative<bool*>(value)) {
+			bool* ptr = *std::get_if<bool*>(&value);
+			ImGui::Checkbox(name.c_str(), ptr);
+		}
+		else if (std::holds_alternative<int32_t*>(value)) {
+			int32_t* ptr = *std::get_if<int32_t*>(&value);
+			std::string text = name + " : %d";
+			ImGui::Text(text.c_str(), *ptr);
+		}//floatの場合
+		else if (std::holds_alternative<float*>(value)) {
+			float* ptr = *std::get_if<float*>(&value);
+			std::string text = name + " : %4.1f";
+			ImGui::Text(text.c_str(), *ptr, 0.01f);
+		}//Vector3の場合
+		else if (std::holds_alternative<Vector3*>(value)) {
+			Vector3* ptr = *std::get_if<Vector3*>(&value);
+			std::string text = name + " :  %4.1f / %4.1f / %4.1f";
+			ImGui::Text(text.c_str(), *reinterpret_cast<float*>(ptr), 0.01f);
+		}
+		else if (std::holds_alternative<std::string*>(value)) {
+			// char* の場合
+			std::string* ptr = *std::get_if<std::string*>(&value);
+			std::string text = name + " : %s";
+			ImGui::Text(text.c_str(), ptr->c_str());
+		}
+	}
+	else {
 
 
-	//intの場合
-	if (std::holds_alternative<bool*>(value)) {
-		bool* ptr = *std::get_if<bool*>(&value);
-		ImGui::Checkbox(name.c_str(), ptr);
-	}
-	else if (std::holds_alternative<int32_t*>(value)) {
-		int32_t* ptr = *std::get_if<int32_t*>(&value);
-		std::string text = name + " : %d";
-		ImGui::Text(text.c_str(), *ptr);
-	}//floatの場合
-	else if (std::holds_alternative<float*>(value)) {
-		float* ptr = *std::get_if<float*>(&value);
-		std::string text = name + " : %4.1f";
-		ImGui::Text(text.c_str(), *ptr, 0.01f);
-	}//Vector3の場合
-	else if (std::holds_alternative<Vector3*>(value)) {
-		Vector3* ptr = *std::get_if<Vector3*>(&value);
-		std::string text = name + " :  %4.1f / %4.1f / %4.1f";
-		ImGui::Text(text.c_str(), *reinterpret_cast<float*>(ptr), 0.01f);
-	}
-	else if (std::holds_alternative<std::string*>(value)) {
-		// char* の場合
-		std::string* ptr = *std::get_if<std::string*>(&value);
-		std::string text = name + " : %s";
-		ImGui::Text(text.c_str(), ptr->c_str());
+		//コンボのImGui表示
+
+		if (std::holds_alternative<int32_t*>(value)) {
+			int& res = **std::get_if<int32_t*>(&value);
+			int curr = res;
+
+			std::vector<const char*> item;
+
+			for (auto& n : data.items) {
+				item.push_back(n.c_str());
+			}
+
+			if (ImGui::Combo("Animations", &curr, item.data(), int(item.size()))) {
+				res = curr;
+			}
+		}else if (std::holds_alternative<std::string*>(value)) {
+			// char* の場合
+			std::string& ptr = **std::get_if<std::string*>(&value);
+
+			//一致する場所の検索
+			int count = 0;
+
+			std::vector<const char*> item;
+			for (auto& n : data.items) {
+				item.push_back(n.c_str());
+			}
+
+
+			for (auto& d : data.items) {
+				//値一致時
+				if (d == ptr||ptr=="") {
+					if (ImGui::Combo("Animations", &count, item.data(), int(item.size()))) {
+						ptr = data.items[count];
+
+					}
+
+					return;
+				}
+
+				count++;
+			}
+		}
+
+
 	}
 }
 
@@ -80,7 +144,7 @@ void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 
 
 						//値の条件で処理変化
-						MonitorItemImGui(name, item.value);
+						MonitorItemImGui(name, item);
 					}
 
 
@@ -99,7 +163,7 @@ void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 
 
 					//値の条件で処理変化
-					MonitorItemImGui(name, item.value);
+					MonitorItemImGui(name, item);
 				}
 			}
 		}
@@ -230,7 +294,7 @@ void GlobalVariableManager::Update()
 
 
 								//値の条件で処理変化
-								MonitorItemImGui(name, item.value);
+								MonitorItemImGui(name, item);
 							}
 							ImGui::TreePop();
 						}
@@ -248,7 +312,7 @@ void GlobalVariableManager::Update()
 
 
 							//値の条件で処理変化
-							MonitorItemImGui(name, item.value);
+							MonitorItemImGui(name, item);
 						}
 
 					}
