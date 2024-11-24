@@ -39,7 +39,7 @@ private:
 	Vector3 ATKscale = { 200,200 };
 
 private:
-
+	
 	ButtonState BState_=Wait;
 
 	std::unique_ptr<Sprite>skillSp_;

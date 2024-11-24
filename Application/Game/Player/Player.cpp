@@ -5,6 +5,10 @@
 #include"DeltaTimer/DeltaTimer.h"
 #include"Game/Boss/Boss.h"
 #include"GvariGroup/GvariGroup.h"
+
+#include"Game/Player/Idle/PlayerIdle.h"
+#include"Game/Player/Down/PlayerDown.h"
+
 #include<imgui.h>
 #include<json.hpp>
 #include<cassert>
@@ -33,8 +37,15 @@ void Player::StaminaUpdate()
 Player::Player() {
 	//一回しかしない初期化情報
 	input_ = Input::GetInstance();
-
 	input_->SetDeadLine(0.3f);
+
+	behaviors_.resize((size_t)State::kNumStates);
+
+	behaviors_[(int)State::IDLE] = std::make_unique<PlayerIdle>(this);
+	behaviors_[(int)State::Rolling] = std::make_unique<PlayerRoll>(this);
+	behaviors_[(int)State::ATK] = std::make_unique<PlayerATKManager>(this);
+	behaviors_[(int)State::HITACTION] = std::make_unique<PlayerDown>(this);
+
 
 	moveE_ = std::make_unique<EffectMove>();
 
@@ -59,10 +70,6 @@ Player::Player() {
 
 	shadow_ = std::make_unique<CirccleShadow>(world_);
 
-
-	rolling_ = std::make_unique<PlayerRoll>(this);
-	atkM_ = std::make_unique<PlayerATKManager>(this);
-
 	//Gvariの値設定
 	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("Player");
 
@@ -86,7 +93,9 @@ Player::Player() {
 
 	//ツリーセット
 	gvg->SetTreeData(staminaTree);
-	gvg->SetTreeData(rolling_->GetTree());
+	gvg->SetTreeData(behaviors_[(int)State::Rolling]->GetTree());
+	gvg->SetTreeData(behaviors_[(int)State::HITACTION]->GetTree());
+
 	gvg->SetTreeData(model_->SetDebugParam("model"));
 	gvg->SetTreeData(collider_->GetDebugTree("体コライダー"));
 	gvg->SetTreeData(atkCollider_->GetDebugTree("攻撃コライダー"));
@@ -121,7 +130,7 @@ void Player::Initialize() {
 	atkCollider_->Update();
 	atkCollider_->isActive_ = false;
 
-	behaviorReq_ = State::Move;
+	behaviorReq_ = State::IDLE;
 }
 
 void Player::GetBoss(const Boss* boss)
@@ -148,26 +157,38 @@ void Player::Update() {
 		SetAnimeTime(false);
 
 		//実際の初期化処理
-		(this->*BehaviorInitialize[(int)behavior_])();
+		//(this->*BehaviorInitialize[(int)behavior_])();
+
+		behaviors_[(int)behavior_]->Initialize();
 	}
+
+	//状態の更新
+	//(this->*BehaviorUpdate[(int)behavior_])();
+	behaviors_[(int)behavior_]->Update();
 
 	moveE_->Update();
 
-	//状態の更新
-	(this->*BehaviorUpdate[(int)behavior_])();
+
 
 	//落下の処理
-	data_.addFallSpd_ -= data_.fallSpd_;
-	world_.translate_.y += data_.addFallSpd_;
-	if (world_.translate_.y < 0) {
-		world_.translate_.y = 0;
-		data_.addFallSpd_ = 0;
-	}
+	//data_.addFallSpd_ -= data_.fallSpd_;
+	//world_.translate_.y += data_.addFallSpd_;
+	//if (world_.translate_.y < 0) {
+	//	world_.translate_.y = 0;
+	//	data_.addFallSpd_ = 0;
+	//}
 
 	//移動量ベクトル*デルタタイムを加算
 	world_.translate_ += data_.velo_ * (float)DeltaTimer::deltaTime_;
 
 	StaminaUpdate();
+
+	//無敵時間の解除処理
+	if (!isHit_) {
+		if ((data_.currentHitCount_ -= (float)DeltaTimer::deltaTime_) >= 0) {
+			isHit_ = true;
+		}
+	}
 
 	//更新
 	world_.UpdateMatrix();
@@ -178,19 +199,7 @@ void Player::Update() {
 
 }
 
-void (Player::* Player::BehaviorInitialize[])() = {
-	&Player::InitMove,		//移動
-	&Player::InitRolling,		//回避
-	&Player::InitATK,			//攻撃
-	&Player::InitHitAction	//被攻撃
-};
 
-void (Player::* Player::BehaviorUpdate[])() = {
-	&Player::UpdateMove,			//移動
-	&Player::UpdateRolling,		//回避
-	&Player::UpdateATK,			//攻撃
-	&Player::UpdateHitAction		//被攻撃
-};
 
 void Player::Draw() {
 
@@ -215,6 +224,11 @@ void Player::OnCollision()
 
 	if (isHit_) {
 		data_.HP_--;
+
+		behaviorReq_ = State::HITACTION;
+
+		isHit_ = false;
+		data_.currentHitCount_ = data_.noHitTime_;
 	}
 }
 
@@ -316,7 +330,7 @@ bool Player::GetDashInput()
 	return ans;
 }
 
-void Player::Move() {
+void Player::Move(bool canDash, float spdMulti) {
 
 	Vector3 move{};
 	//ダッシュチェック
@@ -332,7 +346,7 @@ void Player::Move() {
 	move *= data_.spd_;
 
 	//ダッシュキー併用で速度アップ
-	if (isMoveInput && GetDashInput() && data_.stamina.currentStamina >= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_) {
+	if (canDash&&isMoveInput && GetDashInput() && data_.stamina.currentStamina >= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_) {
 
 		isDash = true;
 
@@ -350,11 +364,37 @@ void Player::Move() {
 		moveE_->SpawnE(world_.GetWorldTranslate());
 
 		//加算
-		world_.translate_ += move*(float)DeltaTimer::deltaTime_;
+		world_.translate_ += move*spdMulti*(float)DeltaTimer::deltaTime_;
 	}
 
+	//走れる場合のみアニメーション変更
+	if (canDash) {
+		ModelRoop(isMoveInput, isDash);
+	}
+}
 
-	ModelRoop(isMoveInput,isDash);
+void Player::ChangeBehavior()
+{
+	//攻撃状態,回転処理に移るかの処理
+	bool isATK, isRoll = { false };
+
+	//各入力取得
+	isATK = GetATKInput();
+	isRoll = GetRollInput();
+
+	if (isATK && data_.stamina.currentStamina >= data_.stamina.atkCost) {
+		behaviorReq_ = State::ATK;
+	}
+
+	if (isRoll && data_.stamina.currentStamina >= data_.stamina.rollCost) {
+		behaviorReq_ = State::Rolling;
+	}
+}
+
+void Player::DecreaseStamina4Roll()
+{
+	data_.stamina.currentStamina -= data_.stamina.rollCost;
+	data_.stamina.currentCharge = 0;
 }
 
 void Player::ModelRoop(bool ismove,bool isDash)
@@ -385,86 +425,11 @@ void Player::SetAnimation(const std::string&animeName, float count, float loopSe
 }
 
 
-
-
-
-
-
-#pragma region 各状態初期化処理
-
-
-void Player::InitMove() {
-
-	SetAnimation(animeName_[Idle], 0.1f, 1.0f);
-}
-
-void Player::InitRolling() {
-
-	rolling_->Initialize();
-	data_.stamina.currentStamina -= data_.stamina.rollCost;
-	data_.stamina.currentCharge = 0;
-}
-
 void Player::InitATK() {
 	data_.stamina.currentStamina -= data_.stamina.atkCost;
 	data_.stamina.currentCharge = 0;
 
-	atkM_->Initialize();
-
 	atkCollider_->isActive_ = true;
 }
 
-void Player::InitHitAction() {
 
-}
-
-
-
-#pragma endregion
-
-#pragma region 各状態更新処理
-
-void Player::UpdateMove() {
-	//移動処理
-	Move();
-
-	//攻撃状態,回転処理に移るかの処理
-	bool isATK, isRoll = { false };
-
-	//各入力取得
-	isATK = GetATKInput();
-	isRoll = GetRollInput();
-
-	if (isATK&&data_.stamina.currentStamina>=data_.stamina.atkCost) {
-		behaviorReq_ = State::ATK;
-	}
-
-	if (isRoll&&data_.stamina.currentStamina >= data_.stamina.rollCost) {
-		behaviorReq_ = State::Rolling;
-	}
-	
-}
-
-void Player::UpdateRolling()
-{
-	rolling_->Update();
-}
-
-
-
-void Player::UpdateATK() {
-
-	//攻撃の処理
-	atkM_->Update();
-
-	//攻撃処理が終わったフラグを取得
-	if (atkM_->isEnd_) {
-		behaviorReq_ = State::Move;
-	}
-}
-
-void Player::UpdateHitAction() {
-
-}
-
-#pragma endregion

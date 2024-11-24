@@ -6,6 +6,7 @@ PlayerATKManager::PlayerATKManager(Player* player) {
 
 	punch_ = std::make_unique<PlayerPunch>(player);
 
+	tree_.treeName_ = "PlayerATK";
 	tree_.SetMonitorValue("攻撃状態", &nowType_);
 
 }
@@ -24,8 +25,10 @@ void PlayerATKManager::Update()
 	//状態の更新
 	(this->*TypeUpdate[(int)type_])();
 
-	if (type_ == Punch&&punch_->isEnd_) {
-		isEnd_ = true;
+
+	//攻撃処理が終わったフラグを取得
+	if (type_ == Punch && punch_->isEnd_) {
+		player_->behaviorReq_ = Player::State::IDLE;
 	}
 }
 

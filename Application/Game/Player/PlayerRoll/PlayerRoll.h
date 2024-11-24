@@ -2,21 +2,22 @@
 #include"Input/Input.h"
 #include"Camera/Camera.h"
 #include"GvariGroup/GvariGroup.h"
+#include"Game/Player/Behavior/IPlayerBehavior.h"
 
 //前方宣言
 class Player;
 
-class PlayerRoll {
+class PlayerRoll :public IPlayerBehavior{
 
 public:
 	PlayerRoll(Player* player);
 	~PlayerRoll() = default;
 
-	void Initialize();
+	void Initialize()override;
 
-	void Update();
+	void Update()override;
 
-	GVariTree& GetTree() { return tree_; }
+	//GVariTree& GetTree() { return tree_; }
 public:
 	//データ
 	struct Data {
@@ -33,16 +34,11 @@ public:
 
 	Data data_{};
 private:
-	//プレイヤー参照ポインタ
-	Player* player_;
 
 	//入力
 	Input* inp_;
 
 	//カメラ
 	Camera* camera_;
-
-private://デバッグ
-	GVariTree tree_ = GVariTree("roll");
 
 };

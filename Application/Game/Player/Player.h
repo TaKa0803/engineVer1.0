@@ -7,7 +7,7 @@
 #include"Effect/EffectMove/EffectMove.h"
 #include"Game/CirccleShadow/CirccleShadow.h"
 #include"Game/Player/Behavior/PlayerATKManager/PlayerATKManager.h"
-
+#include"Game/Player/Behavior/IPlayerBehavior.h"
 
 #include"PlayerRoll/PlayerRoll.h"
 
@@ -114,62 +114,55 @@ public:
 	bool GetDashInput();
 
 	enum class State {
-		Move,		//移動
+		IDLE,		//移動
 		Rolling,    //ローリング 
 		ATK,		//攻撃
 		HITACTION,	//被攻撃時
 		kNumStates	//状態の数
 	};
 
-	//アニメーションのセット
+	/// <summary>
+	/// アニメーチョン変更
+	/// </summary>
+	/// <param name="animeName">アニメーション名</param>
+	/// <param name="sec">変化までの秒数</param>
+	/// <param name="loopSec">ループまでの秒数</param>
+	/// <param name="isLoop">ループのフラグ</param>
 	void SetAnimation(const std::string& animeName, float sec, float loopSec, bool isLoop = true);
 	
 	///アニメーション進行をこちらで管理する処理
 	void SetAnimeTime(bool active, float t = 0) { model_->SetAnimationTime(active, t); }
-private://メンバ関数
 
 
 	//移動
-	void Move();
+	void Move(bool isDash = true,float spdMulti =1.0f);
 
-	void ModelRoop(bool ismove, bool isDash);
+	//入力による状態変更処理
+	void ChangeBehavior();
 
+	//ローリングによるスタミナ減少処理
+	void DecreaseStamina4Roll();
 
-
-	void StaminaUpdate();
-private://状態管理関数
-
-	//プレイヤーの状態
-	State behavior_ = State::Move;
-
-
-	//状態ごとの初期化テーブル
-	static void (Player::* BehaviorInitialize[])();
-
-	//状態ごとの更新テーブル
-	static void (Player::* BehaviorUpdate[])();
-
-
-	void InitMove();
-
-	void InitRolling();
-
+	//攻撃時の初期化処理
 	void InitATK();
 
-	void InitHitAction();
+private://メンバ関数
 
+	//アニメーションによるモデルの変更
+	void ModelRoop(bool ismove, bool isDash);
 
-	void UpdateMove();
+	//スタミナの更新処理
+	void StaminaUpdate();
 
-	void UpdateRolling();
+private://状態管理
 
-	void UpdateATK();
+	//プレイヤーの状態
+	State behavior_ = State::IDLE;
 
-	void UpdateHitAction();
+	//状態処理
+	std::vector<std::unique_ptr<IPlayerBehavior>>behaviors_;
 
-
-
-public:
+public://パラメータ
 
 	struct StaminaData {
 		//スタミナ関係
@@ -212,6 +205,12 @@ public:
 		//加算式落下加速度
 		float addFallSpd_ = 0;
 
+		//ヒットカウント
+		float currentHitCount_ = 0.0f;
+
+		//無敵時間
+		float noHitTime_ = 1.0f;
+
 		StaminaData stamina{};
 	};
 
@@ -220,29 +219,26 @@ public:
 	//状態リクエスト
 	std::optional<State>behaviorReq_ = std::nullopt;
 
-private:
+private://ポインタ参照
 	Input* input_ = nullptr;
 
 	const Camera* camera_ = nullptr;
 
 	const Boss* boss_;
 
+private://変数
+
 	std::unique_ptr<SphereCollider> collider_;
 	std::unique_ptr<SphereCollider> atkCollider_;
 
-
+	//移動エフェクト
 	std::unique_ptr<EffectMove>moveE_;
-
-	std::unique_ptr<PlayerRoll>rolling_;
-
-	std::unique_ptr<PlayerATKManager>atkM_;
-
+	//丸い影
 	std::unique_ptr<CirccleShadow>shadow_;
 
 #pragma region モデルに関する
 
 	//タグ軍
-
 	int textureData = 0;
 #pragma endregion
 

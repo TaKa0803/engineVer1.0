@@ -12,6 +12,7 @@ PlayerRoll::PlayerRoll(Player* player)
 	inp_ = Input::GetInstance();
 	camera_ = Camera::GetInstance();
 
+	tree_.treeName_ = "roll";
 	tree_.SetValue("速度", &data_.spd);
 	tree_.SetValue("距離", &data_.length);
 	tree_.SetValue("完全停止までの時間/s", &data_.stopSec);
@@ -49,6 +50,8 @@ void PlayerRoll::Initialize()
 
 	player_->SetAnimation(player_->animeName_[(int)Player::AnimationData::Roll], 0.1f, 1.0f, false);
 	//player_->SetAnimeTime(true);
+
+	player_->DecreaseStamina4Roll();
 }
 
 void PlayerRoll::Update()
@@ -69,7 +72,7 @@ void PlayerRoll::Update()
 		data_.currentStop += (float)DeltaTimer::deltaTime_;
 		//カウントMAXで歩行状態へ移行
 		if (data_.currentStop >= data_.stopSec) {
-			player_->behaviorReq_ = Player::State::Move;
+			player_->behaviorReq_ = Player::State::IDLE;
 			player_->data_.velo_.SetZero();
 		}
 		else {

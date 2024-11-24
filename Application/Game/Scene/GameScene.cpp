@@ -21,6 +21,9 @@ GameScene::GameScene() {
 
 	boss_ = std::make_unique<Boss>(player_.get());
 	IBossATK::SetBossPointer(boss_.get());
+
+	player_->GetBoss(boss_.get());
+
 	followCamera_ = std::make_unique<FollowCamera>(&player_->GetWorld(), &boss_->GetWorld());
 
 

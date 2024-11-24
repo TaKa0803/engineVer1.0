@@ -140,6 +140,7 @@
     <ClCompile Include="Engine\PostEffect\SimplePostEffect\SimplePostEffect.cpp" />
     <ClCompile Include="Engine\PostEffect\PEs\PEBloom.cpp" />
     <ClCompile Include="Engine\ExtractionScene\ExtractionScene.cpp" />
+    <ClCompile Include="Application\Game\Player\Idle\PlayerIdle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Game\Plane\Plane.h" />
@@ -256,6 +257,8 @@
     <ClInclude Include="Engine\PostEffect\PEs\PEBloom.h" />
     <ClInclude Include="Engine\ExtractionScene\ExtractionScene.h" />
     <ClInclude Include="Application\Game\Player\Behavior\IPlayerBehavior.h" />
+    <ClInclude Include="Application\Game\Player\Behavior\IDLE\PlayerIdle.h" />
+    <ClInclude Include="Application\Game\Player\Idle\PlayerIdle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

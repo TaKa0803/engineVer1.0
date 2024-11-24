@@ -1,5 +1,6 @@
 #include "GameUI.h"
 #include"TextureManager/TextureManager.h" 
+#include"GvariGroup/GvariGroup.h"
 
 GameUI::GameUI()
 {
@@ -28,6 +29,14 @@ GameUI::GameUI()
 
 	texture = TextureManager::LoadTex("resources/Texture/AL/result.png").texNum;
 	resultText_.reset(Sprite::Create(texture, { 320,90 }, { 320,90 }, { 830,290 }));
+
+	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("UI");
+	gvg->SetValue("待機アイコン座標", &waitATKpos);
+	gvg->SetValue("待機アイコンサイズ", &waitATKscale);
+
+	gvg->SetValue("現在アイコン座標", &ATKpos);
+	gvg->SetValue("現在アイコンサイズ", &ATKscale);
+
 }
 
 void GameUI::Initialize()

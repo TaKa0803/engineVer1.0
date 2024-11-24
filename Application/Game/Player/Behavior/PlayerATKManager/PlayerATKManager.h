@@ -1,19 +1,20 @@
 #pragma once
 #include"Game/Player/Behavior/ATKData/PlayerPunch.h"
 #include"GvariGroup/GvariGroup.h"
+#include"Game/Player/Behavior/IPlayerBehavior.h"
 #include<iostream>
 
 class Player;
 
-class PlayerATKManager {
+class PlayerATKManager :public IPlayerBehavior{
 
 public:
 	PlayerATKManager(Player* player);
 	~PlayerATKManager() = default;
 
-	void Initialize();
+	void Initialize()override;
 
-	void Update();
+	void Update()override;
 
 public://パブリック変数
 
@@ -40,11 +41,9 @@ private://各状態まとめ
 
 private://プライベート変数
 
-	//プレイヤーのポインタ
-	Player* player_;
+
 
 private://デバッグ関係
-	GVariTree tree_ = GVariTree("PlayerATK");
 
 
 	std::string typeName_[CountATKType ] = {
