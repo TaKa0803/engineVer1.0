@@ -1,15 +1,15 @@
 #pragma once
 #include"Input/Input.h"
 #include"Camera/Camera.h"
-#include"Game/Player/Behavior/IPlayerBehavior.h"
+#include"Game/Player/Behavior/IPlayerBehavior"
 
 
 
 
-class PlayerRoll : public  IPlayerBehavipr{
+class PlayerRoll : public  IPlyaerBehavior{
 
 public:
-	PlayerRoll(PlayerBehaviorManager* player);
+	PlayerRoll(Player* player);
 	~PlayerRoll() = default;
 
 	void Initialize()override;

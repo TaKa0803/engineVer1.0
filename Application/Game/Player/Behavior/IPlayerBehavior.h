@@ -1,24 +1,19 @@
 #pragma once
 #include"GvariGroup/GvariGroup.h"
 
-class PlayerBehaviorManager;
+class Player;
 
-class IPlayerBehavipr {
+class IPlayerBehavior {
+
 public:
 
 	virtual void Initialize() = 0;
-
 	virtual void Update() = 0;
 
-	GVariTree& GetTree() { return tree; };
+	GVariTree& GetTree() { return tree_; }
+public:
 
+	Player* player_;
 
-	PlayerBehaviorManager* playerBehaviorM_;
-
-
-public://ImGui関係
-
-	GVariTree tree = GVariTree("");
-
-
+	GVariTree tree_ = GVariTree("");
 };

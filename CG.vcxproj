@@ -388,6 +388,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application\Game\Player\Behavior\IPlayerBehavior.h" />
     <ClInclude Include="Application\Game\Scene\GameClearScene.h" />
     <ClInclude Include="Application\Game\Boss\ATK\Normal\Charge\BossCharge.h" />
     <ClInclude Include="Application\Game\Boss\ATK\Normal\ShotBullet\BossShotBullet.h" />

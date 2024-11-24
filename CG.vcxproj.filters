@@ -255,6 +255,7 @@
     <ClInclude Include="Engine\base\memoryReakChecker.h" />
     <ClInclude Include="Engine\PostEffect\PEs\PEBloom.h" />
     <ClInclude Include="Engine\ExtractionScene\ExtractionScene.h" />
+    <ClInclude Include="Application\Game\Player\Behavior\IPlayerBehavior.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />
