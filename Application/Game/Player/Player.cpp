@@ -234,7 +234,9 @@ void Player::OnCollision()
 
 void Player::OnCollisionBack(const Vector3& backV)
 {
-	world_.translate_ += backV;
+
+	world_.translate_ -= backV;
+	world_.translate_.y = 0;
 	world_.UpdateMatrix();
 	collider_->Update();
 

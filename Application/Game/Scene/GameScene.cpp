@@ -180,6 +180,12 @@ void GameScene::Collision() {
 
 	//ボスの体との接触判定
 	Vector3 vec;
+
+	if (boss_->GetBodyCollider().IsCollision(player_->GetCollider(), vec)) {
+		//押し戻し処理
+		player_->OnCollisionBack(vec);
+	}
+
 	if (boss_->GetBodyCollider().IsCollision(player_->GetATKCollider(), vec)) {
 		boss_->OnCollision();
 		player_->GetATKCollider()->isActive_ = false;
@@ -189,10 +195,9 @@ void GameScene::Collision() {
 	if (player_->GetCollider()->IsCollision(&boss_->GetATKCollider(), vec)) {
 		player_->OnCollision();
 		boss_->GetATKCollider().isActive_ = false;
-
 	}
 
-	//プレイヤーとボスの弾野と判定
+	//プレイヤーとボスの弾と判定
 	if (BossBulletManager::GetInstance()->CheckCollision(player_->GetCollider())) {
 		player_->OnCollision();
 	}

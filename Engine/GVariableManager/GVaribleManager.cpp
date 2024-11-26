@@ -239,14 +239,11 @@ void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 	return;
 }
 
-
 GlobalVariableManager* GlobalVariableManager::GetInstance()
 {
 	static GlobalVariableManager ins;
 	return &ins;
 }
-
-
 
 void GlobalVariableManager::SetGroup(const std::string& group, GroupData& data)
 {

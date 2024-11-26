@@ -1,6 +1,7 @@
 #include "PlayerDown.h"
 #include"Game/Player/Player.h"
 #include"DeltaTimer/DeltaTimer.h"
+#include<numbers>
 
 PlayerDown::PlayerDown(Player* player)
 {
@@ -30,7 +31,12 @@ void PlayerDown::Initialize()
 
 	velo_ = v * spd_;
 
-	
+	//プレイヤー方向を見続ける
+	Vector3 direc = player_->GetP2BossVelo();
+	direc.y = 0;
+	if (direc != Vector3(0, 0, 0)) {
+		player_->world_.rotate_.y = GetYRotate({ direc.x,direc.z }) + ((float)std::numbers::pi);
+	}
 
 	player_->SetAnimation(player_->animeName_[(int)Player::AnimationData::Dawn], changeAnimeSec_, loopSec_, false);
 
