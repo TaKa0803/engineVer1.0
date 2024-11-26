@@ -27,6 +27,7 @@ void BossCharge::InitWarning()
 
 void BossCharge::InitATK()
 {
+	boss_->GetATKCollider().isActive_ = true;
 	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Charging], 0.2f, 0.5f, true);
 	boss_->SetAnimeTime(false);
 

@@ -179,7 +179,7 @@ void Boss::InitIdle() { idle_->Initialize(); }
 
 void Boss::InitMove() { move_->Initialize(); }
 
-void Boss::InitATK() { atk_->Initialize(); atkCollider_->isActive_ = true; }
+void Boss::InitATK() { atk_->Initialize();  }
 
 void Boss::UpdateIdle() { idle_->Update(); }
 

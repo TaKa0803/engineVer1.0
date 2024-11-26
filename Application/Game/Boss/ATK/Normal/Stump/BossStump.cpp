@@ -36,6 +36,7 @@ void BossStump::InitATK()
 	boss_->SetAnimeTime(false);
 	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Stump], 0.0f, 1.0f,false);
 	data_.stump.velo=boss_->GetBoss2PlayerDirection().GetNormalizeNum();
+	boss_->GetATKCollider().isActive_ = true;
 }
 
 void BossStump::InitStiffness()

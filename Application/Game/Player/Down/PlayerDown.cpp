@@ -31,7 +31,7 @@ void PlayerDown::Initialize()
 
 	velo_ = v * spd_;
 
-	//プレイヤー方向を見続ける
+	//ボス方向を見る
 	Vector3 direc = player_->GetP2BossVelo();
 	direc.y = 0;
 	if (direc != Vector3(0, 0, 0)) {
