@@ -36,7 +36,6 @@ public:
 
 public:
 
-	void UpdateAnimation();
 
 	
 	/// <summary>
@@ -120,7 +119,7 @@ public:
 	const Material* GetMaterialData() { return materialData_; }
 
 	//ジョイント取得
-	Joint GetJoint(const std::string& name);
+	Matrix4x4 GetJoint(const std::string& name);
 private:
 
 	//初期化
@@ -129,6 +128,8 @@ private:
 		std::string name,
 		int point
 	);
+
+	void UpdateAnimation();
 
 	void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime);
 

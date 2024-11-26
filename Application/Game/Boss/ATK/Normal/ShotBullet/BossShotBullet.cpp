@@ -81,7 +81,7 @@ void BossShotBullet::UpdateWarning()
 			//データ作成
 			BossBulletData newData;
 
-			Joint joint;
+			Matrix4x4 joint;
 			if ((int)shotNum_ % 2 == 0) {
 				joint = boss_->model_->GetJoint(rHandBoneName_);
 			}
@@ -90,9 +90,10 @@ void BossShotBullet::UpdateWarning()
 			}
 
 			//ジョイントのワールド座標取得
-			Matrix4x4 world = joint.skeletonSpaceMatrix;
+			//Matrix4x4 world = joint.skeletonSpaceMatrix;
 			EulerWorldTransform jointWT;
-			jointWT.matWorld_ = world * boss_->world_.matWorld_;
+			jointWT.matWorld_ = joint;
+			//jointWT.matWorld_ = world * boss_->world_.matWorld_;
 
 
 			//ジョイントワールド座標を出現地点に

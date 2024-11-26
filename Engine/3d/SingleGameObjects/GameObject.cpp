@@ -14,7 +14,6 @@ void GameObject::Initialize(const std::string& filepath) {
 
 void GameObject::Update() {
 	world_.UpdateMatrix();
-	model_->UpdateAnimation();
 }
 
 void GameObject::Draw(  int tex) {

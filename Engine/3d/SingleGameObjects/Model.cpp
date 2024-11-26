@@ -139,17 +139,17 @@ void Model::UpdateAnimation()
 
 }
 
-Joint Model::GetJoint(const std::string& name)
+Matrix4x4 Model::GetJoint(const std::string& name)
 {
 	for (auto& jointW : modelData_.skeleton.joints) {
 
 		if (jointW.name == name) {
-			return jointW;
+			return jointW.skeletonSpaceMatrix*wvpData_->World;
 		}
 
 	}
 	assert(false);
-	return Joint{};
+	return Matrix4x4{};
 }
 
 void Model::Initialize(
@@ -328,7 +328,7 @@ void Model::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float
 
 void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 {
-
+	UpdateAnimation();
 	//animationのあるモデルなら
 	if (modelType_ == kSkinningGLTF) {
 
@@ -336,10 +336,16 @@ void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 			//ジョイントMの更新
 			int i = 0;
 			for (auto& jointW : modelData_.skeleton.joints) {
+				//QuaterinionWorldTransform trans;;
 				Matrix4x4 world = jointW.skeletonSpaceMatrix;
 
+				EulerWorldTransform scaleW;
+				scaleW.SetScale(0.1f);
+				scaleW.UpdateMatrix();
+
 				EulerWorldTransform newdata;
-				newdata.matWorld_ = world * wvpData_->World;
+
+				newdata.matWorld_ = scaleW.matWorld_ * world * wvpData_->World;
 
 				jointM__->SetData(jointMtag_, newdata,0, { 1,1,1,1 });
 

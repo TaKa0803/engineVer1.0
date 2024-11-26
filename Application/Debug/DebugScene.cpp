@@ -42,7 +42,7 @@ void DebugScnene::Initialize()
 	//object->Initialize("sphere");
 	//object->Initialize("walk");
 	//object->Initialize("Player");
-	object->Initialize("human");
+	object->Initialize("Boss");
 
 	terrain->Initialize("terrain");
 
@@ -96,27 +96,18 @@ void DebugScnene::Update()
 
 void DebugScnene::Draw()
 {
-	skybox_->Draw();	
-	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
-	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
+	//skybox_->Draw();	
 
 	//terrain->Draw();
 
-	
 	object->Draw();
 
 	//MapLoader::GetInstance()->DrawLevelData();
 
 	InstancingModelManager::GetInstance()->DrawAllModel();
-	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kHSV, true);
-	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
-	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kDissolve, true);
-
 
 	particleManager_->Draw();
-	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGrayScale, true);
-	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kHighLuminance, true);
-	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kGaussianFilter, true);
+	
 	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kBloom, true);
 }
 

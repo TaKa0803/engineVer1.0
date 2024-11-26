@@ -192,7 +192,6 @@ void Player::Update() {
 
 	//更新
 	world_.UpdateMatrix();
-	model_->UpdateAnimation();
 	atkCollider_->Update();
 	collider_->Update();
 	shadow_->Update();
