@@ -5,7 +5,7 @@ class PELightOutline : public IPipelineStateObject {
 
 public:
 
-	void Initialize() override;
+	PELightOutline();
 
 	void PreDraw()override;
 

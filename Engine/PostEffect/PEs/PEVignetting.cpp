@@ -7,7 +7,7 @@
 
 PEVignetting::PEMaterialData* PEVignetting::materialData_ = nullptr;
 
-void PEVignetting::Initialize()
+PEVignetting::PEVignetting()
 {
 	if (DXF_ == nullptr) {
 		DXF_ = DirectXFunc::GetInstance();

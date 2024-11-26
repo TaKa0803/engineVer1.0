@@ -5,7 +5,7 @@ class PEVignetting : public IPipelineStateObject {
 
 public:
 
-	void Initialize() override;
+	PEVignetting();
 
 	void PreDraw()override;
 

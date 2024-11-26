@@ -6,7 +6,7 @@ class PEDepthBasedOutline : public IPipelineStateObject {
 
 public:
 
-	void Initialize() override;
+	PEDepthBasedOutline();
 
 	void PreDraw()override;
 

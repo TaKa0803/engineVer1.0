@@ -5,7 +5,7 @@ class PEHighLuminace : public IPipelineStateObject {
 
 public:
 
-	void Initialize() override;
+	PEHighLuminace();
 
 	void PreDraw()override;
 

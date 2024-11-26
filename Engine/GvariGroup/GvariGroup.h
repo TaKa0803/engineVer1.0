@@ -70,6 +70,9 @@ public:
 	/// <param name="name">値の名前</param>
 	/// <param name="value">値</param>
 	void SetMonitorValue(const std::string& name, std::variant<bool*, int32_t*, float*, Vector3*, std::string*> value);
+	
+	//ImGuiのコンボでデバッグ
+	void SetMonitorCombo(const std::string& name, std::string* item, const std::vector<std::string>& items);
 
 	/// <summary>
 	/// ツリーデータ格納
@@ -86,4 +89,5 @@ private:
 
 
 };
+
 

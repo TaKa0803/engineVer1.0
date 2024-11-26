@@ -9,7 +9,7 @@
 
 PEHSVFilter::PEMaterialData* PEHSVFilter::materialData_ = nullptr;
 
-void PEHSVFilter::Initialize()
+PEHSVFilter::PEHSVFilter()
 {
 	if (DXF_ == nullptr) {
 		DXF_ = DirectXFunc::GetInstance();

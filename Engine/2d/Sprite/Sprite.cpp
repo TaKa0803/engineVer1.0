@@ -241,5 +241,45 @@ void Sprite::Draw(int texture) {
 	DXF_->GetCMDList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
 
+void Sprite::Draw(D3D12_GPU_DESCRIPTOR_HANDLE tex)
+{
+	//PSO
+//仮で変更、後で修正するように
+	SpriteManager::PreDraw();
+
+	//uv更新
+	uvWorld_.UpdateMatrix();
+	//uvTransform更新
+	materialData_->uvTransform = uvWorld_.matWorld_;
+
+	//ワールド更新
+	world_.UpdateMatrix();
+	Matrix4x4 World = world_.matWorld_;
+
+	//スプライト用データ
+	Matrix4x4 projectionMatrixSprite = MakeOrthographicMatrix(0.0f, 0.0f, float(WindowApp::kClientWidth), float(WindowApp::kClientHeight), 0.0f, 100.0f);
+	Matrix4x4 VPSprite = viewMatrixSprite * projectionMatrixSprite;
+	Matrix4x4 WVP = World * VPSprite;
+	//データ代入
+	transformationMatrixData_->WVP = WVP;
+	transformationMatrixData_->World = World;
+
+	//Spriteの描画
+	DXF_->GetCMDList()->IASetVertexBuffers(0, 1, &vertexBufferView_);	//VBVを設定			
+	DXF_->GetCMDList()->IASetIndexBuffer(&indexBufferView_);//IBVを設定
+	//形状を設定、PSOに設定しているものとはまた別、同じものを設定すると考えておけばいい
+	DXF_->GetCMDList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//マテリアルCBufferの場所を設定
+	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+	//TransformationMatrixCBufferの場所を設定
+	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_->GetGPUVirtualAddress());
+	//
+	
+	DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, tex);
+
+	//描画！！（DrawCall
+	DXF_->GetCMDList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
+}
+
 
 

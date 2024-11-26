@@ -5,7 +5,7 @@ class PEBloom : public IPipelineStateObject {
 
 public:
 
-	void Initialize() override;
+	PEBloom();
 
 	void PreDraw()override;
 

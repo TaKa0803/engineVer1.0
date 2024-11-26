@@ -5,7 +5,7 @@
 #include"ImGuiManager/ImGuiManager.h"
 #include<cassert>
 
-void PEGrayScale::Initialize()
+PEGrayScale::PEGrayScale()
 {
 	if (DXF_ == nullptr) {
 		DXF_ = DirectXFunc::GetInstance();

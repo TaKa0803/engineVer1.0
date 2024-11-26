@@ -6,7 +6,7 @@
 #include"RandomNum/RandomNum.h"
 #include<cassert>
 
-void PERandom::Initialize()
+PERandom::PERandom()
 {
 	if (DXF_ == nullptr) {
 		DXF_ = DirectXFunc::GetInstance();
@@ -162,7 +162,6 @@ void PERandom::Initialize()
 	materialData_->color2 = { 0,0,0,0 };
 	materialData_->discardNum = 0;
 	Log("Complete PERandomPSO Initialized!\n");
-
 }
 
 void PERandom::PreDraw()

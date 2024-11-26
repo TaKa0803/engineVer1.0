@@ -5,7 +5,7 @@ class PEHSVFilter : public IPipelineStateObject {
 
 public:
 
-	void Initialize() override;
+	PEHSVFilter();
 
 	void PreDraw()override;
 

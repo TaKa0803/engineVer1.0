@@ -49,6 +49,8 @@ public:
 	/// <returns>画像サイズ</returns>
 	static Sprite* Create(int texture, const Vector2 size,const Vector2 Rect, const Vector2 scale = { 1,1 }, const Vector2 translate = { 640,360 },  const Vector2 anchor = { 0.5f,0.5f }, const float rotate = 0);
 
+
+
 	/// <summary>
 	/// デバッグウィンドウ表示
 	/// </summary>
@@ -61,6 +63,11 @@ public:
 	/// <param name="texture">画像の要素番号（無くてもいい）</param>
 	void Draw(int texture=-1);
 
+	/// <summary>
+/// 描画処理
+/// </summary>
+/// <param name="texture">画像の要素番号（無くてもいい）</param>
+	void Draw(D3D12_GPU_DESCRIPTOR_HANDLE tex);
 public:///セッター
 
 	/// <summary>

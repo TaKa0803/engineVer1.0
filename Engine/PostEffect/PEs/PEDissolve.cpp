@@ -6,15 +6,15 @@
 #include"SpriteManager/SpriteManager.h"
 #include<cassert>
 
-void PEDissolve::Initialize()
+PEDissolve::PEDissolve()
 {
 	if (DXF_ == nullptr) {
 		DXF_ = DirectXFunc::GetInstance();
 	}
 
-	
 
-	
+
+
 
 #pragma region RootSignatureを生成する
 

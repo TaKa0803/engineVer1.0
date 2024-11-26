@@ -5,8 +5,8 @@ class PESepia : public IPipelineStateObject {
 
 public:
 
-	void Initialize() override;
-
+	PESepia();
+	
 	void PreDraw()override;
 
 	void Debug()override;

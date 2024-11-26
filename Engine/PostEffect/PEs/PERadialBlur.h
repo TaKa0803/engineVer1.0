@@ -6,8 +6,8 @@ class PERadialBlur : public IPipelineStateObject {
 
 public:
 
-	void Initialize() override;
-
+	PERadialBlur();
+	
 	void PreDraw()override;
 
 	void Debug()override;

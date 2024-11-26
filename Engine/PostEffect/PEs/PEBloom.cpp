@@ -7,7 +7,7 @@
 #include<cassert>
 
 
-void PEBloom::Initialize()
+PEBloom::PEBloom()
 {
 	if (DXF_ == nullptr) {
 		DXF_ = DirectXFunc::GetInstance();

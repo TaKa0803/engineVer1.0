@@ -5,7 +5,7 @@ class PEGaussianFilter : public IPipelineStateObject {
 
 public:
 
-	void Initialize() override;
+	PEGaussianFilter();
 
 	void PreDraw()override;
 

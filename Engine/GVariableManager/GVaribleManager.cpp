@@ -290,7 +290,7 @@ void GlobalVariableManager::Update()
 								//タブ値の名前
 								std::string name = key;
 								//値
-								MonitorItemData& item = data.second.monitorData[key];
+								MonitorItemData& item = data.second.monitorValue[key];
 
 
 								//値の条件で処理変化
@@ -308,7 +308,7 @@ void GlobalVariableManager::Update()
 							//タブ値の名前
 							std::string name = key;
 							//値
-							MonitorItemData& item = data.second.monitorData[key];
+							MonitorItemData& item = data.second.monitorValue[key];
 
 
 							//値の条件で処理変化

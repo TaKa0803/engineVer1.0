@@ -5,7 +5,7 @@ class PEGrayScale : public IPipelineStateObject {
 
 public:
 
-	void Initialize() override;
+	PEGrayScale();
 
 	void PreDraw()override;
 

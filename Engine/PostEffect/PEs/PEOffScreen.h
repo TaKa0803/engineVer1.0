@@ -8,10 +8,8 @@ public:
 	PEOffScreen();
 	~PEOffScreen();
 
-	//IPipelineStateObject() override;
-
-	void Initialize() override;
-
+	
+	
 	void PreDraw()override;
 
 	void Debug()override;

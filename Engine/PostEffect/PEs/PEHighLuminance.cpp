@@ -6,7 +6,7 @@
 #include"ImGuiManager/ImGuiManager.h"
 #include<cassert>
 
-void PEHighLuminace::Initialize()
+PEHighLuminace::PEHighLuminace()
 {
 	if (DXF_ == nullptr) {
 		DXF_ = DirectXFunc::GetInstance();
@@ -21,13 +21,6 @@ void PEHighLuminace::Initialize()
 #pragma region RootParameter 
 	//RootParameter作成。PixelShaderのMAterialとVertexShaderのTransform
 	D3D12_ROOT_PARAMETER rootParameters[1] = {};
-
-
-	////マテリアル
-	//rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;		//CBVを使う
-	//rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;		//PixelShaderで使う
-	//rootParameters[1].Descriptor.ShaderRegister = 0;						//レジスタ番号０とバインド
-
 
 #pragma region ディスクリプタレンジ
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
@@ -154,17 +147,7 @@ void PEHighLuminace::Initialize()
 #pragma endregion
 #pragma endregion
 
-	////マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
-	//materialResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(PEMaterialData));
-	////マテリアルにデータを書き込む
-	////書き込むためのアドレスを取得
-	//materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
-	//materialData_->value = 1.0f;
-
-
 	Log("Complete HighLuminancePSO Initialized!\n");
-
-
 }
 
 void PEHighLuminace::PreDraw()

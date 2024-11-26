@@ -4,8 +4,7 @@
 class PESmoothing : public IPipelineStateObject {
 
 public:
-
-	void Initialize() override;
+	PESmoothing();
 
 	void PreDraw()override;
 

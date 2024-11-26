@@ -5,7 +5,7 @@ class PERandom : public IPipelineStateObject {
 
 public:
 
-	void Initialize() override;
+	PERandom();
 
 	void PreDraw()override;
 

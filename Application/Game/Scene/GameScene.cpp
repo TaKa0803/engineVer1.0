@@ -89,8 +89,6 @@ void GameScene::Initialize() {
 	AudioManager::GetInstance()->StopAllSounds();
 	AudioManager::PlaySoundData(bgmGame_, 0.08f);
 
-	PEHSVFilter::materialData_->effective = 1.0f;
-	PEHSVFilter::materialData_->saturation = 0.3f;
 	PEVignetting::materialData_->darkness = 0.3f;
 
 	particleM_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
@@ -168,6 +166,8 @@ void GameScene::Draw() {
 	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kBloom, true);
 	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kVinetting, true);
 
+	PostEffectManager::GetInstance()->GvariEffectDraw();
+
 	gameUI_->DrawGame();
 
 
@@ -200,8 +200,6 @@ void GameScene::Collision() {
 
 void GameScene::SceneChange() {
 
-
-
 	//ボス死亡
 	if (boss_->isDead_) {
 		isSceneChange_ = true;
@@ -210,7 +208,6 @@ void GameScene::SceneChange() {
 		sceneC_->SetColorAlpha(1);
 	}
 	
-
 	//プレイヤ死亡
 	if (player_->data_.HP_ <= 0) {
 		sceneNo = GAMEOVER;
@@ -233,6 +230,7 @@ void GameScene::SceneChange() {
 		sceneC_->SetColorAlpha(alpha);
 
 		if (sceneXhangeCount_++ >= maxSceneChangeCount_) {
+			PostEffectManager::GetInstance()->LoadScene2Texture();
 			sceneC_->SetColorAlpha(1);
 			sceneNo = GAMECLEAR;
 

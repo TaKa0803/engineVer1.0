@@ -5,7 +5,7 @@ class PEDissolve : public IPipelineStateObject {
 
 public:
 
-	void Initialize() override;
+	PEDissolve();
 
 	void PreDraw()override;
 

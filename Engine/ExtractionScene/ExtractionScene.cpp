@@ -35,7 +35,6 @@ void ExtractionScene::Initialize()
 	gHandle_ = SRVManager::CreateSRV(renderTexture_, renderTextureSrvDesc).gpu;
 
 	peOffScreen_ = std::make_unique<PEOffScreen>();
-	peOffScreen_->Initialize();
 
 	//バリア
 	D3D12_RESOURCE_BARRIER barrier_{};

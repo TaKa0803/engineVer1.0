@@ -5,7 +5,7 @@
 #include"DXC/DXCManager.h"
 #include"ImGuiManager/ImGuiManager.h"
 
-void PESmoothing::Initialize()
+PESmoothing::PESmoothing()
 {
 	if (DXF_ == nullptr) {
 		DXF_ = DirectXFunc::GetInstance();

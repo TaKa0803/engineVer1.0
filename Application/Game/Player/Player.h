@@ -96,6 +96,8 @@ public:
 	/// <returns></returns>
 	Vector3 SetInputDirection(bool& isZero);
 	
+
+
 	//int GetConboCount() { return ATKConboCount; }
 
 	bool IsPlayerATK() {

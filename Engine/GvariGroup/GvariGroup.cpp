@@ -25,12 +25,16 @@ void GVariGroup::SetValue(const std::string& name, std::variant<bool*,int32_t*, 
 
 void GVariGroup::SetMonitorValue(const std::string& name, std::variant<bool*, int32_t*, float*, Vector3*, std::string*> value)
 {
-	datas_.monitorData[name].value = value;
+	datas_.monitorValue[name].value = value;
 	datas_.monitorKeys.push_back(name);
 }
 
-
-
+void GVariGroup::SetMonitorCombo(const std::string& name, std::string* item, const std::vector<std::string>& items)
+{
+	datas_.monitorValue[name].value = item;
+	datas_.monitorKeys.push_back(name);
+	datas_.monitorValue[name].items = items;
+}
 
 void GVariGroup::SetTreeData(GVariTree& tree)
 {

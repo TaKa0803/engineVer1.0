@@ -30,6 +30,8 @@ void PlayerDown::Initialize()
 
 	velo_ = v * spd_;
 
+	
+
 	player_->SetAnimation(player_->animeName_[(int)Player::AnimationData::Dawn], changeAnimeSec_, loopSec_, false);
 
 	currentLand_ = 0.0f;

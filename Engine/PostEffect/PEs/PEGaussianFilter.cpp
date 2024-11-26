@@ -5,7 +5,8 @@
 #include"DXC/DXCManager.h"
 #include"ImGuiManager/ImGuiManager.h"
 #include<cassert>
-void PEGaussianFilter::Initialize()
+
+PEGaussianFilter::PEGaussianFilter()
 {
 	if (DXF_ == nullptr) {
 		DXF_ = DirectXFunc::GetInstance();

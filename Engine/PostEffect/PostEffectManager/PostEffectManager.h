@@ -20,6 +20,7 @@ private:
 	const PostEffectManager& operator=(const PostEffectManager& o) = delete;
 
 public:
+	//エフェクトタイプ
 	enum EffectType {
 		kNone,
 		kGrayScale,
@@ -38,6 +39,8 @@ public:
 		CountOfEffectType
 	};
 
+
+
 	/// <summary>
 	/// これまでの描画モデルにポストエフェクトをかける
 	/// </summary>
@@ -45,11 +48,13 @@ public:
 	/// <param name="isClear">エフェクトを重ね掛けするか</param>
 	void PostEffectDraw(EffectType type, bool isClear);
 
+	//GlovalVで指定したエフェクトをかける
+	void GvariEffectDraw();
+
 	/// <summary>
 	/// デバッグImGui描画
 	/// </summary>
 	void Debug();
-
 	
 	/// <summary>
 	/// 初期化（システム
@@ -59,7 +64,6 @@ public:
 	//終了処理（システム
 	void Finalize();
 
-	
 	//システム上の描画前処理
 	void SystemPreDraw(D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle);
 
@@ -68,10 +72,23 @@ public:
 
 	//SwapChainに描画
 	void SwapChainDraw();
+
+	/// <summary>
+	/// シーンを画像として保存
+	/// </summary>
+	void LoadScene2Texture();
+public:
+
+	/// <summary>
+	/// シーンの画像handleを取得
+	/// </summary>
+	/// <returns></returns>
+	D3D12_GPU_DESCRIPTOR_HANDLE GetSceneTexture() { return extractionScene_->GetTexHandle(); }
+
 private:
 	DirectXFunc* DXF_;
 
-	ExtractionScene* rxtractionScene_=nullptr;
+	ExtractionScene* extractionScene_=nullptr;
 
 	
 	bool effective_ = true;
@@ -89,9 +106,18 @@ private:
 	D3D12_CPU_DESCRIPTOR_HANDLE cHandle_[2];
 	D3D12_GPU_DESCRIPTOR_HANDLE gHandle_[2];
 
-
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle_;
 
-
 	std::map<EffectType, IPipelineStateObject*>peData_;
+
+public://Gvari管理でのエフェクト
+
+	EffectType gVariType_ = kNone;
+
+	bool gVariKeepEffect_ = true;
+
+	//現在のエフェクト番号
+	std::string nowEffectName_;
+
+	std::vector<std::string> effectName_;
 };
