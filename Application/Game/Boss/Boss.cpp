@@ -60,7 +60,8 @@ Boss::Boss(Player* player)
 	gvg->SetMonitorValue("思考", &brein_);
 	gvg->SetMonitorValue("当たり判定", &hit_);
 	gvg->SetMonitorValue("behavior",&nowBehaviorName_);
-	gvg->SetValue("HP", &HP_);
+	gvg->SetMonitorValue("現在の体力", &HP_);
+	gvg->SetValue("MAXHP", &maxHP_);
 	gvg->SetValue("ボスサイズ", &world_.scale_);
 	gvg->SetTreeData(collider_->GetDebugTree("体コライダー"));
 	gvg->SetTreeData(atkCollider_->GetDebugTree("攻撃コライダー"));
@@ -94,8 +95,14 @@ void Boss::Init()
 	//状態初期化
 	behaviorReq_ = Behavior::IDLE;
 
+	//HPのセット
+	HP_=maxHP_;
+
 	//セットしたパラメータのセーブデータ読み込み
 	GlobalVariableManager::GetInstance()->SetLoadGroupData(groupName_);
+
+	//UI初期化
+	ui_->Initialize();
 }
 
 void Boss::Update()

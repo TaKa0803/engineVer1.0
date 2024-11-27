@@ -29,6 +29,9 @@ void PlayerPunch::Initialize()
 	//向きを切り替える
 	bool ans;
 	player_->SetInputDirection(ans);
+
+	//攻撃コライダー判定をONに
+	player_->GetATKCollider()->isActive_ = true;
 }
 
 void PlayerPunch::Update()

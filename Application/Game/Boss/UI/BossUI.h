@@ -11,6 +11,8 @@ public:
 	BossUI(Boss* boss);
 	~BossUI()=default;
 
+	void Initialize();
+
 	/// <summary>
 	/// 更新
 	/// </summary>
@@ -28,11 +30,14 @@ public:
 
 private:
 
+	Boss* boss_=nullptr;
+
 	//HPバー
 	std::unique_ptr<Sprite>hpBar_=nullptr;
 	Vector4 barColor_ = { 1,1,1,1 };
 
-
+	//最大サイズ
+	float maxScale_=0;
 private:
 	//デバッグツリー
 	GVariTree tree_= GVariTree("");

@@ -211,6 +211,8 @@ private://**変数
 
 public://**パラメータ
 
+	int maxHP_ = 20;
+
 	int HP_ = 20;
 
 	bool isDead_ = false;
