@@ -87,6 +87,9 @@ void PlayerRoll::Update()
 			player_->SetAnimeTime(true, t);
 			//同アニメーションな場合無視されるので何度でも大丈夫＃関数修正予定
 			player_->SetAnimation(player_->animeName_[Player::RollEnd], 0, 1, false);
+
+			//少しだけ移動可能
+			player_->Move(false, 0.8f);
 		}
 	}
 	else {

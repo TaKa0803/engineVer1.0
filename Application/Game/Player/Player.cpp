@@ -111,15 +111,8 @@ void Player::Initialize() {
 
 	moveE_->Initialize({ 1,1,1,1 });
 
-
-
-
-	//ATKConboCount = 1;
-	//ATKAnimationSetup_ = false;
-
 	data_ = PlayerData{};
 
-	
 	model_->animationRoopSecond_ = 5.0f;
 
 	collider_->Update();
@@ -149,20 +142,16 @@ void Player::Update() {
 
 		//攻撃、ローリング後はアニメーションのフラグが変わるのでここで変更しておく
 		SetAnimeTime(false);
-
+		//攻撃コライダー無効か
+		atkCollider_->isActive_ = false;
 		//実際の初期化処理
-		//(this->*BehaviorInitialize[(int)behavior_])();
-
 		behaviors_[(int)behavior_]->Initialize();
 	}
 
 	//状態の更新
-	//(this->*BehaviorUpdate[(int)behavior_])();
 	behaviors_[(int)behavior_]->Update();
 
 	moveE_->Update();
-
-
 
 	//落下の処理
 	//data_.addFallSpd_ -= data_.fallSpd_;
@@ -222,6 +211,7 @@ void Player::OnCollision()
 
 		isHit_ = false;
 		data_.currentHitCount_ = data_.noHitTime_;
+		atkCollider_->isActive_ = false;
 	}
 }
 
