@@ -34,6 +34,8 @@ private://**ノーマルの攻撃手段
 		Stump,			//潰す攻撃
 		ShotBullet,		//弾発射
 		Charge,			//突撃
+		//Punch,
+		//SumerSolt,
 		CountOfATKData
 	};
 
@@ -51,7 +53,9 @@ private://デバッグ
 	std::string atkTypeName_[CountOfATKData]={
 		"落下攻撃",
 		"弾発射",
-		"タックル"
+		"タックル",
+		//"パンチ",
+		//"サマーソルト"
 	};
 
 	std::string nowAtkName_ = "";

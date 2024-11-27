@@ -8,7 +8,7 @@ PlayerIdle::PlayerIdle(Player* player)
 
 void PlayerIdle::Initialize()
 {
-	player_->SetAnimation(player_->animeName_[(int)Player::State::IDLE], 0.1f, 1.0f);
+	player_->SetAnimation(player_->animeName_[(int)Player::Behavior::IDLE], 0.1f, 1.0f);
 }
 
 void PlayerIdle::Update()

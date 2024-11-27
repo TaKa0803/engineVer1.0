@@ -89,14 +89,13 @@ void MainSystem::Initializes() {
 	//スプライトマネージャ初期化
 	SpriteManager::GetInstance()->Initialize();
 
-
+	//すべての保存データを読み込む
 	GlobalVariableManager::GetInstance()->LoadAllSaveData();
 
 
 }
 
 void MainSystem::MainRoop() {
-
 
 
 	//モデルデータ関係読み込み

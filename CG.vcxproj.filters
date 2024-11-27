@@ -141,6 +141,9 @@
     <ClCompile Include="Engine\PostEffect\PEs\PEBloom.cpp" />
     <ClCompile Include="Engine\ExtractionScene\ExtractionScene.cpp" />
     <ClCompile Include="Application\Game\Player\Idle\PlayerIdle.cpp" />
+    <ClCompile Include="Application\Game\Boss\ATK\Normal\Punch\BossPunch.cpp" />
+    <ClCompile Include="Application\Game\Boss\ATK\Normal\SumerSolt\BossSumerSolt.cpp" />
+    <ClCompile Include="Application\Game\Boss\UI\BossUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Game\Plane\Plane.h" />
@@ -259,6 +262,9 @@
     <ClInclude Include="Application\Game\Player\Behavior\IPlayerBehavior.h" />
     <ClInclude Include="Application\Game\Player\Behavior\IDLE\PlayerIdle.h" />
     <ClInclude Include="Application\Game\Player\Idle\PlayerIdle.h" />
+    <ClInclude Include="Application\Game\Boss\ATK\Normal\Punch\BossPunch.h" />
+    <ClInclude Include="Application\Game\Boss\ATK\Normal\SumerSolt\BossSumerSolt.h" />
+    <ClInclude Include="Application\Game\Boss\UI\BossUI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

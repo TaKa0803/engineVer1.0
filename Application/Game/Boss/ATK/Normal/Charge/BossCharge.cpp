@@ -36,6 +36,7 @@ void BossCharge::InitATK()
 }
 
 void BossCharge::InitStiffness() {
+	boss_->GetATKCollider().isActive_ = false;
 	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::EdCharge], 0.2f, 1, false);
 
 }

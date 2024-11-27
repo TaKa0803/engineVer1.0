@@ -45,7 +45,7 @@ void IBossATK::UpdateBehavior()
 IBossATK::IBossATK()
 {
 	//デバッグ設定
-	treeData_.SetMonitorValue("状態", &nowBehavior_);
+	//treeData_.SetMonitorValue("状態", &nowBehavior_);
 }
 
 void IBossATK::SetBossPointer(Boss* boss)
@@ -63,6 +63,19 @@ void IBossATK::Update()
 {
 	//更新
 	UpdateBehavior();
+}
+
+void IBossATK::SetParam2Tree(const std::string& treename)
+{
+	treeData_.name_ = treename;
+	treeData_.SetMonitorValue("カウント", &currentCount_);
+
+	treeData_.SetValue("AIM状態時間", &parameters_.aimingSec);
+	treeData_.SetValue("実攻撃前状態時間", &parameters_.warningSec);
+	treeData_.SetValue("実攻撃状態時間", &parameters_.ATKSec);
+	treeData_.SetValue("スタン状態時間", &parameters_.stiffnessSec);
+	treeData_.SetValue("通常に戻る状態時間", &parameters_.backSec);
+
 }
 
 void (IBossATK::* IBossATK::behaviorInit[])() {

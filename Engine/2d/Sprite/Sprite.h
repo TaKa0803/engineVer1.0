@@ -4,12 +4,12 @@
 #include"DirectXFunc/DirectXFunc.h"
 #include"struct.h"
 #include"Math/Vector2.h"
-#include<wrl.h>
-
-
 #include"WorldTransform/WorldTransform.h"
+#include"GvariGroup/GvariGroup.h"
 
 #include<memory>
+#include<wrl.h>
+
 
 struct SpriteMaterial
 {
@@ -141,7 +141,12 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	const EulerWorldTransform& GetWorld()const { return world_; }
-private:
+
+	/// <summary>
+	/// ツリー取得
+	/// </summary>
+	/// <returns></returns>
+	GVariTree& GetTree(const std::string&name);
 
 
 	
@@ -204,5 +209,9 @@ private:
 	//uvのWorld
 	EulerWorldTransform uvWorld_{};
 
-	
+private:
+
+	//デバッグ用ツリー
+	GVariTree tree_=GVariTree("");
+
 };

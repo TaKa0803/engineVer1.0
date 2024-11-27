@@ -139,6 +139,20 @@ Sprite* Sprite::Create(int texture, const Vector2 size, const Vector2 Rect, cons
 
 
 
+GVariTree& Sprite::GetTree(const std::string& name)
+{
+	
+	tree_.name_ = name;
+
+	tree_.SetTreeData(world_.GetDebugTree());
+	tree_.SetTreeData(uvWorld_.GetDebugTree("UVワールド"));
+	tree_.SetValue("画像", &materialData_->enableTexture);
+	tree_.SetValue("色", &materialData_->color);
+	tree_.SetValue("棄却量", &materialData_->discardNum);
+
+	return tree_;
+}
+
 void Sprite::Initialize(int texture,
 
 	EulerWorldTransform world,

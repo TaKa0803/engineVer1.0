@@ -110,6 +110,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application\Game\Boss\ATK\Normal\Punch\BossPunch.cpp" />
+    <ClCompile Include="Application\Game\Boss\ATK\Normal\SumerSolt\BossSumerSolt.cpp" />
+    <ClCompile Include="Application\Game\Boss\UI\BossUI.cpp" />
     <ClCompile Include="Application\Game\Player\Idle\PlayerIdle.cpp" />
     <ClCompile Include="Application\Game\Scene\GameClearScene.cpp" />
     <ClCompile Include="Application\Game\Boss\ATK\Normal\Charge\BossCharge.cpp" />
@@ -389,6 +392,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application\Game\Boss\ATK\Normal\Punch\BossPunch.h" />
+    <ClInclude Include="Application\Game\Boss\ATK\Normal\SumerSolt\BossSumerSolt.h" />
+    <ClInclude Include="Application\Game\Boss\UI\BossUI.h" />
     <ClInclude Include="Application\Game\Player\Behavior\IDLE\PlayerIdle.h" />
     <ClInclude Include="Application\Game\Player\Behavior\IPlayerBehavior.h" />
     <ClInclude Include="Application\Game\Player\Idle\PlayerIdle.h" />

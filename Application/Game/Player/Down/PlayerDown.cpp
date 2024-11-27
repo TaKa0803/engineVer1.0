@@ -7,7 +7,7 @@ PlayerDown::PlayerDown(Player* player)
 {
 	player_ = player;
 
-	tree_.treeName_ = "down";
+	tree_.name_ = "down";
 	tree_.SetValue("吹き飛ぶ角度の高さ", &height_);
 	tree_.SetValue("とぶ初速度", &spd_);
 	tree_.SetValue("重力", &gravity_);
@@ -64,7 +64,7 @@ void PlayerDown::Update()
 		currentLand_ += (float)DeltaTimer::deltaTime_;
 
 		if (currentLand_ >= randSec_) {
-			player_->behaviorReq_ = Player::State::IDLE;
+			player_->SetBehaviorReq (Player::Behavior::IDLE);
 		}
 		else {
 			player_->Move(false,0.5f);

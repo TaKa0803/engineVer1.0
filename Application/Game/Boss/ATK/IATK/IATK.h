@@ -43,6 +43,10 @@ public:
 
 	GVariTree& GetTree() { return treeData_; }
 
+	/// <summary>
+	/// ツリーに自動でパラメータ追加
+	/// </summary>
+	void SetParam2Tree(const std::string&treename);
 public://状態のデータ
 	//各状態の初期化
 	virtual void InitAIMing() = 0;
@@ -73,12 +77,12 @@ public://**変数
 	//各状態の待機時間（利用しなくても可
 	struct BehaviorCountSec
 	{
-		float aimingSec;		//AIM状態の時間
-		float warningSec;		//Warning状態の時間
-		float ATKSec;			//ATK状態の時間
-		float stiffnessSec;		//Stiffness状態の時間
-		float backSec;			//終了状態の時間
-	}parameters_;
+		float aimingSec=1.0f;		//AIM状態の時間
+		float warningSec = 1.0f;		//Warning状態の時間
+		float ATKSec = 1.0f;			//ATK状態の時間
+		float stiffnessSec = 1.0f;		//Stiffness状態の時間
+		float backSec = 1.0f;			//終了状態の時間
+	}parameters_{};
 
 	//経過カウント
 	float currentCount_ = 0;

@@ -13,20 +13,9 @@ public:
 
 	void Update();
 
-	void DrawGame();
-
-	void DrawClear();
+	void Draw();
 
 
-	void SetBState(int state);
-public:
-
-	enum ButtonState {
-		Wait,
-		Punch,
-		Kick,
-		Ult
-	};
 
 private:
 
@@ -39,17 +28,7 @@ private:
 	Vector3 ATKscale = { 200,200 };
 
 private:
-	
-	ButtonState BState_=Wait;
-
-	std::unique_ptr<Sprite>skillSp_;
 	std::unique_ptr<Sprite>BButton_;
 	std::unique_ptr<Sprite>punchSp_;
-	std::unique_ptr<Sprite>kickSp_;
-	std::unique_ptr<Sprite>ultSp_;
-
-
-	std::unique_ptr<Sprite>backScreen_;
-	std::unique_ptr<Sprite>resultText_;
 
 };

@@ -19,7 +19,7 @@ void BossIdle::Initialize()
 	//待機時間カウントリセット
 	data_.currentSec = 0;
 
-	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Idle1], 1, 1);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Idle1], 0, 1);
 }
 
 void BossIdle::Update()

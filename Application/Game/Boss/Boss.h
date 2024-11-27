@@ -4,7 +4,7 @@
 #include"Game/Player/Player.h"
 #include"Game/CirccleShadow/CirccleShadow.h"
 #include"SphereCollider/SphereCollider.h"
-
+#include"Game/Boss/UI/BossUI.h"
 #include"Game/Boss/Idle/BossIdle.h"
 #include"Game/Boss/Move/BossMove.h"
 #include"Game/Boss/ATK/BossATKTypeManager.h"
@@ -36,7 +36,12 @@ public://パブリック変数：状態管理関係
 		Preshot,
 		Shot,
 		RevShot,
+
+		PrePunch,
+		Punch,
 	
+		PreSumersolt,
+		SumerSolt,
 
 		CountAnimation
 	};
@@ -63,6 +68,12 @@ public://パブリック変数：状態管理関係
 		"preShot",
 		"ShotSingle",
 		"Idle",
+
+		"PrePunch",
+		"Punch",
+
+		"PreSumerSolt",
+		"SumerSolt"
 
 	};
 
@@ -95,6 +106,11 @@ public://パブリック関数
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// UI描画
+	/// </summary>
+	void DrawUI();
 
 	//攻撃ヒット時の処理
 	void OnCollision();
@@ -180,14 +196,18 @@ private://**変数
 	std::unique_ptr<CirccleShadow>shadow_;
 	//コライダー
 	std::unique_ptr<SphereCollider> collider_;
+	//攻撃コライダー
+	std::unique_ptr<SphereCollider>atkCollider_;
+
+	//UI
+	std::unique_ptr<BossUI>ui_;
 
 	//各処理
 	std::unique_ptr<BossIdle>idle_;
 	std::unique_ptr<BossMove>move_;
 	std::unique_ptr<BossATKTypeManager>atk_;
 	
-	//攻撃コライダー
-	std::unique_ptr<SphereCollider>atkCollider_;
+
 
 public://**パラメータ
 

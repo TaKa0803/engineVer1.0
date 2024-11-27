@@ -250,7 +250,7 @@ void SphereCollider::UpdateMatrix()
 GVariTree& SphereCollider::GetDebugTree(const std::string& name)
 {
 
-	tree_.treeName_ = name;
+	tree_.name_ = name;
 
 	tree_.SetTreeData(world_.GetDebugTree());
 	tree_.SetValue("有効", &isActive_);

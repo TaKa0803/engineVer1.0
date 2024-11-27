@@ -73,6 +73,8 @@ public:
 	//SwapChainに描画
 	void SwapChainDraw();
 
+	void LoadScene2TexFlagActive() { loadScene2Tex_ = true; }
+private:
 	/// <summary>
 	/// シーンを画像として保存
 	/// </summary>
@@ -90,16 +92,24 @@ private:
 
 	ExtractionScene* extractionScene_=nullptr;
 
+private:
+
+	//シーンを画像として保存
+	bool loadScene2Tex_ = false;
 	
+	//有効処理
 	bool effective_ = true;
 
 	//後続演出フラグ
 	bool isEffectReqeat_ = false;
 
+	//クリアする色
 	const Vector4 kRenderTClearValue{ 0.0f,0.0f,0.0f,0.0f };
 
+	//リソース番号
 	uint32_t resourceNum_ = 0;
 	
+	//renderTex
 	ID3D12Resource* renderTexture_[2] = { nullptr };
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC renderTextureSrvDesc{};
@@ -108,6 +118,7 @@ private:
 
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle_;
 
+	//
 	std::map<EffectType, IPipelineStateObject*>peData_;
 
 public://Gvari管理でのエフェクト

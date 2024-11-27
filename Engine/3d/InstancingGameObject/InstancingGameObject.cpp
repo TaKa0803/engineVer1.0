@@ -4,7 +4,7 @@
 
 GVariTree& InstancingGameObject::GetDebugTree(const std::string& name)
 {
-	tree_.treeName_ = name;
+	tree_.name_ = name;
 	tree_.SetTreeData(world_.GetDebugMonitorTree());
 	return tree_;
 }

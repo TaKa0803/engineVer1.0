@@ -429,9 +429,20 @@ void PostEffectManager::Debug()
 
 void PostEffectManager::PreSwapChainDraw()
 {
+
+	//シーンを画像として読み込むフラグがある場合
+	if (loadScene2Tex_) {
+		//huragu 
+		loadScene2Tex_ = false;
+		//シーンを画像にする処理
+		LoadScene2Texture();
+	}
+
 	if (!isEffectReqeat_) {
 		PostEffectDraw(kNone, true);
 	}
+
+
 }
 
 void PostEffectManager::SwapChainDraw()

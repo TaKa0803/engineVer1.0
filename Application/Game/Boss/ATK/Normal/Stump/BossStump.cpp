@@ -6,10 +6,9 @@
 #pragma region 各状態初期化
 BossStump::BossStump()
 {
+	//ツリーにデバッグ用パラメータを設定
 	treeData_.SetName("落下攻撃");
-
 	treeData_.SetMonitorValue("経過時間", &currentCount_);
-
 	treeData_.SetValue("構え時間", &data_.aim.maxGoTop);
 	treeData_.SetValue("ジャンプ到達時間", &data_.warning.maxWarning);
 	treeData_.SetValue("ジャンプ高度", &data_.warning.height);

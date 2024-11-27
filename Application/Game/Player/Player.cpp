@@ -39,12 +39,12 @@ Player::Player() {
 	input_ = Input::GetInstance();
 	input_->SetDeadLine(0.3f);
 
-	behaviors_.resize((size_t)State::kNumStates);
+	behaviors_.resize((size_t)Behavior::kNumStates);
 
-	behaviors_[(int)State::IDLE] = std::make_unique<PlayerIdle>(this);
-	behaviors_[(int)State::Rolling] = std::make_unique<PlayerRoll>(this);
-	behaviors_[(int)State::ATK] = std::make_unique<PlayerATKManager>(this);
-	behaviors_[(int)State::HITACTION] = std::make_unique<PlayerDown>(this);
+	behaviors_[(int)Behavior::IDLE] = std::make_unique<PlayerIdle>(this);
+	behaviors_[(int)Behavior::Rolling] = std::make_unique<PlayerRoll>(this);
+	behaviors_[(int)Behavior::ATK] = std::make_unique<PlayerATKManager>(this);
+	behaviors_[(int)Behavior::HITACTION] = std::make_unique<PlayerDown>(this);
 
 
 	moveE_ = std::make_unique<EffectMove>();
@@ -93,16 +93,12 @@ Player::Player() {
 
 	//ツリーセット
 	gvg->SetTreeData(staminaTree);
-	gvg->SetTreeData(behaviors_[(int)State::Rolling]->GetTree());
-	gvg->SetTreeData(behaviors_[(int)State::HITACTION]->GetTree());
+	gvg->SetTreeData(behaviors_[(int)Behavior::Rolling]->GetTree());
+	gvg->SetTreeData(behaviors_[(int)Behavior::HITACTION]->GetTree());
 
 	gvg->SetTreeData(model_->SetDebugParam("model"));
 	gvg->SetTreeData(collider_->GetDebugTree("体コライダー"));
 	gvg->SetTreeData(atkCollider_->GetDebugTree("攻撃コライダー"));
-}
-
-Player::~Player() {
-
 }
 
 void Player::Initialize() {
@@ -130,7 +126,7 @@ void Player::Initialize() {
 	atkCollider_->Update();
 	atkCollider_->isActive_ = false;
 
-	behaviorReq_ = State::IDLE;
+	behaviorReq_ = Behavior::IDLE;
 }
 
 void Player::GetBoss(const Boss* boss)
@@ -138,14 +134,12 @@ void Player::GetBoss(const Boss* boss)
 	boss_ = boss;
 }
 
+void Player::SetCamera(Camera* camera)
+{
+	camera_ = camera; 
+}
+
 void Player::Update() {
-
-#ifdef _DEBUG
-;
-
-	//atkCollider_->Debug("playerATKCollider");
-#endif // _DEBUG
-
 
 	//状態の初期化処理
 	if (behaviorReq_) {
@@ -224,7 +218,7 @@ void Player::OnCollision()
 	if (isHit_) {
 		data_.HP_--;
 
-		behaviorReq_ = State::HITACTION;
+		behaviorReq_ = Behavior::HITACTION;
 
 		isHit_ = false;
 		data_.currentHitCount_ = data_.noHitTime_;
@@ -384,11 +378,11 @@ void Player::ChangeBehavior()
 	isRoll = GetRollInput();
 
 	if (isATK && data_.stamina.currentStamina >= data_.stamina.atkCost) {
-		behaviorReq_ = State::ATK;
+		behaviorReq_ = Behavior::ATK;
 	}
 
 	if (isRoll && data_.stamina.currentStamina >= data_.stamina.rollCost) {
-		behaviorReq_ = State::Rolling;
+		behaviorReq_ = Behavior::Rolling;
 	}
 }
 
@@ -408,7 +402,7 @@ void Player::ModelRoop(bool ismove,bool isDash)
 		//移動状態
 		if (!isDash) {
 			//歩き
-			SetAnimation(animeName_[Run], 0.1f, 1.0f);
+			SetAnimation(animeName_[Moving], 0.1f, 1.0f);
 		}
 		else {
 			//ダッシュ

@@ -18,29 +18,31 @@ class Boss;
 
 class Player :public GameObject {
 
-public:
+public://パブリック変数
+
 #pragma region アニメーション関係
 	enum  AnimationData {
 
-		Idle,
-		Run,
-		Dash,
+		Idle,	//待機
+		Moving,	//移動
+		Dash,	//走る
 
-		Roll,
-		RollEnd,
+		Roll,	//回転
+		RollEnd,//回転終わり
 
-		PrePunch1,
-		PrePunch2,
-		PrePunch3,
-		Punch1,
-		Punch2,
-		Punch3,
+		PrePunch1,//パンチ１構え
+		PrePunch2,//パンチ２構え
+		PrePunch3,//パンチ３構え
+		Punch1,//パンチ1
+		Punch2,//パンチ2
+		Punch3,//パンチ3
 
-		Dawn,
-		DawnBack,
-		CountAnime
+		Dawn,//ダウン
+		DawnBack,//ダウン復帰
+		CountAnime//アニメーションの数
 	};
 
+	//アニメーション名まとめ
 	std::string animeName_[CountAnime] = {
 		"Idle",
 		"walk",
@@ -64,58 +66,9 @@ public:
 	};
 
 #pragma endregion
-public:
-	Player();
-	~Player();
 
-	void Initialize();
-
-	void GetBoss(const Boss* boss);
-
-	void Update();
-
-	void Draw();
-
-	void DrawParticle();
-
-	void SetCamera(Camera* camera) { camera_ = camera; }
-
-	void OnCollision();
-
-	//押し戻し
-	void OnCollisionBack(const Vector3& backV);
-
-	SphereCollider* GetCollider() { return collider_.get(); }
-
-	SphereCollider* GetATKCollider() { return atkCollider_.get(); };
-
-	/// <summary>
-	/// 入力方向に向く
-	/// </summary>
-	/// <param name="isZero">入力の有無受け取り</param>
-	/// <returns></returns>
-	Vector3 SetInputDirection(bool& isZero);
-	
-
-
-	//int GetConboCount() { return ATKConboCount; }
-
-	bool IsPlayerATK() {
-		if (behavior_ == State::ATK) { return true; }
-		return false;
-	}
-
-	//プレイヤーからボスへの向きベクトル
-	const Vector3 GetP2BossVelo();
-
-	//攻撃入力の取得処理まとめ
-	bool GetATKInput();
-	//回転入力の処理まとめ
-	bool GetRollInput();
-
-	bool GetDashInput();
-
-	enum class State {
+	//状態
+	enum class Behavior {
 		IDLE,		//移動
 		Rolling,    //ローリング 
 		ATK,		//攻撃
@@ -123,49 +76,7 @@ public:
 		kNumStates	//状態の数
 	};
 
-	/// <summary>
-	/// アニメーチョン変更
-	/// </summary>
-	/// <param name="animeName">アニメーション名</param>
-	/// <param name="sec">変化までの秒数</param>
-	/// <param name="loopSec">ループまでの秒数</param>
-	/// <param name="isLoop">ループのフラグ</param>
-	void SetAnimation(const std::string& animeName, float sec, float loopSec, bool isLoop = true);
-	
-	///アニメーション進行をこちらで管理する処理
-	void SetAnimeTime(bool active, float t = 0) { model_->SetAnimationTime(active, t); }
-
-
-	//移動
-	void Move(bool isDash = true,float spdMulti =1.0f);
-
-	//入力による状態変更処理
-	void ChangeBehavior();
-
-	//ローリングによるスタミナ減少処理
-	void DecreaseStamina4Roll();
-
-	//攻撃時の初期化処理
-	void InitATK();
-
-private://メンバ関数
-
-	//アニメーションによるモデルの変更
-	void ModelRoop(bool ismove, bool isDash);
-
-	//スタミナの更新処理
-	void StaminaUpdate();
-
-private://状態管理
-
-	//プレイヤーの状態
-	State behavior_ = State::IDLE;
-
-	//状態処理
-	std::vector<std::unique_ptr<IPlayerBehavior>>behaviors_;
-
-public://パラメータ
-
+#pragma region パラメータ
 	struct StaminaData {
 		//スタミナ関係
 		float maxStamina = 100;
@@ -213,13 +124,126 @@ public://パラメータ
 		//無敵時間
 		float noHitTime_ = 1.0f;
 
+		//スタミナデータ
 		StaminaData stamina{};
 	};
 
 	PlayerData data_;
+#pragma endregion
+
+public:
+
+	//コンストラクタ
+	Player();
+	~Player() = default;
+
+	//初期化
+	void Initialize();
+
+	//ボスポインタ取得
+	void GetBoss(const Boss* boss);
+
+	//カメラ取得
+	void SetCamera(Camera* camera);
+
+	//更新
+	void Update();
+
+	//描画
+	void Draw();
+
+	//パーティクル描画
+	void DrawParticle();
+
+	//ヒット時の処理
+	void OnCollision();
+
+	/// <summary>
+	/// 押し戻し処理
+	/// </summary>
+	/// <param name="backV">押し戻し量</param>
+	void OnCollisionBack(const Vector3& backV);
+
+
+	//移動処理
+	void Move(bool isDash = true, float spdMulti = 1.0f);
+
+	//入力による状態変更処理
+	void ChangeBehavior();
+
+	//ローリングによるスタミナ減少処理
+	void DecreaseStamina4Roll();
+
+	//攻撃時の初期化処理
+	void InitATK();
+
+public://ゲッター
+
+	//コライダー取得
+	SphereCollider* GetCollider() { return collider_.get(); }
+
+	//攻撃コライダー取得
+	SphereCollider* GetATKCollider() { return atkCollider_.get(); };
+
+	/// <summary>
+	/// 入力方向に向く
+	/// </summary>
+	/// <param name="isZero">入力の有無受け取り</param>
+	/// <returns></returns>
+	Vector3 SetInputDirection(bool& isZero);
+
+	//プレイヤーからボスへの向きベクトル
+	const Vector3 GetP2BossVelo();
+
+	//攻撃入力の取得処理まとめ
+	bool GetATKInput();
+	//回転入力の処理まとめ
+	bool GetRollInput();
+	//ダッシュ入力の処理まとめ
+	bool GetDashInput();
+
+
+public://セッター
+
+	/// <summary>
+	/// アニメーチョン変更
+	/// </summary>
+	/// <param name="animeName">アニメーション名</param>
+	/// <param name="sec">変化までの秒数</param>
+	/// <param name="loopSec">ループまでの秒数</param>
+	/// <param name="isLoop">ループのフラグ</param>
+	void SetAnimation(const std::string& animeName, float sec, float loopSec, bool isLoop = true);
+
+	///アニメーション進行をこちらで管理する処理
+	void SetAnimeTime(bool active, float t = 0) { model_->SetAnimationTime(active, t); }
 
 	//状態リクエスト
-	std::optional<State>behaviorReq_ = std::nullopt;
+	void SetBehaviorReq(Behavior behavior) { behaviorReq_ = behavior; }
+
+private://メンバ関数
+
+	//アニメーションによるモデルの変更
+	void ModelRoop(bool ismove, bool isDash);
+
+	//スタミナの更新処理
+	void StaminaUpdate();
+
+private://状態管理
+
+	//プレイヤーの状態
+	Behavior behavior_ = Behavior::IDLE;
+	
+	//状態リクエスト
+	std::optional<Behavior>behaviorReq_ = std::nullopt;
+	
+	//状態処理
+	std::vector<std::unique_ptr<IPlayerBehavior>>behaviors_;
+
+public://パラメータ
+
+
+
+	
 
 private://ポインタ参照
 	Input* input_ = nullptr;

@@ -11,38 +11,48 @@ Boss::Boss(Player* player)
 	//プレイヤーポインタ取得
 	player_ = player;
 
-	//一回しかしない初期化情報
+	//入力インスタンス取得
 	input_ = Input::GetInstance();
+	//デッドライン設定
 	input_->SetDeadLine(0.3f);
 
 	//弾マネージャのインスタンス取得
 	bulletM_ = BossBulletManager::GetInstance();
+	//初期設定
 	bulletM_->SetUp();
 
+	//オブジェクト初期化
 	GameObject::Initialize("Boss");
+	//アニメーションを有効化
 	model_->SetAnimationActive(true);
 	model_->SetAnimeSecond(10);
 
+	//画像を無効
 	model_->IsEnableTexture(false);
+	//色をセット
 	model_->SetColor({ 0.8f,0,0,1 });
 
-
+	//コライダー初期化
 	collider_ = std::make_unique<SphereCollider>();
+	//追従先を指定して初期化
 	collider_->Initialize("Boss", world_);
-	collider_->SetRadius(4.0f);
-	collider_->SetTranslate({ 0,1.4f,0 });
 
+	//円影生成
 	shadow_ = std::make_unique<CirccleShadow>(world_);
 
+	//iiUI生成
+	ui_ = std::make_unique<BossUI>(this);
+
+	//各状態生成
 	idle_ = std::make_unique<BossIdle>(this);
 	move_ = std::make_unique<BossMove>(this);
 	atk_ = std::make_unique<BossATKTypeManager>(this);
 
-
+	//攻撃コライダー生成
 	atkCollider_ = std::make_unique<SphereCollider>();
+	//ターゲット指定して初期化
 	atkCollider_->Initialize("boss", world_);
-	atkCollider_->SetRadius(1.0f);
-	atkCollider_->SetTranslate({ 0.0f,1.4f,0.0f });
+	//コライダーを無効
 	atkCollider_->isActive_ = false;
 
 	//Gvari設定
@@ -57,6 +67,7 @@ Boss::Boss(Player* player)
 
 	gvg->SetTreeData(idle_->GetTree());
 	gvg->SetTreeData(move_->GetTree());
+	gvg->SetTreeData(ui_->GetTree());
 
 	gvg->SetTreeData(model_->SetDebugParam("model"));
 
@@ -67,19 +78,23 @@ Boss::Boss(Player* player)
 
 void Boss::Init()
 {
-
+	//弾マネージャ初期化
 	bulletM_->Init();
 
+	//座標初期化
 	world_.Initialize();
+	//初期座標に設定
 	world_.translate_ = { 0,0,10 };
+	//サイズ
 	world_.scale_ = { 1,1,1 };
 	shadow_->SetShadowScale(GetAllScaleX(world_));
 	atk_->SceneInit();
 	isDead_ = false;
 
+	//状態初期化
 	behaviorReq_ = Behavior::IDLE;
 
-
+	//セットしたパラメータのセーブデータ読み込み
 	GlobalVariableManager::GetInstance()->SetLoadGroupData(groupName_);
 }
 
@@ -111,6 +126,8 @@ void Boss::Update()
 	GameObject::Update();
 	shadow_->Update();
 
+	ui_->Update();
+
 	atkCollider_->Update();
 	collider_->Update();
 }
@@ -136,6 +153,11 @@ void Boss::Draw()
 
 	collider_->Draw();
 	atkCollider_->Draw();
+}
+
+void Boss::DrawUI()
+{
+	ui_->Draw();
 }
 
 void Boss::OnCollision()

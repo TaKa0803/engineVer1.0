@@ -38,19 +38,19 @@ void GVariGroup::SetMonitorCombo(const std::string& name, std::string* item, con
 
 void GVariGroup::SetTreeData(GVariTree& tree)
 {
-	datas_.tree[tree.treeName_] = tree.datas_;
-	datas_.treeKeys.push_back(tree.treeName_);
+	datas_.tree[tree.name_] = tree.datas_;
+	datas_.treeKeys.push_back(tree.name_);
 }
 
 
 GVariTree::GVariTree(const std::string& treeName)
 {
-	treeName_ = treeName;
+	name_ = treeName;
 }
 
 void GVariTree::SetName(const std::string& name)
 {
-	treeName_ = name;
+	name_ = name;
 }
 
 void GVariTree::SetValue(const std::string& name, std::variant<bool*,int32_t*, float*, Vector3*,Vector4*> value)
@@ -85,6 +85,6 @@ void GVariTree::SetMonitorCombo(const std::string& name, int32_t* item, const st
 
 void GVariTree::SetTreeData(GVariTree& tree)
 {
-	datas_.tree[tree.treeName_] = tree.datas_;
-	datas_.treeKeys.push_back(tree.treeName_);
+	datas_.tree[tree.name_] = tree.datas_;
+	datas_.treeKeys.push_back(tree.name_);
 }

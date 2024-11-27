@@ -21,87 +21,70 @@ class GameScene : public IScene {
 
 public:
 
+	//コンストラクタ
 	GameScene();
+	~GameScene()=default;
 
-	~GameScene();
-
+	//初期化処理
 	void Initialize() override;
-
+	//更新処理
 	void Update() override;
-
+	//描画処理
 	void Draw() override;
 
 private:
-
+	//当たり判定処理
 	void Collision();
-
+	//シーン変更処理
 	void SceneChange();
 
-
-	//void ShakeStart(int count);
-
-
 private:
+
 	//キー入力
 	Input* input_ = nullptr;
-	//カメラクラス
+
+	//カメラ
 	Camera* camera_;
-	//カメラの処理
+
+	//追従カメラ
 	std::unique_ptr<FollowCamera> followCamera_;
 
-	///以下ゲーム実装
+	//プレイヤー
 	std::unique_ptr<Player>player_;
 
+	//ボス
 	std::unique_ptr<Boss> boss_;
 
+	//UI
 	std::unique_ptr<GameUI>gameUI_;
 
+	//地面
 	std::unique_ptr<Plane>plane_;
 
-	int limitMinute = 0;
-	const int maxmilitMinute = 60 * 60;
-	
-
-
-	GameUI::ButtonState BState_ = GameUI::Wait;
-
-
-
-
-	float alphaNum_ = 0;
-
-	const float addAlphaNum_ = 120.0f;
-
-	const float screenmaxAlphaNum_ = 0.7f;
-
-
-	//1フレームごとに計算する敵の数
-	const float frameCountEnemy_ = 1.0f;
-
-	float nowFrameCountEnemy_ = 0;
-
-	bool serchComplete_ = false;
+	//パーティクルマネージャー
+	std::unique_ptr<ParticleManager>particleM_;
 
 	//シーンチェンジ用
 	std::string white = "resources/Texture/SystemResources/white.png";
+	//シーン遷移の黒色スプライト
 	std::unique_ptr<Sprite>sceneC_;
 
-	//シーン転換後の処置
+	//シーン転換後の遷移処理完了フラグ
 	bool preSceneChange_ = false;
 
-	//シーン転換処理をするか否か
+	//シーン遷移処理をするか否か
 	bool isSceneChange_ = false;
 
+	//遷移までにかかる最大カウント
 	const float maxSceneChangeCount_ = 60;
+	//カウント
+	float currentSceneXhangeCount_ = 0;
 
-	float sceneXhangeCount_ = 0;
-
+	//ゲーム内BGMの配列番号
 	int bgmGame_;
 
-	int bgmClear_;
-
+	//画面シェイク判定
 	bool isShake_ = false;
 
 
-	std::unique_ptr<ParticleManager>particleM_;
 };

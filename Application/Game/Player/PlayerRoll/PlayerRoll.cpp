@@ -6,28 +6,30 @@
 
 PlayerRoll::PlayerRoll(Player* player)
 {
-	//プレイヤー取得
+	//プレイヤーポインタ取得
 	player_ = player;
 
+	//入力のインスタンス取得
 	inp_ = Input::GetInstance();
+	//カメラのインスタンス取得
 	camera_ = Camera::GetInstance();
 
-	tree_.treeName_ = "roll";
+	//ツリーにデバッグ値を追加
+	tree_.name_ = "roll";
 	tree_.SetValue("速度", &data_.spd);
-	tree_.SetValue("距離", &data_.length);
+	tree_.SetValue("ロール時間", &data_.rollSec);
 	tree_.SetValue("完全停止までの時間/s", &data_.stopSec);
-
 	tree_.SetMonitorValue("停止時のカウント", &data_.currentStop);
 }
 
 void PlayerRoll::Initialize()
 {
-	//入力方向にダッシュ
+	//入力方向を取得
 	Vector3 move = inp_->GetWASD().SetNormalize();
+	//入力のない場合
 	if (move == Vector3{ 0,0,0 }) {
 		//すでに向いている方向に進む
-		move = TransformNormal({0,0,-1}, player_->world_.matWorld_);
-		
+		move = TransformNormal({0,0,-1}, player_->world_.matWorld_);		
 	}
 	else {
 		//カメラから見て違和感のない方向に修正
@@ -36,6 +38,7 @@ void PlayerRoll::Initialize()
 
 	//高さは使わない
 	move.y = 0;
+	//正規化する
 	move.SetNormalize();
 
 	//正規化して指定した速度量にする
@@ -45,45 +48,50 @@ void PlayerRoll::Initialize()
 	player_->data_.velo_ = move;
 
 	//移動開始地点を取得
-	data_.stPos = player_->world_.GetWorldTranslate();	
+	data_.currentRoll = 0;
 	data_.currentStop = 0;
 
+	//アニメーション変更
 	player_->SetAnimation(player_->animeName_[(int)Player::AnimationData::Roll], 0.1f, 1.0f, false);
-	//player_->SetAnimeTime(true);
 
+	//回転処理分のスタミナを消費
 	player_->DecreaseStamina4Roll();
 }
 
 void PlayerRoll::Update()
 {
-	//初期位置との距離
-	float leng = Vector3{ data_.stPos - player_->world_.GetWorldTranslate() }.GetLength();
+	//カウント処理
+	data_.currentRoll += (float)DeltaTimer::deltaTime_;
 
 	//もし指定量以上移動したら減速
-	if (leng >= data_.length) {
+	if (data_.currentRoll >= data_.rollSec) {
 
 
 		//カウント量で段々速度低下
 		Vector3 ve = Lerp(player_->data_.velo_, { 0,0,0 }, data_.currentStop);
-
 		player_->data_.velo_ = ve;
 
 		//カウント
 		data_.currentStop += (float)DeltaTimer::deltaTime_;
 		//カウントMAXで歩行状態へ移行
 		if (data_.currentStop >= data_.stopSec) {
-			player_->behaviorReq_ = Player::State::IDLE;
+			//待機状態へ移行
+			player_->SetBehaviorReq(Player::Behavior::IDLE);
+			//速度ベクトルを0に
 			player_->data_.velo_.SetZero();
 		}
 		else {
+			//止め度合いチェック
 			float t = data_.currentStop / data_.stopSec;
+			//アニメーション
 			player_->SetAnimeTime(true, t);
+			//同アニメーションな場合無視されるので何度でも大丈夫＃関数修正予定
 			player_->SetAnimation(player_->animeName_[Player::RollEnd], 0, 1, false);
 		}
 	}
 	else {
 		//アニメーション進行
-		float t = leng / data_.length;
+		float t = data_.currentRoll / data_.rollSec;
 		player_->SetAnimeTime(true,t);
 	}
 }

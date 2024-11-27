@@ -18,10 +18,16 @@ public:
 	void Draw() override;
 
 private:
-	//
+	//入力
 	Input* inp_=nullptr;
 
-	//ロゴ
-	std::unique_ptr<Sprite> logo_;
+	//討伐時の画面の状態
+	std::unique_ptr<Sprite> screanShot_;
+
+	//クリア文字
+	std::unique_ptr<Sprite>clearText_;
+
+	//クリア文字
+	std::unique_ptr<Sprite>bButton_;
 
 };

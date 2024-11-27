@@ -37,7 +37,7 @@ public:
 public:
 
 	//ツリー名
-	std::string treeName_;
+	std::string name_;
 
 	//データ
 	TreeData datas_;
