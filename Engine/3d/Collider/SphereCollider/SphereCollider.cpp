@@ -60,9 +60,7 @@ void SphereCollider::Draw() {
 
 bool SphereCollider::IsCollision(const SphereCollider* sphere, Vector3& backVec) {
 
-	if (!isActive_ || !sphere->isActive_) {
-		return false;
-	}
+
 
 	//各点取得
 	Vector3 pos = sphere->world_.GetWorldTranslate();
@@ -88,10 +86,17 @@ bool SphereCollider::IsCollision(const SphereCollider* sphere, Vector3& backVec)
 		//押し出し量求める
 		backVec = sub - leng;
 
+		if (!isActive_ || !sphere->isActive_) {
+			return false;
+		}
+
+		SetColor(true);
+
 		//返却
 		return true;
 	}
 
+	SetColor(false);
 	//当たっていない
 	return false;
 }

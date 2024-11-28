@@ -5,11 +5,36 @@
 
 PlayerPunch::PlayerPunch(Player* player)
 {
+	//
 	player_ = player;
 
+	//
 	punchSound_ = AudioManager::LoadSoundNum("com1");
 	kickSound_ = AudioManager::LoadSoundNum("com2");
 	drilSound_ = AudioManager::LoadSoundNum("com3");
+
+	//
+	tree_.name_ = "パンチ";
+
+	GVariTree com1T = GVariTree("コンボ1");
+	com1T.SetValue("開始交直", &parameters_.com1.stStiffnessSec);
+	com1T.SetValue("攻撃時間", &parameters_.com1.atkSec);
+	com1T.SetValue("終了交直", &parameters_.com1.edStiffnessSec);
+
+	GVariTree com2T = GVariTree("コンボ2");
+	com2T.SetValue("開始交直", &parameters_.com2.stStiffnessSec);
+	com2T.SetValue("攻撃時間", &parameters_.com2.atkSec);
+	com2T.SetValue("終了交直", &parameters_.com2.edStiffnessSec);
+
+	GVariTree com3T = GVariTree("コンボ3");
+	com3T.SetValue("開始交直", &parameters_.com3.stStiffnessSec);
+	com3T.SetValue("攻撃時間", &parameters_.com3.atkSec);
+	com3T.SetValue("終了交直", &parameters_.com3.edStiffnessSec);
+
+	tree_.SetTreeData(com1T);
+	tree_.SetTreeData(com2T);
+	tree_.SetTreeData(com3T);
+
 }
  
 void PlayerPunch::Initialize()
@@ -51,16 +76,16 @@ void PlayerPunch::Update()
 			if (!parameters_.isInit) {
 				parameters_.isInit = true;
 				//アニメーションをセット
-				player_->SetAnimation(player_->animeName_[Player::PrePunch1], 0.1f, 1, false);
+				player_->SetAnimation(player_->animeName_[Player::PrePunch1], parameters_.com1.stStiffnessSec, 1, false);
 
 			}
 			else {
 				//アニメーションの更新速度をこちらで調整
 				if (state_ == Atk) {
-					player_->SetAnimation(player_->animeName_[Player::Punch1], 0.1f, 1, false);
+					player_->SetAnimation(player_->animeName_[Player::Punch1], parameters_.com1.atkSec, 1, false);
 				}
 				else if (state_ == Ed) {
-					player_->SetAnimation(player_->animeName_[Player::Idle], 0.1f, 1, false);
+					player_->SetAnimation(player_->animeName_[Player::Punch1], parameters_.com1.edStiffnessSec, 1, false);
 				}
 			}
 		}
@@ -69,16 +94,16 @@ void PlayerPunch::Update()
 			if (!parameters_.isInit) {
 				parameters_.isInit = true;
 				//アニメーションをセット
-				player_->SetAnimation(player_->animeName_[Player::PrePunch2], 0.1f, 1, false);
+				player_->SetAnimation(player_->animeName_[Player::PrePunch2], parameters_.com2.stStiffnessSec, 1, false);
 
 			}
 			else {
 				//アニメーションの更新速度をこちらで調整
 				if (state_ == Atk) {
-					player_->SetAnimation(player_->animeName_[Player::Punch2], 0.1f, 1, false);
+					player_->SetAnimation(player_->animeName_[Player::Punch2],parameters_.com2.atkSec, 1, false);
 				}
 				else if (state_ == Ed) {
-					player_->SetAnimation(player_->animeName_[Player::Idle], 0.5f, 1, false);
+					player_->SetAnimation(player_->animeName_[Player::Punch2], parameters_.com2.edStiffnessSec, 1, false);
 				}
 			}
 		}
@@ -87,16 +112,16 @@ void PlayerPunch::Update()
 			if (!parameters_.isInit) {
 				parameters_.isInit = true;
 				//アニメーションをセット
-				player_->SetAnimation(player_->animeName_[Player::PrePunch3], 0.5f, 1, false);
+				player_->SetAnimation(player_->animeName_[Player::PrePunch3], parameters_.com2.stStiffnessSec, 1, false);
 
 			}
 			else {
 				//アニメーションの更新速度をこちらで調整
 				if (state_ == Atk) {
-					player_->SetAnimation(player_->animeName_[Player::Punch3], 0.1f, 1, false);
+					player_->SetAnimation(player_->animeName_[Player::Punch3], parameters_.com2.atkSec, 1, false);
 				}
 				else if (state_ == Ed) {
-					player_->SetAnimation(player_->animeName_[Player::Idle], 0.5f, 1, false);
+					player_->SetAnimation(player_->animeName_[Player::Idle], parameters_.com3.edStiffnessSec, 1, false);
 				}
 			}
 		}
@@ -181,8 +206,8 @@ void PlayerPunch::CheckNextState()
 				parameters_.count = 0;
 			}
 			else {
-				t /= parameters_.com1.edStiffnessSec;
-				player_->SetAnimeTime(true, t);
+				//t /= parameters_.com1.edStiffnessSec;
+				player_->SetAnimeTime(true, 1);
 			}
 			break;
 		case PlayerPunch::_countAtkState:
@@ -229,8 +254,8 @@ void PlayerPunch::CheckNextState()
 				parameters_.count = 0;
 			}
 			else {
-				t /= parameters_.com2.edStiffnessSec;
-				player_->SetAnimeTime(true, t);
+				//t /= parameters_.com2.edStiffnessSec;
+				player_->SetAnimeTime(true, 1);
 			}
 			break;
 		case PlayerPunch::_countAtkState:
@@ -274,8 +299,8 @@ void PlayerPunch::CheckNextState()
 				state_ = CheckEnd;
 			}
 			else {
-				t /= parameters_.com3.edStiffnessSec;
-				player_->SetAnimeTime(true, t);
+				//t /= parameters_.com3.edStiffnessSec;
+				player_->SetAnimeTime(true, 1);
 			}
 			break;
 		case PlayerPunch::_countAtkState:

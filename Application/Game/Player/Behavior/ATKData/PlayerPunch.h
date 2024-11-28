@@ -1,4 +1,5 @@
 #pragma once
+#include"GvariGroup/GvariGroup.h"
 
 class Player;
 
@@ -8,8 +9,13 @@ public://パブリック関数
 	PlayerPunch(Player* player);
 	~PlayerPunch() = default;
 
+	//初期化
 	void Initialize();
+
+	//更新
 	void Update();
+
+	GVariTree& GetTree() { return tree_; }
 
 private://プライベート関数
 
@@ -93,4 +99,11 @@ private://パラメータ
 	int kickSound_;
 
 	int drilSound_;
+
+
+private:
+
+	//ツリー
+	GVariTree tree_ = GVariTree("");
+
 };

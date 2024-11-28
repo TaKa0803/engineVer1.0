@@ -112,12 +112,6 @@ public://パブリック変数
 		//ダッシュの速度倍率
 		float dashMultiply = 2.0f;
 
-		//落下速度
-		float fallSpd_ = 0.1f;
-
-		//加算式落下加速度
-		float addFallSpd_ = 0;
-
 		//ヒットカウント
 		float currentHitCount_ = 0.0f;
 
@@ -262,14 +256,15 @@ private://変数
 	//丸い影
 	std::unique_ptr<CirccleShadow>shadow_;
 
-#pragma region モデルに関する
-
-	//タグ軍
-	int textureData = 0;
-#pragma endregion
 
 	//あたるかの判定
 	bool isHit_ = true;
+
+private://デバッグ用
+	
+#ifdef _DEBUG
+	bool debugIsHit_ = true;
+#endif // _DEBUG
 
 
 };

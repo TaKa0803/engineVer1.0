@@ -37,47 +37,49 @@ void Player::StaminaUpdate()
 Player::Player() {
 	//一回しかしない初期化情報
 	input_ = Input::GetInstance();
+	//デッドライン設定
 	input_->SetDeadLine(0.3f);
 
+	//状態の数取得
 	behaviors_.resize((size_t)Behavior::kNumStates);
 
+	//各状態生成
 	behaviors_[(int)Behavior::IDLE] = std::make_unique<PlayerIdle>(this);
 	behaviors_[(int)Behavior::Rolling] = std::make_unique<PlayerRoll>(this);
 	behaviors_[(int)Behavior::ATK] = std::make_unique<PlayerATKManager>(this);
 	behaviors_[(int)Behavior::HITACTION] = std::make_unique<PlayerDown>(this);
 
-
+	//移動エフェクト生成
 	moveE_ = std::make_unique<EffectMove>();
 
-
+	//体コライダー生成
 	collider_ = std::make_unique<SphereCollider>();
+	//初期化
 	collider_->Initialize("player", world_);
-	collider_->SetRadius(1.5f);
-	collider_->SetTranslate({ 0,1.4f,0 });
 
+	//攻撃コライダー生成
 	atkCollider_ = std::make_unique<SphereCollider>();
+	//初期化
 	atkCollider_->Initialize("player atk", world_);
-	atkCollider_->SetRadius(4.0f);
-	atkCollider_->SetTranslate({ 0,1.4f,0.5f });
 
+	//モデル生成
 	GameObject::Initialize("human");
+	//画像フラグOFF
 	model_->IsEnableTexture(false);
+	//アニメーションを有効に
 	model_->SetAnimationActive(true);
 	model_->SetAnimeSecond(10);
-	int Index = 0;
-	
-	textureData = TextureManager::LoadTex("resources/Models/Object/player.png").texNum;
 
+	//円影生成
 	shadow_ = std::make_unique<CirccleShadow>(world_);
 
 	//Gvariの値設定
 	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("Player");
 
-	gvg->SetMonitorValue("ヒットフラグ", &isHit_);
+	gvg->SetMonitorValue("デバッグ用ヒットフラグ", &debugIsHit_);
 	gvg->SetValue("体力", &data_.HP_);
 	gvg->SetValue("移動速度", &data_.spd_);
 	gvg->SetValue("ダッシュ時の速度倍率", &data_.dashMultiply);
-	gvg->SetValue("落下速度", &data_.fallSpd_);
 	
 	//スタミナ関係
 	StaminaData& sData = data_.stamina;
@@ -95,6 +97,8 @@ Player::Player() {
 	gvg->SetTreeData(staminaTree);
 	gvg->SetTreeData(behaviors_[(int)Behavior::Rolling]->GetTree());
 	gvg->SetTreeData(behaviors_[(int)Behavior::HITACTION]->GetTree());
+	gvg->SetTreeData(behaviors_[(int)Behavior::ATK]->GetTree());
+
 
 	gvg->SetTreeData(model_->SetDebugParam("model"));
 	gvg->SetTreeData(collider_->GetDebugTree("体コライダー"));
@@ -153,13 +157,7 @@ void Player::Update() {
 
 	moveE_->Update();
 
-	//落下の処理
-	//data_.addFallSpd_ -= data_.fallSpd_;
-	//world_.translate_.y += data_.addFallSpd_;
-	//if (world_.translate_.y < 0) {
-	//	world_.translate_.y = 0;
-	//	data_.addFallSpd_ = 0;
-	//}
+
 
 	//移動量ベクトル*デルタタイムを加算
 	world_.translate_ += data_.velo_ * (float)DeltaTimer::deltaTime_;
@@ -168,7 +166,7 @@ void Player::Update() {
 
 	//無敵時間の解除処理
 	if (!isHit_) {
-		if ((data_.currentHitCount_ -= (float)DeltaTimer::deltaTime_) >= 0) {
+		if ((data_.currentHitCount_ -= (float)DeltaTimer::deltaTime_) <= 0) {
 			isHit_ = true;
 		}
 	}
@@ -203,30 +201,39 @@ void Player::DrawParticle()
 
 void Player::OnCollision()
 {
+#ifdef _DEBUG
+	//デバッグヒットフラグOFFの場合終了
+	if (!debugIsHit_) {
+		return;
+	}
+#endif // _DEBUG
 
+	//ヒットフラグONの場合
 	if (isHit_) {
-		data_.HP_--;
-
-		behaviorReq_ = Behavior::HITACTION;
-
+		//ヒットフラグをOFF
 		isHit_ = false;
+		//HPを減らす
+		data_.HP_--;
+		//状態をヒット状態へ
+		behaviorReq_ = Behavior::HITACTION;
+		//無敵時間を設定
 		data_.currentHitCount_ = data_.noHitTime_;
+		//プレイヤーの攻撃コライダーをOFF
 		atkCollider_->isActive_ = false;
 	}
 }
 
 void Player::OnCollisionBack(const Vector3& backV)
 {
-
+	//押し出し量分戻す
 	world_.translate_ -= backV;
+	//埋まらせないよう調整
 	world_.translate_.y = 0;
+	//行列更新
 	world_.UpdateMatrix();
+	//コライダー更新
 	collider_->Update();
 
-	//高さに関する処理が行われた場合落下速度を初期化
-	if (backV.y != 0) {
-		data_.addFallSpd_ = 0;
-	}
 }
 
 Vector3 Player::SetInputDirection(bool&isZero)
@@ -273,32 +280,36 @@ Vector3 Player::SetInputDirection(bool&isZero)
 
 const Vector3 Player::GetP2BossVelo()
 {
+	//プレイヤーからボスへの向きベクトルを返却
 	return boss_->world_.GetWorldTranslate() - world_.GetWorldTranslate();
 }
 
 bool Player::GetATKInput()
 {
-	int isATK = 0;
 
-	isATK += (int)input_->TriggerKey(DIK_Z);
+
+	//キー入力でおこなわれていたか取得
+	int isATK = (int)input_->TriggerKey(DIK_Z);
 
 	//コントローラーがあるときの処理
 	if (input_->IsControllerActive()) {
 		isATK += (int)input_->IsTriggerButton(kButtonB);
 	}
 
+	//１以上はどちらか有効なので１に
 	if (isATK > 1) {
 		isATK = 1;
 	}
 
+	//boolにして返却
 	return (bool)isATK;
 }
 
 bool Player::GetRollInput()
 {
-
+	//キー入力を取得
 	int ans = input_->TriggerKey(DIK_SPACE);
-
+	//コントローラーでの入力を取得
 	if (input_->IsControllerActive()) {
 		ans += input_->IsPushButton(kButtonA);
 	}

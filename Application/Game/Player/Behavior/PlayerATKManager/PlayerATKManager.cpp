@@ -6,9 +6,10 @@ PlayerATKManager::PlayerATKManager(Player* player) {
 
 	punch_ = std::make_unique<PlayerPunch>(player);
 
-	tree_.name_ = "PlayerATK";
+	tree_.name_ = "プレイヤ攻撃マネージャ";
 	tree_.SetMonitorValue("攻撃状態", &nowType_);
-
+	tree_.SetMonitorValue("終了取得", &isEnd_);
+	tree_.SetTreeData(punch_->GetTree());
 }
 
 void PlayerATKManager::Initialize()
