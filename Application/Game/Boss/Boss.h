@@ -5,9 +5,9 @@
 #include"Game/CirccleShadow/CirccleShadow.h"
 #include"SphereCollider/SphereCollider.h"
 #include"Game/Boss/UI/BossUI.h"
-#include"Game/Boss/Idle/BossIdle.h"
-#include"Game/Boss/Move/BossMove.h"
-#include"Game/Boss/ATK/BossATKTypeManager.h"
+#include"Game/Boss/IBossBehavior.h"
+
+#include"Game/Effect/EffectLargeDebris.h"
 #include"Game/Boss/BulletManager/BossBulletManager.h"
 
 //ボスクラス
@@ -15,6 +15,7 @@ class Boss : public GameObject {
 
 public://パブリック変数：状態管理関係
 
+	//各アニメーション
 	enum class Animation {
 		Idle1,
 		Idle2,
@@ -46,6 +47,7 @@ public://パブリック変数：状態管理関係
 		CountAnimation
 	};
 
+	//アニメーション名
 	std::string animeName_[(int)Animation::CountAnimation] = {
 
 		"Idle",
@@ -64,7 +66,6 @@ public://パブリック変数：状態管理関係
 
 		"DownBody",
 
-
 		"preShot",
 		"ShotSingle",
 		"Idle",
@@ -80,15 +81,17 @@ public://パブリック変数：状態管理関係
 	//ボスの状態
 	enum class Behavior {
 		IDLE,	//待機状態
-		MOVE,	//移動
+		DOWN,	//移動
 		ATK,    //攻撃
-		_CountBehavior
+		CountBehavior
 	};
 
 	//攻撃終了感知フラグ
 	bool isFinishedATK_ = false;
 
 public://パブリック関数
+
+	//コンストラクタ
 	Boss(Player* player);
 	~Boss()=default;
 
@@ -115,6 +118,8 @@ public://パブリック関数
 	//攻撃ヒット時の処理
 	void OnCollision();
 
+	//エフェクト有効処理委取得
+	void SpawnStumpEffect(const Vector3& pos) { stumpEffect_->Spawn(pos); }
 public://ゲッター
 
 	//体コライダー取得
@@ -155,27 +160,13 @@ public://セッター
 	/// <param name="sec">変わりきるまでの秒数</param>
 	/// <param name="loopSec">ループ時間</param>
 	/// <param name="isLoop">ループフラグ</param>
-	void SetAnimation(const std::string& animeName, float sec, float loopSec, bool isLoop = true);
+	void SetAnimation(const std::string& animeName, float sec, float loopSec=1.0f, bool isLoop = true);
 
 	///アニメーション進行をこちらで管理する処理
 	void SetAnimeTime(bool active, float t = 0) { model_->SetAnimationTime(active, t); }
 private://状態管理
 
-	//状態ごとの初期化テーブル
-	static void (Boss::* BehaviorInitialize[])();
 
-	//状態ごとの更新テーブル
-	static void (Boss::* BehaviorUpdate[])();
-
-#pragma region 各状態
-	void InitIdle();
-	void InitMove();
-	void InitATK();
-
-	void UpdateIdle();
-	void UpdateMove();
-	void UpdateATK();
-#pragma endregion
 private://**参照
 
 	//入力
@@ -201,14 +192,11 @@ private://**変数
 
 	//UI
 	std::unique_ptr<BossUI>ui_;
-
-	//各処理
-	std::unique_ptr<BossIdle>idle_;
-	std::unique_ptr<BossMove>move_;
-	std::unique_ptr<BossATKTypeManager>atk_;
 	
+	//状態群
+	std::vector<std::unique_ptr<IBossBehavior>>behaviors_;
 
-
+	std::unique_ptr<EffectLargeDebris>stumpEffect_;
 public://**パラメータ
 
 	int maxHP_ = 20;
@@ -227,7 +215,7 @@ private://ImGui用
 	const std::string groupName_ = "ボス";
 
 	//
-	std::string behaviorName_[(int)Behavior::_CountBehavior] = {
+	std::string behaviorName_[(int)Behavior::CountBehavior] = {
 		"Idle",
 		"Move",
 		"ATK"

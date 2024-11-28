@@ -121,7 +121,6 @@
     <ClCompile Include="Engine\base\DeltaTimer\DeltaTimer.cpp" />
     <ClCompile Include="Application\Game\CirccleShadow\CirccleShadow.cpp" />
     <ClCompile Include="Application\Game\Boss\Idle\BossIdle.cpp" />
-    <ClCompile Include="Application\Game\Boss\Move\BossMove.cpp" />
     <ClCompile Include="Application\Game\Boss\ATK\BossATKTypeManager.cpp" />
     <ClCompile Include="Application\Game\Boss\ATK\Normal\BossNormalATKManager.cpp" />
     <ClCompile Include="Application\Game\Boss\BulletManager\BossBulletManager.cpp" />
@@ -144,6 +143,8 @@
     <ClCompile Include="Application\Game\Boss\ATK\Normal\Punch\BossPunch.cpp" />
     <ClCompile Include="Application\Game\Boss\ATK\Normal\SumerSolt\BossSumerSolt.cpp" />
     <ClCompile Include="Application\Game\Boss\UI\BossUI.cpp" />
+    <ClCompile Include="Application\Game\Boss\Down\BossDown.cpp" />
+    <ClCompile Include="Application\Game\Effect\EffectLargeDebris.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Game\Plane\Plane.h" />
@@ -237,7 +238,6 @@
     <ClInclude Include="Engine\base\DeltaTimer\DeltaTimer.h" />
     <ClInclude Include="Application\Game\CirccleShadow\CirccleShadow.h" />
     <ClInclude Include="Application\Game\Boss\Idle\BossIdle.h" />
-    <ClInclude Include="Application\Game\Boss\Move\BossMove.h" />
     <ClInclude Include="Application\Game\Boss\ATK\BossATKTypeManager.h" />
     <ClInclude Include="Application\Game\Boss\ATK\Normal\BossNormalATKManager.h" />
     <ClInclude Include="Application\Game\Boss\BulletManager\BossBulletManager.h" />
@@ -265,6 +265,9 @@
     <ClInclude Include="Application\Game\Boss\ATK\Normal\Punch\BossPunch.h" />
     <ClInclude Include="Application\Game\Boss\ATK\Normal\SumerSolt\BossSumerSolt.h" />
     <ClInclude Include="Application\Game\Boss\UI\BossUI.h" />
+    <ClInclude Include="Application\Game\Boss\Down\BossDown.h" />
+    <ClInclude Include="Application\Game\Boss\IBossBehavior.h" />
+    <ClInclude Include="Application\Game\Effect\EffectLargeDebris.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

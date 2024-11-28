@@ -171,6 +171,11 @@ public:
 	//攻撃時の初期化処理
 	void InitATK();
 
+	//全状態共通初期化
+	void GlobalInitialize();
+
+	//全体共通更新
+	void GlobalUpdate();
 public://ゲッター
 
 	//コライダー取得

@@ -8,9 +8,9 @@ BossIdle::BossIdle(Boss* boss)
 {
 	boss_ = boss;
 	
-	
-	tree.SetValue("sec", &data_.idleSec);
-	tree.SetMonitorValue("current sec", &data_.currentSec);
+	tree_.name_ = "idle";
+	tree_.SetValue("sec", &data_.idleSec);
+	tree_.SetMonitorValue("current sec", &data_.currentSec);
 	
 }
 
@@ -33,7 +33,7 @@ void BossIdle::Update()
 
 		//ランダムで攻撃か移動か変更
 		if (rand < 0.5f) {
-			boss_->SetBehavior(Boss::Behavior::MOVE);
+			boss_->SetBehavior(Boss::Behavior::DOWN);
 		}
 		else {
 			boss_->SetBehavior(Boss::Behavior::ATK);

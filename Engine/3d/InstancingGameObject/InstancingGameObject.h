@@ -59,7 +59,7 @@ public:
 
 	virtual void Debug(const char*name);
 
-private:
+public:
 
 	GVariTree tree_ = GVariTree("");
 };

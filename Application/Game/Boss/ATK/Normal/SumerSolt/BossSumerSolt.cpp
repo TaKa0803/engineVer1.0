@@ -20,7 +20,7 @@ void BossSumerSolt::InitATK()
 {
 	boss_->SetAnimeTime(false);
 	boss_->GetATKCollider().isActive_ = true;
-	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::SumerSolt], 1, 1);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::SumerSolt], parameters_.ATKSec, 1);
 }
 
 void BossSumerSolt::InitStiffness()
@@ -29,7 +29,7 @@ void BossSumerSolt::InitStiffness()
 
 void BossSumerSolt::InitBack()
 {
-	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Idle1],01, 1);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Idle1],0, 1);
 	boss_->GetATKCollider().isActive_ = true;
 }
 

@@ -22,6 +22,8 @@ float RandomNumber::Get(const float minNum, const float maxNum) {
 	return distribution(rand->GetrandEngine());
 }
 
+
+
 Vector2 RandomNumber::Get(const Vector2 minNum, const Vector2 maxNum) {
 	std::uniform_real_distribution<float>distributionx(minNum.x, maxNum.x);
 	std::uniform_real_distribution<float>distributiony(minNum.y, maxNum.y);

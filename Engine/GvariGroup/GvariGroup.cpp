@@ -17,7 +17,7 @@ GVariGroup::~GVariGroup()
 	//datas_.tree.clear();
 }
 
-void GVariGroup::SetValue(const std::string& name, std::variant<bool*,int32_t*, float*, Vector3*, Vector4*> value)
+void GVariGroup::SetValue(const std::string& name, std::variant<bool*,int32_t*, float*,Vector2*, Vector3*, Vector4*> value)
 {
 	datas_.value[name].value = value;
 	datas_.valueKeys.push_back(name);
@@ -53,7 +53,7 @@ void GVariTree::SetName(const std::string& name)
 	name_ = name;
 }
 
-void GVariTree::SetValue(const std::string& name, std::variant<bool*,int32_t*, float*, Vector3*,Vector4*> value)
+void GVariTree::SetValue(const std::string& name, std::variant<bool*,int32_t*, float*,Vector2*, Vector3*,Vector4*> value)
 {
 	datas_.value[name].value = value;
 	datas_.valueKeys.push_back(name);

@@ -15,7 +15,7 @@ const char** createCStringArray(const std::vector<std::string>& strings) {
 	return cStrings;
 }
 
-void ItemImGui(const std::string name, std::variant<bool*,int32_t*, float*, Vector3*, Vector4*> value) {
+void ItemImGui(const std::string name, std::variant<bool*,int32_t*, float*,Vector2*, Vector3*, Vector4*> value) {
 
 
 	//intの場合
@@ -29,11 +29,15 @@ void ItemImGui(const std::string name, std::variant<bool*,int32_t*, float*, Vect
 	else if (std::holds_alternative<float*>(value)) {
 		float* ptr = *std::get_if<float*>(&value);
 		ImGui::DragFloat(name.c_str(), ptr, 0.01f);
+	}//Vec2
+	else if (std::holds_alternative<Vector2*>(value)) {
+		Vector2* ptr = *std::get_if<Vector2*>(&value);
+		ImGui::DragFloat3(name.c_str(), reinterpret_cast<float*>(ptr), 0.01f);
 	}//Vector3の場合
 	else if (std::holds_alternative<Vector3*>(value)) {
 		Vector3* ptr = *std::get_if<Vector3*>(&value);
 		ImGui::DragFloat3(name.c_str(), reinterpret_cast<float*>(ptr), 0.01f);
-	}
+	}//Vec4
 	else if (std::holds_alternative<Vector4*>(value)) {
 		Vector4* ptr = *std::get_if<Vector4*>(&value);
 		ImGui::ColorEdit4(name.c_str(), &ptr->x);
@@ -515,8 +519,8 @@ void SetLoadTreeData(TreeData& groupData, SavedTreeData& saveData) {
 		if (saveData.value.end() != saveData.value.find(itemname)) {
 
 			//値取得
-			std::variant<bool,int32_t, float, Vector3,Vector4>& saveV = saveData.value[itemname].value;
-			std::variant<bool*,int32_t*, float*, Vector3*, Vector4*>& dataV = groupData.value[itemname].value;
+			std::variant<bool,int32_t, float,Vector2, Vector3,Vector4>& saveV = saveData.value[itemname].value;
+			std::variant<bool*,int32_t*, float*,Vector2*, Vector3*, Vector4*>& dataV = groupData.value[itemname].value;
 
 			//合致する値を保存
 			if (std::holds_alternative<bool>(saveV) && std::holds_alternative<bool*>(dataV)) {
@@ -577,8 +581,8 @@ void GlobalVariableManager::SetLoadGroupData(const std::string& groupName)
 		if (saveData.value.end() != saveData.value.find(itemname)) {
 
 			//値取得
-			std::variant<bool,int32_t, float, Vector3,Vector4>& saveV = saveData.value[itemname].value;
-			std::variant<bool*,int32_t*, float*, Vector3*, Vector4*>& dataV = groupdata.value[itemname].value;
+			std::variant<bool,int32_t, float,Vector2, Vector3,Vector4>& saveV = saveData.value[itemname].value;
+			std::variant<bool*,int32_t*, float*,Vector2*, Vector3*, Vector4*>& dataV = groupdata.value[itemname].value;
 
 			//合致する値を保存
 			if (std::holds_alternative<bool>(saveV) && std::holds_alternative<bool*>(dataV)) {

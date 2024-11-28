@@ -17,5 +17,5 @@ public:
 	void SpawnE(const Vector3& pos);
 private:
 
-	std::unique_ptr<ParticleManager>peM_;
+	std::unique_ptr<ParticleManager>particleM_;
 };

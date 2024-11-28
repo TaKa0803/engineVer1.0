@@ -1,4 +1,5 @@
 #pragma once
+#include"Vector2.h"
 #include"Vector3.h"
 #include"Vector4.h"
 
@@ -10,7 +11,7 @@
 
 struct ItemData {
 	//値
-	std::variant<bool*,int32_t*, float*, Vector3*,Vector4*> value;	
+	std::variant<bool*,int32_t*, float*,Vector2*, Vector3*,Vector4*> value;	
 };
 
 struct MonitorItemData {
@@ -61,7 +62,7 @@ struct GroupData
 
 struct SavedItemData {
 	//値
-	std::variant<bool,int32_t, float, Vector3,Vector4> value;
+	std::variant<bool,int32_t, float,Vector2, Vector3,Vector4> value;
 };
 
 struct SavedTreeData

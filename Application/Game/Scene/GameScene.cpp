@@ -4,6 +4,7 @@
 #include"TextureManager/TextureManager.h"
 #include"AudioManager/AudioManager.h"
 #include"RandomNum/RandomNum.h"
+#include"Game/Boss/ATK/IATK/IATK.h"
 #include"PostEffect/PostEffectManager/PostEffectManager.h"
 //#include"MapLoader/MapLoader.h"
 #include"PostEffect/PEs/PEHSVFilter.h"
@@ -214,12 +215,16 @@ void GameScene::Collision() {
 		player_->OnCollision();
 		//ボスの攻撃コライダー
 		boss_->GetATKCollider().isActive_ = false;
+		//カメラシェイク処理ON
+		isShake_ = true;
 	}
 
 	//プレイヤーとボスの弾と判定
 	if (BossBulletManager::GetInstance()->CheckCollision(player_->GetCollider())) {
 		//プレイヤー接触判定
 		player_->OnCollision();
+		//カメラシェイク処理ON
+		isShake_ = true;
 	}
 }
 
@@ -255,7 +260,7 @@ void GameScene::SceneChange() {
 	}
 
 	//次シーン進行処理フラグがONの場合
-	if (isSceneChange_) {
+	if (isSceneChange_&&boss_->isDead_) {
 		//カウントが最大値を上回った場合
 		if (currentSceneXhangeCount_++ >= maxSceneChangeCount_) {
 

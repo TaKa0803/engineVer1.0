@@ -132,7 +132,7 @@ void BossStump::UpdateATK()
 
 	if (boss_->world_.translate_.y < 0) {
 		boss_->world_.translate_.y = 0;
-
+		boss_->SpawnStumpEffect(boss_->world_.GetWorldTranslate());
 		behaviReq_ = Stiffness;
 	}
 

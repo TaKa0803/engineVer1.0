@@ -34,7 +34,6 @@ private:
 
 	//HPバー
 	std::unique_ptr<Sprite>hpBar_=nullptr;
-	Vector4 barColor_ = { 1,1,1,1 };
 
 	//最大サイズ
 	float maxScale_=0;

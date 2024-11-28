@@ -112,7 +112,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Application\Game\Boss\ATK\Normal\Punch\BossPunch.cpp" />
     <ClCompile Include="Application\Game\Boss\ATK\Normal\SumerSolt\BossSumerSolt.cpp" />
+    <ClCompile Include="Application\Game\Boss\Down\BossDown.cpp" />
     <ClCompile Include="Application\Game\Boss\UI\BossUI.cpp" />
+    <ClCompile Include="Application\Game\Effect\EffectLargeDebris.cpp" />
     <ClCompile Include="Application\Game\Player\Idle\PlayerIdle.cpp" />
     <ClCompile Include="Application\Game\Scene\GameClearScene.cpp" />
     <ClCompile Include="Application\Game\Boss\ATK\Normal\Charge\BossCharge.cpp" />
@@ -124,7 +126,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\Game\Boss\ATK\BossATKTypeManager.cpp" />
     <ClCompile Include="Application\Game\Boss\ATK\Normal\Stump\BossStump.cpp" />
     <ClCompile Include="Application\Game\Boss\Idle\BossIdle.cpp" />
-    <ClCompile Include="Application\Game\Boss\Move\BossMove.cpp" />
     <ClCompile Include="Application\Game\Scene\GameScene.cpp" />
     <ClCompile Include="Application\Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Application\Game\Scene\GameOverScene.cpp" />
@@ -394,7 +395,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClInclude Include="Application\Game\Boss\ATK\Normal\Punch\BossPunch.h" />
     <ClInclude Include="Application\Game\Boss\ATK\Normal\SumerSolt\BossSumerSolt.h" />
+    <ClInclude Include="Application\Game\Boss\Down\BossDown.h" />
+    <ClInclude Include="Application\Game\Boss\IBossBehavior.h" />
     <ClInclude Include="Application\Game\Boss\UI\BossUI.h" />
+    <ClInclude Include="Application\Game\Effect\EffectLargeDebris.h" />
     <ClInclude Include="Application\Game\Player\Behavior\IDLE\PlayerIdle.h" />
     <ClInclude Include="Application\Game\Player\Behavior\IPlayerBehavior.h" />
     <ClInclude Include="Application\Game\Player\Idle\PlayerIdle.h" />
@@ -408,7 +412,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\Game\Boss\ATK\BossATKTypeManager.h" />
     <ClInclude Include="Application\Game\Boss\ATK\Normal\Stump\BossStump.h" />
     <ClInclude Include="Application\Game\Boss\Idle\BossIdle.h" />
-    <ClInclude Include="Application\Game\Boss\Move\BossMove.h" />
     <ClInclude Include="Application\Game\Scene\GameScene.h" />
     <ClInclude Include="Application\Game\Scene\TitleScene.h" />
     <ClInclude Include="Application\Game\Scene\GameOverScene.h" />

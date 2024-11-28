@@ -22,6 +22,7 @@ void BossATKTypeManager::SceneInit()
 
 void BossATKTypeManager::Initialize()
 {
+	SceneInit();
 	boss_->isFinishedATK_ = false;
 	//実際の初期化処理
 	(this->*TypeInit[(int)modeType])();

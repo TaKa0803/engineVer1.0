@@ -76,7 +76,9 @@ Player::Player() {
 	//Gvariの値設定
 	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("Player");
 
+#ifdef _DEBUG
 	gvg->SetMonitorValue("デバッグ用ヒットフラグ", &debugIsHit_);
+#endif // _DEBUG
 	gvg->SetValue("体力", &data_.HP_);
 	gvg->SetValue("移動速度", &data_.spd_);
 	gvg->SetValue("ダッシュ時の速度倍率", &data_.dashMultiply);
@@ -144,10 +146,9 @@ void Player::Update() {
 		behavior_ = behaviorReq_.value();
 		behaviorReq_ = std::nullopt;
 
-		//攻撃、ローリング後はアニメーションのフラグが変わるのでここで変更しておく
-		SetAnimeTime(false);
-		//攻撃コライダー無効か
-		atkCollider_->isActive_ = false;
+		GlobalInitialize();
+
+
 		//実際の初期化処理
 		behaviors_[(int)behavior_]->Initialize();
 	}
@@ -155,27 +156,7 @@ void Player::Update() {
 	//状態の更新
 	behaviors_[(int)behavior_]->Update();
 
-	moveE_->Update();
-
-
-
-	//移動量ベクトル*デルタタイムを加算
-	world_.translate_ += data_.velo_ * (float)DeltaTimer::deltaTime_;
-
-	StaminaUpdate();
-
-	//無敵時間の解除処理
-	if (!isHit_) {
-		if ((data_.currentHitCount_ -= (float)DeltaTimer::deltaTime_) <= 0) {
-			isHit_ = true;
-		}
-	}
-
-	//更新
-	world_.UpdateMatrix();
-	atkCollider_->Update();
-	collider_->Update();
-	shadow_->Update();
+	GlobalUpdate();
 
 }
 
@@ -426,6 +407,38 @@ void Player::InitATK() {
 	data_.stamina.currentCharge = 0;
 
 	atkCollider_->isActive_ = true;
+}
+
+void Player::GlobalInitialize()
+{
+	//攻撃、ローリング後はアニメーションのフラグが変わるのでここで変更しておく
+	SetAnimeTime(false);
+	//攻撃コライダー無効か
+	atkCollider_->isActive_ = false;
+}
+
+void Player::GlobalUpdate()
+{
+		moveE_->Update();
+
+
+	//移動量ベクトル*デルタタイムを加算
+	world_.translate_ += data_.velo_ * (float)DeltaTimer::deltaTime_;
+
+	StaminaUpdate();
+
+	//無敵時間の解除処理
+	if (!isHit_) {
+		if ((data_.currentHitCount_ -= (float)DeltaTimer::deltaTime_) <= 0) {
+			isHit_ = true;
+		}
+	}
+
+	//更新
+	world_.UpdateMatrix();
+	atkCollider_->Update();
+	collider_->Update();
+	shadow_->Update();
 }
 
 

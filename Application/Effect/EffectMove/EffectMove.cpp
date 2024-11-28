@@ -3,7 +3,7 @@
 
 EffectMove::EffectMove()
 {
-	peM_ = std::make_unique<ParticleManager>();
+	particleM_ = std::make_unique<ParticleManager>();
 }
 
 EffectMove::~EffectMove()
@@ -13,9 +13,9 @@ EffectMove::~EffectMove()
 
 void EffectMove::Initialize(const Vector4& color)
 {
-	peM_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
-	peM_->SetOnlyImpact(true);
-	EmiterSphere*emit=peM_->GetEmiterData();
+	particleM_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
+	particleM_->SetOnlyImpact(true);
+	EmiterSphere*emit=particleM_->GetEmiterData();
 
 	emit->color = color;
 	emit->veloY.x = 0;
@@ -28,15 +28,15 @@ void EffectMove::Initialize(const Vector4& color)
 
 void EffectMove::Update()
 {
-	peM_->Update();
+	particleM_->Update();
 }
 
 void EffectMove::Draw()
 {
-	peM_->Draw();
+	particleM_->Draw();
 }
 
 void EffectMove::SpawnE(const Vector3& pos)
 {
-	peM_->SpawnE(pos);
+	particleM_->SpawnE(pos);
 }

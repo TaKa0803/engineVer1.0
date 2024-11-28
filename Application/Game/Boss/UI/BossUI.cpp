@@ -11,7 +11,7 @@ BossUI::BossUI(Boss* boss)
 
 	tree_.name_ = "ボスUI";
 	tree_.SetTreeData(hpBar_->GetTree("HPバー"));
-	tree_.SetValue("バーの色", &barColor_);
+	tree_.SetValue("barSize", &maxScale_);
 }
 
 void BossUI::Initialize()
@@ -33,7 +33,6 @@ void BossUI::Update()
 	s.x = scaleX;
 	hpBar_->SetScale(s);
 
-	hpBar_->SetMaterialDataColor(barColor_);
 }
 
 void BossUI::Draw()

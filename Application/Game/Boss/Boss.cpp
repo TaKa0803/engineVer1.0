@@ -1,8 +1,11 @@
 #include "Boss.h"
 #include"ImGuiManager/ImGuiManager.h"
 #include"Game/Boss//ATK/IATK/IATK.h"
-#include"GvariGroup/GvariGroup.h"
 #include"GVariableManager/GVaribleManager.h"
+
+#include"Game/Boss/Idle/BossIdle.h"
+#include"Game/Boss/Down/BossDown.h"
+#include"Game/Boss/ATK/BossATKTypeManager.h"
 
 #include<numbers>
 
@@ -20,6 +23,8 @@ Boss::Boss(Player* player)
 	bulletM_ = BossBulletManager::GetInstance();
 	//初期設定
 	bulletM_->SetUp();
+
+	stumpEffect_ = std::make_unique<EffectLargeDebris>();
 
 	//オブジェクト初期化
 	GameObject::Initialize("Boss");
@@ -43,10 +48,13 @@ Boss::Boss(Player* player)
 	//iiUI生成
 	ui_ = std::make_unique<BossUI>(this);
 
-	//各状態生成
-	idle_ = std::make_unique<BossIdle>(this);
-	move_ = std::make_unique<BossMove>(this);
-	atk_ = std::make_unique<BossATKTypeManager>(this);
+	//状態の量読み込み
+	behaviors_.resize((size_t)Behavior::CountBehavior);
+
+	behaviors_[(int)Behavior::IDLE] = std::make_unique<BossIdle>(this);
+	behaviors_[(int)Behavior::DOWN] = std::make_unique<BossDown>(this);
+	behaviors_[(int)Behavior::ATK] = std::make_unique<BossATKTypeManager>(this);
+
 
 	//攻撃コライダー生成
 	atkCollider_ = std::make_unique<SphereCollider>();
@@ -66,11 +74,15 @@ Boss::Boss(Player* player)
 	gvg->SetTreeData(collider_->GetDebugTree("体コライダー"));
 	gvg->SetTreeData(atkCollider_->GetDebugTree("攻撃コライダー"));
 
-	gvg->SetTreeData(idle_->GetTree());
-	gvg->SetTreeData(move_->GetTree());
+	gvg->SetTreeData(behaviors_[(int)Behavior::IDLE]->GetTree());
+	gvg->SetTreeData(behaviors_[(int)Behavior::DOWN]->GetTree());
+	gvg->SetTreeData(behaviors_[(int)Behavior::ATK]->GetTree());
+
 	gvg->SetTreeData(ui_->GetTree());
 
 	gvg->SetTreeData(model_->SetDebugParam("model"));
+	gvg->SetTreeData(stumpEffect_->GetDebugTree("ra"));
+
 
 }
 
@@ -89,7 +101,6 @@ void Boss::Init()
 	//サイズ
 	world_.scale_ = { 1,1,1 };
 	shadow_->SetShadowScale(GetAllScaleX(world_));
-	atk_->SceneInit();
 	isDead_ = false;
 
 	//状態初期化
@@ -113,19 +124,30 @@ void Boss::Update()
 
 #endif // _DEBUG
 
+	//死亡チェック
+	if (behavior_ != Behavior::DOWN) {
+		if (HP_ <= 0) {
+			behaviorReq_ = Behavior::DOWN;
+		}
+	}
+
 	if (brein_) {
 		//状態の初期化処理
 		if (behaviorReq_) {
+			//リクエスト状態を渡す
 			behavior_ = behaviorReq_.value();
+			//渡したので空にする
 			behaviorReq_ = std::nullopt;
+			//攻撃コライダーをOFFにする
 			atkCollider_->isActive_ = false;
+			//アニメのゲーム側管理をOFF
 			SetAnimeTime(false);
 			//実際の初期化処理
-			(this->*BehaviorInitialize[(int)behavior_])();
+			behaviors_[(int)behavior_]->Initialize();
 		}
 
 		//状態の更新
-		(this->*BehaviorUpdate[(int)behavior_])();
+		behaviors_[(int)behavior_]->Update();
 
 	}
 
@@ -133,23 +155,12 @@ void Boss::Update()
 	GameObject::Update();
 	shadow_->Update();
 
+	stumpEffect_->Update();
 	ui_->Update();
 
 	atkCollider_->Update();
 	collider_->Update();
 }
-
-void (Boss::* Boss::BehaviorInitialize[])() = {
-	&Boss::InitIdle,
-	&Boss::InitMove,
-	&Boss::InitATK
-};
-
-void (Boss::* Boss::BehaviorUpdate[])() = {
-	&Boss::UpdateIdle,
-	&Boss::UpdateMove,
-	&Boss::UpdateATK
-};
 
 void Boss::Draw()
 {
@@ -157,6 +168,8 @@ void Boss::Draw()
 	GameObject::Draw();
 
 	bulletM_->Draw();
+
+	stumpEffect_->Draw();
 
 	collider_->Draw();
 	atkCollider_->Draw();
@@ -174,7 +187,7 @@ void Boss::OnCollision()
 
 		HP_--;
 		if (HP_ <= 0) {
-			isDead_ = true;
+			//isDead_ = true;
 		}
 
 	}
@@ -202,21 +215,6 @@ void Boss::SetAnimation(const std::string& animeName, float sec, float loopSec, 
 	model_->animationRoopSecond_ = loopSec;
 }
 
-#pragma region 各状態初期化と更新
 
-void Boss::InitIdle() { idle_->Initialize(); }
-
-void Boss::InitMove() { move_->Initialize(); }
-
-void Boss::InitATK() { atk_->Initialize();  }
-
-void Boss::UpdateIdle() { idle_->Update(); }
-
-void Boss::UpdateMove() { move_->Update(); }
-
-void Boss::UpdateATK() { atk_->Update(); }
-
-
-#pragma endregion
 
 

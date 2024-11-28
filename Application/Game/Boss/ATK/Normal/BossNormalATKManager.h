@@ -35,7 +35,7 @@ private://**ノーマルの攻撃手段
 		ShotBullet,		//弾発射
 		Charge,			//突撃
 		//Punch,
-		//SumerSolt,
+		SumerSolt,
 		CountOfATKData
 	};
 
@@ -55,7 +55,7 @@ private://デバッグ
 		"弾発射",
 		"タックル",
 		//"パンチ",
-		//"サマーソルト"
+		"サマーソルト"
 	};
 
 	std::string nowAtkName_ = "";

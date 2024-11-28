@@ -1,20 +1,17 @@
 #pragma once
-#include"GvariGroup/GvariGroup.h"
-
-class Boss;
+#include"Game/Boss/IBossBehavior.h"
 
 //ボスの棒立ちor試案処理
-class BossIdle {
+class BossIdle :public IBossBehavior{
 public:
 
 	BossIdle(Boss* boss);
 	~BossIdle() = default;
 
-	void Initialize();
+	void Initialize()override;
 
-	void Update();
+	void Update()override;
 
-	GVariTree& GetTree() { return tree; };
 private:
 
 	Boss* boss_;
@@ -30,5 +27,4 @@ private:
 	Data data_;
 
 private://ImGui関係
-	GVariTree tree = GVariTree("Idle");
 };

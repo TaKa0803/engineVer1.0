@@ -1,12 +1,12 @@
 #pragma once
 #include"Game/Boss/ATK/Normal/BossNormalATKManager.h"
-
+#include"Game/Boss/IBossBehavior.h"
 #include<iostream>
 
-class Boss;
+
 
 //ボスの攻撃管理クラス
-class BossATKTypeManager {
+class BossATKTypeManager :public IBossBehavior{
 public:
 
 	BossATKTypeManager(Boss* boss);
@@ -15,9 +15,9 @@ public:
 	//シーンでの初期化
 	void SceneInit();
 
-	void Initialize();
+	void Initialize()override;
 
-	void Update();
+	void Update()override;
 
 private:
 	//ボスのポインタ
