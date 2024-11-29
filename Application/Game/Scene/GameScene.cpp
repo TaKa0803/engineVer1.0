@@ -4,7 +4,7 @@
 #include"TextureManager/TextureManager.h"
 #include"AudioManager/AudioManager.h"
 #include"RandomNum/RandomNum.h"
-#include"Game/Boss/ATK/IATK/IATK.h"
+#include"Game/Boss/Behavior/ATK/IATK/IATK.h"
 #include"PostEffect/PostEffectManager/PostEffectManager.h"
 //#include"MapLoader/MapLoader.h"
 #include"PostEffect/PEs/PEHSVFilter.h"
@@ -207,6 +207,8 @@ void GameScene::Collision() {
 		boss_->OnCollision();
 		//プレイヤーの攻撃コライダーをオフ
 		player_->GetATKCollider()->isActive_ = false;
+
+		particleM_->SpawnE(player_->GetCollider()->GetWorld().GetWorldTranslate());
 	}
 
 	//プレイヤーとボスとの攻撃の接触判定
@@ -217,6 +219,7 @@ void GameScene::Collision() {
 		boss_->GetATKCollider().isActive_ = false;
 		//カメラシェイク処理ON
 		isShake_ = true;
+
 	}
 
 	//プレイヤーとボスの弾と判定
@@ -231,7 +234,7 @@ void GameScene::Collision() {
 void GameScene::SceneChange() {
 
 	//ボス死亡時の処理
-	if (boss_->isDead_&&!isSceneChange_) {
+	if (boss_->HP_<=0&&!isSceneChange_) {
 
 		//シーン変更フラグをON
 		isSceneChange_ = true;

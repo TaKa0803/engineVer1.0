@@ -153,6 +153,19 @@ float InstancingModelManager::GetAlpha(const std::string& tag)
 	return 0;
 }
 
+ GVariTree& InstancingModelManager::CreateAndGetTree(const std::string& tag, const std::string& name)
+{
+	if (modelDatas_.find(tag) != modelDatas_.end()) {
+		return modelDatas_[tag]->CreateAndGetTree(name);
+	}
+	else {
+		//データが見つからない
+		assert(false);
+	}
+	std::abort();
+	//return;
+}
+
 void InstancingModelManager::SetData(const std::string& tag, const EulerWorldTransform& world, int animeNum,const Vector4&color ) {
 
 	if (modelDatas_.find(tag) != modelDatas_.end()) {

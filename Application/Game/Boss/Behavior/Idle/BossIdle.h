@@ -1,5 +1,5 @@
 #pragma once
-#include"Game/Boss/IBossBehavior.h"
+#include"Game/Boss/Behavior/IBossBehavior.h"
 
 //ボスの棒立ちor試案処理
 class BossIdle :public IBossBehavior{

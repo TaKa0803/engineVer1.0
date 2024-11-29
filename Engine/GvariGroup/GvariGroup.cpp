@@ -48,11 +48,6 @@ GVariTree::GVariTree(const std::string& treeName)
 	name_ = treeName;
 }
 
-void GVariTree::SetName(const std::string& name)
-{
-	name_ = name;
-}
-
 void GVariTree::SetValue(const std::string& name, std::variant<bool*,int32_t*, float*,Vector2*, Vector3*,Vector4*> value)
 {
 	datas_.value[name].value = value;

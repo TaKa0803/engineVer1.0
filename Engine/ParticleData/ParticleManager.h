@@ -9,6 +9,7 @@
 #include"ParticleData/Initialize/ParticleInitialize.h"
 #include"ParticleData/Emiter/ParticleEmiterCS.h"
 
+#include"GvariGroup/GvariGroup.h"
 #include<stdint.h>
 
 struct ParticleMaterialData
@@ -42,6 +43,8 @@ public:
 	void SetOnlyImpact(bool onlyImpact) { onlyImpact_ = onlyImpact; }
 
 	EmiterSphere* GetEmiterData() { return emiterData_; }
+
+	GVariTree& GetTreeData(const std::string& name);
 private:
 
 	DirectXFunc* DXF_;
@@ -93,7 +96,9 @@ private:
 
 #pragma endregion
 
-
+	//
 	bool onlyImpact_ = false;
+
+	GVariTree tree_ = GVariTree("");
 
 };

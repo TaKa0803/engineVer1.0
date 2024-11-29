@@ -11,6 +11,8 @@ protected:
 	static bool isEnd_;
 	//プレイヤーポインタ
 	static Boss* boss_;
+
+
 public:
 
 	IBossATK();

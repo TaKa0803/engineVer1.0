@@ -58,13 +58,12 @@ void DebugScnene::Initialize()
 
 	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("DebugScene");
 	gvg->SetTreeData(object->model_->SetDebugParam());
+	gvg->SetValue("オブジェクト回転",&object->world_.rotate_);
 }
 
 void DebugScnene::Update()
 {
 	Debug();
-
-
 
 	particleManager_->Debug("particle");
 

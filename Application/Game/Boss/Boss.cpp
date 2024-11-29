@@ -1,11 +1,10 @@
 #include "Boss.h"
 #include"ImGuiManager/ImGuiManager.h"
-#include"Game/Boss//ATK/IATK/IATK.h"
 #include"GVariableManager/GVaribleManager.h"
 
-#include"Game/Boss/Idle/BossIdle.h"
-#include"Game/Boss/Down/BossDown.h"
-#include"Game/Boss/ATK/BossATKTypeManager.h"
+#include"Game/Boss/Behavior/Idle/BossIdle.h"
+#include"Game/Boss/Behavior/Down/BossDown.h"
+#include"Game/Boss/Behavior/ATK/BossATKTypeManager.h"
 
 #include<numbers>
 
@@ -67,7 +66,7 @@ Boss::Boss(Player* player)
 	std::unique_ptr<GVariGroup> gvg = std::make_unique<GVariGroup>(groupName_);
 	gvg->SetMonitorValue("思考", &brein_);
 	gvg->SetMonitorValue("当たり判定", &hit_);
-	gvg->SetMonitorValue("behavior",&nowBehaviorName_);
+	gvg->SetMonitorValue("behavior", &nowBehaviorName_);
 	gvg->SetMonitorValue("現在の体力", &HP_);
 	gvg->SetValue("MAXHP", &maxHP_);
 	gvg->SetValue("ボスサイズ", &world_.scale_);
@@ -82,7 +81,7 @@ Boss::Boss(Player* player)
 
 	gvg->SetTreeData(model_->SetDebugParam("model"));
 	gvg->SetTreeData(stumpEffect_->GetDebugTree("ra"));
-
+	gvg->SetTreeData(bulletM_->GetTree());
 
 }
 
@@ -107,7 +106,7 @@ void Boss::Init()
 	behaviorReq_ = Behavior::IDLE;
 
 	//HPのセット
-	HP_=maxHP_;
+	HP_ = maxHP_;
 
 	//セットしたパラメータのセーブデータ読み込み
 	GlobalVariableManager::GetInstance()->SetLoadGroupData(groupName_);
@@ -196,6 +195,17 @@ void Boss::OnCollision()
 Vector3 Boss::GetBoss2PlayerDirection()
 {
 	return player_->GetWorld().GetWorldTranslate() - world_.GetWorldTranslate();
+}
+
+void Boss::SetNextATK(int atkNum)
+{
+	//攻撃を指定
+	behaviorReq_ = Behavior::ATK;
+	//攻撃マネージャに番号を送信
+	BossATKTypeManager* atkM = dynamic_cast<BossATKTypeManager*>(behaviors_[(int)Behavior::ATK].get());
+	if (atkM) {
+		atkM->GetATKContract(atkNum);
+	}
 }
 
 void Boss::SetDirection2Player()

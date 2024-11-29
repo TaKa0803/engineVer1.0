@@ -32,7 +32,7 @@ void ItemImGui(const std::string name, std::variant<bool*,int32_t*, float*,Vecto
 	}//Vec2
 	else if (std::holds_alternative<Vector2*>(value)) {
 		Vector2* ptr = *std::get_if<Vector2*>(&value);
-		ImGui::DragFloat3(name.c_str(), reinterpret_cast<float*>(ptr), 0.01f);
+		ImGui::DragFloat2(name.c_str(), reinterpret_cast<float*>(ptr), 0.01f);
 	}//Vector3の場合
 	else if (std::holds_alternative<Vector3*>(value)) {
 		Vector3* ptr = *std::get_if<Vector3*>(&value);

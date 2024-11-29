@@ -1,5 +1,5 @@
 #pragma once
-#include"Game/Boss/ATK/IATK/IATK.h"
+#include"Game/Boss/Behavior/ATK/IATK/IATK.h"
 #include"Vector3.h"
 
 class BossStump : public IBossATK {

@@ -33,6 +33,8 @@ public:
 
 		float liveCount = 0;
 
+		Vector4 color{};
+
 		bool isDead = false;
 	};
 
@@ -55,4 +57,12 @@ public://パラメータ
 	//生存時間
 	float liveSec_ = 3.0f;
 
+	//エフェクトの色1
+	Vector4 color1_{};
+
+	//エフェクトの色2
+	Vector4 color2_{};
+
+	//エフェクトの色3
+	Vector4 color3_{};
 };

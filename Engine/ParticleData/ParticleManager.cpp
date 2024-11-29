@@ -310,3 +310,13 @@ void ParticleManager::SpawnE(const Vector3& pos)
 	emiterData_->translate = pos;
 	emiterData_->emit = 1;
 }
+
+GVariTree& ParticleManager::GetTreeData(const std::string&name)
+{
+	
+	tree_.name_ = name;
+
+	tree_.SetValue("色", &materialData_->color);
+	//tree_.SetValue("")
+	return tree_;
+}

@@ -1,5 +1,5 @@
 #pragma once
-#include"Game/Boss/ATK/IATK/IATK.h"
+#include"Game/Boss/Behavior/ATK/IATK/IATK.h"
 #include"GvariGroup/GvariGroup.h"
 #include<iostream>
 #include<vector>
@@ -13,7 +13,11 @@ public:
 	BossNormalATKManager(Boss*boss);
 	~BossNormalATKManager() = default;
 
-	void Initialize();
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="contract">指定攻撃番号</param>
+	void Initialize(std::optional<int>contract);
 
 	void Update();
 
@@ -36,6 +40,7 @@ private://**ノーマルの攻撃手段
 		Charge,			//突撃
 		//Punch,
 		SumerSolt,
+		BackStep,
 		CountOfATKData
 	};
 
@@ -55,7 +60,8 @@ private://デバッグ
 		"弾発射",
 		"タックル",
 		//"パンチ",
-		"サマーソルト"
+		"サマーソルト",
+		"バックステップ",
 	};
 
 	std::string nowAtkName_ = "";

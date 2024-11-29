@@ -62,6 +62,8 @@ public://ゲッター
 	/// <returns></returns>
 	int GetBulletCount() { return (int)datas_.size(); }
 
+	//ツリーの取得
+	GVariTree& GetTree() { return tree_; }
 private:
 
 	//データ群
@@ -86,4 +88,10 @@ private://パラメータ
 
 	//死亡までの時間
 	float maxDeadSec_ = 1.0f;
+
+	//弾のサイズ
+	float ammoScale_ = 0.5f;
+
+	//コライダーサイズ
+	float colliderScale_ = 1.0f;
 };

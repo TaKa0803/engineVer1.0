@@ -5,7 +5,7 @@
 #include"Game/CirccleShadow/CirccleShadow.h"
 #include"SphereCollider/SphereCollider.h"
 #include"Game/Boss/UI/BossUI.h"
-#include"Game/Boss/IBossBehavior.h"
+#include"Game/Boss/Behavior/IBossBehavior.h"
 
 #include"Game/Effect/EffectLargeDebris.h"
 #include"Game/Boss/BulletManager/BossBulletManager.h"
@@ -44,6 +44,16 @@ public://パブリック変数：状態管理関係
 		PreSumersolt,
 		SumerSolt,
 
+		BackStep,
+
+		Grap,
+		GrapMiss,
+
+		PreThrow,
+		Throw,
+
+		Roll,
+
 		CountAnimation
 	};
 
@@ -74,8 +84,17 @@ public://パブリック変数：状態管理関係
 		"Punch",
 
 		"PreSumerSolt",
-		"SumerSolt"
+		"SumerSolt",
 
+		"BackStep",
+
+		"Grap",
+		"GrapMiss",
+
+		"Prethrow",
+		"throw",
+
+		"Roll"
 	};
 
 	//ボスの状態
@@ -141,6 +160,9 @@ public://ゲッター
 	Vector3 GetPlayerWorldTranslate() { return player_->GetWorld().GetWorldTranslate(); };
 
 public://セッター
+
+	//現在の攻撃パターンで攻撃を予約(攻撃番号指定
+	void SetNextATK(int atkNum);
 
 	/// <summary>
 	/// 状態リクエスト送信

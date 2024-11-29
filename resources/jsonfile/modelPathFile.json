@@ -1,6 +1,8 @@
 {
   "modelPathFile": {
-    "Boss": ["boss","boss.gltf"],
+    "Boss": [ "boss", "boss.gltf" ],
+    "human": [ "human", "player.gltf" ],
+
     "box": [ "ALPlayer", "ALPlayer.obj" ],
     "wall": [ "Stage", "Stage.obj" ],
     "ALPlayer": [ "ALPlayer", "ALPlayer.obj" ],
@@ -15,18 +17,21 @@
     "Flag": [ "Flag", "Flag.obj" ],
     "Wall": [ "Wall", "Wall.obj" ],
     "Player": [ "Object", "player.gltf" ],
-    "human": [ "human", "player.gltf" ],
+
     "z+Plane": [ "SystemResources/normalZ+Plane", "normalZ+Plane.obj" ]
   },
   "InstancingmodelPathFile": {
-    "Wall": [ "Wall", "Wall.obj", 100 ],
+    "Debris": [ "Wall", "Wall.obj", 100 ],
+    "BossBullet": [ "Wall", "Wall.obj", 100 ],
     "weapon": [ "Weapon", "Weapon.obj", 64 ],
     "wall": [ "Stage", "Stage.obj", 5 ],
-    "bossBullet": [ "SystemResources/sphere", "sphere.obj", 10000 ],
+
     "sphere": [ "SystemResources/sphere", "sphere.obj", 10000 ],
     "z+Plane": [ "SystemResources/normalZ+Plane", "normalZ+Plane.obj", 1000 ],
-    "box": [ "ALPlayer", "ALPlayer.obj", 1000 ],
     "plane": [ "plane", "plane.obj", 10 ],
+
+    "box": [ "ALPlayer", "ALPlayer.obj", 1000 ],
+
     "player": [ "player", "player.obj", 100 ],
     "Head": [ "Object/Head", "Head.obj", 1000 ],
     "LArm": [ "Object/LArm", "LArm.obj", 1000 ],

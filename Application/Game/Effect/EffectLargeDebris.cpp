@@ -1,16 +1,26 @@
 #include "EffectLargeDebris.h"
 #include"DeltaTimer/DeltaTimer.h"
 #include"RandomNum/RandomNum.h"
+#include"TextureManager/TextureManager.h"
 
 EffectLargeDebris::EffectLargeDebris()
 {
-	InstancingGameObject::Initialize("Wall");
+	InstancingGameObject::Initialize("Debris");
+
+	IMM_->SetTexture(tag_, TextureManager::LoadTex("resources/Texture/AL/whiteGrid.png").texNum);
+	IMM_->SetEnableShader(tag_, false);
+	IMM_->SetEnableTexture(tag_, false);
+
 
 	tree_.SetValue("出現最大範囲", &spawnWide_);
 	tree_.SetValue("最大初速度", &spd_);
 	tree_.SetValue("重力", &gravity_);
 	tree_.SetValue("同時出現数", &spawnSameTimeNum_);
 	tree_.SetValue("生存時間", &liveSec_);
+	tree_.SetValue("エフェクトの色1", &color1_);
+	tree_.SetValue("エフェクトの色2", &color2_);
+	tree_.SetValue("エフェクトの色3", &color3_);
+
 }
 
 void EffectLargeDebris::Init()
@@ -59,7 +69,7 @@ void EffectLargeDebris::Draw()
 	for (auto& data : effects_) {
 		data.world.UpdateMatrix();
 
-		IMM_->SetData(tag_, data.world);
+		IMM_->SetData(tag_, data.world,0,data.color);
 	}
 }
 
@@ -96,6 +106,18 @@ void EffectLargeDebris::Spawn(const Vector3& pos)
 
 		//生存時間の追加
 		newParam.liveCount = liveSec_;
+
+		float get =RandomNumber::Get(0, 3);
+
+		if (get < 1.0f) {
+			newParam.color = color1_;
+		}
+		else if (get < 2.0f) {
+			newParam.color = color2_;
+		}
+		else if (get < 3.0f) {
+			newParam.color = color3_;
+		}
 
 		//値追加
 		effects_.push_back(newParam);

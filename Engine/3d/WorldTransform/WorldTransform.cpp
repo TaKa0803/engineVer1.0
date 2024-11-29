@@ -25,7 +25,7 @@ Matrix4x4 EulerWorldTransform::UpdateMatrix() {
 
 GVariTree& EulerWorldTransform::GetDebugTree(const std::string& name)
 {
-	tree_.SetName(name);
+	tree_.name_=name;
 
 	tree_.SetValue("座標", &translate_);
 	tree_.SetValue("回転", &rotate_);
@@ -36,7 +36,7 @@ GVariTree& EulerWorldTransform::GetDebugTree(const std::string& name)
 
 GVariTree& EulerWorldTransform::GetDebugMonitorTree(const std::string& name)
 {
-	tree_.SetName(name);
+	tree_.name_=name;
 
 	tree_.SetMonitorValue("座標", &translate_);
 	tree_.SetMonitorValue("回転", &rotate_);

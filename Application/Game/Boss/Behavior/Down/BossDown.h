@@ -1,5 +1,5 @@
 #pragma once
-#include"Game/Boss/IBossBehavior.h"
+#include"Game/Boss/Behavior/IBossBehavior.h"
 
 
 //様子見移動

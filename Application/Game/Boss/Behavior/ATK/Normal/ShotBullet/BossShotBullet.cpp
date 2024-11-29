@@ -12,12 +12,13 @@ BossShotBullet::BossShotBullet()
 	parameters_.warningSec = 2.0f;
 
 	//デバッグ設定
-	treeData_.SetName("弾発射");
+	treeData_.name_ = "弾発射";
 
 	treeData_.SetValue("弾の数", &shotNum_);
 	treeData_.SetValue("ターゲット時間/s", &parameters_.aimingSec);
 	treeData_.SetValue("発射時間/s", &parameters_.warningSec);
 	treeData_.SetValue("復帰時間/s", &parameters_.backSec);
+
 }
 
 
@@ -25,7 +26,7 @@ BossShotBullet::BossShotBullet()
 void BossShotBullet::InitAIMing()
 {
 	boss_->SetAnimeTime(true);
-	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Preshot], 1, 1);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Preshot], parameters_.aimingSec, 1);
 }
 
 void BossShotBullet::InitWarning()
@@ -33,7 +34,7 @@ void BossShotBullet::InitWarning()
 	//発射カウント初期化
 	shotCount_ = 0;
 
-	//boss_->SetAnimation((int)Boss::Animation::Shot, 1, 1,false);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Shot], 0, 1,false);
 }
 
 void BossShotBullet::InitBack()
@@ -82,19 +83,18 @@ void BossShotBullet::UpdateWarning()
 			BossBulletData newData;
 
 			Matrix4x4 joint;
-			if ((int)shotNum_ % 2 == 0) {
-				joint = boss_->model_->GetJoint(rHandBoneName_);
+			if ((int)shotCount_ % 2 == 0) {
+				joint = boss_->model_->GetJoint(lHandBoneName_);
 			}
 			else {
-				joint = boss_->model_->GetJoint(lHandBoneName_);
+				joint = boss_->model_->GetJoint(rHandBoneName_);
 			}
 
 			//ジョイントのワールド座標取得
-			//Matrix4x4 world = joint.skeletonSpaceMatrix;
 			EulerWorldTransform jointWT;
-			jointWT.matWorld_ = joint;
-			//jointWT.matWorld_ = world * boss_->world_.matWorld_;
-
+			jointWT.UpdateMatrix();
+			
+			jointWT.matWorld_ *= joint;
 
 			//ジョイントワールド座標を出現地点に
 			newData.world.translate_ = jointWT.GetWorldTranslate();
@@ -108,15 +108,21 @@ void BossShotBullet::UpdateWarning()
 			shotCount_++;
 
 			if (0 == (int)shotCount_ % 2) {
-				boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::RevShot], 0.1f, 1, false);
+				//boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::RevShot], 0.1f, 1, false);
 			}
 			else {
-				boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Shot], 0.1f, 1, false);
+				//boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Shot], 0.1f, 1, false);
 			}
 		}
 		else {
+			float t;
 
-			float t = (currentCount_- (threshold * shotCount_)) / parameters_.warningSec;
+			if (0 == (int)shotCount_ % 2) {
+				t = currentCount_ /( threshold * (shotCount_));
+			}
+			else {
+				t =1.0f- currentCount_ / (threshold * (shotCount_));
+			}
 			boss_->SetAnimeTime(true, t);
 		}
 	}

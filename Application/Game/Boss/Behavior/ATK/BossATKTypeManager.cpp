@@ -24,8 +24,14 @@ void BossATKTypeManager::Initialize()
 {
 	SceneInit();
 	boss_->isFinishedATK_ = false;
+
 	//実際の初期化処理
-	(this->*TypeInit[(int)modeType])();
+	(this->*TypeInit[(int)modeType])(contract_);
+
+	//もし値がある場合消す
+	if (contract_) {
+		contract_ = std::nullopt;
+	}
 }
 
 void BossATKTypeManager::Update()
@@ -49,7 +55,7 @@ void BossATKTypeManager::Update()
 
 
 
-void (BossATKTypeManager::* BossATKTypeManager::TypeInit[])() {
+void (BossATKTypeManager::* BossATKTypeManager::TypeInit[])(std::optional<int>contract) {
 	&BossATKTypeManager::InitNormal,
 };
 void (BossATKTypeManager::* BossATKTypeManager::TypeUpdate[])() {
@@ -58,7 +64,7 @@ void (BossATKTypeManager::* BossATKTypeManager::TypeUpdate[])() {
 
 
 #pragma region 各状態の初期化と更新
-void BossATKTypeManager::InitNormal() { normal_->Initialize(); }
+void BossATKTypeManager::InitNormal(std::optional<int>contract) { normal_->Initialize(contract_); }
 void BossATKTypeManager::UpdateNormal() { normal_->Update(); }
 #pragma endregion
 

@@ -11,12 +11,6 @@ public:
 	GVariTree(const std::string& treeName);
 	~GVariTree() = default;
 
-	/// <summary>
-	/// ツリー名設定
-	/// </summary>
-	/// <param name="name"></param>
-	void SetName(const std::string& name);
-
 	//値追加
 	void SetValue(const std::string& name, std::variant<bool* ,int32_t*, float*,Vector2*, Vector3*, Vector4*> value);
 

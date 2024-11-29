@@ -1,5 +1,5 @@
 #pragma once
-#include"Game/Boss/ATK/IATK/IATK.h"
+#include"Game/Boss/Behavior/ATK/IATK/IATK.h"
 #include"Game/Boss/BulletManager/BossBulletManager.h"
 //#include"Vector3.h"
 
@@ -34,9 +34,9 @@ private://パラメータ
 
 	//手のボーン名
 	//右
-	const std::string rHandBoneName_ = "Bone.007";
+	const std::string rHandBoneName_ = "RH";
 	//左
-	const std::string lHandBoneName_ = "Bone.010";
+	const std::string lHandBoneName_ = "LH";
 
 	//弾の発射数
 	float shotNum_ = 5;

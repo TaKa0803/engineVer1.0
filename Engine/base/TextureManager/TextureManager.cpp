@@ -159,21 +159,23 @@ ReturnData TextureManager::LoadTexShortPath(const std::string& filePath)
 {
 	DirectXFunc* DXF = DirectXFunc::GetInstance();
 
+	//画像フォルダまでのパス
+	std::string texfoldaPath = "resources/Texture/";
+
+	//フルパス
+	std::string fullpath = texfoldaPath + filePath;
+
 	//パスがすでに呼ばれているかチェック
-	if (!TextureManager::GetInstance()->CheckSameData(filePath)) {
-
-		DirectX::ScratchImage mipImages = LoadTexture(filePath);
-
-
+	if (!TextureManager::GetInstance()->CheckSameData(fullpath)) {
+		//MIP画像作成
+		DirectX::ScratchImage mipImages = LoadTexture(fullpath);
 
 		//入れた画像の管理番号を返す
-		return TextureManager::GetInstance()->CreateData(filePath, mipImages);
-
+		return TextureManager::GetInstance()->CreateData(fullpath, mipImages);
 	}
 	else {
 		//呼ばれている場合
-
-		return TextureManager::GetInstance()->GetDataFromPath(filePath);
+		return TextureManager::GetInstance()->GetDataFromPath(fullpath);
 	}
 }
 

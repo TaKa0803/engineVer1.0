@@ -1,5 +1,6 @@
 #include "BossBulletManager.h"
 #include"DeltaTimer/DeltaTimer.h"
+#include"TextureManager/TextureManager.h"
 
 BossBulletManager* BossBulletManager::GetInstance()
 {
@@ -11,8 +12,17 @@ BossBulletManager* BossBulletManager::GetInstance()
 
 void BossBulletManager::SetUp()
 {
+	//あらかじめメモリを確保しておく
 	datas_.reserve(10);
-	InstancingGameObject::Initialize("Wall");
+	InstancingGameObject::Initialize("BossBullet");
+	IMM_->SetTexture(tag_,TextureManager::LoadTexShortPath("AL/whiteGrid.png").texNum);
+
+	tree_.name_ = "弾マネージャ";
+	tree_.SetValue("弾の速度", &spd_);
+	tree_.SetValue("死亡までのカウント", &maxDeadSec_);
+	tree_.SetValue("弾のサイズ", &ammoScale_);
+	tree_.SetValue("コライダーサイズ", &colliderScale_);
+	tree_.SetTreeData(IMM_->CreateAndGetTree(tag_,"モデル"));
 }
 
 void BossBulletManager::Init()
@@ -22,7 +32,6 @@ void BossBulletManager::Init()
 
 void BossBulletManager::Update()
 {
-
 	//進んでワールド更新
 	for (auto& d : datas_) {
 
@@ -68,12 +77,12 @@ void BossBulletManager::SetData(const BossBulletData& data)
 
 	std::unique_ptr<Datas> newd = std::make_unique<Datas>();
 	newd->data = data;
-	newd->data.world.scale_ = { 0.2f,0.2f ,0.2f };
+	newd->data.world.SetScale(ammoScale_);
 	newd->data.velo.SetNormalize();
 	newd->data.velo *= spd_;
 	newd->collider = std::make_unique<SphereCollider>();
 	newd->collider->Initialize("bossB",newd->data.world);
-	newd->collider->SetRadius(1.0f);
+	newd->collider->SetRadius(colliderScale_);
 
 	datas_.push_back(std::move(newd));
 

@@ -330,6 +330,23 @@ const float InstancingModel::GetWorldNum()
 	return ans;
 }
 
+GVariTree& InstancingModel::CreateAndGetTree(const std::string& tree)
+{
+
+	tree_.name_ = tree;
+
+	tree_.SetTreeData(uvWorld_.GetDebugTree("UV"));
+	tree_.SetMonitorValue("モデル", &drawModel_);
+	tree_.SetMonitorValue("ジョイント", &drawJoint_);
+	tree_.SetValue("統一色", &materialData_->color);
+	tree_.SetValue("画像フラグ", &materialData_->enableTexture);
+	tree_.SetValue("ライティング", &materialData_->enableLighting);
+	tree_.SetValue("ハーフランバート", &materialData_->enableHalfLambert);
+
+
+	return tree_;
+}
+
 void InstancingModel::Initialize(
 	ModelAllData modelData,
 	std::string name,

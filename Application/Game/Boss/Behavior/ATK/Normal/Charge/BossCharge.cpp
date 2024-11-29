@@ -5,7 +5,7 @@
 
 BossCharge::BossCharge()
 {
-	treeData_.SetName("タックル");
+	treeData_.name_="タックル";
 	treeData_.SetValue("狙う時間/s", &data_.aim.maxSec);
 	treeData_.SetValue("警告時間/s", &data_.warning.maxSec);
 	treeData_.SetValue("ダッシュ速度", &data_.dash.spd);

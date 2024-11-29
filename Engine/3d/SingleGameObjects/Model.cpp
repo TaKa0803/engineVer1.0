@@ -345,7 +345,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 
 				EulerWorldTransform newdata;
 
-				newdata.matWorld_ = scaleW.matWorld_ * world * wvpData_->World;
+				newdata.matWorld_ = scaleW.matWorld_*  world * worldMatrix;
 
 				jointM__->SetData(jointMtag_, newdata,0, { 1,1,1,1 });
 

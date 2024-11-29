@@ -120,17 +120,17 @@
     <ClCompile Include="Application\Game\Player\PlayerRoll\PlayerRoll.cpp" />
     <ClCompile Include="Engine\base\DeltaTimer\DeltaTimer.cpp" />
     <ClCompile Include="Application\Game\CirccleShadow\CirccleShadow.cpp" />
-    <ClCompile Include="Application\Game\Boss\Idle\BossIdle.cpp" />
-    <ClCompile Include="Application\Game\Boss\ATK\BossATKTypeManager.cpp" />
-    <ClCompile Include="Application\Game\Boss\ATK\Normal\BossNormalATKManager.cpp" />
+    <ClCompile Include="Application\Game\Boss\Behavior\Idle\BossIdle.cpp" />
+    <ClCompile Include="Application\Game\Boss\Behavior\ATK\BossATKTypeManager.cpp" />
+    <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\BossNormalATKManager.cpp" />
     <ClCompile Include="Application\Game\Boss\BulletManager\BossBulletManager.cpp" />
     <ClCompile Include="Application\Game\Player\Behavior\PlayerATKManager\PlayerATKManager.cpp" />
     <ClCompile Include="Application\Game\Player\Behavior\ATKData\PlayerPunch.cpp" />
     <ClCompile Include="Application\Game\Scene\GameOverScene.cpp" />
-    <ClCompile Include="Application\Game\Boss\ATK\IATK\IATK.cpp" />
-    <ClCompile Include="Application\Game\Boss\ATK\Normal\Stump\BossStump.cpp" />
-    <ClCompile Include="Application\Game\Boss\ATK\Normal\Charge\BossCharge.cpp" />
-    <ClCompile Include="Application\Game\Boss\ATK\Normal\ShotBullet\BossShotBullet.cpp" />
+    <ClCompile Include="Application\Game\Boss\Behavior\ATK\IATK\IATK.cpp" />
+    <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\Stump\BossStump.cpp" />
+    <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\Charge\BossCharge.cpp" />
+    <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\ShotBullet\BossShotBullet.cpp" />
     <ClCompile Include="Engine\GVariableManager\GVaribleManager.cpp" />
     <ClCompile Include="Application\Game\Scene\GameClearScene.cpp" />
     <ClCompile Include="Application\Game\Player\Down\PlayerDown.cpp" />
@@ -140,11 +140,12 @@
     <ClCompile Include="Engine\PostEffect\PEs\PEBloom.cpp" />
     <ClCompile Include="Engine\ExtractionScene\ExtractionScene.cpp" />
     <ClCompile Include="Application\Game\Player\Idle\PlayerIdle.cpp" />
-    <ClCompile Include="Application\Game\Boss\ATK\Normal\Punch\BossPunch.cpp" />
-    <ClCompile Include="Application\Game\Boss\ATK\Normal\SumerSolt\BossSumerSolt.cpp" />
+    <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\Punch\BossPunch.cpp" />
+    <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\SumerSolt\BossSumerSolt.cpp" />
     <ClCompile Include="Application\Game\Boss\UI\BossUI.cpp" />
-    <ClCompile Include="Application\Game\Boss\Down\BossDown.cpp" />
+    <ClCompile Include="Application\Game\Boss\Behavior\Down\BossDown.cpp" />
     <ClCompile Include="Application\Game\Effect\EffectLargeDebris.cpp" />
+    <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\BackStep\BossBackStep.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Game\Plane\Plane.h" />
@@ -237,18 +238,18 @@
     <ClInclude Include="Application\Game\Player\PlayerRoll\PlayerRoll.h" />
     <ClInclude Include="Engine\base\DeltaTimer\DeltaTimer.h" />
     <ClInclude Include="Application\Game\CirccleShadow\CirccleShadow.h" />
-    <ClInclude Include="Application\Game\Boss\Idle\BossIdle.h" />
-    <ClInclude Include="Application\Game\Boss\ATK\BossATKTypeManager.h" />
-    <ClInclude Include="Application\Game\Boss\ATK\Normal\BossNormalATKManager.h" />
+    <ClInclude Include="Application\Game\Boss\Behavior\Idle\BossIdle.h" />
+    <ClInclude Include="Application\Game\Boss\Behavior\ATK\BossATKTypeManager.h" />
+    <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\BossNormalATKManager.h" />
     <ClInclude Include="Application\Game\Boss\BulletManager\BossBulletManager.h" />
     <ClInclude Include="Application\Game\Player\Behavior\PlayerATKManager\PlayerATKManager.h" />
     <ClInclude Include="Application\Game\Player\Behavior\ATKData\PlayerPunch.h" />
     <ClInclude Include="Application\Game\Scene\GameOverScene.h" />
-    <ClInclude Include="Application\Game\Boss\ATK\IATK\IATK.h" />
-    <ClInclude Include="Application\Game\Boss\ATK\Normal\Stump\BossStump.h" />
+    <ClInclude Include="Application\Game\Boss\Behavior\ATK\IATK\IATK.h" />
+    <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\Stump\BossStump.h" />
     <ClInclude Include="Application\IScene\IScene.h" />
-    <ClInclude Include="Application\Game\Boss\ATK\Normal\Charge\BossCharge.h" />
-    <ClInclude Include="Application\Game\Boss\ATK\Normal\ShotBullet\BossShotBullet.h" />
+    <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\Charge\BossCharge.h" />
+    <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\ShotBullet\BossShotBullet.h" />
     <ClInclude Include="Engine\GVariableManager\GVaribleManager.h" />
     <ClInclude Include="Application\Game\Scene\GameClearScene.h" />
     <ClInclude Include="Application\Game\Player\Down\PlayerDown.h" />
@@ -262,12 +263,13 @@
     <ClInclude Include="Application\Game\Player\Behavior\IPlayerBehavior.h" />
     <ClInclude Include="Application\Game\Player\Behavior\IDLE\PlayerIdle.h" />
     <ClInclude Include="Application\Game\Player\Idle\PlayerIdle.h" />
-    <ClInclude Include="Application\Game\Boss\ATK\Normal\Punch\BossPunch.h" />
-    <ClInclude Include="Application\Game\Boss\ATK\Normal\SumerSolt\BossSumerSolt.h" />
+    <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\Punch\BossPunch.h" />
+    <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\SumerSolt\BossSumerSolt.h" />
     <ClInclude Include="Application\Game\Boss\UI\BossUI.h" />
-    <ClInclude Include="Application\Game\Boss\Down\BossDown.h" />
-    <ClInclude Include="Application\Game\Boss\IBossBehavior.h" />
+    <ClInclude Include="Application\Game\Boss\Behavior\Down\BossDown.h" />
+    <ClInclude Include="Application\Game\Boss\Behavior\IBossBehavior.h" />
     <ClInclude Include="Application\Game\Effect\EffectLargeDebris.h" />
+    <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\BackStep\BossBackStep.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

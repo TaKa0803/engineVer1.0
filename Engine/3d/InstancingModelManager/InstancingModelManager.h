@@ -6,6 +6,7 @@
 #include<iostream>
 
 #include"InstancingGameObject/InstancingPSO.h"
+#include"GvariGroup/GvariGroup.h"
 
 class InstancingModel;
 
@@ -57,6 +58,14 @@ public:
 	float GetAlpha(const std::string& tag);
 
 	InstancingPSO* GetPSO() { return pso_; };
+
+	/// <summary>
+	/// ツリーの作成と取得
+	/// </summary>
+	/// <param name="tag">モデルタグ名</param>
+	/// <param name="name">ツリー名</param>
+	/// <returns></returns>
+	GVariTree& CreateAndGetTree(const std::string& tag, const std::string& name);
 public:
 
 	/// <summary>

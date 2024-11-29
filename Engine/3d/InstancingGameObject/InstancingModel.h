@@ -13,6 +13,7 @@
 #include"struct.h"
 
 #include"LightManager/LightManager.h"
+#include"GvariGroup/GvariGroup.h"
 
 class InstancingModelManager;
 
@@ -130,6 +131,8 @@ public:
 /// worldの数取得
 /// </summary>
 	const float GetWorldNum();
+
+	GVariTree& CreateAndGetTree(const std::string&tree);
 private:
 
 
@@ -246,11 +249,10 @@ private:
 	std::vector<InstancingData>instancingDatas_;
 #pragma endregion
 
-	
-
-
-
-
 	//モデルタイプ
 	ModelDataType modelType_;
+
+private:
+	//ツリーデータ
+	GVariTree tree_ = GVariTree("");
 };
