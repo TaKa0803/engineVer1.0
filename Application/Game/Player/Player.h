@@ -237,11 +237,6 @@ private://状態管理
 	
 	//状態処理
 	std::vector<std::unique_ptr<IPlayerBehavior>>behaviors_;
-
-public://パラメータ
-
-
-
 	
 
 private://ポインタ参照
@@ -264,6 +259,20 @@ private://変数
 
 	//あたるかの判定
 	bool isHit_ = true;
+
+private://パラメータ
+
+	//アニメーションブレンド時間
+	float animeBlend_ = 0.1f;
+
+	//待機アニメ速度
+	float idleAnimeMulti_ = 1.0f;
+
+	//歩きアニメ速度
+	float moveAnimeMulti_ = 1.0f;
+
+	//走りアニメ速度
+	float runAnimeMulti_ = 1.0f;
 
 private://デバッグ用
 	

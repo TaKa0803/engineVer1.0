@@ -82,7 +82,14 @@ Player::Player() {
 	gvg->SetValue("体力", &data_.HP_);
 	gvg->SetValue("移動速度", &data_.spd_);
 	gvg->SetValue("ダッシュ時の速度倍率", &data_.dashMultiply);
-	
+	gvg->SetValue("無敵時間", &data_.noHitTime_);
+
+	GVariTree anime = GVariTree("アニメーション速度");
+	anime.SetValue("待機", &idleAnimeMulti_);
+	anime.SetValue("歩き", &moveAnimeMulti_);
+	anime.SetValue("走り", &runAnimeMulti_);
+	gvg->SetTreeData(anime);
+
 	//スタミナ関係
 	StaminaData& sData = data_.stamina;
 	GVariTree staminaTree = GVariTree("スタミナ");
@@ -113,13 +120,11 @@ void Player::Initialize() {
 	world_.translate_.z = 2;
 	world_.UpdateMatrix();
 
-	model_->ChangeAnimation(animeName_[Idle], 0);
+	SetAnimation(animeName_[AnimationData::Idle], animeBlend_, idleAnimeMulti_);
 
 	moveE_->Initialize({ 1,1,1,1 });
 
 	data_ = PlayerData{};
-
-	model_->animationRoopSecond_ = 5.0f;
 
 	collider_->Update();
 	atkCollider_->Update();
@@ -178,8 +183,6 @@ void Player::DrawParticle()
 	moveE_->Draw();
 }
 
-
-
 void Player::OnCollision()
 {
 #ifdef _DEBUG
@@ -201,6 +204,7 @@ void Player::OnCollision()
 		data_.currentHitCount_ = data_.noHitTime_;
 		//プレイヤーの攻撃コライダーをOFF
 		atkCollider_->isActive_ = false;
+
 	}
 }
 
@@ -378,17 +382,17 @@ void Player::ModelRoop(bool ismove,bool isDash)
 {
 	if (!ismove) {
 		//待機状態になる
-		SetAnimation(animeName_[Idle], 0.1f, 1.0f);
+		SetAnimation(animeName_[Idle], animeBlend_, idleAnimeMulti_);
 	}
 	else {
 		//移動状態
 		if (!isDash) {
 			//歩き
-			SetAnimation(animeName_[Moving], 0.1f, 1.0f);
+			SetAnimation(animeName_[Moving], animeBlend_, moveAnimeMulti_);
 		}
 		else {
 			//ダッシュ
-			SetAnimation(animeName_[Dash],	0.1f, 1.0f);
+			SetAnimation(animeName_[Dash], animeBlend_, runAnimeMulti_);
 		}
 	}
 

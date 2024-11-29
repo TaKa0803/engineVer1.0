@@ -48,6 +48,11 @@ void BossBulletManager::Update()
 
 			//死亡カウント増加
 			d->deadCount += (float)DeltaTimer::deltaTime_;
+
+			//地面めり込みで削除
+			if (d->data.world.GetWorldTranslate().y <= 0) {
+				d->ishit = true;
+			}
 		}
 	}
 

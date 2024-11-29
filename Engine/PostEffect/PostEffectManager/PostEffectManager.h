@@ -46,7 +46,7 @@ public:
 	/// </summary>
 	/// <param name="type">エフェクトタイプ</param>
 	/// <param name="isClear">エフェクトを重ね掛けするか</param>
-	void PostEffectDraw(EffectType type, bool isClear);
+	void PostEffectDraw(EffectType type, bool isClear=true);
 
 	//GlovalVで指定したエフェクトをかける
 	void GvariEffectDraw();

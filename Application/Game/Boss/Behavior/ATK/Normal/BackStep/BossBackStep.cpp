@@ -30,6 +30,9 @@ void BossBackStep::InitAIMing()
 	//加速度のセット
 	acce_.y = -gravity_;
 
+	//プレイヤー方向を向く
+	boss_->SetDirection2Player();
+
 	//アニメーションを設定
 	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::BackStep], parameters_.aimingSec, animeEndMultiply_, false);
 
@@ -53,7 +56,8 @@ void BossBackStep::InitBack()
 		backBehavior_ = BackBehavior::IDLE;
 		//余裕のある場合
 		//boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::Idle3], parameters_.backSec, parameters_.backSec, false);
-		boss_->SetBehavior(Boss::Behavior::IDLE);
+		//弾をうつ
+		boss_->SetNextATK(1);
 	}
 
 }

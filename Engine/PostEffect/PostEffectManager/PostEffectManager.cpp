@@ -173,7 +173,7 @@ void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 		//高光度のみ取得
 		PostEffectDraw(kHighLuminance,true);
 		//ブラー処理
-		PostEffectDraw(kGaussianFilter, true);
+		PostEffectDraw(kGaussianFilter);
 
 	}
 
