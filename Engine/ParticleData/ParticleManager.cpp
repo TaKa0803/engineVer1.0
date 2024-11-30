@@ -54,7 +54,7 @@ ParticleManager::ParticleManager()
 	oUAVDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 	oUAVDesc.Buffer.StructureByteStride = sizeof(Particle);
 
-	DXF_->GetDevice()->CreateUnorderedAccessView(particleResource_, nullptr, &oUAVDesc, UAVHandle_.cpu);
+	DXF_->GetDevice()->CreateUnorderedAccessView(particleResource_.Get(), nullptr, &oUAVDesc, UAVHandle_.cpu);
 
 #pragma endregion
 
@@ -69,7 +69,7 @@ ParticleManager::ParticleManager()
 	instancingDesc.Buffer.NumElements = UINT(maxDataNum_);
 	instancingDesc.Buffer.StructureByteStride = sizeof(Particle);
 
-	SRVHandle_ = SRVManager::CreateSRV(particleResource_, instancingDesc);
+	SRVHandle_ = SRVManager::CreateSRV(particleResource_.Get(), instancingDesc);
 #pragma endregion
 
 
@@ -87,7 +87,7 @@ ParticleManager::ParticleManager()
 	fUAVDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 	fUAVDesc.Buffer.StructureByteStride = sizeof(int32_t);
 
-	DXF_->GetDevice()->CreateUnorderedAccessView(freeListResource_, nullptr, &fUAVDesc, listUAVHandle_.cpu);
+	DXF_->GetDevice()->CreateUnorderedAccessView(freeListResource_.Get(), nullptr, &fUAVDesc, listUAVHandle_.cpu);
 
 #pragma endregion
 
@@ -105,7 +105,7 @@ ParticleManager::ParticleManager()
 	cfUAVDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 	cfUAVDesc.Buffer.StructureByteStride = sizeof(int32_t);
 
-	DXF_->GetDevice()->CreateUnorderedAccessView(freeListIndexResource_, nullptr, &cfUAVDesc, counterUAVHandle_.cpu);
+	DXF_->GetDevice()->CreateUnorderedAccessView(freeListIndexResource_.Get(), nullptr, &cfUAVDesc, counterUAVHandle_.cpu);
 
 #pragma endregion
 
@@ -120,7 +120,7 @@ ParticleManager::ParticleManager()
 	instancingDesccount.Buffer.NumElements = UINT(1);
 	instancingDesccount.Buffer.StructureByteStride = sizeof(int32_t);
 
-	counterSRVHandle_ = SRVManager::CreateSRV(freeListIndexResource_, instancingDesccount);
+	counterSRVHandle_ = SRVManager::CreateSRV(freeListIndexResource_.Get(), instancingDesccount);
 #pragma endregion
 
 
@@ -213,7 +213,7 @@ void ParticleManager::Update()
 	D3D12_RESOURCE_BARRIER ubarrier = {};
 	ubarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
 	ubarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	ubarrier.UAV.pResource = particleResource_;
+	ubarrier.UAV.pResource = particleResource_.Get();
 	cmd->ResourceBarrier(1, &ubarrier);
 
 	particleUpdateCS_->UpdateGPU(UAVHandle_.gpu, perResource_->GetGPUVirtualAddress(), counterUAVHandle_.gpu, listUAVHandle_.gpu);
@@ -228,14 +228,14 @@ void ParticleManager::Draw()
 
 	ubarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
 	ubarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	ubarrier.UAV.pResource = particleResource_;
+	ubarrier.UAV.pResource = particleResource_.Get();
 	cmd->ResourceBarrier(1, &ubarrier);
 
 	// リソースバリアの設定
 	D3D12_RESOURCE_BARRIER barrier = {};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = particleResource_;  // 頂点バッファリソースへのポインタ
+	barrier.Transition.pResource = particleResource_.Get();  // 頂点バッファリソースへのポインタ
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE;
 	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
@@ -267,7 +267,7 @@ void ParticleManager::Draw()
 	// リソースバリアの設定
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = particleResource_;  // 頂点バッファリソースへのポインタ
+	barrier.Transition.pResource = particleResource_.Get();  // 頂点バッファリソースへのポインタ
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
@@ -317,6 +317,18 @@ GVariTree& ParticleManager::GetTreeData(const std::string&name)
 	tree_.name_ = name;
 
 	tree_.SetValue("色", &materialData_->color);
-	//tree_.SetValue("")
+	tree_.SetValue("画像の有効化", &materialData_->enableTex);
+	tree_.SetValue("関数呼び出し時のみ出力", &onlyImpact_);
+
+	GVariTree emiter = GVariTree("エミッター");
+	emiter.SetValue("生成間隔/Sec", &emiterData_->frequency);
+	emiter.SetValue("最小/最大：出現半径", &emiterData_->radius);
+	emiter.SetValue("最小/最大：一度の生成量", &emiterData_->count);
+	emiter.SetValue("最小/最大：速度", &emiterData_->speed);
+	emiter.SetValue("最小/最大：X軸の飛翔方向", &emiterData_->veloX);
+	emiter.SetValue("最小/最大：Y軸の飛翔方向", &emiterData_->veloY);
+	emiter.SetValue("最小/最大：Z軸の飛翔方向", &emiterData_->veloZ);
+	tree_.SetTreeData(emiter);
+
 	return tree_;
 }

@@ -35,6 +35,7 @@ public:
 private:
 	//当たり判定処理
 	void Collision();
+
 	//シーン変更処理
 	void SceneChange();
 
@@ -61,8 +62,7 @@ private:
 	//地面
 	std::unique_ptr<Plane>plane_;
 
-	//パーティクルマネージャー
-	std::unique_ptr<ParticleManager>particleM_;
+
 
 	//シーンチェンジ用
 	std::string white = "resources/Texture/SystemResources/white.png";

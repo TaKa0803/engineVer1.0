@@ -153,6 +153,11 @@ public:
 	void OnCollision();
 
 	/// <summary>
+	/// 攻撃ヒット時処理
+	/// </summary>
+	void OnCollisionATKHit();
+
+	/// <summary>
 	/// 押し戻し処理
 	/// </summary>
 	/// <param name="backV">押し戻し量</param>
@@ -247,6 +252,8 @@ private://ポインタ参照
 	const Boss* boss_;
 
 private://変数
+	//パーティクルマネージャー
+	std::unique_ptr<ParticleManager>hitPariticle;
 
 	std::unique_ptr<SphereCollider> collider_;
 	std::unique_ptr<SphereCollider> atkCollider_;

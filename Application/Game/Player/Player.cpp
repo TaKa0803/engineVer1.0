@@ -27,7 +27,7 @@ void Player::StaminaUpdate()
 		//回復処理
 		data.currentStamina += data.healSec * (float)DeltaTimer::deltaTime_;
 		//オーバーヒール処理
-		if (data.currentStamina>data.maxStamina) {
+		if (data.currentStamina > data.maxStamina) {
 			data.currentStamina = data.maxStamina;
 		}
 
@@ -48,6 +48,12 @@ Player::Player() {
 	behaviors_[(int)Behavior::Rolling] = std::make_unique<PlayerRoll>(this);
 	behaviors_[(int)Behavior::ATK] = std::make_unique<PlayerATKManager>(this);
 	behaviors_[(int)Behavior::HITACTION] = std::make_unique<PlayerDown>(this);
+
+	//パーティクルマネージャの生成
+	hitPariticle = std::make_unique<ParticleManager>();
+	//パーティクルとして出す画像をセットして初期化
+	hitPariticle->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
+
 
 	//移動エフェクト生成
 	moveE_ = std::make_unique<EffectMove>();
@@ -108,7 +114,7 @@ Player::Player() {
 	gvg->SetTreeData(behaviors_[(int)Behavior::HITACTION]->GetTree());
 	gvg->SetTreeData(behaviors_[(int)Behavior::ATK]->GetTree());
 
-
+	gvg->SetTreeData(hitPariticle->GetTreeData("攻撃ヒット時エフェクト"));
 	gvg->SetTreeData(model_->SetDebugParam("model"));
 	gvg->SetTreeData(collider_->GetDebugTree("体コライダー"));
 	gvg->SetTreeData(atkCollider_->GetDebugTree("攻撃コライダー"));
@@ -140,7 +146,7 @@ void Player::GetBoss(const Boss* boss)
 
 void Player::SetCamera(Camera* camera)
 {
-	camera_ = camera; 
+	camera_ = camera;
 }
 
 void Player::Update() {
@@ -161,6 +167,8 @@ void Player::Update() {
 	//状態の更新
 	behaviors_[(int)behavior_]->Update();
 
+
+
 	GlobalUpdate();
 
 }
@@ -172,7 +180,7 @@ void Player::Draw() {
 	//各モデル描画
 	shadow_->Draw();
 	GameObject::Draw();
-	
+
 	collider_->Draw();
 	atkCollider_->Draw();
 
@@ -180,6 +188,8 @@ void Player::Draw() {
 
 void Player::DrawParticle()
 {
+	//パーティクルを描画
+	hitPariticle->Draw();
 	moveE_->Draw();
 }
 
@@ -208,6 +218,14 @@ void Player::OnCollision()
 	}
 }
 
+void Player::OnCollisionATKHit()
+{
+	//攻撃コライダー
+	GetATKCollider()->isActive_ = false;
+	//コライダー位置からエフェクト出現
+	hitPariticle->SpawnE(collider_->GetWorld().GetWorldTranslate());
+}
+
 void Player::OnCollisionBack(const Vector3& backV)
 {
 	//押し出し量分戻す
@@ -221,7 +239,7 @@ void Player::OnCollisionBack(const Vector3& backV)
 
 }
 
-Vector3 Player::SetInputDirection(bool&isZero)
+Vector3 Player::SetInputDirection(bool& isZero)
 {
 	//入力方向をチェック
 	Vector3 move = input_->GetWASD().SetNormalize();
@@ -258,7 +276,7 @@ Vector3 Player::SetInputDirection(bool&isZero)
 
 	//向きを変更する処理
 	world_.rotate_.y = GetYRotate({ move.x,move.z }) + ((float)std::numbers::pi);
-	
+
 
 	return move;
 }
@@ -327,7 +345,7 @@ void Player::Move(bool canDash, float spdMulti) {
 	move *= data_.spd_;
 
 	//ダッシュキー併用で速度アップ
-	if (canDash&&isMoveInput && GetDashInput() && data_.stamina.currentStamina >= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_) {
+	if (canDash && isMoveInput && GetDashInput() && data_.stamina.currentStamina >= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_) {
 
 		isDash = true;
 
@@ -337,7 +355,7 @@ void Player::Move(bool canDash, float spdMulti) {
 		data_.stamina.currentStamina -= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_;
 		data_.stamina.currentCharge = 0;
 	}
-	
+
 	//移動入力があった場合
 	if (isMoveInput) {
 
@@ -345,7 +363,7 @@ void Player::Move(bool canDash, float spdMulti) {
 		moveE_->SpawnE(world_.GetWorldTranslate());
 
 		//加算
-		world_.translate_ += move*spdMulti*(float)DeltaTimer::deltaTime_;
+		world_.translate_ += move * spdMulti * (float)DeltaTimer::deltaTime_;
 	}
 
 	//走れる場合のみアニメーション変更
@@ -378,7 +396,7 @@ void Player::DecreaseStamina4Roll()
 	data_.stamina.currentCharge = 0;
 }
 
-void Player::ModelRoop(bool ismove,bool isDash)
+void Player::ModelRoop(bool ismove, bool isDash)
 {
 	if (!ismove) {
 		//待機状態になる
@@ -398,7 +416,7 @@ void Player::ModelRoop(bool ismove,bool isDash)
 
 }
 
-void Player::SetAnimation(const std::string&animeName, float count, float loopSec, bool isLoop)
+void Player::SetAnimation(const std::string& animeName, float count, float loopSec, bool isLoop)
 {
 	model_->ChangeAnimation(animeName, count);
 	model_->SetAnimationRoop(isLoop);
@@ -423,8 +441,10 @@ void Player::GlobalInitialize()
 
 void Player::GlobalUpdate()
 {
-		moveE_->Update();
 
+	moveE_->Update();
+	//パーティクル更新
+	hitPariticle->Update();
 
 	//移動量ベクトル*デルタタイムを加算
 	world_.translate_ += data_.velo_ * (float)DeltaTimer::deltaTime_;

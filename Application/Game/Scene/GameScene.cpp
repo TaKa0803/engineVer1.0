@@ -53,13 +53,6 @@ GameScene::GameScene() {
 	bgmGame_ = AudioManager::LoadSoundNum("game");
 	//クリアの音
 	//bgmClear_ = AudioManager::LoadSoundNum("clear");
-
-
-	//パーティクルマネージャの生成
-	particleM_ = std::make_unique<ParticleManager>();
-	//速度の変更
-	EmiterSphere* emit = particleM_->GetEmiterData();
-	emit->speed = { 0.1f,1.5f };
 }
 
 
@@ -102,14 +95,6 @@ void GameScene::Initialize() {
 	//微ネットの値を変更
 	PEVignetting::materialData_->darkness = 0.3f;
 
-	//パーティクルとして出す画像をセットして初期化
-	particleM_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
-	//フラグ有効時のみ発生するように変更
-	particleM_->SetOnlyImpact(true);
-
-	//パーティクルの色を変更
-	EmiterSphere* emit = particleM_->GetEmiterData();
-	emit->color = { 0,0,1,1 };
 }
 
 
@@ -118,8 +103,7 @@ void GameScene::Update() {
 	//ポストエフェクトのデバッグウィンドウをだす
 	PostEffectManager::GetInstance()->Debug();
 
-	//パーティクル更新
-	particleM_->Update();
+
 
 
 
@@ -165,8 +149,7 @@ void GameScene::Draw() {
 	//インスタンシングのモデルを全描画
 	InstancingModelManager::GetInstance()->DrawAllModel();
 
-	//パーティクルを描画
-	particleM_->Draw();
+
 
 	//プレイヤーパーティクルを描画
 	player_->DrawParticle();
@@ -205,10 +188,9 @@ void GameScene::Collision() {
 	if (boss_->GetBodyCollider().IsCollision(player_->GetATKCollider(), vec)) {
 		//ボスのあたった処理
 		boss_->OnCollision();
-		//プレイヤーの攻撃コライダーをオフ
-		player_->GetATKCollider()->isActive_ = false;
+		//プレイヤーの攻撃がヒット時のプレイヤー処理
+		player_->OnCollisionATKHit();
 
-		particleM_->SpawnE(player_->GetCollider()->GetWorld().GetWorldTranslate());
 	}
 
 	//プレイヤーとボスとの攻撃の接触判定

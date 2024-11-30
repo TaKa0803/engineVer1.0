@@ -47,6 +47,8 @@ public:
 	GVariTree& GetTreeData(const std::string& name);
 private:
 
+	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 	DirectXFunc* DXF_;
 	
 	ModelData modelData_;
@@ -63,35 +65,35 @@ private:
 
 #pragma region リソース関係
 	//頂点関係
-	ID3D12Resource* vertexResource_;
+	ComPtr<ID3D12Resource> vertexResource_;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 
 	//インデックス
-	ID3D12Resource* indexResource_;
+	ComPtr<ID3D12Resource> indexResource_;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 
 	//パーティクル本体のデータ
-	ID3D12Resource* particleResource_;
+	ComPtr<ID3D12Resource> particleResource_;
 	Handles SRVHandle_;
 	Handles UAVHandle_;
 
 	//データ管理のリスト
-	ID3D12Resource* freeListResource_;
+	ComPtr<ID3D12Resource> freeListResource_;
 	Handles listUAVHandle_;
 
 	//リストの頂点
-	ID3D12Resource* freeListIndexResource_;
+	ComPtr<ID3D12Resource> freeListIndexResource_;
 	Handles counterSRVHandle_;
 	Handles counterUAVHandle_;
 
 
-	ID3D12Resource* perResource_;
+	ComPtr<ID3D12Resource> perResource_;
 	PerView* perViewData_ = nullptr;
 
-	ID3D12Resource* materialResource_;
+	ComPtr<ID3D12Resource> materialResource_;
 	ParticleMaterialData* materialData_=nullptr;
 
-	ID3D12Resource* emiterResource_;
+	ComPtr<ID3D12Resource> emiterResource_;
 	EmiterSphere* emiterData_ = nullptr;
 
 #pragma endregion
