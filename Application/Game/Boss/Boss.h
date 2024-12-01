@@ -142,7 +142,7 @@ public://パブリック関数
 public://ゲッター
 
 	//体コライダー取得
-	SphereCollider& GetBodyCollider()& { return *collider_.get(); }
+	SphereCollider& GetBodyCollider()& { return *bodyCollider_.get(); }
 
 	//攻撃用コライダー取得
 	SphereCollider& GetATKCollider()& { return *atkCollider_.get(); }
@@ -208,7 +208,7 @@ private://**変数
 	//簡易影
 	std::unique_ptr<CirccleShadow>shadow_;
 	//コライダー
-	std::unique_ptr<SphereCollider> collider_;
+	std::unique_ptr<SphereCollider> bodyCollider_;
 	//攻撃コライダー
 	std::unique_ptr<SphereCollider>atkCollider_;
 

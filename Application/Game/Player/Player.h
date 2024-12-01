@@ -10,6 +10,7 @@
 #include"Game/Player/Behavior/IPlayerBehavior.h"
 
 #include"PlayerRoll/PlayerRoll.h"
+#include"Stamina/PlayerStamina.h"
 
 #include<vector>
 //#include<string>
@@ -77,25 +78,7 @@ public://パブリック変数
 	};
 
 #pragma region パラメータ
-	struct StaminaData {
-		//スタミナ関係
-		float maxStamina = 100;
-		float currentStamina = StaminaData::maxStamina;
 
-		//回復開始カウント
-		float rechargeSec = 1.0f;
-		float currentCharge = 0.0f;
-
-		//回復速度
-		float healSec = 100;
-
-		//各アクションのスタミナコスト
-		float rollCost = 20;
-
-		float dashCostSec = 10;
-
-		float atkCost = 10;
-	};
 
 	struct PlayerData
 	{
@@ -117,9 +100,6 @@ public://パブリック変数
 
 		//無敵時間
 		float noHitTime_ = 1.0f;
-
-		//スタミナデータ
-		StaminaData stamina{};
 	};
 
 	PlayerData data_;
@@ -184,7 +164,7 @@ public:
 public://ゲッター
 
 	//コライダー取得
-	SphereCollider* GetCollider() { return collider_.get(); }
+	SphereCollider* GetCollider() { return bodyCollider_.get(); }
 
 	//攻撃コライダー取得
 	SphereCollider* GetATKCollider() { return atkCollider_.get(); };
@@ -229,9 +209,6 @@ private://メンバ関数
 	//アニメーションによるモデルの変更
 	void ModelRoop(bool ismove, bool isDash);
 
-	//スタミナの更新処理
-	void StaminaUpdate();
-
 private://状態管理
 
 	//プレイヤーの状態
@@ -255,8 +232,11 @@ private://変数
 	//パーティクルマネージャー
 	std::unique_ptr<ParticleManager>hitPariticle;
 
-	std::unique_ptr<SphereCollider> collider_;
+	std::unique_ptr<SphereCollider> bodyCollider_;
 	std::unique_ptr<SphereCollider> atkCollider_;
+
+	//スタミナ管理
+	std::unique_ptr<PlayerStamina>stamina_;
 
 	//移動エフェクト
 	std::unique_ptr<EffectMove>moveE_;

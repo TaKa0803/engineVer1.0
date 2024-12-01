@@ -5,15 +5,15 @@
 
 PlayerPunch::PlayerPunch(Player* player)
 {
-	//
+	//プレイヤーのポインタ取得
 	player_ = player;
 
-	//
+	//各動きの音の配列番号取得
 	punchSound_ = AudioManager::LoadSoundNum("com1");
 	kickSound_ = AudioManager::LoadSoundNum("com2");
 	drilSound_ = AudioManager::LoadSoundNum("com3");
 
-	//
+	//ツリーの名前設定
 	tree_.name_ = "パンチ";
 
 	GVariTree com1T = GVariTree("コンボ1");
@@ -70,61 +70,7 @@ void PlayerPunch::Update()
 	//終了状態までいっていない場合
 	if (state_ != CheckEnd) {
 
-		//攻撃が一段目の場合
-		if (parameters_.atkCount_ == 0) {
-			//初期化処理が行われていなければ初期化
-			if (!parameters_.isInit) {
-				parameters_.isInit = true;
-				//アニメーションをセット
-				player_->SetAnimation(player_->animeName_[Player::PrePunch1], parameters_.com1.stStiffnessSec, 1, false);
-
-			}
-			else {
-				//アニメーションの更新速度をこちらで調整
-				if (state_ == Atk) {
-					player_->SetAnimation(player_->animeName_[Player::Punch1], parameters_.com1.atkSec, 1, false);
-				}
-				else if (state_ == Ed) {
-					player_->SetAnimation(player_->animeName_[Player::Punch1], parameters_.com1.edStiffnessSec, 1, false);
-				}
-			}
-		}
-		else if (parameters_.atkCount_ == 1) {
-			//初期化処理が行われていなければ初期化
-			if (!parameters_.isInit) {
-				parameters_.isInit = true;
-				//アニメーションをセット
-				player_->SetAnimation(player_->animeName_[Player::PrePunch2], parameters_.com2.stStiffnessSec, 1, false);
-
-			}
-			else {
-				//アニメーションの更新速度をこちらで調整
-				if (state_ == Atk) {
-					player_->SetAnimation(player_->animeName_[Player::Punch2],parameters_.com2.atkSec, 1, false);
-				}
-				else if (state_ == Ed) {
-					player_->SetAnimation(player_->animeName_[Player::Punch2], parameters_.com2.edStiffnessSec, 1, false);
-				}
-			}
-		}
-		else	if (parameters_.atkCount_ == 2) {
-			//初期化処理が行われていなければ初期化
-			if (!parameters_.isInit) {
-				parameters_.isInit = true;
-				//アニメーションをセット
-				player_->SetAnimation(player_->animeName_[Player::PrePunch3], parameters_.com2.stStiffnessSec, 1, false);
-
-			}
-			else {
-				//アニメーションの更新速度をこちらで調整
-				if (state_ == Atk) {
-					player_->SetAnimation(player_->animeName_[Player::Punch3], parameters_.com2.atkSec, 1, false);
-				}
-				else if (state_ == Ed) {
-					player_->SetAnimation(player_->animeName_[Player::Idle], parameters_.com3.edStiffnessSec, 1, false);
-				}
-			}
-		}
+		ChangeAnimation();
 
 		//攻撃入力が含まれていた場合
 		if (!parameters_.isNextInput && player_->GetATKInput()) {
@@ -168,6 +114,7 @@ void PlayerPunch::CheckNextState()
 	//変更時同じ処理まとめ用フラグ
 	bool isChange = false;
 	float t = parameters_.count;
+
 	if (parameters_.atkCount_ == 0) {
 
 		switch (state_)
@@ -177,7 +124,6 @@ void PlayerPunch::CheckNextState()
 			if (parameters_.count >= parameters_.com1.stStiffnessSec) {
 				isChange = true;
 				state_ = Atk;
-				parameters_.count = 0;
 				//音発生
 				AudioManager::PlaySoundData(punchSound_);
 			}
@@ -191,7 +137,6 @@ void PlayerPunch::CheckNextState()
 			if (parameters_.count >= parameters_.com1.atkSec) {
 				isChange = true;
 				state_ = Ed;
-				parameters_.count = 0;
 			}
 			else {
 				t /= parameters_.com1.atkSec;
@@ -203,7 +148,6 @@ void PlayerPunch::CheckNextState()
 			if (parameters_.count >= parameters_.com1.edStiffnessSec) {
 				isChange = true;
 				state_ = CheckEnd;
-				parameters_.count = 0;
 			}
 			else {
 				//t /= parameters_.com1.edStiffnessSec;
@@ -225,7 +169,6 @@ void PlayerPunch::CheckNextState()
 			if (parameters_.count >= parameters_.com2.stStiffnessSec) {
 				isChange = true;
 				state_ = Atk;
-				parameters_.count = 0;
 				//音発生
 				AudioManager::PlaySoundData(kickSound_);
 			}
@@ -239,7 +182,6 @@ void PlayerPunch::CheckNextState()
 			if (parameters_.count >= parameters_.com2.atkSec) {
 				isChange = true;
 				state_ = Ed;
-				parameters_.count = 0;
 			}
 			else {
 				t /= parameters_.com2.atkSec;
@@ -251,7 +193,6 @@ void PlayerPunch::CheckNextState()
 			if (parameters_.count >= parameters_.com2.edStiffnessSec) {
 				isChange = true;
 				state_ = CheckEnd;
-				parameters_.count = 0;
 			}
 			else {
 				//t /= parameters_.com2.edStiffnessSec;
@@ -315,5 +256,64 @@ void PlayerPunch::CheckNextState()
 		parameters_.isInit = false;
 	}
 
+}
+
+void PlayerPunch::ChangeAnimation()
+{
+	//攻撃が一段目の場合
+	if (parameters_.atkCount_ == 0) {
+		//初期化処理が行われていなければ初期化
+		if (!parameters_.isInit) {
+			parameters_.isInit = true;
+			//アニメーションをセット
+			player_->SetAnimation(player_->animeName_[Player::PrePunch1], parameters_.com1.stStiffnessSec, 1, false);
+
+		}
+		else {
+			//アニメーションの更新速度をこちらで調整
+			if (state_ == Atk) {
+				player_->SetAnimation(player_->animeName_[Player::Punch1], 0, 1, false);
+			}
+			else if (state_ == Ed) {
+				player_->SetAnimation(player_->animeName_[Player::Punch1], parameters_.com1.edStiffnessSec, 1, false);
+			}
+		}
+	}
+	else if (parameters_.atkCount_ == 1) {
+		//初期化処理が行われていなければ初期化
+		if (!parameters_.isInit) {
+			parameters_.isInit = true;
+			//アニメーションをセット
+			player_->SetAnimation(player_->animeName_[Player::PrePunch2], parameters_.com2.stStiffnessSec, 1, false);
+
+		}
+		else {
+			//アニメーションの更新速度をこちらで調整
+			if (state_ == Atk) {
+				player_->SetAnimation(player_->animeName_[Player::Punch2],0, 1, false);
+			}
+			else if (state_ == Ed) {
+				player_->SetAnimation(player_->animeName_[Player::Punch2], parameters_.com2.edStiffnessSec, 1, false);
+			}
+		}
+	}
+	else if (parameters_.atkCount_ == 2) {
+		//初期化処理が行われていなければ初期化
+		if (!parameters_.isInit) {
+			parameters_.isInit = true;
+			//アニメーションをセット
+			player_->SetAnimation(player_->animeName_[Player::PrePunch3], parameters_.com2.stStiffnessSec, 1, false);
+
+		}
+		else {
+			//アニメーションの更新速度をこちらで調整
+			if (state_ == Atk) {
+				player_->SetAnimation(player_->animeName_[Player::Punch3], 0, 1, false);
+			}
+			else if (state_ == Ed) {
+				player_->SetAnimation(player_->animeName_[Player::Idle], parameters_.com3.edStiffnessSec, 1, false);
+			}
+		}
+	}
 }
 

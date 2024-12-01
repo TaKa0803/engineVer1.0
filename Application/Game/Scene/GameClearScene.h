@@ -30,4 +30,7 @@ private:
 	//クリア文字
 	std::unique_ptr<Sprite>bButton_;
 
+	//クリアの音
+	int bgmClear_;
+
 };

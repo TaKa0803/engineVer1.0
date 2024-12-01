@@ -1,6 +1,7 @@
 #include "GameClearScene.h"
 #include"TextureManager/TextureManager.h"
 #include"PostEffect/PostEffectManager/PostEffectManager.h"
+#include"AudioManager/AudioManager.h"
 
 GameClearScene::GameClearScene()
 {
@@ -12,6 +13,9 @@ GameClearScene::GameClearScene()
 	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("クリアシーン");
 	gvg->SetTreeData(clearText_->GetTree("クリアテキスト"));
 	gvg->SetTreeData(bButton_->GetTree("Bボタン"));
+
+	//クリアの音
+	bgmClear_ = AudioManager::LoadSoundNum("clear");
 }
 
 GameClearScene::~GameClearScene()
@@ -20,7 +24,8 @@ GameClearScene::~GameClearScene()
 
 void GameClearScene::Initialize()
 {
-	
+	AudioManager::GetInstance()->StopAllSounds();
+	AudioManager::PlaySoundData(bgmClear_);
 }
 
 void GameClearScene::Update()
@@ -28,6 +33,7 @@ void GameClearScene::Update()
 	screanShot_->DrawDebugImGui("sp");
 
 	if (inp_->TriggerKey(DIK_SPACE) || inp_->IsTriggerButton(kButtonB)) {
+		AudioManager::GetInstance()->StopAllSounds();
 		sceneNo = TITLE;
 	}
 }

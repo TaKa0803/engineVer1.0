@@ -41,8 +41,8 @@ void DebugScnene::Initialize()
 	//object->Initialize("AnimeCube");
 	//object->Initialize("sphere");
 	//object->Initialize("walk");
-	//object->Initialize("Player");
-	object->Initialize("Boss");
+	object->Initialize("human");
+	//object->Initialize("Boss");
 
 	terrain->Initialize("terrain");
 

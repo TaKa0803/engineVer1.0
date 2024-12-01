@@ -16,6 +16,7 @@
 GameScene::GameScene() {
 	//入力のインスタンス取得
 	input_ = Input::GetInstance();
+
 	//カメラインスタンス取得
 	camera_ = Camera::GetInstance();
 
@@ -51,8 +52,7 @@ GameScene::GameScene() {
 	//各音の読み込み
 	//ゲーム中の音
 	bgmGame_ = AudioManager::LoadSoundNum("game");
-	//クリアの音
-	//bgmClear_ = AudioManager::LoadSoundNum("clear");
+	
 }
 
 

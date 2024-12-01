@@ -6,6 +6,7 @@
 #include"Game/Boss/Boss.h"
 #include"GvariGroup/GvariGroup.h"
 
+#include"Game/Player/Stamina/PlayerStamina.h"
 #include"Game/Player/Idle/PlayerIdle.h"
 #include"Game/Player/Down/PlayerDown.h"
 
@@ -14,25 +15,6 @@
 #include<cassert>
 #include<fstream>
 #include<numbers>
-
-void Player::StaminaUpdate()
-{
-	StaminaData& data = data_.stamina;
-	data.currentCharge += (float)DeltaTimer::deltaTime_;
-
-	//待機カウント以上で回復処理
-	if (data.currentCharge >= data.rechargeSec) {
-		data.currentCharge = data.rechargeSec;
-
-		//回復処理
-		data.currentStamina += data.healSec * (float)DeltaTimer::deltaTime_;
-		//オーバーヒール処理
-		if (data.currentStamina > data.maxStamina) {
-			data.currentStamina = data.maxStamina;
-		}
-
-	}
-}
 
 Player::Player() {
 	//一回しかしない初期化情報
@@ -54,14 +36,16 @@ Player::Player() {
 	//パーティクルとして出す画像をセットして初期化
 	hitPariticle->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
 
+	//スタミナマネージャ生成
+	stamina_ = std::make_unique<PlayerStamina>();
 
 	//移動エフェクト生成
 	moveE_ = std::make_unique<EffectMove>();
 
 	//体コライダー生成
-	collider_ = std::make_unique<SphereCollider>();
+	bodyCollider_ = std::make_unique<SphereCollider>();
 	//初期化
-	collider_->Initialize("player", world_);
+	bodyCollider_->Initialize("player", world_);
 
 	//攻撃コライダー生成
 	atkCollider_ = std::make_unique<SphereCollider>();
@@ -96,27 +80,17 @@ Player::Player() {
 	anime.SetValue("走り", &runAnimeMulti_);
 	gvg->SetTreeData(anime);
 
-	//スタミナ関係
-	StaminaData& sData = data_.stamina;
-	GVariTree staminaTree = GVariTree("スタミナ");
-	staminaTree.SetValue("最大スタミナ", &sData.maxStamina);
-	staminaTree.SetValue("回復開始までの時間", &sData.rechargeSec);
-	staminaTree.SetValue("一秒間の回復量", &sData.healSec);
-	staminaTree.SetValue("回転時の消費量", &sData.rollCost);
-	staminaTree.SetValue("ダッシュ時の消費量/1s", &sData.dashCostSec);
-	staminaTree.SetValue("攻撃時の消費量", &sData.atkCost);
-	staminaTree.SetMonitorValue("現スタミナ", &sData.currentStamina);
 
 
 	//ツリーセット
-	gvg->SetTreeData(staminaTree);
+	gvg->SetTreeData(stamina_->GetTree());
 	gvg->SetTreeData(behaviors_[(int)Behavior::Rolling]->GetTree());
 	gvg->SetTreeData(behaviors_[(int)Behavior::HITACTION]->GetTree());
 	gvg->SetTreeData(behaviors_[(int)Behavior::ATK]->GetTree());
 
 	gvg->SetTreeData(hitPariticle->GetTreeData("攻撃ヒット時エフェクト"));
 	gvg->SetTreeData(model_->SetDebugParam("model"));
-	gvg->SetTreeData(collider_->GetDebugTree("体コライダー"));
+	gvg->SetTreeData(bodyCollider_->GetDebugTree("体コライダー"));
 	gvg->SetTreeData(atkCollider_->GetDebugTree("攻撃コライダー"));
 }
 
@@ -132,7 +106,7 @@ void Player::Initialize() {
 
 	data_ = PlayerData{};
 
-	collider_->Update();
+	bodyCollider_->Update();
 	atkCollider_->Update();
 	atkCollider_->isActive_ = false;
 
@@ -181,7 +155,7 @@ void Player::Draw() {
 	shadow_->Draw();
 	GameObject::Draw();
 
-	collider_->Draw();
+	bodyCollider_->Draw();
 	atkCollider_->Draw();
 
 }
@@ -223,7 +197,7 @@ void Player::OnCollisionATKHit()
 	//攻撃コライダー
 	GetATKCollider()->isActive_ = false;
 	//コライダー位置からエフェクト出現
-	hitPariticle->SpawnE(collider_->GetWorld().GetWorldTranslate());
+	hitPariticle->SpawnE(bodyCollider_->GetWorld().GetWorldTranslate());
 }
 
 void Player::OnCollisionBack(const Vector3& backV)
@@ -235,7 +209,7 @@ void Player::OnCollisionBack(const Vector3& backV)
 	//行列更新
 	world_.UpdateMatrix();
 	//コライダー更新
-	collider_->Update();
+	bodyCollider_->Update();
 
 }
 
@@ -289,8 +263,6 @@ const Vector3 Player::GetP2BossVelo()
 
 bool Player::GetATKInput()
 {
-
-
 	//キー入力でおこなわれていたか取得
 	int isATK = (int)input_->TriggerKey(DIK_Z);
 
@@ -331,12 +303,10 @@ bool Player::GetDashInput()
 
 void Player::Move(bool canDash, float spdMulti) {
 
+	//入力された移動ベクトル
 	Vector3 move{};
-	//ダッシュチェック
-	bool isDash = false;
-
-	//移動入力の有無
-	bool isMoveInput = false;
+	//ダッシュ,移動入力の有無
+	bool isDash, isMoveInput = { false };
 
 	//入力受付と向きなおし処理＆向いた向きベクトル取得
 	move = SetInputDirection(isMoveInput);
@@ -345,15 +315,13 @@ void Player::Move(bool canDash, float spdMulti) {
 	move *= data_.spd_;
 
 	//ダッシュキー併用で速度アップ
-	if (canDash && isMoveInput && GetDashInput() && data_.stamina.currentStamina >= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_) {
-
-		isDash = true;
-
-		move *= data_.dashMultiply;
-
+	if (canDash && isMoveInput && GetDashInput() && stamina_->CheckStamina(PlayerStamina::Type::DASH)) {
 		//スタミナを消費
-		data_.stamina.currentStamina -= data_.stamina.dashCostSec * (float)DeltaTimer::deltaTime_;
-		data_.stamina.currentCharge = 0;
+		stamina_->UseStamina(PlayerStamina::Type::DASH);
+		//ダッシュフラグをONに
+		isDash = true;
+		//速度を増やす
+		move *= data_.dashMultiply;
 	}
 
 	//移動入力があった場合
@@ -381,19 +349,19 @@ void Player::ChangeBehavior()
 	isATK = GetATKInput();
 	isRoll = GetRollInput();
 
-	if (isATK && data_.stamina.currentStamina >= data_.stamina.atkCost) {
+	if (isATK && stamina_->CheckStamina(PlayerStamina::Type::ATK)) {
 		behaviorReq_ = Behavior::ATK;
 	}
 
-	if (isRoll && data_.stamina.currentStamina >= data_.stamina.rollCost) {
+	if (isRoll && stamina_->CheckStamina(PlayerStamina::Type::ROLL)) {
 		behaviorReq_ = Behavior::Rolling;
 	}
 }
 
 void Player::DecreaseStamina4Roll()
 {
-	data_.stamina.currentStamina -= data_.stamina.rollCost;
-	data_.stamina.currentCharge = 0;
+	//スタミナを消費
+	stamina_->UseStamina(PlayerStamina::Type::ROLL);
 }
 
 void Player::ModelRoop(bool ismove, bool isDash)
@@ -418,38 +386,43 @@ void Player::ModelRoop(bool ismove, bool isDash)
 
 void Player::SetAnimation(const std::string& animeName, float count, float loopSec, bool isLoop)
 {
+	//アニメーションを変更
 	model_->ChangeAnimation(animeName, count);
+	//ループフラグを変更
 	model_->SetAnimationRoop(isLoop);
+	//アニメーション速度倍率変更
 	model_->animationRoopSecond_ = loopSec;
 }
 
 
 void Player::InitATK() {
-	data_.stamina.currentStamina -= data_.stamina.atkCost;
-	data_.stamina.currentCharge = 0;
-
-	atkCollider_->isActive_ = true;
+	//スタミナを消費
+	stamina_->UseStamina(PlayerStamina::Type::ATK);
 }
 
 void Player::GlobalInitialize()
 {
 	//攻撃、ローリング後はアニメーションのフラグが変わるのでここで変更しておく
+	//アニメーション進行をアプリ側で処理するフラグをOFF
 	SetAnimeTime(false);
-	//攻撃コライダー無効か
+	//攻撃コライダー無効化
 	atkCollider_->isActive_ = false;
 }
 
 void Player::GlobalUpdate()
 {
 
+	//移動エフェクト更新
 	moveE_->Update();
+
 	//パーティクル更新
 	hitPariticle->Update();
 
 	//移動量ベクトル*デルタタイムを加算
 	world_.translate_ += data_.velo_ * (float)DeltaTimer::deltaTime_;
 
-	StaminaUpdate();
+	//スタミナの更新
+	stamina_->Update();
 
 	//無敵時間の解除処理
 	if (!isHit_) {
@@ -458,10 +431,13 @@ void Player::GlobalUpdate()
 		}
 	}
 
-	//更新
+	//行列更新
 	world_.UpdateMatrix();
+	//攻撃コライダー更新
 	atkCollider_->Update();
-	collider_->Update();
+	//体コライダー更新
+	bodyCollider_->Update();
+	//丸影更新
 	shadow_->Update();
 }
 

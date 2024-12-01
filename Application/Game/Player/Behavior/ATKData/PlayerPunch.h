@@ -19,7 +19,15 @@ public://パブリック関数
 
 private://プライベート関数
 
+	/// <summary>
+	/// 各状態での処理の変更
+	/// </summary>
 	void CheckNextState();
+
+	/// <summary>
+	/// 各状態でのアニメーション変更処理
+	/// </summary>
+	void ChangeAnimation();
 
 public:
 
@@ -68,6 +76,12 @@ private://パラメータ
 		int atkCount_ = 0;
 		//各カウント
 		float count = 0;
+
+		//現在のコンボでの各時間
+		float stStiffness;
+		float atk;
+		float edStiffness;
+
 		//状態前初期化処理
 		bool isInit = false;
 

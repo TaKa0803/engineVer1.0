@@ -328,6 +328,12 @@ void Model::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float
 
 void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 {
+#ifdef _DEBUG
+	SetAnimationTime(iskanri_, param_);
+#endif // _DEBUG
+
+
+
 	UpdateAnimation();
 	//animationのあるモデルなら
 	if (modelType_ == kSkinningGLTF) {
@@ -500,11 +506,14 @@ GVariTree& Model::SetDebugParam(const std::string& treeName)
 	uvTree.SetValue("サイズ", &uvWorld_.scale_);
 
 	GVariTree animation = GVariTree("アニメーション");
+	animation.SetMonitorCombo("アニメーション", &nowAnimeName_, modelData_.name);
+	animation.SetMonitorValue("アニメーションの自動再生フラグ", &iskanri_);
+	animation.SetValue("アニメーション進行度", &param_);
 	animation.SetValue("有効", &isAnimationActive_);
-	animation.SetMonitorCombo("アニメーション", &nowAnimeName_,modelData_.name);
 	animation.SetValue("ループ", &isAnimeRoop_);
 	animation.SetValue("ループ時間", &animationRoopSecond_);
 	
+
 	tree.SetTreeData(uvTree);
 	tree.SetTreeData(animation);
 

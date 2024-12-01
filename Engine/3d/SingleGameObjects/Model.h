@@ -245,7 +245,13 @@ private:
 	//モデルタイプ
 	ModelDataType modelType_;
 
-	private:
+private://デバッグ用
+
+	//0~1管理
+	bool iskanri_ = false;
+
+	//アニメーション進行度
+	float param_ = 0;
 
 	GVariTree tree = GVariTree("model");
 };

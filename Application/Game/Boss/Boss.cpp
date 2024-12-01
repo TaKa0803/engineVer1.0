@@ -37,9 +37,9 @@ Boss::Boss(Player* player)
 	model_->SetColor({ 0.8f,0,0,1 });
 
 	//コライダー初期化
-	collider_ = std::make_unique<SphereCollider>();
+	bodyCollider_ = std::make_unique<SphereCollider>();
 	//追従先を指定して初期化
-	collider_->Initialize("Boss", world_);
+	bodyCollider_->Initialize("Boss", world_);
 
 	//円影生成
 	shadow_ = std::make_unique<CirccleShadow>(world_);
@@ -70,7 +70,7 @@ Boss::Boss(Player* player)
 	gvg->SetMonitorValue("現在の体力", &HP_);
 	gvg->SetValue("MAXHP", &maxHP_);
 	gvg->SetValue("ボスサイズ", &world_.scale_);
-	gvg->SetTreeData(collider_->GetDebugTree("体コライダー"));
+	gvg->SetTreeData(bodyCollider_->GetDebugTree("体コライダー"));
 	gvg->SetTreeData(atkCollider_->GetDebugTree("攻撃コライダー"));
 
 	gvg->SetTreeData(behaviors_[(int)Behavior::IDLE]->GetTree());
@@ -158,7 +158,7 @@ void Boss::Update()
 	ui_->Update();
 
 	atkCollider_->Update();
-	collider_->Update();
+	bodyCollider_->Update();
 }
 
 void Boss::Draw()
@@ -170,7 +170,7 @@ void Boss::Draw()
 
 	stumpEffect_->Draw();
 
-	collider_->Draw();
+	bodyCollider_->Draw();
 	atkCollider_->Draw();
 }
 

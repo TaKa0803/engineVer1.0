@@ -18,9 +18,9 @@ void BossSumerSolt::InitWarning()
 
 void BossSumerSolt::InitATK()
 {
-	boss_->SetAnimeTime(false);
+	//boss_->SetAnimeTime(false);
 	boss_->GetATKCollider().isActive_ = true;
-	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::SumerSolt], parameters_.ATKSec, 1);
+	boss_->SetAnimation(boss_->animeName_[(int)Boss::Animation::SumerSolt], 0, 1);
 }
 
 void BossSumerSolt::InitStiffness()
@@ -59,7 +59,7 @@ void BossSumerSolt::UpdateATK()
 	}
 	else {
 		float t = currentCount_ / sec;
-		//boss_->SetAnimeTime(true, t);
+		boss_->SetAnimeTime(true, t);
 	}
 }
 
