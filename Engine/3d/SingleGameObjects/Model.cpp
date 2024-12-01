@@ -111,7 +111,7 @@ void Model::UpdateAnimation()
 			//ボーンのあるモデルの場合
 			if (modelType_ == kSkinningGLTF) {
 				//animationの更新を行って骨ごとのローカル情報を更新
-				ApplyAnimation(modelData_.skeleton, modelData_.animation[nowAnimeName_], animationTime_);
+				ApplyAnimation(modelData_.skeleton, modelData_.animation[nowAnimeName_], animationTime_,isSetATime_);
 				//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
 				Update(modelData_.skeleton);
 				//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
@@ -129,7 +129,7 @@ void Model::UpdateAnimation()
 		else {
 			animationTime_ = 0;
 			//animationの更新を行って骨ごとのローカル情報を更新
-			ApplyAnimation(modelData_.skeleton, modelData_.animation[nowAnimeName_], animationTime_);
+			ApplyAnimation(modelData_.skeleton, modelData_.animation[nowAnimeName_], animationTime_,isSetATime_);
 			//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
 			Update(modelData_.skeleton);
 			//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
@@ -290,19 +290,22 @@ void Model::Initialize(
 	
 }
 
-void Model::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime)
+void Model::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime,bool designation)
 {
-	//補完処理
+	//補完の処理
 	float t = 0;
 	if (isSupplementation_) {
 		supplementationCount_+=(float)DeltaTimer::deltaTime_;
 		t = supplementationCount_ / maxSupplementationCount_;
-		if (t >= 1.0f) {
+		//カウント最大の時
+		if (supplementationCount_>=maxSupplementationCount_) {
+			//Tを1.0にする
 			t = 1.0f;
 			isSupplementation_ = false;
 		}
 	}
 
+	//各ジョイントの更新
 	int i = 0;
 	for (Joint& joint : skeleton.joints) {
 		if (auto it = animation.nodeAnimations.find(joint.name); it != animation.nodeAnimations.end()) {
@@ -313,7 +316,7 @@ void Model::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float
 		}
 
 		//アニメーション変更によるフラグ処理ONの場合
-		if (isSupplementation_) {
+		if (isSupplementation_&&designation) {
 
 			joint.transform.translate_ = Lerp(savedT[i].translate_, joint.transform.translate_, t);
 			joint.transform.rotate_ = Slerp(savedT[i].rotate_, joint.transform.rotate_, t);
@@ -328,11 +331,6 @@ void Model::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float
 
 void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 {
-#ifdef _DEBUG
-	SetAnimationTime(iskanri_, param_);
-#endif // _DEBUG
-
-
 
 	UpdateAnimation();
 	//animationのあるモデルなら
@@ -507,8 +505,10 @@ GVariTree& Model::SetDebugParam(const std::string& treeName)
 
 	GVariTree animation = GVariTree("アニメーション");
 	animation.SetMonitorCombo("アニメーション", &nowAnimeName_, modelData_.name);
-	animation.SetMonitorValue("アニメーションの自動再生フラグ", &iskanri_);
-	animation.SetValue("アニメーション進行度", &param_);
+	animation.SetMonitorValue("アニメーションの自動再生フラグ", &isSetATime_);
+	animation.SetMonitorValue("アニメーションの補間フラグ", &isSupplementation_);
+
+	animation.SetValue("アニメーション進行度", &setAt_);
 	animation.SetValue("有効", &isAnimationActive_);
 	animation.SetValue("ループ", &isAnimeRoop_);
 	animation.SetValue("ループ時間", &animationRoopSecond_);

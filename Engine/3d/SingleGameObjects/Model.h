@@ -131,7 +131,7 @@ private:
 
 	void UpdateAnimation();
 
-	void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime);
+	void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime, bool designation);
 
 public:
 
@@ -211,8 +211,10 @@ private:
 
 	//現在のアニメ番号
 	//int animeNumber_ = 0;
-
+	
+	//0-1でアニメーションを動かすか否か
 	bool isSetATime_ = false;
+	//0-1の値
 	float setAt_ = 0;
 
 	//アニメーションカウント
@@ -246,12 +248,6 @@ private:
 	ModelDataType modelType_;
 
 private://デバッグ用
-
-	//0~1管理
-	bool iskanri_ = false;
-
-	//アニメーション進行度
-	float param_ = 0;
 
 	GVariTree tree = GVariTree("model");
 };

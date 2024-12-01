@@ -100,7 +100,7 @@ void Player::Initialize() {
 	world_.translate_.z = 2;
 	world_.UpdateMatrix();
 
-	SetAnimation(animeName_[AnimationData::Idle], animeBlend_, idleAnimeMulti_);
+	SetAnimation(animeName_[AnimationData::Idle], 0, idleAnimeMulti_);
 
 	moveE_->Initialize({ 1,1,1,1 });
 
@@ -306,7 +306,8 @@ void Player::Move(bool canDash, float spdMulti) {
 	//入力された移動ベクトル
 	Vector3 move{};
 	//ダッシュ,移動入力の有無
-	bool isDash, isMoveInput = { false };
+	bool isDash = false; 
+	bool isMoveInput =false;
 
 	//入力受付と向きなおし処理＆向いた向きベクトル取得
 	move = SetInputDirection(isMoveInput);
