@@ -115,7 +115,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\SumerSolt\BossSumerSolt.cpp" />
     <ClCompile Include="Application\Game\Boss\Behavior\Down\BossDown.cpp" />
     <ClCompile Include="Application\Game\Boss\UI\BossUI.cpp" />
-    <ClCompile Include="Application\Game\Effect\EffectLargeDebris.cpp" />
+    <ClCompile Include="Application\Game\Effect\LargeDebris\EffectLargeDebris.cpp" />
+    <ClCompile Include="Application\Game\Effect\Normal\EffectNormal.cpp" />
     <ClCompile Include="Application\Game\Player\hit\PlayerHit.cpp" />
     <ClCompile Include="Application\Game\Player\Idle\PlayerIdle.cpp" />
     <ClCompile Include="Application\Game\Player\Stamina\PlayerStamina.cpp" />
@@ -402,7 +403,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\Game\Boss\Behavior\Down\BossDown.h" />
     <ClInclude Include="Application\Game\Boss\Behavior\IBossBehavior.h" />
     <ClInclude Include="Application\Game\Boss\UI\BossUI.h" />
-    <ClInclude Include="Application\Game\Effect\EffectLargeDebris.h" />
+    <ClInclude Include="Application\Game\Effect\LargeDebris\EffectLargeDebris.h" />
+    <ClInclude Include="Application\Game\Effect\Normal\EffectNormal.h" />
     <ClInclude Include="Application\Game\Player\Behavior\IDLE\PlayerIdle.h" />
     <ClInclude Include="Application\Game\Player\Behavior\IPlayerBehavior.h" />
     <ClInclude Include="Application\Game\Player\hit\PlayerHit.h" />

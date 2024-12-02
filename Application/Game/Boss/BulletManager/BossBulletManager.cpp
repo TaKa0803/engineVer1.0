@@ -12,6 +12,9 @@ BossBulletManager* BossBulletManager::GetInstance()
 
 void BossBulletManager::SetUp()
 {
+
+	hiteffect_ = std::make_unique<EffectNormal>("smallDebris","hitplaneEffect");
+
 	//あらかじめメモリを確保しておく
 	datas_.reserve(10);
 	InstancingGameObject::Initialize("BossBullet");
@@ -23,11 +26,15 @@ void BossBulletManager::SetUp()
 	tree_.SetValue("弾のサイズ", &ammoScale_);
 	tree_.SetValue("コライダーサイズ", &colliderScale_);
 	tree_.SetTreeData(IMM_->CreateAndGetTree(tag_,"モデル"));
+	
+
+	
 }
 
 void BossBulletManager::Init()
 {
 	datas_.clear();
+	hiteffect_->Initialize();
 }
 
 void BossBulletManager::Update()
@@ -52,6 +59,7 @@ void BossBulletManager::Update()
 			//地面めり込みで削除
 			if (d->data.world.GetWorldTranslate().y <= 0) {
 				d->ishit = true;
+				hiteffect_->SpawnEffect(d->data.world.GetWorldTranslate());
 			}
 		}
 	}
@@ -65,6 +73,8 @@ void BossBulletManager::Update()
 			};
 			return false; }),
 		datas_.end());
+
+	hiteffect_->Update();
 }
 
 void BossBulletManager::Draw(int anime)
@@ -75,6 +85,7 @@ void BossBulletManager::Draw(int anime)
 
 		d->collider->Draw();
 	}
+	hiteffect_->Draw();
 }
 
 void BossBulletManager::SetData(const BossBulletData& data)

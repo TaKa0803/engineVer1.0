@@ -51,6 +51,9 @@ private:
 	//スタミナゲージ
 	std::unique_ptr<Sprite>gage_;
 
+	//赤ゲージ
+	std::unique_ptr<Sprite>redGage_;
+
 private://パラメータ
 
 	//スタミナデータ
@@ -95,6 +98,16 @@ private://パラメータ
 	//スタミナ量での色
 	Vector4 maxColor_{1,1,1,1};
 	Vector4 minColor_{1,1,1,1};
+
+	//赤ゲージ処理フラグ
+	bool isRedgage_ = false;
+	//ゲージが消える時間
+	float fadeOutRedGageSec_ = 5.0f;
+	//カウント
+	float currentRedGage_ = 0;
+	//減った現在のTの値
+	float nowT_ = 0;
+	float preT_ = 0;
 
 private://デバッグ関係
 	GVariTree tree_ = GVariTree("スタミナ");

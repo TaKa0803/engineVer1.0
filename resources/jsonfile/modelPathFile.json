@@ -22,6 +22,7 @@
   },
   "InstancingmodelPathFile": {
     "Debris": [ "Wall", "Wall.obj", 100 ],
+    "smallDebris": [ "Wall", "Wall.obj", 1000 ],
     "BossBullet": [ "Wall", "Wall.obj", 100 ],
     "weapon": [ "Weapon", "Weapon.obj", 64 ],
     "wall": [ "Stage", "Stage.obj", 5 ],

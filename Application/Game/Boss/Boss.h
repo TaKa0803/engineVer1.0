@@ -7,7 +7,7 @@
 #include"Game/Boss/UI/BossUI.h"
 #include"Game/Boss/Behavior/IBossBehavior.h"
 
-#include"Game/Effect/EffectLargeDebris.h"
+#include"Game/Effect/LargeDebris/EffectLargeDebris.h"
 #include"Game/Boss/BulletManager/BossBulletManager.h"
 
 //ボスクラス

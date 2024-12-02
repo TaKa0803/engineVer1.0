@@ -7,6 +7,7 @@ PlayerStamina::PlayerStamina()
 {
 
 	gage_.reset(Sprite::Create(TextureManager::white_, { 1,1 }, { 1,1 }, { 64,64 }, { 640,360 }, { 0.0f,0.5f }));
+	redGage_.reset(Sprite::Create(TextureManager::white_, { 1,1 }, { 1,1 }, { 64,64 }, { 640,360 }, { 0.0f,0.5f }));
 
 
 
@@ -25,6 +26,8 @@ PlayerStamina::PlayerStamina()
 	tree_.SetValue("揺れる時間", &shakeSec_);
 	tree_.SetValue("揺れる幅", &diffX_);
 	tree_.SetTreeData(gage_->GetTree("ゲージ"));
+	tree_.SetTreeData(redGage_->GetTree("赤ゲージ"));
+
 }
 
 void PlayerStamina::Init()
@@ -47,8 +50,6 @@ void PlayerStamina::Update()
 		//オーバーヒール処理
 		if (data_.currentStamina > data_.maxStamina) {
 			data_.currentStamina = data_.maxStamina;
-
-
 		}
 	}
 
@@ -60,6 +61,27 @@ void PlayerStamina::Update()
 	s.x = scale;
 	gage_->SetScale(s);
 	gage_->SetMaterialDataColor(Lerp(minColor_, maxColor_, t));
+
+	//赤ゲージの進行処理
+	if (isRedgage_) {
+		if (currentRedGage_ >= fadeOutRedGageSec_) {
+			isRedgage_ = false;
+		}
+		else {
+			//カウント進行
+			currentRedGage_ += (float)DeltaTimer::deltaTime_;
+			//進行度
+			float t = currentRedGage_ / fadeOutRedGageSec_;
+			//遷移量変更
+			float s = Lerp(preT_, nowT_,t);
+			//計算した遷移量でサイズ量を求める
+			float scale = Lerp(0, maxScaleX_, s);
+			//求めたものを渡す
+			Vector3 scaleR = redGage_->GetScale();
+			scaleR.x = scale;
+			redGage_->SetScale(scaleR);
+		}
+	}
 
 	//ゲージの揺れ処理
 	if (isShake_) {
@@ -88,6 +110,10 @@ void PlayerStamina::Update()
 
 void PlayerStamina::DrawGage()
 {
+	if (isRedgage_) {
+		redGage_->Draw();
+	}
+
 	gage_->Draw();
 }
 
@@ -153,6 +179,9 @@ bool PlayerStamina::CheckStamina(Type type)
 
 void PlayerStamina::UseStamina(Type type)
 {
+
+	preT_ = data_.currentStamina / data_.maxStamina;;
+
 	switch (type)
 	{
 	case PlayerStamina::Type::DASH:
@@ -182,5 +211,11 @@ void PlayerStamina::UseStamina(Type type)
 
 	//スタミナの回復開始のカウントをリセット
 	data_.currentCharge = 0;
+
+	isRedgage_ = true;
+	currentRedGage_ = 0;
+	nowT_ = data_.currentStamina / data_.maxStamina;
+
+
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 #include"InstancingGameObject/InstancingGameObject.h"
 #include"SphereCollider/SphereCollider.h"
+#include"Game/Effect/Normal/EffectNormal.h"
 #include<vector>
 
 struct BossBulletData {
@@ -83,6 +84,7 @@ private:
 
 	std::vector<std::unique_ptr<Datas>>datas_;
 
+	std::unique_ptr<EffectNormal>hiteffect_;
 private://パラメータ
 	float spd_=30.0f;
 

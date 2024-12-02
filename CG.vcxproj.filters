@@ -144,10 +144,11 @@
     <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\SumerSolt\BossSumerSolt.cpp" />
     <ClCompile Include="Application\Game\Boss\UI\BossUI.cpp" />
     <ClCompile Include="Application\Game\Boss\Behavior\Down\BossDown.cpp" />
-    <ClCompile Include="Application\Game\Effect\EffectLargeDebris.cpp" />
+    <ClCompile Include="Application\Game\Effect\LargeDebris\EffectLargeDebris.cpp" />
     <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\BackStep\BossBackStep.cpp" />
     <ClCompile Include="Application\Game\Player\Stamina\PlayerStamina.cpp" />
     <ClCompile Include="Application\Game\Player\hit\PlayerHit.cpp" />
+    <ClCompile Include="Application\Game\Effect\Normal\EffectNormal.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Game\Plane\Plane.h" />
@@ -270,10 +271,11 @@
     <ClInclude Include="Application\Game\Boss\UI\BossUI.h" />
     <ClInclude Include="Application\Game\Boss\Behavior\Down\BossDown.h" />
     <ClInclude Include="Application\Game\Boss\Behavior\IBossBehavior.h" />
-    <ClInclude Include="Application\Game\Effect\EffectLargeDebris.h" />
+    <ClInclude Include="Application\Game\Effect\LargeDebris\EffectLargeDebris.h" />
     <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\BackStep\BossBackStep.h" />
     <ClInclude Include="Application\Game\Player\Stamina\PlayerStamina.h" />
     <ClInclude Include="Application\Game\Player\hit\PlayerHit.h" />
+    <ClInclude Include="Application\Game\Effect\Normal\EffectNormal.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />
