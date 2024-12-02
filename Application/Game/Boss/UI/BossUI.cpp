@@ -23,7 +23,7 @@ void BossUI::Initialize()
 void BossUI::Update()
 {
 	//HPの比率計算
-	float diff = (float)boss_->HP_/(float)boss_->maxHP_;
+	float diff = (float)boss_->maxHP/(float)boss_->maxHP_;
 
 	//比率に合わせて画像スケール変更
 	float scaleX = Lerp(0, maxScale_, diff);

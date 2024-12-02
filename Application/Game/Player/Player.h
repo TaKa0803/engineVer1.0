@@ -74,6 +74,7 @@ public://パブリック変数
 		Rolling,    //ローリング 
 		ATK,		//攻撃
 		HITACTION,	//被攻撃時
+		KNOCKBACK,
 		kNumStates	//状態の数
 	};
 
@@ -87,7 +88,13 @@ public://パブリック変数
 		Vector3 acce_ = { 0,0,0 };
 
 		//体力
-		int HP_ = 10;
+		int maxHP = 10;
+
+		//かうんとHP
+		int currentHP = 0;
+
+		//死亡判定
+		bool isDead = false;
 
 		//移動速度
 		float spd_ = 13.0f;
@@ -128,6 +135,8 @@ public:
 
 	//パーティクル描画
 	void DrawParticle();
+
+	void DrawUI();
 
 	//ヒット時の処理
 	void OnCollision();

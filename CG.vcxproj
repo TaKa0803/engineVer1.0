@@ -116,6 +116,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\Game\Boss\Behavior\Down\BossDown.cpp" />
     <ClCompile Include="Application\Game\Boss\UI\BossUI.cpp" />
     <ClCompile Include="Application\Game\Effect\EffectLargeDebris.cpp" />
+    <ClCompile Include="Application\Game\Player\hit\PlayerHit.cpp" />
     <ClCompile Include="Application\Game\Player\Idle\PlayerIdle.cpp" />
     <ClCompile Include="Application\Game\Player\Stamina\PlayerStamina.cpp" />
     <ClCompile Include="Application\Game\Scene\GameClearScene.cpp" />
@@ -404,6 +405,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\Game\Effect\EffectLargeDebris.h" />
     <ClInclude Include="Application\Game\Player\Behavior\IDLE\PlayerIdle.h" />
     <ClInclude Include="Application\Game\Player\Behavior\IPlayerBehavior.h" />
+    <ClInclude Include="Application\Game\Player\hit\PlayerHit.h" />
     <ClInclude Include="Application\Game\Player\Idle\PlayerIdle.h" />
     <ClInclude Include="Application\Game\Player\Stamina\PlayerStamina.h" />
     <ClInclude Include="Application\Game\Scene\GameClearScene.h" />

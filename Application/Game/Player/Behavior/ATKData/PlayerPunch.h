@@ -43,6 +43,7 @@ private://プライベート変数
 private://パラメータ
 	struct Com1
 	{
+		float multiSpd = 0.1f;
 		//開始交直
 		float stStiffnessSec = 0.2f;
 		//攻撃状態
@@ -53,6 +54,7 @@ private://パラメータ
 
 	struct Com2
 	{
+		float multiSpd = 0.1f;
 		//開始交直
 		float stStiffnessSec = 0.3f;
 		//攻撃状態
@@ -63,6 +65,7 @@ private://パラメータ
 
 	struct Com3
 	{
+		float multiSpd = 0.1f;
 		//開始交直
 		float stStiffnessSec = 0.4f;
 		//攻撃状態
@@ -78,6 +81,7 @@ private://パラメータ
 		float count = 0;
 
 		//現在のコンボでの各時間
+		float multiSpd;
 		float stStiffness;
 		float atk;
 		float edStiffness;

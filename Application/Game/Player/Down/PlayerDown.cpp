@@ -55,16 +55,23 @@ void PlayerDown::Update()
 		if (player_->world_.translate_.y < 0) {
 			player_->world_.translate_.y = 0;
 			player_->data_.velo_.SetZero();
-			behavior_ = Behavior::landing;
-			player_->SetAnimation(player_->animeName_[(int)Player::AnimationData::DawnBack], 0, returnAnimeSec_, false);
 
+			//体力が尽きた場合
+			if (player_->data_.currentHP >= player_->data_.maxHP) {
+				player_->data_.isDead = true;
+			}
+			else {
+				behavior_ = Behavior::landing;
+				player_->SetAnimation(player_->animeName_[(int)Player::AnimationData::DawnBack], 0, returnAnimeSec_, false);
+			}
 		}
-	}
+	}//起き上がり処理
 	else if(behavior_ == Behavior::landing){
 		currentLand_ += (float)DeltaTimer::deltaTime_;
 
+		//
 		if (currentLand_ >= randSec_) {
-			player_->SetBehaviorReq (Player::Behavior::IDLE);
+				player_->SetBehaviorReq(Player::Behavior::IDLE);	
 		}
 		else {
 			player_->Move(false,0.5f);

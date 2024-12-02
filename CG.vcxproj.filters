@@ -147,6 +147,7 @@
     <ClCompile Include="Application\Game\Effect\EffectLargeDebris.cpp" />
     <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\BackStep\BossBackStep.cpp" />
     <ClCompile Include="Application\Game\Player\Stamina\PlayerStamina.cpp" />
+    <ClCompile Include="Application\Game\Player\hit\PlayerHit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Game\Plane\Plane.h" />
@@ -272,6 +273,7 @@
     <ClInclude Include="Application\Game\Effect\EffectLargeDebris.h" />
     <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\BackStep\BossBackStep.h" />
     <ClInclude Include="Application\Game\Player\Stamina\PlayerStamina.h" />
+    <ClInclude Include="Application\Game\Player\hit\PlayerHit.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\jsonfile\enemyPopData.json" />

@@ -39,7 +39,7 @@ private://**ノーマルの攻撃手段
 		ShotBullet,		//弾発射
 		Charge,			//突撃
 		//Punch,
-		SumerSolt,
+		//SumerSolt,
 		BackStep,
 		CountOfATKData
 	};
@@ -60,7 +60,7 @@ private://デバッグ
 		"弾発射",
 		"タックル",
 		//"パンチ",
-		"サマーソルト",
+		//"サマーソルト",
 		"バックステップ",
 	};
 

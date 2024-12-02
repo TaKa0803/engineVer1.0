@@ -1,5 +1,6 @@
 #pragma once
 #include"GvariGroup/GvariGroup.h"
+#include"Sprite/Sprite.h"
 
 //前方宣言
 class Player;
@@ -12,6 +13,7 @@ public:
 		DASH,
 		ROLL,
 		ATK,
+		HIT,
 		CountType
 	};
 
@@ -25,6 +27,9 @@ public:
 
 	//更新
 	void Update();
+
+	//gage
+	void DrawGage();
 
 	/// <summary>
 	/// 選択したタイプがスタミナたりるかチェック
@@ -41,8 +46,10 @@ public:
 
 	//ツリー取得
 	GVariTree& GetTree() { return tree_; }
-public:
-	bool Get;
+private:
+	
+	//スタミナゲージ
+	std::unique_ptr<Sprite>gage_;
 
 private://パラメータ
 
@@ -67,8 +74,16 @@ private://パラメータ
 		float dashCostSec = 10;
 
 		float atkCost = 10;
+
+		float hitCost = 30;
 	}data_{};
 
+	//最大スケール
+	float maxScaleY_=128;
+
+	//
+	float alphaSec = 1.0f;
+	float currentAlpha_ = 0;
 
 private://デバッグ関係
 	GVariTree tree_ = GVariTree("スタミナ");

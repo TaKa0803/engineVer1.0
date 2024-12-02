@@ -223,7 +223,7 @@ public://**パラメータ
 
 	int maxHP_ = 20;
 
-	int HP_ = 20;
+	int maxHP = 20;
 
 	bool isDead_ = false;
 private://ImGui用

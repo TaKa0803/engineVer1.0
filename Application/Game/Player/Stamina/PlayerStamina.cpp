@@ -1,8 +1,14 @@
 #include "PlayerStamina.h"
 #include"DeltaTimer/DeltaTimer.h"
+#include"TextureManager/TextureManager.h"
 
 PlayerStamina::PlayerStamina()
 {
+
+	gage_.reset(Sprite::Create(TextureManager::white_, { 1,1 }, { 1,1 }, { 64,64 }, { 640,360 }, { 0.5f,1.0f }));
+	
+
+
 	tree_.SetMonitorValue("現スタミナ", &data_.currentStamina);
 	tree_.SetMonitorValue("回復開始カウント", &data_.currentCharge);
 
@@ -12,7 +18,14 @@ PlayerStamina::PlayerStamina()
 	tree_.SetValue("回転時の消費量", &data_.rollCost);
 	tree_.SetValue("ダッシュ時の消費量/1s", &data_.dashCostSec);
 	tree_.SetValue("攻撃時の消費量", &data_.atkCost);
-	
+	tree_.SetValue("画像の最大サイズY", &maxScaleY_);
+	tree_.SetTreeData(gage_->GetTree("ゲージ"));
+}
+
+void PlayerStamina::Init()
+{
+	data_.currentStamina = data_.maxStamina;
+	data_.currentCharge = 0;
 }
 
 void PlayerStamina::Update()
@@ -29,9 +42,26 @@ void PlayerStamina::Update()
 		//オーバーヒール処理
 		if (data_.currentStamina > data_.maxStamina) {
 			data_.currentStamina = data_.maxStamina;
-		}
 
+			//zouka
+			currentAlpha_ -= (float)DeltaTimer::deltaTime_;
+		}
 	}
+
+	//画像の更新
+	//割合取得
+	float t = data_.currentStamina / data_.maxStamina;
+	float scale = Lerp(0, maxScaleY_, t);
+	Vector3 s= gage_->GetScale();
+	s.y = scale;
+	gage_->SetScale(s);
+
+	//float alpha = currentAlpha_ / ;
+}
+
+void PlayerStamina::DrawGage()
+{
+	gage_->Draw();
 }
 
 bool PlayerStamina::CheckStamina(Type type)
@@ -63,6 +93,13 @@ bool PlayerStamina::CheckStamina(Type type)
 		}
 		break;
 
+	case PlayerStamina::Type::HIT://攻撃処理
+		//ローリングに必要なスタミナの値がある時
+		if (data_.currentStamina >= data_.hitCost) {
+			//可能だと返却
+			return true;
+		}
+		break;
 	case PlayerStamina::Type::CountType:
 		break;
 	default:
@@ -92,6 +129,10 @@ void PlayerStamina::UseStamina(Type type)
 		data_.currentStamina -= data_.atkCost;
 		break;
 
+	case PlayerStamina::Type::HIT:
+		//コスト分スタミナを消費
+		data_.currentStamina -= data_.hitCost;
+		break;
 	case PlayerStamina::Type::CountType:
 		break;
 	default:

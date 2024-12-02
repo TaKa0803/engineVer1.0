@@ -43,7 +43,7 @@ void BossBackStep::InitBack()
 {
 
 	//割合で攻撃を変更
-	float dif = (float)boss_->HP_ / (float)boss_->maxHP_;
+	float dif = (float)boss_->maxHP / (float)boss_->maxHP_;
 
 	if (dif < percentage_) {
 		backBehavior_ = BackBehavior::ATK;

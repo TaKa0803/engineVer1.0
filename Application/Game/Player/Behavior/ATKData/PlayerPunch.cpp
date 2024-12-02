@@ -17,16 +17,19 @@ PlayerPunch::PlayerPunch(Player* player)
 	tree_.name_ = "パンチ";
 
 	GVariTree com1T = GVariTree("コンボ1");
+	com1T.SetValue("移動倍率", &parameters_.com1.multiSpd);
 	com1T.SetValue("開始交直", &parameters_.com1.stStiffnessSec);
 	com1T.SetValue("攻撃時間", &parameters_.com1.atkSec);
 	com1T.SetValue("終了交直", &parameters_.com1.edStiffnessSec);
 
 	GVariTree com2T = GVariTree("コンボ2");
+	com2T.SetValue("移動倍率", &parameters_.com2.multiSpd);
 	com2T.SetValue("開始交直", &parameters_.com2.stStiffnessSec);
 	com2T.SetValue("攻撃時間", &parameters_.com2.atkSec);
 	com2T.SetValue("終了交直", &parameters_.com2.edStiffnessSec);
 
 	GVariTree com3T = GVariTree("コンボ3");
+	com3T.SetValue("移動倍率", &parameters_.com3.multiSpd);
 	com3T.SetValue("開始交直", &parameters_.com3.stStiffnessSec);
 	com3T.SetValue("攻撃時間", &parameters_.com3.atkSec);
 	com3T.SetValue("終了交直", &parameters_.com3.edStiffnessSec);
@@ -57,6 +60,7 @@ void PlayerPunch::Initialize()
 
 	//パラメータに値を追加
 	Com1& com = parameters_.com1;
+	parameters_.multiSpd = com.multiSpd;
 	parameters_.stStiffness = com.stStiffnessSec;
 	parameters_.atk = com.atkSec;
 	parameters_.edStiffness = com.edStiffnessSec;
@@ -97,12 +101,14 @@ void PlayerPunch::Update()
 			//各パラの変更
 			if (parameters_.atkCount_ == 1) {
 				Com2& com = parameters_.com2;
+				parameters_.multiSpd = com.multiSpd;
 				parameters_.stStiffness = com.stStiffnessSec;
 				parameters_.atk = com.atkSec;
 				parameters_.edStiffness = com.edStiffnessSec;
 			}
 			else if (parameters_.atkCount_ == 2) {
 				Com3& com = parameters_.com3;
+				parameters_.multiSpd = com.multiSpd;
 				parameters_.stStiffness = com.stStiffnessSec;
 				parameters_.atk = com.atkSec;
 				parameters_.edStiffness = com.edStiffnessSec;
@@ -146,10 +152,12 @@ void PlayerPunch::CheckNextState()
 			//音発生
 			AudioManager::PlaySoundData(punchSound_);
 			player_->SetAnimeTime(true, 1);
+
 		}
 		else {
 			t /= parameters_.stStiffness;
 			player_->SetAnimeTime(true, t);
+			player_->Move(false, parameters_.multiSpd);
 		}
 		break;
 

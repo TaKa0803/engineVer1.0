@@ -9,6 +9,7 @@
 #include"Game/Player/Stamina/PlayerStamina.h"
 #include"Game/Player/Idle/PlayerIdle.h"
 #include"Game/Player/Down/PlayerDown.h"
+#include"Game/Player/hit/PlayerHit.h"
 
 #include<imgui.h>
 #include<json.hpp>
@@ -29,7 +30,9 @@ Player::Player() {
 	behaviors_[(int)Behavior::IDLE] = std::make_unique<PlayerIdle>(this);
 	behaviors_[(int)Behavior::Rolling] = std::make_unique<PlayerRoll>(this);
 	behaviors_[(int)Behavior::ATK] = std::make_unique<PlayerATKManager>(this);
-	behaviors_[(int)Behavior::HITACTION] = std::make_unique<PlayerDown>(this);
+	behaviors_[(int)Behavior::HITACTION] = std::make_unique<PlayerHit>(this);
+	behaviors_[(int)Behavior::KNOCKBACK] = std::make_unique<PlayerDown>(this);
+
 
 	//パーティクルマネージャの生成
 	hitPariticle = std::make_unique<ParticleManager>();
@@ -69,7 +72,9 @@ Player::Player() {
 #ifdef _DEBUG
 	gvg->SetMonitorValue("デバッグ用ヒットフラグ", &debugIsHit_);
 #endif // _DEBUG
-	gvg->SetValue("体力", &data_.HP_);
+
+	gvg->SetMonitorValue("体力", &data_.currentHP);
+	gvg->SetValue("最大体力", &data_.maxHP);
 	gvg->SetValue("移動速度", &data_.spd_);
 	gvg->SetValue("ダッシュ時の速度倍率", &data_.dashMultiply);
 	gvg->SetValue("無敵時間", &data_.noHitTime_);
@@ -86,6 +91,7 @@ Player::Player() {
 	gvg->SetTreeData(stamina_->GetTree());
 	gvg->SetTreeData(behaviors_[(int)Behavior::Rolling]->GetTree());
 	gvg->SetTreeData(behaviors_[(int)Behavior::HITACTION]->GetTree());
+	gvg->SetTreeData(behaviors_[(int)Behavior::KNOCKBACK]->GetTree());
 	gvg->SetTreeData(behaviors_[(int)Behavior::ATK]->GetTree());
 
 	gvg->SetTreeData(hitPariticle->GetTreeData("攻撃ヒット時エフェクト"));
@@ -102,9 +108,12 @@ void Player::Initialize() {
 
 	SetAnimation(animeName_[AnimationData::Idle], 0, idleAnimeMulti_);
 
+	stamina_->Init();
+
 	moveE_->Initialize({ 1,1,1,1 });
 
 	data_ = PlayerData{};
+
 
 	bodyCollider_->Update();
 	atkCollider_->Update();
@@ -167,6 +176,11 @@ void Player::DrawParticle()
 	moveE_->Draw();
 }
 
+void Player::DrawUI()
+{
+	stamina_->DrawGage();
+}
+
 void Player::OnCollision()
 {
 #ifdef _DEBUG
@@ -180,15 +194,43 @@ void Player::OnCollision()
 	if (isHit_) {
 		//ヒットフラグをOFF
 		isHit_ = false;
-		//HPを減らす
-		data_.HP_--;
-		//状態をヒット状態へ
-		behaviorReq_ = Behavior::HITACTION;
-		//無敵時間を設定
-		data_.currentHitCount_ = data_.noHitTime_;
-		//プレイヤーの攻撃コライダーをOFF
-		atkCollider_->isActive_ = false;
 
+		//スタミナがたりる場合
+		if (stamina_->CheckStamina(PlayerStamina::Type::HIT)) {
+			//スタミナ消費
+			stamina_->UseStamina(PlayerStamina::Type::HIT);
+			//ダメージ半分の処理？
+			//HPを減らす
+			data_.currentHP++;
+
+			if (data_.currentHP >= data_.maxHP) {
+				//状態をヒット状態へ
+				behaviorReq_ = Behavior::KNOCKBACK;
+				//無敵時間を設定
+				data_.currentHitCount_ = data_.noHitTime_;
+				//プレイヤーの攻撃コライダーをOFF
+				atkCollider_->isActive_ = false;
+			}
+			else {
+
+				//状態をヒット状態へ
+				behaviorReq_ = Behavior::HITACTION;
+				//プレイヤーの攻撃コライダーをOFF
+				atkCollider_->isActive_ = false;
+			}
+		}
+		else {
+			//大きく吹き飛ぶ処理
+
+			//HPを減らす
+			data_.currentHP++;
+			//状態をヒット状態へ
+			behaviorReq_ = Behavior::KNOCKBACK;
+			//無敵時間を設定
+			data_.currentHitCount_ = data_.noHitTime_;
+			//プレイヤーの攻撃コライダーをOFF
+			atkCollider_->isActive_ = false;
+		}
 	}
 }
 

@@ -149,8 +149,6 @@ void GameScene::Draw() {
 	//インスタンシングのモデルを全描画
 	InstancingModelManager::GetInstance()->DrawAllModel();
 
-
-
 	//プレイヤーパーティクルを描画
 	player_->DrawParticle();
 
@@ -161,6 +159,9 @@ void GameScene::Draw() {
 
 	//グローバルバリアブル指定
 	PostEffectManager::GetInstance()->GvariEffectDraw();
+
+	//プレイヤーUI描画
+	player_->DrawUI();
 
 	//ボスのUI描画
 	boss_->DrawUI();
@@ -216,7 +217,7 @@ void GameScene::Collision() {
 void GameScene::SceneChange() {
 
 	//ボス死亡時の処理
-	if (boss_->HP_<=0&&!isSceneChange_) {
+	if (boss_->maxHP<=0&&!isSceneChange_) {
 
 		//シーン変更フラグをON
 		isSceneChange_ = true;
@@ -231,7 +232,7 @@ void GameScene::SceneChange() {
 	}
 	
 	//プレイヤ死亡字の処理
-	if (player_->data_.HP_ <= 0) {
+	if (player_->data_.isDead) {
 		//シーンを変更
 		sceneNo = GAMEOVER;
 		//音をすべてかえる

@@ -25,7 +25,7 @@ BossNormalATKManager::BossNormalATKManager(Boss* boss)
 	typeArr_[(int)ATKType::ShotBullet] = std::make_unique<BossShotBullet>();
 	typeArr_[(int)ATKType::Charge] = std::make_unique<BossCharge>();
 	//typeArr_[(int)ATKType::Punch] = std::make_unique<BossPunch>();
-	typeArr_[(int)ATKType::SumerSolt] = std::make_unique<BossSumerSolt>();
+	//typeArr_[(int)ATKType::SumerSolt] = std::make_unique<BossSumerSolt>();
 	typeArr_[(int)ATKType::BackStep] = std::make_unique<BossBackStep>();
 
 	//デバッグ用に文字列をまとめる

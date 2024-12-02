@@ -67,7 +67,7 @@ Boss::Boss(Player* player)
 	gvg->SetMonitorValue("思考", &brein_);
 	gvg->SetMonitorValue("当たり判定", &hit_);
 	gvg->SetMonitorValue("behavior", &nowBehaviorName_);
-	gvg->SetMonitorValue("現在の体力", &HP_);
+	gvg->SetMonitorValue("現在の体力", &maxHP);
 	gvg->SetValue("MAXHP", &maxHP_);
 	gvg->SetValue("ボスサイズ", &world_.scale_);
 	gvg->SetTreeData(bodyCollider_->GetDebugTree("体コライダー"));
@@ -106,7 +106,7 @@ void Boss::Init()
 	behaviorReq_ = Behavior::IDLE;
 
 	//HPのセット
-	HP_ = maxHP_;
+	maxHP = maxHP_;
 
 	//セットしたパラメータのセーブデータ読み込み
 	GlobalVariableManager::GetInstance()->SetLoadGroupData(groupName_);
@@ -125,7 +125,7 @@ void Boss::Update()
 
 	//死亡チェック
 	if (behavior_ != Behavior::DOWN) {
-		if (HP_ <= 0) {
+		if (maxHP <= 0) {
 			behaviorReq_ = Behavior::DOWN;
 		}
 	}
@@ -184,8 +184,8 @@ void Boss::OnCollision()
 
 	if (hit_) {
 
-		HP_--;
-		if (HP_ <= 0) {
+		maxHP--;
+		if (maxHP <= 0) {
 			//isDead_ = true;
 		}
 

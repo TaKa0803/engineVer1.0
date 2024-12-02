@@ -9,21 +9,44 @@ GameUI::GameUI()
 	//スプライト生成
 	BButton_.reset(Sprite::Create(texture, { 180,90 }, { 90,90 }, { 64,64 }, { 1045, 650 }));
 
+	//ボタン画像読み込み
+	texture = TextureManager::LoadTexShortPath("AL/X.png").texNum;
+	//スプライト生成
+	XButton_.reset(Sprite::Create(texture, { 180,90 }, { 90,90 }, { 64,64 }, { 1045, 650 }));
+
+	//ボタン画像読み込み
+	texture = TextureManager::LoadTexShortPath("AL/A.png").texNum;
+	//スプライト生成
+	AButton_.reset(Sprite::Create(texture, { 180,90 }, { 90,90 }, { 64,64 }, { 1045, 650 }));
+
+
 	//攻撃アイコン画像読み込み
-	texture = TextureManager::LoadTex("resources/Texture/AL/punch.png").texNum;
+	texture = TextureManager::LoadTexShortPath("AL/punch.png").texNum;
 	//スプライト生成
 	punchSp_.reset(Sprite::Create(texture, { 180,90 }, { 90,90 }, { 90,90 }, { 1070,650 }));
-	//ボタン座標初期化
-	BButton_->SetPosition({ 1155,635 });
+
+
+	texture = TextureManager::LoadTexShortPath("AL/dash.png").texNum;
+	//スプライト生成
+	dashSp_.reset(Sprite::Create(texture, { 180,90 }, { 90,90 }, { 90,90 }, { 1070,650 }));
+	
+	texture = TextureManager::LoadTexShortPath("AL/roll.png").texNum;
+	//スプライト生成
+	rollSp_.reset(Sprite::Create(texture, { 180,90 }, { 90,90 }, { 90,90 }, { 1070,650 }));
+
 
 
 	//デバッグのために値をセット
 	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("UI");
-	gvg->SetValue("待機アイコン座標", &waitATKpos);
-	gvg->SetValue("待機アイコンサイズ", &waitATKscale);
 
-	gvg->SetValue("現在アイコン座標", &ATKpos);
-	gvg->SetValue("現在アイコンサイズ", &ATKscale);
+
+	gvg->SetTreeData(BButton_->GetTree("Bボタン"));
+	gvg->SetTreeData(XButton_->GetTree("Xボタン"));
+	gvg->SetTreeData(AButton_->GetTree("Aボタン"));
+
+	gvg->SetTreeData(punchSp_->GetTree("punchボタン"));
+	gvg->SetTreeData(dashSp_->GetTree("dashボタン"));
+	gvg->SetTreeData(rollSp_->GetTree("rollボタン"));
 
 }
 
@@ -33,16 +56,21 @@ void GameUI::Initialize()
 
 void GameUI::Update()
 {
-	punchSp_->SetTVTranslate({ 0.5f,0 });
-	punchSp_->SetPosition(waitATKpos);
-	punchSp_->SetScale(waitATKscale);
+
 }
 
 void GameUI::Draw()
 {
 	//パンチ画像描画
 	punchSp_->Draw();
+	dashSp_->Draw();
+	rollSp_->Draw();
+
+
 	//Bボタン画像描画
 	BButton_->Draw();
+	XButton_->Draw();
+	AButton_->Draw();
+
 }
 
