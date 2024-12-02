@@ -88,10 +88,10 @@ public://パブリック変数
 		Vector3 acce_ = { 0,0,0 };
 
 		//体力
-		int maxHP = 10;
+		float maxHP = 10;
 
 		//かうんとHP
-		int currentHP = 0;
+		float currentHP = 0;
 
 		//死亡判定
 		bool isDead = false;
@@ -218,6 +218,8 @@ private://メンバ関数
 	//アニメーションによるモデルの変更
 	void ModelRoop(bool ismove, bool isDash);
 
+	//HPバーの更新
+	void HPBarUpdate();
 private://状態管理
 
 	//プレイヤーの状態
@@ -235,7 +237,7 @@ private://ポインタ参照
 
 	const Camera* camera_ = nullptr;
 
-	const Boss* boss_;
+	const Boss* boss_=nullptr;
 
 private://変数
 	//パーティクルマネージャー
@@ -252,6 +254,8 @@ private://変数
 	//丸い影
 	std::unique_ptr<CirccleShadow>shadow_;
 
+	//HPゲージ
+	std::unique_ptr<Sprite>hpBar_;
 
 	//あたるかの判定
 	bool isHit_ = true;
@@ -270,6 +274,8 @@ private://パラメータ
 	//走りアニメ速度
 	float runAnimeMulti_ = 1.0f;
 
+	//HPバーの最大サイズ
+	float maxBarScale_=640;
 private://デバッグ用
 	
 #ifdef _DEBUG

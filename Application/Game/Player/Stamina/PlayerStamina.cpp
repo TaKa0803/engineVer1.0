@@ -5,7 +5,7 @@
 PlayerStamina::PlayerStamina()
 {
 
-	gage_.reset(Sprite::Create(TextureManager::white_, { 1,1 }, { 1,1 }, { 64,64 }, { 640,360 }, { 0.5f,1.0f }));
+	gage_.reset(Sprite::Create(TextureManager::white_, { 1,1 }, { 1,1 }, { 64,64 }, { 640,360 }, { 0.0f,0.5f }));
 	
 
 
@@ -18,7 +18,7 @@ PlayerStamina::PlayerStamina()
 	tree_.SetValue("回転時の消費量", &data_.rollCost);
 	tree_.SetValue("ダッシュ時の消費量/1s", &data_.dashCostSec);
 	tree_.SetValue("攻撃時の消費量", &data_.atkCost);
-	tree_.SetValue("画像の最大サイズY", &maxScaleY_);
+	tree_.SetValue("画像の最大サイズX", &maxScaleX_);
 	tree_.SetTreeData(gage_->GetTree("ゲージ"));
 }
 
@@ -51,9 +51,9 @@ void PlayerStamina::Update()
 	//画像の更新
 	//割合取得
 	float t = data_.currentStamina / data_.maxStamina;
-	float scale = Lerp(0, maxScaleY_, t);
+	float scale = Lerp(0, maxScaleX_, t);
 	Vector3 s= gage_->GetScale();
-	s.y = scale;
+	s.x = scale;
 	gage_->SetScale(s);
 
 	//float alpha = currentAlpha_ / ;

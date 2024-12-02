@@ -79,7 +79,7 @@ private://パラメータ
 	}data_{};
 
 	//最大スケール
-	float maxScaleY_=128;
+	float maxScaleX_=128;
 
 	//
 	float alphaSec = 1.0f;

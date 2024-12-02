@@ -61,10 +61,13 @@ Player::Player() {
 	model_->IsEnableTexture(false);
 	//アニメーションを有効に
 	model_->SetAnimationActive(true);
-	model_->SetAnimeSecond(10);
+	//model_->SetAnimeSecond(10);
 
 	//円影生成
 	shadow_ = std::make_unique<CirccleShadow>(world_);
+
+	//HPバー画像生成
+	hpBar_.reset(Sprite::Create(TextureManager::white_,{1,1},{1,1},{1,1},{0,0},{0.0f,0.5f}));
 
 	//Gvariの値設定
 	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("Player");
@@ -78,6 +81,8 @@ Player::Player() {
 	gvg->SetValue("移動速度", &data_.spd_);
 	gvg->SetValue("ダッシュ時の速度倍率", &data_.dashMultiply);
 	gvg->SetValue("無敵時間", &data_.noHitTime_);
+
+	gvg->SetValue("HPバー最大サイズ", &maxBarScale_);
 
 	GVariTree anime = GVariTree("アニメーション速度");
 	anime.SetValue("待機", &idleAnimeMulti_);
@@ -98,6 +103,7 @@ Player::Player() {
 	gvg->SetTreeData(model_->SetDebugParam("model"));
 	gvg->SetTreeData(bodyCollider_->GetDebugTree("体コライダー"));
 	gvg->SetTreeData(atkCollider_->GetDebugTree("攻撃コライダー"));
+	gvg->SetTreeData(hpBar_->GetTree("HPバー"));
 }
 
 void Player::Initialize() {
@@ -179,6 +185,7 @@ void Player::DrawParticle()
 void Player::DrawUI()
 {
 	stamina_->DrawGage();
+	hpBar_->Draw();
 }
 
 void Player::OnCollision()
@@ -427,6 +434,16 @@ void Player::ModelRoop(bool ismove, bool isDash)
 
 }
 
+void Player::HPBarUpdate()
+{
+	//現HPとの割合を取得
+	float t = data_.currentHP / data_.maxHP;
+	float scaleX = Lerp( maxBarScale_,0, t);
+	Vector3 s = hpBar_->GetScale();
+	s.x = scaleX;
+	hpBar_->SetScale(s);
+}
+
 void Player::SetAnimation(const std::string& animeName, float count, float loopSec, bool isLoop)
 {
 	//アニメーションを変更
@@ -473,6 +490,9 @@ void Player::GlobalUpdate()
 			isHit_ = true;
 		}
 	}
+
+	//HPbarの更新
+	HPBarUpdate();
 
 	//行列更新
 	world_.UpdateMatrix();
