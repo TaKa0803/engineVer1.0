@@ -18,12 +18,12 @@ EffectNormal::EffectNormal(const std::string& tag,const std::string& name)
 	tree->SetValue("posMin", &emitData_.spawmMinWide);
 	tree->SetValue("size", &emitData_.size);
 	tree->SetValue("spawm", &emitData_.numSpawn);
-	tree->SetValue("最大ベクトル方向", &emitData_.veloMax);
-	tree->SetValue("最小ベクトル方向", &emitData_.veloMin);
-	tree->SetValue("加速度", &emitData_.acce);
-	tree->SetValue("速度", &emitData_.spd);
-	tree->SetValue("生存時間", &emitData_.deadCount);
-	tree->SetTreeData(IMM_->CreateAndGetTree(tag_, "モデル"));
+	tree->SetValue("maxVeloDirec", &emitData_.veloMax);
+	tree->SetValue("minVeloDirec", &emitData_.veloMin);
+	tree->SetValue("acce", &emitData_.acce);
+	tree->SetValue("spd", &emitData_.spd);
+	tree->SetValue("liveTime", &emitData_.deadCount);
+	tree->SetTreeData(IMM_->CreateAndGetTree(tag_, "model"));
 }
 
 void EffectNormal::Initialize()

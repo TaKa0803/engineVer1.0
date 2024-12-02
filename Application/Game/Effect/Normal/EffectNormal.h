@@ -48,7 +48,7 @@ private:
 		Vector3 spawmMinWide;
 
 		//最小最大サイズ
-		Vector2 size{ 1,2 };
+		Vector2 size{ 0.1f,0.5f };
 
 		//最小最大生成量
 		Vector2 numSpawn{ 10,20 };
@@ -59,13 +59,13 @@ private:
 		Vector3 veloMin;
 
 		//加速度
-		Vector3 acce;
+		Vector3 acce{0,0,0};
 
 		//最小、最大初速度
-		Vector2 spd;
+		Vector2 spd{10.0f,20.0f};
 
 		//最小最大生存時間
-		Vector2 deadCount;
+		Vector2 deadCount{0.1f,0.5f};
 
 	}emitData_{};
 
