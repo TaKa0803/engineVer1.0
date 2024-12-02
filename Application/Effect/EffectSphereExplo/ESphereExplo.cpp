@@ -51,7 +51,7 @@ void EfSphereExplosion::Update()
 		//色関係
 		if (data.count >= data.minAlphaCount) {
 			float colort = float((data.count-data.minAlphaCount) / float(data.maxDeadCount - data.minAlphaCount));
-			data.color = Esing(data.mincolor, data.maxColor, colort);
+			data.color = Lerp(data.mincolor, data.maxColor, colort);
 		}
 		
 

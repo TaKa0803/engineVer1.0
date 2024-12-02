@@ -85,6 +85,10 @@ private://パラメータ
 	float alphaSec = 1.0f;
 	float currentAlpha_ = 0;
 
+	//スタミナ量での色
+	Vector4 maxColor_{1,1,1,1};
+	Vector4 minColor_{1,1,1,1};
+
 private://デバッグ関係
 	GVariTree tree_ = GVariTree("スタミナ");
 

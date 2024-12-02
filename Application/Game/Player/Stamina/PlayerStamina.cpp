@@ -19,6 +19,9 @@ PlayerStamina::PlayerStamina()
 	tree_.SetValue("ダッシュ時の消費量/1s", &data_.dashCostSec);
 	tree_.SetValue("攻撃時の消費量", &data_.atkCost);
 	tree_.SetValue("画像の最大サイズX", &maxScaleX_);
+	tree_.SetValue("最大HPの時の色", &maxColor_);
+	tree_.SetValue("最小HPの時の色", &minColor_);
+
 	tree_.SetTreeData(gage_->GetTree("ゲージ"));
 }
 
@@ -55,6 +58,7 @@ void PlayerStamina::Update()
 	Vector3 s= gage_->GetScale();
 	s.x = scale;
 	gage_->SetScale(s);
+	gage_->SetMaterialDataColor(Lerp(minColor_,maxColor_,t));
 
 	//float alpha = currentAlpha_ / ;
 }
