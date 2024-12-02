@@ -310,6 +310,12 @@ const Vector3 Player::GetP2BossVelo()
 	return boss_->world_.GetWorldTranslate() - world_.GetWorldTranslate();
 }
 
+bool Player::GetStaminaOfATK()
+{
+
+	return stamina_->CheckStamina(PlayerStamina::Type::ATK);
+}
+
 bool Player::GetATKInput()
 {
 	//キー入力でおこなわれていたか取得

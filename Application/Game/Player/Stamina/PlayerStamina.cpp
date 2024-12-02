@@ -1,12 +1,13 @@
 #include "PlayerStamina.h"
 #include"DeltaTimer/DeltaTimer.h"
 #include"TextureManager/TextureManager.h"
+#include"RandomNum/RandomNum.h"
 
 PlayerStamina::PlayerStamina()
 {
 
 	gage_.reset(Sprite::Create(TextureManager::white_, { 1,1 }, { 1,1 }, { 64,64 }, { 640,360 }, { 0.0f,0.5f }));
-	
+
 
 
 	tree_.SetMonitorValue("現スタミナ", &data_.currentStamina);
@@ -21,7 +22,8 @@ PlayerStamina::PlayerStamina()
 	tree_.SetValue("画像の最大サイズX", &maxScaleX_);
 	tree_.SetValue("最大HPの時の色", &maxColor_);
 	tree_.SetValue("最小HPの時の色", &minColor_);
-
+	tree_.SetValue("揺れる時間", &shakeSec_);
+	tree_.SetValue("揺れる幅", &diffX_);
 	tree_.SetTreeData(gage_->GetTree("ゲージ"));
 }
 
@@ -46,8 +48,7 @@ void PlayerStamina::Update()
 		if (data_.currentStamina > data_.maxStamina) {
 			data_.currentStamina = data_.maxStamina;
 
-			//zouka
-			currentAlpha_ -= (float)DeltaTimer::deltaTime_;
+
 		}
 	}
 
@@ -55,12 +56,34 @@ void PlayerStamina::Update()
 	//割合取得
 	float t = data_.currentStamina / data_.maxStamina;
 	float scale = Lerp(0, maxScaleX_, t);
-	Vector3 s= gage_->GetScale();
+	Vector3 s = gage_->GetScale();
 	s.x = scale;
 	gage_->SetScale(s);
-	gage_->SetMaterialDataColor(Lerp(minColor_,maxColor_,t));
+	gage_->SetMaterialDataColor(Lerp(minColor_, maxColor_, t));
 
-	//float alpha = currentAlpha_ / ;
+	//ゲージの揺れ処理
+	if (isShake_) {
+
+		//カウント以上で終了
+		if (currentShake_ >= shakeSec_) {
+			//フラグを切る
+			isShake_ = false;
+			//座標を戻す
+			gage_->SetPosition(basePos_);
+		}
+		else {
+			currentShake_ += (float)DeltaTimer::deltaTime_;
+
+			//左右のずれ取得
+			float diffX = RandomNumber::Get(-diffX_, diffX_);
+
+			//ずれた分の値取得
+			Vector3 newP = basePos_;
+			newP.x += diffX;
+			//座標をセット
+			gage_->SetPosition(newP);
+		}
+	}
 }
 
 void PlayerStamina::DrawGage()
@@ -110,6 +133,20 @@ bool PlayerStamina::CheckStamina(Type type)
 		break;
 	}
 
+	//シェイクフラグ有効
+	if (!isShake_) {
+		isShake_ = true;
+		//シェイクカウントリセット
+		currentShake_ = 0;
+
+		//元座標保存
+		basePos_ = gage_->GetPosition();
+	}
+	else {
+		//
+		//シェイクカウントリセット
+		currentShake_ = 0;
+	}
 	//処理をおこなえなかったと返却
 	return false;
 }

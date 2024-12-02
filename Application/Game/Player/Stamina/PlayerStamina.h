@@ -81,9 +81,16 @@ private://パラメータ
 	//最大スケール
 	float maxScaleX_=128;
 
-	//
-	float alphaSec = 1.0f;
-	float currentAlpha_ = 0;
+	//揺れフラグ
+	bool isShake_ = false;
+	//シェイクする時間
+	float shakeSec_ = 1.0f;
+	float currentShake_ = 0;
+	//揺れ幅
+	float diffX_ = 10.0f;
+
+	//画像の元の位置
+	Vector3 basePos_{};
 
 	//スタミナ量での色
 	Vector4 maxColor_{1,1,1,1};

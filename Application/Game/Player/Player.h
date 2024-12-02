@@ -188,6 +188,12 @@ public://ゲッター
 	//プレイヤーからボスへの向きベクトル
 	const Vector3 GetP2BossVelo();
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	bool GetStaminaOfATK();
+
 	//攻撃入力の取得処理まとめ
 	bool GetATKInput();
 	//回転入力の処理まとめ

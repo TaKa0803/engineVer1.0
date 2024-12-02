@@ -67,6 +67,8 @@ void PlayerPunch::Initialize()
 
 	//攻撃コライダー判定をONに
 	player_->GetATKCollider()->isActive_ = true;
+	//kougekiji
+	player_->InitATK();
 }
 
 void PlayerPunch::Update()
@@ -89,7 +91,7 @@ void PlayerPunch::Update()
 
 
 		//次段が有効＆次段入力済なら実行
-		if (state_ == Ed && (parameters_.atkCount_ + 1) < maxAtkCount_ && parameters_.isNextInput) {
+		if (state_ == Ed && (parameters_.atkCount_ + 1) < maxAtkCount_ && parameters_.isNextInput&&player_->GetStaminaOfATK()) {
 			//フラグを切る
 			parameters_.isNextInput = false;
 			parameters_.isInit = false;
@@ -118,7 +120,7 @@ void PlayerPunch::Update()
 			bool ans;
 			player_->SetInputDirection(ans);
 
-
+			player_->InitATK();
 		}
 	}
 	else {

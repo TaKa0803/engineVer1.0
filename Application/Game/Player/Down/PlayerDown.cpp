@@ -59,6 +59,7 @@ void PlayerDown::Update()
 			//体力が尽きた場合
 			if (player_->data_.currentHP >= player_->data_.maxHP) {
 				player_->data_.isDead = true;
+				player_->data_.velo_.SetZero();
 			}
 			else {
 				behavior_ = Behavior::landing;

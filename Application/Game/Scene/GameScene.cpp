@@ -234,7 +234,11 @@ void GameScene::SceneChange() {
 	//プレイヤ死亡字の処理
 	if (player_->data_.isDead) {
 		//シーンを変更
-		sceneNo = GAMEOVER;
+		//sceneNo = GAMEOVER;
+		
+		//シーン変更フラグをON
+		isSceneChange_ = true;
+
 		//音をすべてかえる
 		AudioManager::GetInstance()->StopAllSounds();
 	}
@@ -246,14 +250,20 @@ void GameScene::SceneChange() {
 	}
 
 	//次シーン進行処理フラグがONの場合
-	if (isSceneChange_&&boss_->isDead_) {
+	if (isSceneChange_&&(boss_->isDead_|| player_->data_.isDead) ) {
 		//カウントが最大値を上回った場合
 		if (currentSceneXhangeCount_++ >= maxSceneChangeCount_) {
 
 			//透明度を1に変更
 			sceneC_->SetColorAlpha(1);
-			//ゲームオーバーシーンに変更
-			sceneNo = GAMECLEAR;
+			if (player_->data_.isDead) {
+				//ゲームシーンに変更
+				sceneNo = GAMEOVER;
+			}
+			else if (boss_->isDead_) {
+				//ゲームシーンに変更
+				sceneNo = GAMECLEAR;
+			}
 		}
 		else {
 			//透明度を計算
