@@ -26,7 +26,7 @@ public:
 	/// 描画
 	/// </summary>
 	/// <param name="commandList">コマンドリスト</param>
-	void PreDraw(FillMode fillmode = FillMode::kSolid, BlendMode blendMode = BlendMode::kNormal);
+	void PreDraw();
 
 
 private:

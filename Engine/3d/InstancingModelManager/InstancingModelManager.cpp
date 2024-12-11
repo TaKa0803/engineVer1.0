@@ -166,10 +166,10 @@ float InstancingModelManager::GetAlpha(const std::string& tag)
 	//return;
 }
 
-void InstancingModelManager::SetData(const std::string& tag, const EulerWorldTransform& world, int animeNum,const Vector4&color ) {
+void InstancingModelManager::SetData(const std::string& tag, const EulerWorldTransform& world,const Vector4&color ) {
 
 	if (modelDatas_.find(tag) != modelDatas_.end()) {
-		modelDatas_[tag]->AddInstancingData(world,animeNum, color);
+		modelDatas_[tag]->AddInstancingData(world, color);
 	}
 	else {
 		//タグミスによるエラー処理

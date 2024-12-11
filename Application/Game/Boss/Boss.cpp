@@ -125,6 +125,7 @@ void Boss::Update()
 
 	//死亡チェック
 	if (behavior_ != Behavior::DOWN) {
+		//HP０でダウン
 		if (maxHP <= 0) {
 			behaviorReq_ = Behavior::DOWN;
 		}
@@ -199,6 +200,7 @@ Vector3 Boss::GetBoss2PlayerDirection()
 
 void Boss::SetNextATK(int atkNum)
 {
+	atkNum;
 	//攻撃を指定
 	behaviorReq_ = Behavior::ATK;
 	//攻撃マネージャに番号を送信

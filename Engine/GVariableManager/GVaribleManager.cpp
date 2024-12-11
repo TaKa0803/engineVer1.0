@@ -142,13 +142,13 @@ void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 					for (auto& key : treeData.monitorKeys) {
 
 						//タブ値の名前
-						std::string name = key;
+						std::string tabName = key;
 						//値
 						MonitorItemData& item = treeData.monitorValue[key];
 
 
 						//値の条件で処理変化
-						MonitorItemImGui(name, item);
+						MonitorItemImGui(tabName, item);
 					}
 
 
@@ -161,13 +161,13 @@ void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 				for (auto& key : treeData.monitorKeys) {
 
 					//タブ値の名前
-					std::string name = key;
+					std::string tabName = key;
 					//値
 					MonitorItemData& item = treeData.monitorValue[key];
 
 
 					//値の条件で処理変化
-					MonitorItemImGui(name, item);
+					MonitorItemImGui(tabName, item);
 				}
 			}
 		}
@@ -182,13 +182,13 @@ void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 					for (auto& key : treeData.valueKeys) {
 
 						//タブ値の名前
-						std::string name = key;
+						std::string tabName = key;
 						//値
 						ItemData& item = treeData.value[key];
 
 
 						//値の条件で処理変化
-						ItemImGui(name, item.value);
+						ItemImGui(tabName, item.value);
 					}
 
 					ImGui::TreePop();
@@ -201,13 +201,13 @@ void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 				for (auto& key : treeData.valueKeys) {
 
 					//タブ値の名前
-					std::string name = key;
+					std::string tabName = key;
 					//値
 					ItemData& item = treeData.value[key];
 
 
 					//値の条件で処理変化
-					ItemImGui(name, item.value);
+					ItemImGui(tabName, item.value);
 				}
 			}
 		}

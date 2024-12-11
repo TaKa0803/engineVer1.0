@@ -44,24 +44,21 @@ Model::~Model() {
 
 Model* Model::CreateFromOBJ(const std::string& filePath)
 {
-	DirectXFunc* DXF = DirectXFunc::GetInstance();
 
-#pragma region モデル
+	//モデルデータ管理クラスのインスタンス取得
 	ModelManager* mManager = ModelManager::GetInstance();
-
+	//モデルデータを取得
 	ModelAllData modeltea = mManager->GetModelData(filePath);
 
-
-	
-
-#pragma endregion
-
+	//新しくポインタを作成
 	Model* model = new Model();
+	//初期化処理
 	model->Initialize(modeltea, modeltea.model.material.textureFilePath, UINT(modeltea.model.vertices.size()));
 
-
+	//ログを出力
 	Log("Model " + filePath + " is Created!\n");
 
+	//終了
 	return model;
 }
 
@@ -351,7 +348,7 @@ void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 
 				newdata.matWorld_ = scaleW.matWorld_*  world * worldMatrix;
 
-				jointM__->SetData(jointMtag_, newdata,0, { 1,1,1,1 });
+				jointM__->SetData(jointMtag_, newdata, { 1,1,1,1 });
 
 				i++;
 			}
@@ -386,9 +383,8 @@ void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 		if (modelType_ ==kSkinningGLTF) {
 			vertexBufferView_ = skinningCS_->PreDraw();
 		}
-		bool isAnime = false;
 		//描画準備
-		ModelManager::PreDraw(isAnime, blendMode_, fillMode_);
+		ModelManager::PreDraw( blendMode_, fillMode_);
 
 	
 
@@ -483,6 +479,7 @@ void Model::ChangeAnimation(const std::string& animeName, float sec)
 
 GVariTree& Model::SetDebugParam(const std::string& treeName)
 {
+	tree.name_ = treeName;
 	tree.SetValue("model", &drawModel_);
 	tree.SetValue("joint", &drawJoint_);
 	tree.SetValue("material color", &materialData_->color);

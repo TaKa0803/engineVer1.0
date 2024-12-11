@@ -52,7 +52,7 @@ void SphereCollider::Update() {
 void SphereCollider::Draw() {
 #ifdef _DEBUG
 	if (isDraw_) {
-		InstancingModelManager::GetInstance()->SetData(tag_, world_,0, color_);
+		InstancingModelManager::GetInstance()->SetData(tag_, world_, color_);
 	}
 #endif // _DEBUG
 
@@ -201,7 +201,7 @@ bool SphereCollider::IsCollision(OBBCollider& obb, Vector3& backVec, float divis
 				Vector3 npVelo = preWorld_.GetWorldTranslate() - world_.GetWorldTranslate();
 				npVelo.SetNormalize();
 				//現在位置から最近接点までの向きベクトル取得
-				Vector3 v1 = preWorld_.GetWorldTranslate() - saikin;
+				v1 = preWorld_.GetWorldTranslate() - saikin;
 				//求めた長さを押し出し量にタス
 
 				backVec += v1;

@@ -6,6 +6,7 @@ class Boss;
 class IBossBehavior {
 
 public:
+	virtual ~IBossBehavior() = default;         // 純粋仮想関数
 
 	//初期化
 	virtual void Initialize()=0;

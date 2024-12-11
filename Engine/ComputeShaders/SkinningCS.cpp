@@ -168,8 +168,7 @@ void SkinningCS::Initialize(const ModelAllData& data)
 	//ポインタに情報設定
 	modelData_ = &data;
 
-	size_t jointsSize = modelData_->skeleton.joints.size();
-	size_t verticesSize = modelData_->model.vertices.size();;
+	size_t verticesSize = modelData_->model.vertices.size();
 
 #pragma region 各シェーダデータ
 

@@ -202,7 +202,7 @@ void SkyBoxPSO::Initialize()
 	Log("Complete Model GraphicsSystem Initialize\n");
 }
 
-void SkyBoxPSO::PreDraw(FillMode fillmode, BlendMode blendMode)
+void SkyBoxPSO::PreDraw()
 {
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	DXF_->GetCMDList()->SetGraphicsRootSignature(rootSignature);

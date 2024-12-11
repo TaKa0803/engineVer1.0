@@ -78,7 +78,6 @@
     <ClCompile Include="Engine\base\DXC\DXCManager.cpp" />
     <ClCompile Include="Application\Effect\EffectSphereExplo\ESphereExplo.cpp" />
     <ClCompile Include="Engine\Math\Vector4.cpp" />
-    <ClCompile Include="Application\Effect\dZoneE\DZone.cpp" />
     <ClCompile Include="Application\Debug\DebugScene.cpp" />
     <ClCompile Include="Application\Game\Player\Player.cpp" />
     <ClCompile Include="Application\Game\Scene\GameScene.cpp" />
@@ -196,7 +195,6 @@
     <ClInclude Include="Engine\3d\Collider\IsCollisions.h" />
     <ClInclude Include="Engine\base\DXC\DXCManager.h" />
     <ClInclude Include="Application\Effect\EffectSphereExplo\ESphereExplo.h" />
-    <ClInclude Include="Application\Effect\dZoneE\DZone.h" />
     <ClInclude Include="Application\Debug\DebugScene.h" />
     <ClInclude Include="Application\Game\items.h" />
     <ClInclude Include="Application\Game\Player\Player.h" />

@@ -33,10 +33,10 @@ void InstancingGameObject::Update() {
 
 }
 
-void InstancingGameObject::Draw(int anime)
+void InstancingGameObject::Draw()
 {
 	//タグに対応したモデルにワールド追加
-	IMM_->SetData(tag_, world_, anime,color_);
+	IMM_->SetData(tag_, world_,color_);
 }
 
 void InstancingGameObject::Debug(const char* name)

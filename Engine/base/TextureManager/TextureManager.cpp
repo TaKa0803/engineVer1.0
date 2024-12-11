@@ -135,34 +135,31 @@ void TextureManager::Finalize() {
 
 ReturnData TextureManager::LoadTex(const std::string& filePath)
 {
-	DirectXFunc*DXF= DirectXFunc::GetInstance();
+	
 
 	//パスがすでに呼ばれているかチェック
 	if (!TextureManager::GetInstance()->CheckSameData(filePath)) {
-
+		//呼ばれていない場合
+		//画像作製
 		DirectX::ScratchImage mipImages = LoadTexture(filePath);
 
-		
-
 		//入れた画像の管理番号を返す
-		return TextureManager::GetInstance()->CreateData(filePath, mipImages);
-		
+		return TextureManager::GetInstance()->CreateData(filePath, mipImages);		
 	}
 	else {
 		//呼ばれている場合
-
+		//画像管理データ送信
 		return TextureManager::GetInstance()->GetDataFromPath(filePath);
 	}
 }
 
 ReturnData TextureManager::LoadTexShortPath(const std::string& filePath)
 {
-	DirectXFunc* DXF = DirectXFunc::GetInstance();
 
 	//画像フォルダまでのパス
 	std::string texfoldaPath = "resources/Texture/";
 
-	//フルパス
+	//フルパス作成
 	std::string fullpath = texfoldaPath + filePath;
 
 	//パスがすでに呼ばれているかチェック

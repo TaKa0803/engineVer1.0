@@ -118,7 +118,7 @@ ModelAllData ModelManager::GetModelData(const std::string& filename) {
 
 	
 }
-void ModelManager::PreDraw(bool isHaveAnimation, BlendMode blendMode,FillMode fillMode)
+void ModelManager::PreDraw( BlendMode blendMode,FillMode fillMode)
 {
 
 	ModelManager::GetInstance()->grarphics_->PreDraw(fillMode, blendMode);

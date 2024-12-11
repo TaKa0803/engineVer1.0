@@ -14,8 +14,8 @@ protected:
 
 
 public:
-
 	IBossATK();
+	virtual ~IBossATK() = default;
 
 	/// <summary>
 	/// ボスポインタ取得（一回のみ

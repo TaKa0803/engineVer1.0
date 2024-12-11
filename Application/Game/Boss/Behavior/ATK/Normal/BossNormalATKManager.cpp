@@ -67,7 +67,7 @@ void BossNormalATKManager::Initialize(std::optional<int>contract)
 		type_ = (ATKType)contract.value();
 	}
 
-	//初期化
+	////初期化
 	typeArr_[(int)type_]->Init();
 	
 	//攻撃修了確認処理オフ
@@ -76,7 +76,7 @@ void BossNormalATKManager::Initialize(std::optional<int>contract)
 
 void BossNormalATKManager::Update()
 {
-	//更新処理
+	////更新処理
 	typeArr_[(int)type_]->Update();
 }
 

@@ -69,7 +69,7 @@ void EffectLargeDebris::Draw()
 	for (auto& data : effects_) {
 		data.world.UpdateMatrix();
 
-		IMM_->SetData(tag_, data.world,0,data.color);
+		IMM_->SetData(tag_, data.world,data.color);
 	}
 }
 

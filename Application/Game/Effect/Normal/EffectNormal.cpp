@@ -65,7 +65,7 @@ void EffectNormal::Update()
 void EffectNormal::Draw()
 {
 	for (auto& data : datas_) {
-		IMM_->SetData(tag_, data.world,0,data.color);
+		IMM_->SetData(tag_, data.world,data.color);
 	}
 }
 

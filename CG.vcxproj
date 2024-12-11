@@ -53,7 +53,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -80,7 +80,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -111,8 +111,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\BackStep\BossBackStep.cpp" />
-    <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\Punch\BossPunch.cpp" />
-    <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\SumerSolt\BossSumerSolt.cpp" />
+    <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\Punch\BossPunch.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\SumerSolt\BossSumerSolt.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Application\Game\Boss\Behavior\Down\BossDown.cpp" />
     <ClCompile Include="Application\Game\Boss\UI\BossUI.cpp" />
     <ClCompile Include="Application\Game\Effect\LargeDebris\EffectLargeDebris.cpp" />
@@ -144,7 +150,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\Effect\Impact\Impact.cpp" />
     <ClCompile Include="Application\Game\Player\Player.cpp" />
     <ClCompile Include="Application\Debug\DebugScene.cpp" />
-    <ClCompile Include="Application\Effect\dZoneE\DZone.cpp" />
     <ClCompile Include="Application\Effect\EffectExplosion.cpp" />
     <ClCompile Include="Application\Effect\EffectSphereExplo\ESphereExplo.cpp" />
     <ClCompile Include="Application\Game\Plane\Plane.cpp" />
@@ -398,8 +403,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\BackStep\BossBackStep.h" />
-    <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\Punch\BossPunch.h" />
-    <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\SumerSolt\BossSumerSolt.h" />
+    <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\Punch\BossPunch.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\SumerSolt\BossSumerSolt.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Application\Game\Boss\Behavior\Down\BossDown.h" />
     <ClInclude Include="Application\Game\Boss\Behavior\IBossBehavior.h" />
     <ClInclude Include="Application\Game\Boss\UI\BossUI.h" />
@@ -433,7 +444,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\Game\Player\Down\PlayerDown.h" />
     <ClInclude Include="Application\Game\Player\PlayerRoll\PlayerRoll.h" />
     <ClInclude Include="Application\Debug\DebugScene.h" />
-    <ClInclude Include="Application\Effect\dZoneE\DZone.h" />
     <ClInclude Include="Application\Effect\EffectExplosion.h" />
     <ClInclude Include="Application\Effect\EffectMove\EffectMove.h" />
     <ClInclude Include="Application\Effect\EffectSphereExplo\ESphereExplo.h" />

@@ -64,7 +64,7 @@ void (BossATKTypeManager::* BossATKTypeManager::TypeUpdate[])() {
 
 
 #pragma region 各状態の初期化と更新
-void BossATKTypeManager::InitNormal(std::optional<int>contract) { normal_->Initialize(contract_); }
+void BossATKTypeManager::InitNormal(std::optional<int>contract) { normal_->Initialize(contract); }
 void BossATKTypeManager::UpdateNormal() { normal_->Update(); }
 #pragma endregion
 

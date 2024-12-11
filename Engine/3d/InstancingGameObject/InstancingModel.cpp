@@ -30,7 +30,7 @@ InstancingModel::~InstancingModel() {
 }
 
 InstancingModel* InstancingModel::CreateFromOBJ(const std::string& directory, const std::string& filePath, int instancingNum) {
-	DirectXFunc* DXF = DirectXFunc::GetInstance();
+
 
 #pragma region モデル
 
@@ -61,7 +61,7 @@ InstancingModel* InstancingModel::CreateFromOBJ(const std::string& directory, co
 
 
 
-void InstancingModel::AddInstancingData(const EulerWorldTransform& world, int animeNum, const Vector4& color) {
+void InstancingModel::AddInstancingData(const EulerWorldTransform& world,  const Vector4& color) {
 	//データをコピー
 	InstancingData worl = { world,color };
 
@@ -198,7 +198,7 @@ void InstancingModel::Draw(int texture) {
 					EulerWorldTransform newdata;
 					newdata.matWorld_ = world;
 
-					IMM_->SetData(jointMtag_, newdata, 0, { 1,1,1,1 });
+					IMM_->SetData(jointMtag_, newdata, { 1,1,1,1 });
 
 					i++;
 				}

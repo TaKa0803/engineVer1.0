@@ -90,15 +90,15 @@ void LoadMap(nlohmann::json& deserialized, std::vector<ObjectData>& objects, std
 
 
 				//トランスフォーム値取得
-				nlohmann::json& transform = object["transform"];
+				nlohmann::json& transform2 = object["transform"];
 				//平行移動
-				obData.transform.translate_.x = (float)transform["translation"][0];
-				obData.transform.translate_.y = (float)transform["translation"][2];
-				obData.transform.translate_.z = (float)transform["translation"][1];
+				obData.transform.translate_.x = (float)transform2["translation"][0];
+				obData.transform.translate_.y = (float)transform2["translation"][2];
+				obData.transform.translate_.z = (float)transform2["translation"][1];
 				//回転
-				obData.transform.rotate_.x = Dig2Rad(-(float)transform["rotation"][0]);
-				obData.transform.rotate_.y = Dig2Rad(-(float)transform["rotation"][2]);
-				obData.transform.rotate_.z = Dig2Rad(-(float)transform["rotation"][1]);
+				obData.transform.rotate_.x = Dig2Rad(-(float)transform2["rotation"][0]);
+				obData.transform.rotate_.y = Dig2Rad(-(float)transform2["rotation"][2]);
+				obData.transform.rotate_.z = Dig2Rad(-(float)transform2["rotation"][1]);
 
 				//Float型単品ならその型群に
 				if (object[prop].is_number_float()) {
@@ -117,7 +117,7 @@ void LoadMap(nlohmann::json& deserialized, std::vector<ObjectData>& objects, std
 
 
 			if (object.contains("children")) {
-				nlohmann::json& child = object["children"];
+				//nlohmann::json& child = object["children"];
 				LoadMap(object, obData.child, "children");
 			}
 		}

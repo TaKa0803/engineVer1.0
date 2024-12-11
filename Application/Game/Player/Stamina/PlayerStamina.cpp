@@ -55,12 +55,12 @@ void PlayerStamina::Update()
 
 	//画像の更新
 	//割合取得
-	float t = data_.currentStamina / data_.maxStamina;
-	float scale = Lerp(0, maxScaleX_, t);
-	Vector3 s = gage_->GetScale();
-	s.x = scale;
-	gage_->SetScale(s);
-	gage_->SetMaterialDataColor(Lerp(minColor_, maxColor_, t));
+	float staminaT = data_.currentStamina / data_.maxStamina;
+	float scale = Lerp(0, maxScaleX_, staminaT);
+	Vector3 scaleVec3 = gage_->GetScale();
+	scaleVec3.x = scale;
+	gage_->SetScale(scaleVec3);
+	gage_->SetMaterialDataColor(Lerp(minColor_, maxColor_, staminaT));
 
 	//赤ゲージの進行処理
 	if (isRedgage_) {
@@ -73,13 +73,13 @@ void PlayerStamina::Update()
 			//進行度
 			float t = currentRedGage_ / fadeOutRedGageSec_;
 			//遷移量変更
-			float s = Lerp(preT_, nowT_,t);
+			float transition = Lerp(preT_, nowT_,t);
 			//計算した遷移量でサイズ量を求める
-			float scale = Lerp(0, maxScaleX_, s);
+			float scaleRedGage = Lerp(0, maxScaleX_, transition);
 			//求めたものを渡す
-			Vector3 scaleR = redGage_->GetScale();
-			scaleR.x = scale;
-			redGage_->SetScale(scaleR);
+			Vector3 scaleRedGageV3 = redGage_->GetScale();
+			scaleRedGageV3.x = scaleRedGage;
+			redGage_->SetScale(scaleRedGageV3);
 		}
 	}
 

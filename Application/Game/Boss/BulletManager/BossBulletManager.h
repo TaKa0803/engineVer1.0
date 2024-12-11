@@ -40,7 +40,7 @@ public:
 	/// 描画処理
 	/// </summary>
 	/// <param name="anime">モデルのアニメ番号</param>
-	void Draw(int anime =0)override;
+	void Draw()override;
 
 	/// <summary>
 	/// 弾データ登録

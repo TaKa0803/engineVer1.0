@@ -50,7 +50,7 @@ public:
 	/// <param name="isHaveAnimation">animationがあるか否か</param>
 	/// <param name="blendMode">ブレンド設定</param>
 	/// <param name="fillMode">埋めるか否か</param>
-	static void PreDraw(bool isHaveAnimation ,BlendMode blendMode = BlendMode::kNormal, FillMode fillMode = FillMode::kSolid );
+	static void PreDraw(BlendMode blendMode = BlendMode::kNormal, FillMode fillMode = FillMode::kSolid );
 private:
 
 	//各モデル描画用のPSO

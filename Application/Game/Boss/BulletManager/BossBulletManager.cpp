@@ -77,9 +77,8 @@ void BossBulletManager::Update()
 	hiteffect_->Update();
 }
 
-void BossBulletManager::Draw(int anime)
+void BossBulletManager::Draw()
 {
-
 	for (auto& d : datas_) {
 		IMM_->SetData(tag_, d->data.world);
 

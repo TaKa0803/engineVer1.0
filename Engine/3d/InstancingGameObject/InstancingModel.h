@@ -44,7 +44,7 @@ public:
 	/// </summary>
 	/// <param name="world">world座標</param>
 	/// <param name="color">色</param>
-	void AddInstancingData(const EulerWorldTransform& world,int animenum,const Vector4&color={1,1,1,1});
+	void AddInstancingData(const EulerWorldTransform& world,const Vector4&color={1,1,1,1});
 
 	void UpdateAnimationCount();
 
