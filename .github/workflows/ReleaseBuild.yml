@@ -1,4 +1,4 @@
-name: DebugBuild
+name: ReleaseBuild
 
 on:
   push:
@@ -7,9 +7,9 @@ on:
 
 env:
   #リポジトリのルートディレクトリを基点としたソリューションファイルのパス
-  SOLUTION_FILE_PATH: ../engine.slh
+  SOLUTION_FILE_PATH: engine.slh
   #VIrtual Studio の構成
-  CONFIGURATION: Debug
+  CONFIGURATION: Release
 
 jobs:
   build:
