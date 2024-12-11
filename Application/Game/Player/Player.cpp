@@ -146,8 +146,8 @@ void Player::Update() {
 		behavior_ = behaviorReq_.value();
 		behaviorReq_ = std::nullopt;
 
+		//すべての状態共通初期化
 		GlobalInitialize();
-
 
 		//実際の初期化処理
 		behaviors_[(int)behavior_]->Initialize();
@@ -156,8 +156,7 @@ void Player::Update() {
 	//状態の更新
 	behaviors_[(int)behavior_]->Update();
 
-
-
+	//共通更新
 	GlobalUpdate();
 
 }
@@ -208,7 +207,7 @@ void Player::OnCollision()
 			stamina_->UseStamina(PlayerStamina::Type::HIT);
 			//ダメージ半分の処理？
 			//HPを減らす
-			data_.currentHP++;
+			data_.currentHP+=1.0f/3.0f;
 
 			if (data_.currentHP >= data_.maxHP) {
 				//状態をヒット状態へ
