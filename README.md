@@ -1,3 +1,5 @@
+[![DebugBuild](https://github.com/TaKa0803/engineVer1.0/actions/workflows/DebugBuild.yml/badge.svg)](https://github.com/TaKa0803/engineVer1.0/actions/workflows/DebugBuild.yml)
+
 ## このエンジンについて
 
 DirectX12での自作エンジンです
