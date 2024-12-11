@@ -147,11 +147,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\Game\Player\Down\PlayerDown.cpp" />
     <ClCompile Include="Application\Game\Player\PlayerRoll\PlayerRoll.cpp" />
     <ClCompile Include="Application\Effect\EffectMove\EffectMove.cpp" />
-    <ClCompile Include="Application\Effect\Impact\Impact.cpp" />
     <ClCompile Include="Application\Game\Player\Player.cpp" />
     <ClCompile Include="Application\Debug\DebugScene.cpp" />
-    <ClCompile Include="Application\Effect\EffectExplosion.cpp" />
-    <ClCompile Include="Application\Effect\EffectSphereExplo\ESphereExplo.cpp" />
     <ClCompile Include="Application\Game\Plane\Plane.cpp" />
     <ClCompile Include="Application\AppScene\AppScene.cpp" />
     <ClCompile Include="Application\SceneManager\SceneManager.cpp" />
@@ -444,11 +441,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\Game\Player\Down\PlayerDown.h" />
     <ClInclude Include="Application\Game\Player\PlayerRoll\PlayerRoll.h" />
     <ClInclude Include="Application\Debug\DebugScene.h" />
-    <ClInclude Include="Application\Effect\EffectExplosion.h" />
     <ClInclude Include="Application\Effect\EffectMove\EffectMove.h" />
-    <ClInclude Include="Application\Effect\EffectSphereExplo\ESphereExplo.h" />
     <ClInclude Include="Application\Game\Plane\Plane.h" />
-    <ClInclude Include="Application\Effect\Impact\Impact.h" />
     <ClInclude Include="Application\AppScene\AppScene.h" />
     <ClInclude Include="Application\IScene\IScene.h" />
     <ClInclude Include="Application\SceneManager\SceneManager.h" />
