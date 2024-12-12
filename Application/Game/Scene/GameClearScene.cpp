@@ -30,7 +30,7 @@ void GameClearScene::Initialize()
 
 void GameClearScene::Update()
 {
-	screanShot_->DrawDebugImGui("sp");
+	//screanShot_->DrawDebugImGui("sp");
 
 	if (inp_->TriggerKey(DIK_SPACE) || inp_->IsTriggerButton(kButtonB)) {
 		AudioManager::GetInstance()->StopAllSounds();

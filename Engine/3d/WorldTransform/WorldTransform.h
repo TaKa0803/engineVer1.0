@@ -101,7 +101,7 @@ public:
 	/// <summary>
 	/// パラメータデバッグ表示
 	/// </summary>
-	void DrawDebug(const char* name);
+	//void DrawDebug(const char* name);
 
 
 #pragma region ゲッター

@@ -260,7 +260,8 @@ void DirectXFunc::DSVInitialize()
 void DirectXFunc::FenceInitialize()
 {
 #pragma region FenceとEventの生成と処理
-	HRESULT hr = device->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
+	HRESULT hr;
+	hr = device->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 	assert(SUCCEEDED(hr));
 
 	//FenceのSignalを持つためのイベントを作成する
@@ -477,7 +478,8 @@ ID3D12Resource* DirectXFunc::CreateRenderTextureResource( DXGI_FORMAT format, co
 		clearValue.Color[3] = clearColor.w;
 
 		ID3D12Resource* resource = nullptr;
-		HRESULT hr = device->CreateCommittedResource(
+		HRESULT hr;
+		hr = device->CreateCommittedResource(
 			&heapProperties,
 			D3D12_HEAP_FLAG_NONE,
 			&resourceDesc,

@@ -21,39 +21,34 @@ Sprite::~Sprite() {
 	materialResource_->Release();
 }
 
-void Sprite::DrawDebugImGui(const char* name) {
-
-	
-#ifdef _DEBUG
-	Vector4 color = materialData_->color;
-	if (ImGui::BeginMenu(name)) {
-		ImGui::DragFloat3("pos", &world_.translate_.x, 0.1f);
-		ImGui::DragFloat("rotate", &world_.rotate_.z);
-		ImGui::DragFloat2("scale", &world_.scale_.x, 0.1f);
-
-		ImGui::Text("UV");
-		ImGui::DragFloat2("uv pos", &uvWorld_.translate_.x, 0.1f);
-		ImGui::DragFloat("uv rotate", &uvWorld_.rotate_.z, 0.1f);
-		ImGui::DragFloat2("uv scale", &uvWorld_.scale_.x, 0.1f);
-
-
-
-		BlendMode blend = blendMode_;
-		const char* items[] = { "None","Normal","Add","Subtract","Multiply","Screen" };
-		int currentItem = static_cast<int>(blend);
-
-		if (ImGui::Combo("blendmode", &currentItem, items, IM_ARRAYSIZE(items))) {
-			blend = static_cast<BlendMode>(currentItem);
-		}
-
-		blendMode_ = blend;
-
-
-		ImGui::EndMenu();
-	}
-#endif // _DEBUG
-
-}
+//void Sprite::DrawDebugImGui(const char* name) {	
+//#ifdef _DEBUG
+//	Vector4 color = materialData_->color;
+//	if (ImGui::BeginMenu(name)) {
+//		ImGui::DragFloat3("pos", &world_.translate_.x, 0.1f);
+//		ImGui::DragFloat("rotate", &world_.rotate_.z);
+//		ImGui::DragFloat2("scale", &world_.scale_.x, 0.1f);
+//
+//		ImGui::Text("UV");
+//		ImGui::DragFloat2("uv pos", &uvWorld_.translate_.x, 0.1f);
+//		ImGui::DragFloat("uv rotate", &uvWorld_.rotate_.z, 0.1f);
+//		ImGui::DragFloat2("uv scale", &uvWorld_.scale_.x, 0.1f);
+//
+//		BlendMode blend = blendMode_;
+//		const char* items[] = { "None","Normal","Add","Subtract","Multiply","Screen" };
+//		int currentItem = static_cast<int>(blend);
+//
+//		if (ImGui::Combo("blendmode", &currentItem, items, IM_ARRAYSIZE(items))) {
+//			blend = static_cast<BlendMode>(currentItem);
+//		}
+//
+//		blendMode_ = blend;
+//
+//
+//		ImGui::EndMenu();
+//	}
+//#endif // _DEBUG
+//}
 
 
 

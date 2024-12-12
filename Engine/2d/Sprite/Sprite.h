@@ -55,7 +55,7 @@ public:
 	/// デバッグウィンドウ表示
 	/// </summary>
 	/// <param name="name">ウィンドウの名前</param>
-	void DrawDebugImGui(const char* name);
+	//void DrawDebugImGui(const char* name);
 
 	/// <summary>
 	/// 描画処理
