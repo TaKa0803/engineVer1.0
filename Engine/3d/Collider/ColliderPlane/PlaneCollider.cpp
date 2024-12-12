@@ -55,16 +55,16 @@ void PlaneCollider::Draw()
 #endif // _DEBUG
 }
 
-void PlaneCollider::Debug(const char* name)
-{
-#ifdef _DEBUG
-	if (!ImGui::BeginMenu(name)) {
-
-
-
-		ImGui::EndMenu();
-	}
-#endif // _DEBUG
-
-
-}
+//void PlaneCollider::Debug(const char* name)
+//{
+//#ifdef _DEBUG
+//	if (!ImGui::BeginMenu(name)) {
+//
+//
+//
+//		ImGui::EndMenu();
+//	}
+//#endif // _DEBUG
+//
+//
+//}

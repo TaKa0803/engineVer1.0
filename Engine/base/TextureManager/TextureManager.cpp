@@ -58,7 +58,8 @@ ID3D12Resource* CreateTextureResource(ID3D12Device* device, const DirectX::TexMe
 #pragma region 3.Resourceを生成する
 	//Resourceの生成
 	ID3D12Resource* resource = nullptr;
-	HRESULT hr = device->CreateCommittedResource(
+	HRESULT hr;
+	hr = device->CreateCommittedResource(
 		&heapProperties,							//Heapの設定
 		D3D12_HEAP_FLAG_NONE,						//Heapの特殊な設定。特になし。
 		&resourceDesc,								//Reosurceの設定

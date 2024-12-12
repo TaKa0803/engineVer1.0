@@ -12,7 +12,7 @@ public:
 
 	void Draw();
 
-	void Debug(const char* name);
+	//void Debug(const char* name);
 
 private:
 	std::string colliderTag_;

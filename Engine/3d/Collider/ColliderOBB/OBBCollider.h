@@ -36,7 +36,7 @@ public:
 	/// デバッグImGui表示
 	/// </summary>
 	/// <param name="name">window名</param>
-	void Debug(const char* name);
+	//void Debug(const char* name);
 
 	/// <summary>
 	/// 行列のみ更新(押し込み処理後に呼び出し

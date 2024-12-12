@@ -38,7 +38,7 @@ public:
 	/// デバッグウィンドウ表示
 	/// </summary>
 	/// <param name="name">ウィンドウ名</param>
-	void DrawDebugWindow(const char* name);
+	//void DrawDebugWindow(const char* name);
 
 	/// <summary>
 	/// マトリックス更新

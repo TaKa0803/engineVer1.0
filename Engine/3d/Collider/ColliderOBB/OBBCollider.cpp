@@ -61,23 +61,23 @@ void OBBCollider::Draw()
 #endif // _DEBUG
 }
 
-void OBBCollider::Debug(const char* name)
-{
-
-#ifdef _DEBUG
-	ImGui::Begin(name);
-	ImGui::DragFloat3("trans", &world_.translate_.x, 0.10f);
-	ImGui::DragFloat3("rotation", &world_.rotate_.x, 0.01f);
-	ImGui::DragFloat3("scale", &world_.scale_.x, 0.01f);
-
-	ImGui::ColorEdit4("hit color", &hitColor.x);
-	ImGui::Checkbox("isDraw", &isDraw_);
-	ImGui::Text("dot : %f", getDot);
-	ImGui::End();
-#endif // _DEBUG
-
-
-}
+//void OBBCollider::Debug(const char* name)
+//{
+//
+//#ifdef _DEBUG
+//	ImGui::Begin(name);
+//	ImGui::DragFloat3("trans", &world_.translate_.x, 0.10f);
+//	ImGui::DragFloat3("rotation", &world_.rotate_.x, 0.01f);
+//	ImGui::DragFloat3("scale", &world_.scale_.x, 0.01f);
+//
+//	ImGui::ColorEdit4("hit color", &hitColor.x);
+//	ImGui::Checkbox("isDraw", &isDraw_);
+//	ImGui::Text("dot : %f", getDot);
+//	ImGui::End();
+//#endif // _DEBUG
+//
+//
+//}
 
 bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int division)
 {

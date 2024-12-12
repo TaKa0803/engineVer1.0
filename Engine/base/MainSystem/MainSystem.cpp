@@ -20,7 +20,8 @@ MainSystem* MainSystem::GetInstance() {
 }
 
 void MainSystem::Run() {
-	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
+	HRESULT hr;
+	hr= CoInitializeEx(0, COINIT_MULTITHREADED);
 	assert(SUCCEEDED(hr));
 	//エンジン初期化処理
 	Initializes();

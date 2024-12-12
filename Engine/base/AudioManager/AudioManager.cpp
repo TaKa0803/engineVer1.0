@@ -149,7 +149,8 @@ void AudioManager::StopAllSounds()
 	 std::wstring wstr(path.begin(), path.end());
 
 	 //読み込み処理
-	 HRESULT hr= MFCreateSourceReaderFromURL(wstr.c_str(), NULL, &pMFSourceReader);
+	 HRESULT hr;
+	 hr= MFCreateSourceReaderFromURL(wstr.c_str(), NULL, &pMFSourceReader);
 	 assert(SUCCEEDED(hr));
 
 	 IMFMediaType* pMFMediaType{ nullptr };

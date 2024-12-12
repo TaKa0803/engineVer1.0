@@ -116,7 +116,7 @@ void DebugScnene::Debug()
 	PostEffectManager::GetInstance()->Debug();
 	//PostEffectManager::GetInstance()->Debug(PostEffectManager::kVinetting);
 
-	camera_->DrawDebugWindow("camera");
+	//camera_->DrawDebugWindow("camera");
 
 	ImGui::Begin("Light");
 
