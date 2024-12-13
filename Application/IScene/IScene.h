@@ -1,14 +1,15 @@
 #pragma once
 
 
-//基底クラス
+//シーン基底クラス
 class IScene {
-protected:
+protected://**共通変数**//
 	//シーン番号
 	static int sceneNo;
 	//trueでゲーム終了
 	static bool leaveGame;
-public:
+
+public://**パブリック関数**//
 
 	virtual void Initialize() = 0;
 	virtual void Update() = 0;
@@ -27,7 +28,6 @@ public:
 
 	//ゲーム終了フラグがONになっているか
 	static bool GetLeaveScene() { return leaveGame; };
-
 };
 
 //シーン

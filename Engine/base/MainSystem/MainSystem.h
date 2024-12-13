@@ -12,29 +12,42 @@
 #include"DeltaTimer/DeltaTimer.h"
 
 class MainSystem {
-public://シングルトンパターン
+public://**シングルトンパターン**//
 	static MainSystem* GetInstance();
-
-private://シングルトンパターン
-
+private:
 	MainSystem() = default;
 	~MainSystem() = default;
 	MainSystem(const MainSystem& o) = delete;
 	const MainSystem& operator=(const MainSystem& o) = delete;
 
-public:
+public://**パブリック関数**//
 
+	/// <summary>
+	/// 処理の開始
+	/// </summary>
 	void Run();
 
-private:
+private://**プライベート関数**//
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initializes();
 
+	/// <summary>
+	/// メインループ処理
+	/// </summary>
 	void MainRoop();
 
+	/// <summary>
+	/// 終了処理
+	/// </summary>
 	void Finalize();
 
-private:
+private://**プライベート変数**//
+
 #pragma region 基板初期化
+
 	//windowsアプリケーション
 	WindowApp* winApp_;
 

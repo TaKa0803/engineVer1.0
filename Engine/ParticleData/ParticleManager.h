@@ -44,7 +44,7 @@ public:
 
 	EmiterSphere* GetEmiterData() { return emiterData_; }
 
-	GVariTree& GetTreeData(const std::string& name);
+	GlobalVariableTree& GetTreeData(const std::string& name);
 private:
 
 	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -101,6 +101,6 @@ private:
 	//
 	bool onlyImpact_ = false;
 
-	GVariTree tree_ = GVariTree("");
+	GlobalVariableTree tree_ = GlobalVariableTree("");
 
 };

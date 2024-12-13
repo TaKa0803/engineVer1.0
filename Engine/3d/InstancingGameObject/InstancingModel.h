@@ -15,11 +15,26 @@
 #include"LightManager/LightManager.h"
 #include"GvariGroup/GvariGroup.h"
 
+//モデルマネージャの前方宣言
 class InstancingModelManager;
 
+//インスタンシングモデルクラス
 class InstancingModel {
-public:
 
+public://**パブリック変数**//
+
+	//UVのワールド
+	EulerWorldTransform uvWorld_;
+
+	//blendMode1
+	BlendMode blendMode_ = BlendMode::kNormal;
+
+	//fillMode
+	FillMode fillMode_ = FillMode::kSolid;
+
+
+
+public:	//**パブリック関数**//
 
 	/// <summary>
 	/// デストラクタ
@@ -33,19 +48,18 @@ public:
 	/// </summary>
 	/// <param name="filePath">resources以降のフォルダ</param>
 	/// <returns><モデルデータ/returns>
-	static InstancingModel* CreateFromOBJ(const std::string& directory, const std::string& filePath,int instancingNum);
-
-
-public:
-
+	static InstancingModel* CreateFromOBJ(const std::string& directory, const std::string& filePath, int instancingNum);
 
 	/// <summary>
 	/// インスタンシング描画での非共通データを追加する
 	/// </summary>
 	/// <param name="world">world座標</param>
 	/// <param name="color">色</param>
-	void AddInstancingData(const EulerWorldTransform& world,const Vector4&color={1,1,1,1});
+	void AddInstancingData(const EulerWorldTransform& world, const Vector4& color = { 1,1,1,1 });
 
+	/// <summary>
+	/// アニメーションのカウント処理
+	/// </summary>
 	void UpdateAnimationCount();
 
 	/// <summary>
@@ -66,11 +80,7 @@ public:
 	/// <param name="name"></param>
 	//void DebugParameter(const char* name);
 
-	/// <summary>
-	/// シェーダー処理の切り替え
-	/// </summary>
-	/// <param name="ans">影をつけるか</param>
-	void SetEnableShader(bool ans) { materialData_->enableLighting = ans; }
+
 
 	/// <summary>
 	/// 画像を使用するか
@@ -78,12 +88,15 @@ public:
 	/// <param name="ans">画像を使うか</param>
 	//void IsEnableTexture(bool ans) { materialData_->enableTexture = ans; }
 	void Debug(const char* name);
-#pragma region セッター
+
+public:	//**セッター**//
 
 	/// <summary>
-	/// uv座標の変換
+	/// シェーダー処理の切り替え
 	/// </summary>
-	/// <param name="uv">uvMatrix</param>
+	/// <param name="ans">影をつけるか</param>
+	void SetEnableShader(bool ans) { materialData_->enableLighting = ans; }
+
 	void SetUV(Matrix4x4 uv) { materialData_->uvTransform = uv; }
 
 	void SetUVTranslate(Vector2 pos) { uvWorld_.translate_.x = pos.x; uvWorld_.translate_.y = pos.y; }
@@ -100,7 +113,7 @@ public:
 
 	void SetBlendMode(BlendMode blend) { blendMode_ = blend; }
 
-	void SetFillMode(FillMode fillmode) {fillMode_=fillmode; }
+	void SetFillMode(FillMode fillmode) { fillMode_ = fillmode; }
 
 	void SetTag(const std::string& tag) { tag_ = tag; }
 
@@ -110,10 +123,11 @@ public:
 
 	void SetEnableEnviomentMap(bool enable, float num) { materialData_->enableEnvironmentMap = enable; materialData_->enviromentCoefficient = num; }
 
-	void SetAnimationSecond( float sec, bool loop) { animationRoopSecond_ = sec; isAnimeRoop_ = loop; }
+	void SetAnimationSecond(float sec, bool loop) { animationRoopSecond_ = sec; isAnimeRoop_ = loop; }
 
 	void SetAnimeName(const std::string& name) { nowAnimeName_ = name; }
-#pragma endregion
+
+public:	//**ゲッター**//
 
 	/// <summary>
 	/// 色の取得
@@ -127,14 +141,19 @@ public:
 
 	const std::string GetTag() { return tag_; }
 
-/// <summary>
-/// worldの数取得
-/// </summary>
+	/// <summary>
+	/// worldの数取得
+	/// </summary>
 	const float GetWorldNum();
 
-	GVariTree& CreateAndGetTree(const std::string&tree);
-private:
+	/// <summary>
+	/// ツリーを作成して取得
+	/// </summary>
+	/// <param name="tree">ツリー名</param>
+	/// <returns></returns>
+	GlobalVariableTree& CreateAndGetTree(const std::string& tree);
 
+private: //**プライベート関数**//
 
 	/// <summary>
 	/// 初期化処理
@@ -151,21 +170,13 @@ private:
 		int instancingNum
 	);
 
+	//アニメーションの処理
 	void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime);
-public:
-	
-	//UVのワールド
-	EulerWorldTransform uvWorld_;
 
-	//blendMode1
-	BlendMode blendMode_ = BlendMode::kNormal;
+private: //**プライベート変数**//
 
-	//fillMode
-	FillMode fillMode_ = FillMode::kSolid;
-
-
-private:
-	DirectXFunc* DXF_=nullptr;
+	//DirectXFuncのポインタ
+	DirectXFunc* DXF_ = nullptr;
 
 	//モデルデータ
 	ModelAllData modelData_;
@@ -178,18 +189,23 @@ private:
 	std::string jointMtag_;
 	bool drawJoint_ = false;
 	bool drawModel_ = true;
-	
+
+	//タグ
 	std::string tag_;
 
+	//画像ハンドル
 	D3D12_GPU_DESCRIPTOR_HANDLE texture_;
 
+	//インスタンシングようハンドル
 	D3D12_GPU_DESCRIPTOR_HANDLE instancingHandle_;
 
+	//インスタンシングの数
 	int instancingNum_;
 
 	//頂点数
 	int point_;
 
+	//セットした画像番号
 	int setTexture_ = -1;
 
 	//vertexリソースとビュー
@@ -224,14 +240,13 @@ private:
 #pragma region アニメーション関係
 	//アニメーションフラグ
 	bool isAnimationActive_ = true;
-	float animationTime_=0;
+	float animationTime_ = 0;
 	//animationの一周までの秒数
 	float animationRoopSecond_ = 1.0f;
-
+	//アニメループフラグ
 	bool isAnimeRoop_ = true;
 
-
-
+	//現在のアニメの名前
 	std::string nowAnimeName_ = "";
 
 	//ボーンのないanimationキューブ用のlocalMatrix
@@ -254,5 +269,5 @@ private:
 
 private:
 	//ツリーデータ
-	GVariTree tree_ = GVariTree("");
+	GlobalVariableTree tree_ = GlobalVariableTree("");
 };

@@ -8,12 +8,19 @@
 #include"struct.h"
 
 
-
+//インスタンシング用のPSO
 class InstancingPSO {
 
-public:
+public://**パブリック関数**//
 	
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	InstancingPSO();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~InstancingPSO();
 
 	/// <summary>
@@ -27,13 +34,12 @@ public:
 	/// <param name="commandList">コマンドリスト</param>
 	void PreDraw(const FillMode& fillMode, const BlendMode& blendMode);
 
-private:
+private://**プライベート変数**//
 
-
-private:
-
+	//DXFのポインタ
 	DirectXFunc* DXF_;
 
+	//vs,psのフルパス
 	std::wstring vsPass = L"resources/shaders/Models/InstancingObject.VS.hlsl";
 	std::wstring psPass = L"resources/shaders/Models/InstancingObject.PS.hlsl";
 
@@ -42,6 +48,4 @@ private:
 
 	//グラフィックパイプライン
 	ID3D12PipelineState* graphicsPipelineState_[int(FillMode::kCountOfFillMode)][int(BlendMode::kCountOfBlendMode)] = { nullptr };
-
-	bool isInitialize_ = false;
 };

@@ -1,10 +1,11 @@
-#include "GVaribleManager.h"
+#include "GlobalVaribleManager.h"
 #include"ImGuiManager/ImGuiManager.h"
 #include<json.hpp>
 #include<fstream>
 #include <iostream>
 
-const char** createCStringArray(const std::vector<std::string>& strings) {
+const char** CreateCStringArray(const std::vector<std::string>& strings) {
+	//文字列サイズ取得
 	size_t size = strings.size();
 	const char** cStrings = new const char* [size]; // 動的メモリ確保
 
@@ -15,13 +16,17 @@ const char** createCStringArray(const std::vector<std::string>& strings) {
 	return cStrings;
 }
 
+//アイテムのImGui表記
 void ItemImGui(const std::string name, std::variant<bool*,int32_t*, float*,Vector2*, Vector3*, Vector4*> value) {
 
+#ifdef _DEBUG
+	//各アイテムをImGuiで操作
 
 	//intの場合
 	if (std::holds_alternative<bool*>(value)) {
 		bool* ptr = *std::get_if<bool*>(&value);
 		ImGui::Checkbox(name.c_str(), ptr);
+
 	}else if (std::holds_alternative<int32_t*>(value)) {
 		int32_t* ptr = *std::get_if<int32_t*>(&value);
 		ImGui::DragInt(name.c_str(), ptr);
@@ -42,12 +47,20 @@ void ItemImGui(const std::string name, std::variant<bool*,int32_t*, float*,Vecto
 		Vector4* ptr = *std::get_if<Vector4*>(&value);
 		ImGui::ColorEdit4(name.c_str(), &ptr->x);
 	}
+#endif // _DEBUG
+
+
 }
 
+//モニター値に設定された物の操作
 void MonitorItemImGui(const std::string name, MonitorItemData&data) {
 
+#ifdef _DEBUG
+
+	//値を参照
 	std::variant<bool*, int32_t*, float*, Vector3*, std::string*>& value = data.value;
 
+	//アイテムの値がからの時
 	if (data.items.empty()) {
 		//各ImGuiのテキスト表示
 
@@ -79,64 +92,69 @@ void MonitorItemImGui(const std::string name, MonitorItemData&data) {
 		}
 	}
 	else {
-
-
 		//コンボのImGui表示
 
+		//int型の時
 		if (std::holds_alternative<int32_t*>(value)) {
+
+			//値取得
 			int& res = **std::get_if<int32_t*>(&value);
 			int curr = res;
 
+			//const char*型にstringを修正
 			std::vector<const char*> item;
-
 			for (auto& n : data.items) {
 				item.push_back(n.c_str());
 			}
 
+			//ImGuiコンボ処理
 			if (ImGui::Combo("Animations", &curr, item.data(), int(item.size()))) {
 				res = curr;
 			}
-		}else if (std::holds_alternative<std::string*>(value)) {
+		}//string型の時
+		else if (std::holds_alternative<std::string*>(value)) {
 			// char* の場合
 			std::string& ptr = **std::get_if<std::string*>(&value);
 
 			//一致する場所の検索
 			int count = 0;
 
+			//const char*のvector
 			std::vector<const char*> item;
 			for (auto& n : data.items) {
 				item.push_back(n.c_str());
 			}
 
-
+			//ツリー表示
 			for (auto& d : data.items) {
 				//値一致時
-				if (d == ptr||ptr=="") {
+				if (d == ptr || ptr == "") {
 					if (ImGui::Combo("Animations", &count, item.data(), int(item.size()))) {
 						ptr = data.items[count];
 
 					}
-
 					return;
 				}
-
 				count++;
 			}
 		}
-
-
 	}
+#endif // _DEBUG
 }
 
+//ツリーのImGui表示処理
 void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 
+	//ツリー処理開始
 	if (ImGui::TreeNode(name.c_str())) {
 
 		//モニター値の表示
 		if (!treeData.monitorKeys.empty()) {
 
+			//もし指定サイズ以上の場合
 			if (treeData.monitorKeys.size() > size) {
 
+				//ツリーを作成
 				if (ImGui::TreeNode("--モニター値---")) {
 					//ツリー内に含まれるvalue登場
 					for (auto& key : treeData.monitorKeys) {
@@ -146,17 +164,17 @@ void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 						//値
 						MonitorItemData& item = treeData.monitorValue[key];
 
-
 						//値の条件で処理変化
 						MonitorItemImGui(tabName, item);
 					}
-
-
+					//ツリー終了
 					ImGui::TreePop();
 				}
 			}
 			else {
+				//ツリーは作らずテキストによる区分けのみ
 				ImGui::Text("--モニター値---");
+
 				//ツリー内に含まれるvalue登場
 				for (auto& key : treeData.monitorKeys) {
 
@@ -165,17 +183,19 @@ void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 					//値
 					MonitorItemData& item = treeData.monitorValue[key];
 
-
 					//値の条件で処理変化
 					MonitorItemImGui(tabName, item);
 				}
 			}
 		}
 
+		//値がある場合
 		if (!treeData.valueKeys.empty()) {
 
+			//指定サイズ以上にある場合
 			if (treeData.valueKeys.size() > size) {
 
+				//ツリーにまとめる
 				if (ImGui::TreeNode("--パラメータ---")) {
 
 					//ツリー内に含まれるvalue登場
@@ -186,15 +206,15 @@ void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 						//値
 						ItemData& item = treeData.value[key];
 
-
 						//値の条件で処理変化
 						ItemImGui(tabName, item.value);
 					}
-
+					//ツリー終了
 					ImGui::TreePop();
 				}
 			}
 			else {
+				//テキストのみで区分け
 				ImGui::Text("--パラメータ---");
 
 				//ツリー内に含まれるvalue登場
@@ -205,30 +225,31 @@ void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 					//値
 					ItemData& item = treeData.value[key];
 
-
 					//値の条件で処理変化
 					ItemImGui(tabName, item.value);
 				}
 			}
 		}
 
-
 		//子ツリーの存在検知
 		if (treeData.tree.size() != 0) {
 
+			//子ツリーが指定地以上の場合
 			if (treeData.tree.size() > size) {
 
+				//つりーで分ける
 				if (ImGui::TreeNode("--子ツリー--")) {
 
 					//子ツリーの表示
 					for (auto& key : treeData.treeKeys) {
 						TreeImGui(key, treeData.tree[key],size);
 					}
-
+					//ツリー終わり
 					ImGui::TreePop();
 				}
 			}
 			else {
+				//テキストで区分けする
 				ImGui::Text("--子ツリー--");
 				//子ツリーの表示
 				for (auto& key : treeData.treeKeys) {
@@ -237,20 +258,21 @@ void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 			}
 		}
 
+		//ツリー終了
 		ImGui::TreePop();
 	}
-
-	return;
 }
 
 GlobalVariableManager* GlobalVariableManager::GetInstance()
 {
+	//インスタンス取得
 	static GlobalVariableManager ins;
 	return &ins;
 }
 
 void GlobalVariableManager::SetGroup(const std::string& group, GroupData& data)
 {
+	//グループを設定
 	datas_[group] = data;
 }
 
@@ -258,31 +280,42 @@ void GlobalVariableManager::Update()
 {
 
 #ifdef _DEBUG
-	saveDatas_;
+	//デバッグウィンドウ表示
 	ImGui::Begin(baseName_.c_str());
 	if (ImGui::BeginTabBar("LWP")) {
 		//各グループで表示
 		for (auto& data : datas_) {
+
 			//タブを作成
 			if (ImGui::BeginTabItem(data.first.c_str())) {
+
 				//保存処理
 				if (ImGui::Button("パラメータの保存")) {
+					//Jsonに出力して保存
 					SaveGroupItemData(data.first);
+					//メッセージ出力
 					std::string message = std::format("{}.json saved.", data.first);
 					MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
 				}
 
 				//読み込み処理
 				if (ImGui::Button("保存されてるパラメータの読み込み")) {
+					//すべてのjson保存データを読み込み
 					LoadAllSaveData();
+					//セーブデータを適応
 					SetLoadGroupData(data.first);
+					//メッセージ出力
 					std::string message = std::format("{}.json loaded.", data.first);
 					MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
 				}
 
-
+				//モニター地がある場合
 				if (!data.second.monitorKeys.empty()) {
+					
+					//指定サイズより多い場合
 					if (data.second.monitorKeys.size() > nodeSize_) {
+
+						//ツリー作成して仕分ける
 						if (ImGui::TreeNode("--モニター値--")) {
 
 							//ツリー内に含まれるvalue登場
@@ -293,14 +326,15 @@ void GlobalVariableManager::Update()
 								//値
 								MonitorItemData& item = data.second.monitorValue[key];
 
-
 								//値の条件で処理変化
 								MonitorItemImGui(name, item);
 							}
+							//ツリー終了
 							ImGui::TreePop();
 						}
 					}
 					else {
+						//テキストで区分け
 						ImGui::Text("--モニター値--");
 
 						//ツリー内に含まれるvalue登場
@@ -311,7 +345,6 @@ void GlobalVariableManager::Update()
 							//値
 							MonitorItemData& item = data.second.monitorValue[key];
 
-
 							//値の条件で処理変化
 							MonitorItemImGui(name, item);
 						}
@@ -319,9 +352,15 @@ void GlobalVariableManager::Update()
 					}
 				}
 
+				//バリューがある場合
 				if (!data.second.valueKeys.empty()) {
+
+					//指定サイズよりある場合
 					if (data.second.valueKeys.size() > nodeSize_) {
+
+						//ツリーで区分け
 						if (ImGui::TreeNode("--パラメータ--")) {
+
 							//タブの値を表示
 							for (auto& key : data.second.valueKeys) {
 
@@ -332,14 +371,15 @@ void GlobalVariableManager::Update()
 
 								//値の条件で処理変化
 								ItemImGui(name, item.value);
-
 							}
+							//ツリー処理終了
 							ImGui::TreePop();
 						}
 					}
 					else {
-
+						//テキストで区分け
 						ImGui::Text("--パラメータ--");
+
 						//タブの値を表示
 						for (auto& key : data.second.valueKeys) {
 
@@ -350,27 +390,28 @@ void GlobalVariableManager::Update()
 
 							//値の条件で処理変化
 							ItemImGui(name, item.value);
-
 						}
-
 					}
 				}
-
 
 				//子ツリーの存在検知
 				if (data.second.tree.size() != 0) {
 
+					//指定サイズより多い場合
 					if (data.second.tree.size() > nodeSize_) {
 
+						//ツリーで区分け
 						if (ImGui::TreeNode("--子ツリー--")) {
 							//子ツリーの表示
 							for (auto& key : data.second.treeKeys) {
 								TreeImGui(key, data.second.tree[key],nodeSize_);
 							}
+							//ツリー終了
 							ImGui::TreePop();
 						}
 					}
 					else {
+						//テキストで区分け
 						ImGui::Text("--子ツリー--");
 						//子ツリーの表示
 						for (auto& key : data.second.treeKeys) {
@@ -378,24 +419,27 @@ void GlobalVariableManager::Update()
 						}
 					}
 				}
-
+				//タブ終了
 				ImGui::EndTabItem();
 			}
 		}
-
+		//タブバー終了
 		ImGui::EndTabBar();
 	}
+	//ImGui終わり
 	ImGui::End();
 #endif // _DEBUG
-
-
-
 }
 
-
+/// <summary>
+/// アイテムデータの保存
+/// </summary>
+/// <param name="root">jsonに保存するデータ</param>
+/// <param name="data">データ</param>
 void SaveItemData(
 	nlohmann::json& root,
 	std::map<std::string, ItemData> data) {
+
 	//各項目について
 	for (std::map<std::string, ItemData>::iterator itItem = data.begin();
 		itItem != data.end(); ++itItem) {
@@ -422,7 +466,7 @@ void SaveItemData(
 			Vector3 value = *std::get<Vector3*>(item.value);
 			root[itemName] = nlohmann::json::array({ value.x, value.y, value.z });
 		}
-		else if (std::holds_alternative<Vector4*>(item.value)) {//Vector3型の値を保持していれば
+		else if (std::holds_alternative<Vector4*>(item.value)) {//Vector4型の値を保持していれば
 			Vector4 value = *std::get<Vector4*>(item.value);
 			root[itemName] = nlohmann::json::array({ value.x, value.y, value.z,value.w });
 		}
@@ -442,10 +486,8 @@ void ProcessTree(nlohmann::json& jsonNode, const std::map<std::string, TreeData>
 		// 新しいノードを作成
 		nlohmann::json newNode = nlohmann::json::object();
 
-
 		//ツリー名追加
 		std::string treename = tree.first;
-
 
 		//valueの処理
 		SaveItemData(newNode, tree.second.value);
@@ -485,8 +527,6 @@ void GlobalVariableManager::SaveGroupItemData(const std::string& groupName)
 		std::filesystem::create_directory("Resources/GlobalVariables");
 	}
 
-
-
 	//書き込むJSONファイルのフルパスを合成する
 	std::string filepath = kDirectoryPath + groupName + ".json";
 	//書き込み用ファイルストリーム
@@ -522,27 +562,27 @@ void SetLoadTreeData(TreeData& groupData, SavedTreeData& saveData) {
 			std::variant<bool,int32_t, float,Vector2, Vector3,Vector4>& saveV = saveData.value[itemname].value;
 			std::variant<bool*,int32_t*, float*,Vector2*, Vector3*, Vector4*>& dataV = groupData.value[itemname].value;
 
-			//合致する値を保存
-			if (std::holds_alternative<bool>(saveV) && std::holds_alternative<bool*>(dataV)) {
+			///k型が一致する値を代入
+			if (std::holds_alternative<bool>(saveV) && std::holds_alternative<bool*>(dataV)) {				//bool型
 				bool savePtr = *std::get_if<bool>(&saveV);
 				bool* dataPtr = *std::get_if<bool*>(&dataV);
 				*dataPtr = savePtr;
-			}else if (std::holds_alternative<int32_t>(saveV) && std::holds_alternative<int32_t*>(dataV)) {
+			}else if (std::holds_alternative<int32_t>(saveV) && std::holds_alternative<int32_t*>(dataV)) {	//int32_t型
 				int32_t savePtr = *std::get_if<int32_t>(&saveV);
 				int32_t* dataPtr = *std::get_if<int32_t*>(&dataV);
 				*dataPtr = savePtr;
 			}
-			else if (std::holds_alternative<float>(saveV) && std::holds_alternative<float*>(dataV)) {
+			else if (std::holds_alternative<float>(saveV) && std::holds_alternative<float*>(dataV)) {		//float型
 				float savePtr = *std::get_if<float>(&saveV);
 				float* dataPtr = *std::get_if<float*>(&dataV);
 				*dataPtr = savePtr;
 			}
-			else if (std::holds_alternative<Vector3>(saveV) && std::holds_alternative<Vector3*>(dataV)) {
+			else if (std::holds_alternative<Vector3>(saveV) && std::holds_alternative<Vector3*>(dataV)) {	//vector3型
 				Vector3 savePtr = *std::get_if<Vector3>(&saveV);
 				Vector3* dataPtr = *std::get_if<Vector3*>(&dataV);
 				*dataPtr = savePtr;
 			}
-			else if (std::holds_alternative<Vector4>(saveV) && std::holds_alternative<Vector4*>(dataV)) {
+			else if (std::holds_alternative<Vector4>(saveV) && std::holds_alternative<Vector4*>(dataV)) {	//vector4型
 				Vector4 savePtr = *std::get_if<Vector4>(&saveV);
 				Vector4* dataPtr = *std::get_if<Vector4*>(&dataV);
 				*dataPtr = savePtr;
@@ -555,16 +595,21 @@ void SetLoadTreeData(TreeData& groupData, SavedTreeData& saveData) {
 		//アイテム名
 		const std::string itemname = itItem->first;
 
+		//見つかった場合
 		if (saveData.tree.end() != saveData.tree.find(itemname)) {
+			//子ツリーデータ読み込み
 			SetLoadTreeData(groupData.tree[itemname], saveData.tree[itemname]);
 		}
 	}
 }
 
+
 void GlobalVariableManager::SetLoadGroupData(const std::string& groupName)
 {
+	//現在のパラメータデータ
 	GroupData& groupdata = datas_[groupName];
 
+	//保存データ
 	SavedGroupData& saveData = saveDatas_[groupName];
 
 	//同グループ名所持が一致しない場合
@@ -577,34 +622,34 @@ void GlobalVariableManager::SetLoadGroupData(const std::string& groupName)
 		//アイテム名
 		const std::string itemname = itItem->first;
 
-		//	セーブデータに同名のデータを検索
+		//セーブデータに同名のデータを検索
 		if (saveData.value.end() != saveData.value.find(itemname)) {
 
-			//値取得
+			//各値取得
 			std::variant<bool,int32_t, float,Vector2, Vector3,Vector4>& saveV = saveData.value[itemname].value;
 			std::variant<bool*,int32_t*, float*,Vector2*, Vector3*, Vector4*>& dataV = groupdata.value[itemname].value;
 
 			//合致する値を保存
-			if (std::holds_alternative<bool>(saveV) && std::holds_alternative<bool*>(dataV)) {
+			if (std::holds_alternative<bool>(saveV) && std::holds_alternative<bool*>(dataV)) {				//bool型
 				bool savePtr = *std::get_if<bool>(&saveV);
 				bool* dataPtr = *std::get_if<bool*>(&dataV);
 				*dataPtr = savePtr;
-			}else if (std::holds_alternative<int32_t>(saveV) && std::holds_alternative<int32_t*>(dataV)) {
+			}else if (std::holds_alternative<int32_t>(saveV) && std::holds_alternative<int32_t*>(dataV)) {	//in32_t型
 				int32_t savePtr = *std::get_if<int32_t>(&saveV);
 				int32_t* dataPtr = *std::get_if<int32_t*>(&dataV);
 				*dataPtr = savePtr;
 			}
-			else if (std::holds_alternative<float>(saveV) && std::holds_alternative<float*>(dataV)) {
+			else if (std::holds_alternative<float>(saveV) && std::holds_alternative<float*>(dataV)) {		//flaot型
 				float savePtr = *std::get_if<float>(&saveV);
 				float* dataPtr = *std::get_if<float*>(&dataV);
 				*dataPtr = savePtr;
 			}
-			else if (std::holds_alternative<Vector3>(saveV) && std::holds_alternative<Vector3*>(dataV)) {
+			else if (std::holds_alternative<Vector3>(saveV) && std::holds_alternative<Vector3*>(dataV)) {	//vector3型
 				Vector3 savePtr = *std::get_if<Vector3>(&saveV);
 				Vector3* dataPtr = *std::get_if<Vector3*>(&dataV);
 				*dataPtr = savePtr;
 			}
-			else if (std::holds_alternative<Vector4>(saveV) && std::holds_alternative<Vector4*>(dataV)) {
+			else if (std::holds_alternative<Vector4>(saveV) && std::holds_alternative<Vector4*>(dataV)) {	//vector4型
 				Vector4 savePtr = *std::get_if<Vector4>(&saveV);
 				Vector4* dataPtr = *std::get_if<Vector4*>(&dataV);
 				*dataPtr = savePtr;
@@ -618,26 +663,30 @@ void GlobalVariableManager::SetLoadGroupData(const std::string& groupName)
 		//アイテム名
 		const std::string itemname = itItem->first;
 
+		//見つかった場合
 		if (saveData.tree.end() != saveData.tree.find(itemname)) {
+			//ツリーデータの処理
 			SetLoadTreeData(itItem->second, saveData.tree[itemname]);
 		}
 	}
 }
 
-
 void LoadTreeData(SavedTreeData& treeData, const nlohmann::json& jsonNode) {
 	// 各アイテムについて
 	for (auto itItem = jsonNode.begin(); itItem != jsonNode.end(); ++itItem) {
+
+		//名前取得
 		const std::string& itemName = itItem.key();
 
+		//セーブデータ取得
 		SavedItemData& data = treeData.value[itemName];
 
-		// int 型を保持している場合
+		// bool 型を保持している場合
 		if (itItem->is_boolean()) {
 			//値取得
 			bool value = itItem->get<bool>();
 			data.value = value;
-		}
+		}//int ぁタを保持している場合
 		else if (itItem->is_number_integer()) {
 			//値取得
 			int32_t value = itItem->get<int32_t>();
@@ -656,19 +705,18 @@ void LoadTreeData(SavedTreeData& treeData, const nlohmann::json& jsonNode) {
 		else if (itItem->is_array() && itItem->size() == 4) {
 			Vector4 value = { itItem->at(0).get<float>(), itItem->at(1).get<float>(), itItem->at(2).get<float>(),itItem->at(3).get<float>() };
 			data.value = value;
-		}
+		}//子ツリーがある場合
 		else if (itItem->is_object()) {
 			// 子ツリーを再帰的に処理
 			SavedTreeData& newTree = treeData.tree[itemName];
+			//ツリーデータ読み込み
 			LoadTreeData(newTree, *itItem);
 		}
-
 	}
 }
 
 void GlobalVariableManager::LoadGroupData(const std::string& groupName)
 {
-
 	//よみこむJSONファイルのフルパスを合成する
 	std::string filepath = kDirectoryPath + groupName + ".json";
 	//読み込み用ファイルストリーム
@@ -696,9 +744,9 @@ void GlobalVariableManager::LoadGroupData(const std::string& groupName)
 	//未登録チェック
 	assert(itGroup != root.end());
 
+	//各データクリア
 	saveDatas_[groupName].value.clear();
 	saveDatas_[groupName].tree.clear();
-
 
 	//各アイテムについて
 	for (nlohmann::json::iterator itItem = itGroup->begin(); itItem != itGroup->end(); ++itItem) {

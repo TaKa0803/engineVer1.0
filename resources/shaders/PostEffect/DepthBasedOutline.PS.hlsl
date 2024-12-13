@@ -1,25 +1,32 @@
 #include "CopyImage.hlsli"
 
+//画面の画像
 Texture2D<float32_t4> gTexture : register(t0);
+//サンプラー
 SamplerState gSampler : register(s0);
 
+//深度地の入った画像
 Texture2D<float32_t> gDepthTexture : register(t1);
+//サンプラー
 SamplerState gSamplerPoint : register(s1);
 
+//マテリアル
 struct Material
 {
-    float32_t4x4 projectionInverse;
-    float32_t value;
-    int32_t enableColor;
+    float32_t4x4 projectionInverse; //プロジェクション逆行列
+    float32_t value;                //値
+    int32_t enableColor;            //画像の有効化フラグ
     
 };
+//コンスタントバッファ設定
 ConstantBuffer<Material> gMaterial : register(b0);
 
-
+//ピクセル出力
 struct PixelShaderOutput
 {
     float32_t4 color : SV_TARGET0;
 };
+
 
 static const float32_t2 kIndex3x3[3][3] =
 {
@@ -49,15 +56,12 @@ float32_t Luminance(float32_t3 v)
 
 PixelShaderOutput main(VertexShaderOutput input)
 {
-    //output.color = gTexture.Sample(gSampler, input.texcoord);
-    
-    
-     //Smoothing
+    //Smoothingの処理
     uint32_t width, height; //uvStepSizeの算出
+    //ディメンションの取得
     gTexture.GetDimensions(width, height);
     float32_t2 uvStepSize = float32_t2(rcp(width), rcp(height));
-        
-    
+          
     //縦横それぞれの畳み込みの結果を収納する
     float32_t2 difference = float32_t2(0.0f, 0.0f);
     
@@ -75,21 +79,25 @@ PixelShaderOutput main(VertexShaderOutput input)
             difference.y += viewZ * kPrewittVerticalKernel[x][y];
         }      
     }
-    
+    //重さを計算
     float weight = length(difference);
    
     PixelShaderOutput output;
     
+    //画像が無効の場合
     if (!gMaterial.enableColor)
     {
+        //アウトラインのみの描画
         weight = saturate(weight * gMaterial.value);
         output.color.rgb = weight;
     }
     else
     {
+        //画像にアウトラインを含め描画
         weight = saturate(weight * gMaterial.value);
         output.color.rgb = (1.0f - weight) * gTexture.Sample(gSampler, input.texcoord).rgb;
     }
+    //透明度は固定
     output.color.a = 1.0f;
     
     return output;

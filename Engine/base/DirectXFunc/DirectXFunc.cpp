@@ -16,25 +16,23 @@
 
 DirectXFunc* DirectXFunc::GetInstance()
 {
+	//インスタンス取得
 	static DirectXFunc Instance;
 	return &Instance;
 }
-
-
-
-
 
 #pragma region Initializeまとめ
 
 void DirectXFunc::Initialize(WindowApp* winApp)
 {
+	//null出ないことを確認
 	assert(winApp);
+	//ポインタ取得
 	winApp_ = winApp;
 
-#pragma region DebugLayer
 
 #ifdef _DEBUG
-
+	//デバッグレイヤー処理
 	ID3D12Debug1* debugController = nullptr;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
 		//デバッグレイヤーを有効化
@@ -44,45 +42,45 @@ void DirectXFunc::Initialize(WindowApp* winApp)
 	}
 #endif
 
-#pragma endregion
+	//デバイス関係の初期化
+	D3D12DeviceInit();
 
-	D3D12Devicenitialize();
-	CommandInitialize();
-	SwapChainInitialize();
-	RTVInitialize();
+	//コマンドリスト関係の初期化
+	CommandInit();
 
-	//SRV
+	//スワップチェイン関係の初期化
+	SwapChainInit();
+
+	//RTV関係の初期化
+	RTVInit();
+
+	//SRVの初期化
+	//インスタンスを取得
 	SRVManager* SRVM_ = SRVManager::GetInstance();
+	//初期化
 	SRVM_->Initialize(device.Get());
 
+	//DSVの初期化
+	DSVInit();
 
-	DSVInitialize();
-	FenceInitialize();
+	//Fence関係の初期化
+	FenceInit();
 
+	//FPS修正の初期化
 	FixFPSInitialize();
 
-
-
-	RenderTextureInitialize();
-
-
-
+	//ログを出して初期化終了を報告
 	Log("Complete DirectXFunc Initialize\n");
 }
 
-
-
-
-
-
-
 void DirectXFunc::FixFPSInitialize() {
+	//６０FPSにする処理の初期化
 	reference_ = std::chrono::steady_clock::now();
-
 	timeBeginPeriod(1);
 }
 
 void DirectXFunc::UpdateFixFPS() {
+	//FPSを60にするための更新
 	const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
 
 	const std::chrono::microseconds kMinCheckTime(uint64_t(1000000.0f / 65.0f));
@@ -101,7 +99,7 @@ void DirectXFunc::UpdateFixFPS() {
 
 }
 
-void DirectXFunc::D3D12Devicenitialize()
+void DirectXFunc::D3D12DeviceInit()
 {
 #pragma region DXGIFactoryの生成
 	//DXGIファクトリーの生成
@@ -181,7 +179,7 @@ void DirectXFunc::D3D12Devicenitialize()
 #pragma endregion
 }
 
-void DirectXFunc::CommandInitialize()
+void DirectXFunc::CommandInit()
 {
 #pragma region コマンドキューの生成
 	//コマンドキューを生成	
@@ -200,7 +198,7 @@ void DirectXFunc::CommandInitialize()
 #pragma endregion
 }
 
-void DirectXFunc::SwapChainInitialize()
+void DirectXFunc::SwapChainInit()
 {
 #pragma region SwapChainを生成する
 	//スワップチェーンを生成する	
@@ -212,7 +210,7 @@ void DirectXFunc::SwapChainInitialize()
 	swapChainDesc.BufferCount = 2;
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 
-
+	//SwapChainの生成
 	HRESULT hr = dxgiFactory->CreateSwapChainForHwnd(commandQueue.Get(), winApp_->GetHwnd(), &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain.GetAddressOf()));
 	assert(SUCCEEDED(hr));
 #pragma endregion
@@ -224,12 +222,13 @@ void DirectXFunc::SwapChainInitialize()
 #pragma endregion
 }
 
-void DirectXFunc::RTVInitialize()
+void DirectXFunc::RTVInit()
 {
 
 #pragma region RTV
-
-	RTVManager*RTVM= RTVManager::GetInstance();
+	//インスタンス取得
+	RTVManager* RTVM = RTVManager::GetInstance();
+	//初期化
 	RTVM->Initialize();
 	//RTV
 	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
@@ -238,18 +237,18 @@ void DirectXFunc::RTVInitialize()
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle = RTVM->GetDescriptorHandle();
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle2 = RTVM->GetDescriptorHandle();
 
-	//
+	//二枚のRTVを作成
 	rtvHandles[0] = rtvStartHandle;
 	device->CreateRenderTargetView(swapChainResources[0].Get(), &rtvDesc, rtvHandles[0]);
 	//
-	rtvHandles[1]= rtvStartHandle2;
+	rtvHandles[1] = rtvStartHandle2;
 	device->CreateRenderTargetView(swapChainResources[1].Get(), &rtvDesc, rtvHandles[1]);
 #pragma endregion
 }
 
-void DirectXFunc::DSVInitialize()
+void DirectXFunc::DSVInit()
 {
-
+	//インスタンス取得
 	DSVManager::GetInstance()->Initialize();
 
 	// 描画先のRTVとDSVを設定する
@@ -257,10 +256,11 @@ void DirectXFunc::DSVInitialize()
 
 }
 
-void DirectXFunc::FenceInitialize()
+void DirectXFunc::FenceInit()
 {
 #pragma region FenceとEventの生成と処理
 	HRESULT hr;
+	//フェンス作成
 	hr = device->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 	assert(SUCCEEDED(hr));
 
@@ -269,22 +269,13 @@ void DirectXFunc::FenceInitialize()
 	assert(fenceEvent != nullptr);
 #pragma endregion
 }
-
-void DirectXFunc::RenderTextureInitialize()
-{
-
-	
-}
-
-
 #pragma endregion
 
 
 
 void DirectXFunc::PreDraw()
 {
-
-		//バリア
+	//バリア
 	D3D12_RESOURCE_BARRIER barrier_{};
 	//これから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
@@ -336,15 +327,13 @@ void DirectXFunc::PreDraw()
 
 	//形状を設定、PSOに設定しているものとはまた別、同じものを設定すると考えておけばいい
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-
 }
 
 
 
 void DirectXFunc::PostDraw()
 {
-
+	//SwapChain描画前に処理を行う
 	PostEffectManager::GetInstance()->PreSwapChainDraw();
 
 	//バリア
@@ -359,7 +348,7 @@ void DirectXFunc::PostDraw()
 	//指定した深度で画面全体をクリアする
 	//commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 	float color[] = { 1,1,1,1 };
-	commandList->ClearRenderTargetView(rtvHandles[backBufferIndex],color , 0, nullptr);
+	commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], color, 0, nullptr);
 
 #pragma region ViewportとScissor(シザー)
 	//ビューポート
@@ -383,7 +372,7 @@ void DirectXFunc::PostDraw()
 	commandList->RSSetViewports(1, &viewport);
 	commandList->RSSetScissorRects(1, &scissorRect);
 #pragma endregion
-	
+
 	//レンダーテクスチャでの描画内容をスワップチェインにコピー
 	PostEffectManager::GetInstance()->SwapChainDraw();
 
@@ -405,6 +394,7 @@ void DirectXFunc::PostDraw()
 	//画面表示できるようにするおわり
 #pragma endregion	
 
+	//コマンドをキックする
 	KickCommand();
 }
 
@@ -451,47 +441,44 @@ void DirectXFunc::Finalize()
 	CloseHandle(fenceEvent);
 }
 
-ID3D12Resource* DirectXFunc::CreateRenderTextureResource( DXGI_FORMAT format, const Vector4& clearColor)
+ID3D12Resource* DirectXFunc::CreateRenderTextureResource(DXGI_FORMAT format, const Vector4& clearColor)
 {
+	//リソースのデスク作成
+	D3D12_RESOURCE_DESC resourceDesc{};
+	resourceDesc.Width = winApp_->kClientWidth;							//Textureの幅
+	resourceDesc.Height = winApp_->kClientHeight;						//Textureの高さ
+	resourceDesc.MipLevels = 1;											//mipmapの数
+	resourceDesc.DepthOrArraySize = 1;									//奥行き　or 配列Textureの配列数
+	resourceDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;					//DepthStencilとして利用可能なフォーマット
+	resourceDesc.SampleDesc.Count = 1;									//サンプリングカウント、１固定
+	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;		//２次元
+	resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;		//RenderTargetとして使う通知
 
+	//Heap生成
+	D3D12_HEAP_PROPERTIES heapProperties{};
+	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
 
-		D3D12_RESOURCE_DESC resourceDesc{};
-		resourceDesc.Width = winApp_->kClientWidth;											//Textureの幅
-		resourceDesc.Height = winApp_->kClientHeight;										//Textureの高さ
-		resourceDesc.MipLevels = 1;											//mipmapの数
-		resourceDesc.DepthOrArraySize = 1;									//奥行き　or 配列Textureの配列数
-		resourceDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;				//DepthStencilとして利用可能なフォーマット
-		resourceDesc.SampleDesc.Count = 1;									//サンプリングカウント、１固定
-		resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;		//２次元
-		resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;		//RenderTargetとして使う通知
+	//クリアする色設定
+	D3D12_CLEAR_VALUE clearValue;
+	clearValue.Format = format;
+	clearValue.Color[0] = clearColor.x;
+	clearValue.Color[1] = clearColor.y;
+	clearValue.Color[2] = clearColor.z;
+	clearValue.Color[3] = clearColor.w;
 
+	//リソースの作成
+	ID3D12Resource* resource = nullptr;
+	HRESULT hr;
+	hr = device->CreateCommittedResource(
+		&heapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&resourceDesc,
+		D3D12_RESOURCE_STATE_RENDER_TARGET,	//これから描画することを前提としたTextureなのでRenderTargetとして使うことから始める
+		&clearValue,						//clear最適値、ClearRenderTargetをこの色でClearするようにする。最適化されているので最速
+		IID_PPV_ARGS(&resource)
+	);
+	assert(SUCCEEDED(hr));
 
-		//Heap生成
-		D3D12_HEAP_PROPERTIES heapProperties{};
-		heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
-
-		D3D12_CLEAR_VALUE clearValue;
-		clearValue.Format = format;
-		clearValue.Color[0] = clearColor.x;
-		clearValue.Color[1] = clearColor.y;
-		clearValue.Color[2] = clearColor.z;
-		clearValue.Color[3] = clearColor.w;
-
-		ID3D12Resource* resource = nullptr;
-		HRESULT hr;
-		hr = device->CreateCommittedResource(
-			&heapProperties,
-			D3D12_HEAP_FLAG_NONE,
-			&resourceDesc,
-			D3D12_RESOURCE_STATE_RENDER_TARGET,	//これから描画することを前提としたTextureなのでRenderTargetとして使うことから始める
-			&clearValue,						//clear最適値、ClearRenderTargetをこの色でClearするようにする。最適化されているので最速
-			IID_PPV_ARGS(&resource)
-		);
-
-		assert(SUCCEEDED(hr));
-
-		return resource;
-	
-
+	return resource;
 }
 

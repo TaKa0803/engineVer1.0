@@ -2,20 +2,30 @@
 #include"Game/Boss/Behavior/IBossBehavior.h"
 
 
-//様子見移動
+//死亡モーション
 class BossDown :public IBossBehavior{
-public:
+public: //**パブリック関数**//
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="boss">ボスポインタ</param>
 	BossDown(Boss*boss);
 	~BossDown() = default;
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize()override;
 
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update()override;
 
+private: //**プライベート変数**//
 
-private:
-
+	//ボスポインタ
 	Boss* boss_;
 
 	//アニメーション時間
@@ -26,6 +36,5 @@ private:
 
 	//カウント
 	float currentNext_ = 0;
-private://デバッグ
 
 };

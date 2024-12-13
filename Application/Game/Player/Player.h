@@ -3,7 +3,6 @@
 #include"Input/Input.h"
 #include"Camera/Camera.h"
 #include"SphereCollider/SphereCollider.h"
-#include"Game/items.h"
 #include"Effect/EffectMove/EffectMove.h"
 #include"Game/CirccleShadow/CirccleShadow.h"
 #include"Game/Player/Behavior/PlayerATKManager/PlayerATKManager.h"
@@ -88,7 +87,7 @@ public://パブリック変数
 		Vector3 acce_ = { 0,0,0 };
 
 		//体力
-		float maxHP = 10;
+		float nowHP = 10;
 
 		//かうんとHP
 		float currentHP = 0;
@@ -235,7 +234,7 @@ private://状態管理
 	std::optional<Behavior>behaviorReq_ = std::nullopt;
 	
 	//状態処理
-	std::vector<std::unique_ptr<IPlayerBehavior>>behaviors_;
+	std::vector<std::unique_ptr<PlayerBaseBehavior>>behaviors_;
 	
 
 private://ポインタ参照

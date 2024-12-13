@@ -1,4 +1,4 @@
-#include"GameScene.h"
+#include"InGameScene.h"
 
 #include"InstancingModelManager/InstancingModelManager.h"
 #include"TextureManager/TextureManager.h"
@@ -11,9 +11,10 @@
 #include"PostEffect/PEs/PEVignetting.h"
 #include"ColliderOBB/OBBCollider.h"
 #include"Game/Boss/BulletManager/BossBulletManager.h"
-#include"GVariableManager/GVaribleManager.h"
+#include"GVariableManager/GlobalVaribleManager.h"
 
-GameScene::GameScene() {
+InGameScene::InGameScene() {
+
 	//入力のインスタンス取得
 	input_ = Input::GetInstance();
 
@@ -28,13 +29,13 @@ GameScene::GameScene() {
 	//ボスのコンストラクタ
 	boss_ = std::make_unique<Boss>(player_.get());
 	//ボスの攻撃基底クラスにボスのポインタセット
-	IBossATK::SetBossPointer(boss_.get());
+	BossBaseATK::SetBossPointer(boss_.get());
 
 	//プレイヤーにボスのポインタをセット
 	player_->GetBoss(boss_.get());
 
 	//追従カメラの生成
-	followCamera_ = std::make_unique<FollowCamera>(&player_->GetWorld(), &boss_->GetWorld());
+	followCamera_ = std::make_unique<FollowCamera>(&player_->world_, &boss_->world_);
 
 	//UIの生成
 	gameUI_ = std::make_unique<GameUI>();
@@ -52,11 +53,10 @@ GameScene::GameScene() {
 	//各音の読み込み
 	//ゲーム中の音
 	bgmGame_ = AudioManager::LoadSoundNum("game");
-	
 }
 
 
-void GameScene::Initialize() {
+void InGameScene::Initialize() {
 
 
 	//プレイヤー初期化
@@ -69,7 +69,7 @@ void GameScene::Initialize() {
 	plane_->Initialize();
 
 	//ボス初期化
-	boss_->Init();
+	boss_->Initialize();
 
 	//追従カメラ初期化
 	followCamera_->Initialize();
@@ -99,13 +99,9 @@ void GameScene::Initialize() {
 
 
 
-void GameScene::Update() {
+void InGameScene::Update() {
 	//ポストエフェクトのデバッグウィンドウをだす
 	PostEffectManager::GetInstance()->Debug();
-
-
-
-
 
 	//プレイヤー更新
 	player_->Update();
@@ -119,8 +115,6 @@ void GameScene::Update() {
 	//当たり判定
 	Collision();
 
-
-
 	//カメラ更新
 	camera_->Update();
 
@@ -129,13 +123,9 @@ void GameScene::Update() {
 
 	//シーン変更処理
 	SceneChange();
-
-
-
-
 }
 
-void GameScene::Draw() {
+void InGameScene::Draw() {
 
 	//地面
 	plane_->Draw();
@@ -175,7 +165,7 @@ void GameScene::Draw() {
 
 
 
-void GameScene::Collision() {
+void InGameScene::Collision() {
 
 	//押し出しベクトル保存先
 	Vector3 vec;
@@ -214,10 +204,10 @@ void GameScene::Collision() {
 	}
 }
 
-void GameScene::SceneChange() {
+void InGameScene::SceneChange() {
 
 	//ボス死亡時の処理
-	if (boss_->maxHP<=0&&!isSceneChange_) {
+	if (boss_->nowHP<=0&&!isSceneChange_) {
 
 		//シーン変更フラグをON
 		isSceneChange_ = true;
@@ -233,9 +223,6 @@ void GameScene::SceneChange() {
 	
 	//プレイヤ死亡字の処理
 	if (player_->data_.isDead) {
-		//シーンを変更
-		//sceneNo = GAMEOVER;
-		
 		//シーン変更フラグをON
 		isSceneChange_ = true;
 

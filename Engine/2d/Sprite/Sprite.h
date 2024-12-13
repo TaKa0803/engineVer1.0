@@ -146,7 +146,7 @@ public:
 	/// ツリー取得
 	/// </summary>
 	/// <returns></returns>
-	GVariTree& GetTree(const std::string&name);
+	GlobalVariableTree& GetTree(const std::string&name);
 
 
 	
@@ -212,6 +212,6 @@ private:
 private:
 
 	//デバッグ用ツリー
-	GVariTree tree_=GVariTree("");
+	GlobalVariableTree tree_=GlobalVariableTree("");
 
 };

@@ -16,19 +16,19 @@ PlayerPunch::PlayerPunch(Player* player)
 	//ツリーの名前設定
 	tree_.name_ = "パンチ";
 
-	GVariTree com1T = GVariTree("コンボ1");
+	GlobalVariableTree com1T = GlobalVariableTree("コンボ1");
 	com1T.SetValue("移動倍率", &parameters_.com1.multiSpd);
 	com1T.SetValue("開始交直", &parameters_.com1.stStiffnessSec);
 	com1T.SetValue("攻撃時間", &parameters_.com1.atkSec);
 	com1T.SetValue("終了交直", &parameters_.com1.edStiffnessSec);
 
-	GVariTree com2T = GVariTree("コンボ2");
+	GlobalVariableTree com2T = GlobalVariableTree("コンボ2");
 	com2T.SetValue("移動倍率", &parameters_.com2.multiSpd);
 	com2T.SetValue("開始交直", &parameters_.com2.stStiffnessSec);
 	com2T.SetValue("攻撃時間", &parameters_.com2.atkSec);
 	com2T.SetValue("終了交直", &parameters_.com2.edStiffnessSec);
 
-	GVariTree com3T = GVariTree("コンボ3");
+	GlobalVariableTree com3T = GlobalVariableTree("コンボ3");
 	com3T.SetValue("移動倍率", &parameters_.com3.multiSpd);
 	com3T.SetValue("開始交直", &parameters_.com3.stStiffnessSec);
 	com3T.SetValue("攻撃時間", &parameters_.com3.atkSec);

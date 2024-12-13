@@ -15,6 +15,7 @@
 
 BossNormalATKManager::BossNormalATKManager(Boss* boss)
 {
+	//ボスのポインタ
 	boss_ = boss;
 
 	//サイズ分に合わせる
@@ -28,22 +29,21 @@ BossNormalATKManager::BossNormalATKManager(Boss* boss)
 	//typeArr_[(int)ATKType::SumerSolt] = std::make_unique<BossSumerSolt>();
 	typeArr_[(int)ATKType::BackStep] = std::make_unique<BossBackStep>();
 
+
+	//デバッグ用にパラメータをツリーに入れる
 	//デバッグ用に文字列をまとめる
 	std::vector<std::string> atkname;
 	atkname.resize((int)ATKType::CountOfATKData);
 	for (int i = 0; i < ATKType::CountOfATKData; i++) {
 		atkname[i] = atkTypeName_[i];
 	}
-
 	//デバッグ設定
 	tree.SetMonitorValue("ATK type", &nowAtkName_);
 	tree.SetMonitorValue("攻撃指定", &isDesignate_);
 	tree.SetMonitorCombo("攻撃指定値", &designateType_,atkname);
-
 	for (auto& arr : typeArr_) {
 		tree.SetTreeData(arr->GetTree());
 	}
-
 }
 
 void BossNormalATKManager::Initialize(std::optional<int>contract)
@@ -52,31 +52,30 @@ void BossNormalATKManager::Initialize(std::optional<int>contract)
 	//ここでtypeを変える処理
 	//思考処理をここに記述
 
-	//一旦確立
+	//一旦確率
 	int ans = (int)RandomNumber::Get(0, (int)ATKType::CountOfATKData);
+	//範囲外なら一つ下に
 	if (ans == (int)ATKType::CountOfATKData) {
 		ans--;
 	}
+	//結果を与える
 	type_ = (ATKType)ans;
 
 	//デバッグ時のタイプ指定など
 	Debug();
 
-	//指定されていた場合その値にする
+	//攻撃を指定されていた場合その値にする
 	if (contract) {
 		type_ = (ATKType)contract.value();
 	}
 
 	////初期化
-	typeArr_[(int)type_]->Init();
-	
-	//攻撃修了確認処理オフ
-	isFinished_ = false;
+	typeArr_[(int)type_]->Initialize();
 }
 
 void BossNormalATKManager::Update()
 {
-	////更新処理
+	//更新処理
 	typeArr_[(int)type_]->Update();
 }
 
@@ -94,10 +93,10 @@ void BossNormalATKManager::Debug()
 			designateType_ = 0;
 		}
 		else if (designateType_ >=	CountOfATKData) {
-			designateType_ = CountOfATKData - 1;;
+			designateType_ = CountOfATKData - 1;
 		}
 
-		//名前指定
+		//デバッグ用名前を設定
 		nowAtkName_ = atkTypeName_[designateType_];
 
 		//タイプ指定

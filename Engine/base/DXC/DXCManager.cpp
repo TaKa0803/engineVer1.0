@@ -73,6 +73,7 @@ IDxcBlob* CompileShader(
 
 DXCManager* DXCManager::GetInstance()
 {
+	//インスタンス取得
 	static DXCManager instance;
 	return &instance;
 }
@@ -81,7 +82,6 @@ void DXCManager::Initialize()
 {
 #pragma region DXCの初期化
 	//dxcCompilerを初期化
-	
 	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils));
 	assert(SUCCEEDED(hr));
 	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler));
@@ -91,10 +91,4 @@ void DXCManager::Initialize()
 	hr = dxcUtils->CreateDefaultIncludeHandler(&includeHandler);
 	assert(SUCCEEDED(hr));
 #pragma endregion
-}
-
-void DXCManager::Release()
-{
-	dxcUtils->Release();
-	dxcCompiler->Release();
 }

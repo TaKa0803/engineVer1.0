@@ -23,7 +23,7 @@ Matrix4x4 EulerWorldTransform::UpdateMatrix() {
 
 
 
-GVariTree& EulerWorldTransform::GetDebugTree(const std::string& name)
+GlobalVariableTree& EulerWorldTransform::GetDebugTree(const std::string& name)
 {
 	tree_.name_=name;
 
@@ -34,7 +34,7 @@ GVariTree& EulerWorldTransform::GetDebugTree(const std::string& name)
 	return tree_;
 }
 
-GVariTree& EulerWorldTransform::GetDebugMonitorTree(const std::string& name)
+GlobalVariableTree& EulerWorldTransform::GetDebugMonitorTree(const std::string& name)
 {
 	tree_.name_=name;
 

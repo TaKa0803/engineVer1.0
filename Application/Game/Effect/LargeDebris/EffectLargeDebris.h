@@ -3,21 +3,38 @@
 
 #include<list>
 
+//大きながれきのエフェクトクラス
 class  EffectLargeDebris : public InstancingGameObject {
 
-public:
+public:	//**パブリック関数**//
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	EffectLargeDebris();
 
-	void Init();
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Initialize();
 
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// エフェクト出現処理
+	/// </summary>
+	/// <param name="pos">出現座標</param>
 	void Spawn(const Vector3& pos);
 
-	
-public:
+public:	//**パブリック変数**//
 
 	//エフェクトのパラメータ
 	struct  Parameter {
@@ -31,16 +48,20 @@ public:
 		//加速度
 		Vector3 acce{};
 
+		//生存カウント
 		float liveCount = 0;
 
+		//色
 		Vector4 color{};
 
+		//生存フラグ
 		bool isDead = false;
 	};
 
+	//エフェクトデータ群
 	std::list<Parameter>effects_;
 
-public://パラメータ
+public:	//**パラメータ**//
 
 	//出現範囲
 	Vector2 spawnWide_ = { 5.0f, 15.0f};

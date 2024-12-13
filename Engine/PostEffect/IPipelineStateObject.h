@@ -4,16 +4,25 @@
 
 class IPipelineStateObject {
 
-protected:
+protected://**共通変数**//
 
+	//DXFのポインタ
 	DirectXFunc* DXF_ = nullptr;
 
-public:
+public://**パブリック関数
 	
-	
+	/// <summary>
+	/// 描画前処理
+	/// </summary>
 	virtual void PreDraw() = 0;;
 
+	/// <summary>
+	/// デバッグ処理
+	/// </summary>
 	virtual void Debug() = 0;
 
+	/// <summary>
+	/// 解放処理
+	/// </summary>
 	virtual void Release() = 0;
 };

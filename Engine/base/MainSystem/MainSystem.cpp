@@ -10,11 +10,12 @@
 #include"SpriteManager/SpriteManager.h"
 #include"PostEffect/PostEffectManager/PostEffectManager.h"
 #include"UAVManager/UAVManager.h"
-#include"GVariableManager/GVaribleManager.h"
+#include"GVariableManager/GlobalVaribleManager.h"
 #include"GvariGroup/GvariGroup.h"
 
 
 MainSystem* MainSystem::GetInstance() {
+	//インスタンス取得
 	static MainSystem instance;
 	return &instance;
 }
@@ -59,6 +60,7 @@ void MainSystem::Initializes() {
 	textureManager_= TextureManager::GetInstance();
 	textureManager_->Initialize(DXF_);
 
+	//ポストエフェクトマネージャの初期化
 	PostEffectManager::GetInstance()->Initialize();
 
 	//imgui
@@ -92,8 +94,6 @@ void MainSystem::Initializes() {
 
 	//すべての保存データを読み込む
 	GlobalVariableManager::GetInstance()->LoadAllSaveData();
-
-
 }
 
 void MainSystem::MainRoop() {
@@ -103,20 +103,17 @@ void MainSystem::MainRoop() {
 	ModelManager::GetInstance()->LoadAllModels();
 	instancingMM_->Initialize(true);
 
-
-	//音声データ読み込み
-	
-
 	//ゲームシーン初期化
 	std::unique_ptr<AppScene> gameScene_;
 	gameScene_ = std::make_unique<AppScene>();
 	gameScene_->Initialize();
 
-
-	
-
+	//メインループ
 	while (winApp_->ProcessMessage()) {
+
+		//デルタタイマー更新
 		deitaTimer_->Update();
+
 #pragma region 状態更新
 		///更新前処理
 		//ImGui
@@ -134,7 +131,7 @@ void MainSystem::MainRoop() {
 
 
 		//==更新終わり==//
-		// 
+
 		//更新終わり描画前処理
 		imguiManager_->PostUpdate();
 #pragma endregion
@@ -171,6 +168,7 @@ void MainSystem::MainRoop() {
 
 void MainSystem::Finalize() {
 
+	//解放処理
 	SpriteManager::GetInstance()->Finalize();
 	ModelManager::GetInstance()->Finalize();
 	///開放処理

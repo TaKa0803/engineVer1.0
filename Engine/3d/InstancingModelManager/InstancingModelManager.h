@@ -8,10 +8,17 @@
 #include"InstancingGameObject/InstancingPSO.h"
 #include"GvariGroup/GvariGroup.h"
 
+//前方宣言
 class InstancingModel;
 
+//インスタンシングモデル管理マネージャ
 class InstancingModelManager {
-public:
+
+public://**シングルトンパターン**//
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns>インスタンス</returns>
 	static InstancingModelManager* GetInstance();
 private:
 	InstancingModelManager() = default;
@@ -19,7 +26,8 @@ private:
 	InstancingModelManager(const InstancingModelManager& o) = delete;
 	const InstancingModelManager& operator=(const InstancingModelManager& o) = delete;
 
-public:
+public://**パブリック関数**//
+
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
@@ -48,8 +56,15 @@ public:
 	/// <param name="tag"></param>
 	bool SerchTag(const std::string& tag);
 
+	/// <summary>
+	/// デバッグ表示
+	/// </summary>
+	/// <param name="tag">タグのモデル</param>
+	/// <param name="name">UIの名前</param>
 	void Debug(const std::string& tag,  const char* name);
-public:
+
+public://**ゲッター**//
+
 	/// <summary>
 	/// タグのモデルのα値取得
 	/// </summary>
@@ -57,6 +72,10 @@ public:
 	/// <returns></returns>
 	float GetAlpha(const std::string& tag);
 
+	/// <summary>
+	/// PSOの取得
+	/// </summary>
+	/// <returns></returns>
 	InstancingPSO* GetPSO() { return pso_; };
 
 	/// <summary>
@@ -65,8 +84,9 @@ public:
 	/// <param name="tag">モデルタグ名</param>
 	/// <param name="name">ツリー名</param>
 	/// <returns></returns>
-	GVariTree& CreateAndGetTree(const std::string& tag, const std::string& name);
-public:
+	GlobalVariableTree& CreateAndGetTree(const std::string& tag, const std::string& name);
+
+public://**セッター**//
 
 	/// <summary>
 	/// タグのモデルにワールド追加
@@ -125,12 +145,25 @@ public:
 	/// <param name="num"></param>
 	void SetEnableEnviomentMap(const std::string& tag, bool isEnable, float num = 1.0f);
 
+	/// <summary>
+	/// アニメーションのループフレーム変更
+	/// </summary>
+	/// <param name="tag"></param>
+	/// <param name="sec"></param>
+	/// <param name="animeLoop"></param>
 	void SetAnimationRoopFrame(const std::string& tag,float sec,bool animeLoop=true);
 
-	void SetAnimeNum(const std::string& tag, const std::string& animeName);
-private:
+	/// <summary>
+	/// アニメーション変更
+	/// </summary>
+	/// <param name="tag">モデルタグ</param>
+	/// <param name="animeName">アニメーション名</param>
+	void SetAnimeName(const std::string& tag, const std::string& animeName);
 
-	InstancingPSO* pso_;
+private://**プライベート変数**//
+
+	//PSO
+	InstancingPSO* pso_=nullptr;
 
 	//jsonのパス
 	const std::string modelPathFile_ = "resources/jsonfile/modelPathFile.json";
@@ -141,14 +174,12 @@ private:
 	//モデルデータ置き場所の必須位置
 	const std::string baseFolda_ = "resources/Models/";
  
-	//データ
-	//std::vector<std::unique_ptr<InstancingModel>>modeldatas_;
-
-	//
+	//モデルのデータ群
 	std::map<std::string, InstancingModel*>modelDatas_;
 
 	//データの最大読み込み量
 	const int maxModelNum = 256;
+
 	//モデルの読み込んだ数
 	int modelNum = 0;
 

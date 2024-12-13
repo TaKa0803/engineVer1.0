@@ -2,20 +2,24 @@
 #include"GvariGroup/GvariGroup.h"
 #include<optional>
 
+//ボスの前方宣言
 class Boss;
 
-class IBossATK {
+//ボス攻撃の基底くらす
+class BossBaseATK {
 
-protected:
-	//終了フラグ
-	static bool isEnd_;
-	//プレイヤーポインタ
+protected: //**共通変数**//
+
+	//ボスポインタ
 	static Boss* boss_;
 
+public: //**パブリック関数**//
 
-public:
-	IBossATK();
-	virtual ~IBossATK() = default;
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	BossBaseATK();
+	virtual ~BossBaseATK() = default;
 
 	/// <summary>
 	/// ボスポインタ取得（一回のみ
@@ -36,26 +40,32 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	virtual void Init();
+	virtual void Initialize();
 
 	/// <summary>
 	/// 更新
 	/// </summary>
 	virtual void Update();
 
-	GVariTree& GetTree() { return treeData_; }
+	/// <summary>
+	/// ツリー取得
+	/// </summary>
+	/// <returns>ツリー</returns>
+	GlobalVariableTree& GetTree() { return treeData_; }
 
 	/// <summary>
 	/// ツリーに自動でパラメータ追加
 	/// </summary>
 	void SetParam2Tree(const std::string&treename);
 public://状態のデータ
+
 	//各状態の初期化
-	virtual void InitAIMing() = 0;
-	virtual void InitWarning() = 0;
-	virtual void InitATK() = 0;
-	virtual void InitStiffness() = 0;
-	virtual void InitBack() = 0;
+
+	virtual void InitAIMing() = 0;		//ターゲット処理
+	virtual void InitWarning() = 0;		//攻撃前処理
+	virtual void InitATK() = 0;			//攻撃処理
+	virtual void InitStiffness() = 0;	//攻撃後の硬直処理
+	virtual void InitBack() = 0;		//終了処理
 
 	//各状態の更新
 	virtual void UpdateAIMing() = 0;
@@ -63,7 +73,7 @@ public://状態のデータ
 	virtual void UpdateATK() = 0;
 	virtual void UpdateStiffness() = 0;
 	virtual void UpdateBack() = 0;
-public://**変数
+public: //**パブリック変数**//
 
 	enum Behavior {
 		AIMing,		//プレイヤーを狙う処理
@@ -74,6 +84,7 @@ public://**変数
 		CountOfATKBehavior
 	};
 
+	//状態リクエスト
 	std::optional<Behavior>behaviReq_ = std::nullopt;
 
 	//各状態の待機時間（利用しなくても可
@@ -89,21 +100,20 @@ public://**変数
 	//経過カウント
 	float currentCount_ = 0;
 
-private://状態関係
+private: //**状態関係**//
 	//現在の状態
 	Behavior behavior_ = AIMing;
 
 	//関数テーブル
-	static void (IBossATK::* behaviorInit[])();
-	static void (IBossATK::* behaviorUpdate[])();
+	static void (BossBaseATK::* behaviorInit[])();
+	static void (BossBaseATK::* behaviorUpdate[])();
 
-public://デバッグ関連
+public: //**デバッグ関連**//
 
-	//
-	GVariTree treeData_ = GVariTree("");
-	
-private://デバッグ関係
+	//ツリー
+	GlobalVariableTree treeData_ = GlobalVariableTree("");
 
+	//各状態の名前
 	std::string behaviorName_[CountOfATKBehavior] = {
 		"狙う",
 		"攻撃前",
@@ -111,6 +121,8 @@ private://デバッグ関係
 		"攻撃後硬直",
 		"硬直後復帰"
 	};
+
+	//現在の状態の名前
 	std::string nowBehavior_ = "";
 
 };

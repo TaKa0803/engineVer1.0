@@ -22,33 +22,58 @@ struct PointLight
 	//float padding[2];
 };
 
+//明かりのマネージャ
 class LightManager {
 
-public:
+public://**シングルトンパターン**//
 	static LightManager* GetInstance();
-
 private:
 	LightManager() = default;
 	~LightManager() = default;
 	LightManager(const LightManager& o) = delete;
 	const LightManager& operator=(const LightManager& o) = delete;
 
-public:
+public://**パブリック関数**//
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
+	/// <summary>
+	/// 更新前処理
+	/// </summary>
 	void PreUpdate();
 
+	/// <summary>
+	/// ポイントライトのセット
+	/// </summary>
+	/// <param name="data">送るデータ</param>
 	void SetPLight(const PointLight& data) { pLights_ = data; }
 
+	/// <summary>
+	/// ディレクショナルライトのセット
+	/// </summary>
+	/// <param name="data">送るデータ</param>
 	void SetDLight(const DirectionalLight& data) { dLights_ = data; }
 
+	/// <summary>
+	/// Pライト取得
+	/// </summary>
+	/// <returns></returns>
 	PointLight GetPLight() { return pLights_; }
 
+	/// <summary>
+	/// Dライト取得
+	/// </summary>
+	/// <returns></returns>
 	DirectionalLight GetDLight() { return dLights_; }
-private:
 
+private://**プライベート変数**//
+
+	//Pライトデータ
 	PointLight pLights_ ;
 
+	//Dライトデータ
 	DirectionalLight dLights_;
 };

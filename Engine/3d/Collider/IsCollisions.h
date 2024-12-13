@@ -39,5 +39,5 @@ Vector3 GetClosestPoint(const Vector3& p, const Vector3& min, const Vector3& max
 
 //AABBと円
 bool InCollision(const AABB& a, const Sphere& s, Vector3& v);
-
+//AABBと線
 bool InCollision(const AABB& AA, const Segment& S);

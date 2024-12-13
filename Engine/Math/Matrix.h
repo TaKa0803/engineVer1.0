@@ -2,6 +2,7 @@
 #include"Vector3.h"
 #include"Vector2.h"
 
+//4x4行列
 struct Matrix4x4 {
 	float m[4][4];
 
@@ -87,19 +88,22 @@ struct Matrix4x4 {
 
 };
 
+//行列のデバッグ描画
 void Matrix4x4Debug(const Matrix4x4& m, const char* name);
 
-
+//Yの回転取得
 float GetYRotate(const Vector2& v);
 
+//Xの回転取得
 float GetXRotate(const Vector2& v);
 
+//
 Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to);
 
-
+//座標を無視してベクトル回転
 Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
 
-
+//軸から回転
 Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, const float angle);
 
 

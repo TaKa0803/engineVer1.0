@@ -115,7 +115,7 @@ bool SphereCollider::IsCollision(OBBCollider& obb, Vector3& backVec, float divis
 	Matrix4x4 inverseM = obb.GetInverseWorldM();
 
 	//すべてのスケールからサイズ取得
-	Vector3 size = GetAllScale(obb.GetWorld());
+	Vector3 size = GetAllScale(obb.world_);
 
 #pragma endregion
 
@@ -252,7 +252,7 @@ void SphereCollider::UpdateMatrix()
 	world_.UpdateMatrix();
 }
 
-GVariTree& SphereCollider::GetDebugTree(const std::string& name)
+GlobalVariableTree& SphereCollider::GetDebugTree(const std::string& name)
 {
 
 	tree_.name_ = name;

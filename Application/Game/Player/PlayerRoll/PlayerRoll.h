@@ -7,7 +7,7 @@
 //前方宣言
 class Player;
 
-class PlayerRoll :public IPlayerBehavior{
+class PlayerRoll :public PlayerBaseBehavior{
 
 public:
 	//コンストラクタ

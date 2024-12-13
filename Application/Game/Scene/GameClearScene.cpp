@@ -5,12 +5,18 @@
 
 GameClearScene::GameClearScene()
 {
+	//インプットのインスタンス取得
 	inp_ = Input::GetInstance();
 
+	//スクリーンショットスプライト生成
 	screanShot_.reset(Sprite::Create(TextureManager::white_, { 1280,720 }, { 1280,720 },{1280,720}));
+	//クリアテキスト画像を読み込んでスプライト生成
 	clearText_.reset(Sprite::Create(TextureManager::LoadTex("resources/Texture/AL/gameClear.png").texNum, { 1280,720 }, { 1280,720 }, { 1280,720 }));
+	//Bボタン画像を読み込んでスプライト生成
 	bButton_.reset(Sprite::Create(TextureManager::LoadTex("resources/Texture/AL/B.png").texNum, { 180,90 }, { 90,90 }, { 60,60 }));
-	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("クリアシーン");
+	
+	//デバッグ用にパラメータをグループに設定
+	std::unique_ptr<GlobalVariableGroup>gvg = std::make_unique<GlobalVariableGroup>("クリアシーン");
 	gvg->SetTreeData(clearText_->GetTree("クリアテキスト"));
 	gvg->SetTreeData(bButton_->GetTree("Bボタン"));
 
@@ -18,22 +24,21 @@ GameClearScene::GameClearScene()
 	bgmClear_ = AudioManager::LoadSoundNum("clear");
 }
 
-GameClearScene::~GameClearScene()
-{
-}
-
 void GameClearScene::Initialize()
 {
+	//すべての音を止める
 	AudioManager::GetInstance()->StopAllSounds();
+	//クリア音を流す
 	AudioManager::PlaySoundData(bgmClear_);
 }
 
 void GameClearScene::Update()
 {
-	//screanShot_->DrawDebugImGui("sp");
-
+	//入力で別シーンへ
 	if (inp_->TriggerKey(DIK_SPACE) || inp_->IsTriggerButton(kButtonB)) {
+		//音を止める
 		AudioManager::GetInstance()->StopAllSounds();
+		//タイトルシーンへ
 		sceneNo = TITLE;
 	}
 }

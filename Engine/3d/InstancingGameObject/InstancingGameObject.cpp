@@ -2,10 +2,13 @@
 #include<cassert>
 #include<imgui.h>
 
-GVariTree& InstancingGameObject::GetDebugTree(const std::string& name)
+GlobalVariableTree& InstancingGameObject::GetDebugTree(const std::string& name)
 {
+	//名前設定
 	tree_.name_ = name;
+	//ワールドのチりー追加
 	tree_.SetTreeData(world_.GetDebugMonitorTree());
+
 	return tree_;
 }
 
@@ -13,6 +16,7 @@ InstancingGameObject::~InstancingGameObject() {
 }
 
 void InstancingGameObject::Initialize(const std::string& tag) {
+	//インスタンシングモデルマネージャのインスタンス取得
 	IMM_ = InstancingModelManager::GetInstance();
 
 	//タグが存在しているかチェック
@@ -22,9 +26,6 @@ void InstancingGameObject::Initialize(const std::string& tag) {
 	else {
 		assert(false);
 	}
-
-
-
 }
 
 void InstancingGameObject::Update() {
@@ -36,21 +37,22 @@ void InstancingGameObject::Update() {
 void InstancingGameObject::Draw()
 {
 	//タグに対応したモデルにワールド追加
-	IMM_->SetData(tag_, world_,color_);
+	IMM_->SetData(tag_, world_, color_);
 }
 
 void InstancingGameObject::Debug(const char* name)
 {
-	
-		if (ImGui::BeginMenu(name)) {
+#ifdef _DEBUG
+	//デバッグUI表示
+	if (ImGui::BeginMenu(name)) {
 
-			IMM_->Debug(tag_, name);
+		IMM_->Debug(tag_, name);
 
-			//world_.DrawDebug(name);
+		//world_.DrawDebug(name);
 
-			ImGui::EndMenu();
-		}
-	
+		ImGui::EndMenu();
+	}
+#endif // _DEBUG
 }
 
 

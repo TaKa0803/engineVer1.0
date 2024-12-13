@@ -30,7 +30,7 @@ PlayerStamina::PlayerStamina()
 
 }
 
-void PlayerStamina::Init()
+void PlayerStamina::Initialize()
 {
 	data_.currentStamina = data_.maxStamina;
 	data_.currentCharge = 0;

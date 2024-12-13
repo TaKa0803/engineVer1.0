@@ -136,7 +136,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\Game\Boss\Behavior\ATK\BossATKTypeManager.cpp" />
     <ClCompile Include="Application\Game\Boss\Behavior\ATK\Normal\Stump\BossStump.cpp" />
     <ClCompile Include="Application\Game\Boss\Behavior\Idle\BossIdle.cpp" />
-    <ClCompile Include="Application\Game\Scene\GameScene.cpp" />
+    <ClCompile Include="Application\Game\Scene\InGameScene.cpp" />
     <ClCompile Include="Application\Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Application\Game\Scene\GameOverScene.cpp" />
     <ClCompile Include="Application\Game\CirccleShadow\CirccleShadow.cpp" />
@@ -181,11 +181,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\base\Log\Log.cpp" />
     <ClCompile Include="Engine\base\MainSystem\MainSystem.cpp" />
     <ClCompile Include="Engine\ExtractionScene\ExtractionScene.cpp" />
-    <ClCompile Include="Engine\GVariableManager\GVaribleManager.cpp" />
+    <ClCompile Include="Engine\GVariableManager\GlobalVaribleManager.cpp" />
     <ClCompile Include="Engine\GvariGroup\GvariGroup.cpp" />
     <ClCompile Include="Engine\LightManager\LightManager.cpp" />
     <ClCompile Include="Engine\MapLoader\MapLoader.cpp" />
-    <ClCompile Include="Engine\Math\Matirx.cpp" />
+    <ClCompile Include="Engine\Math\Matirx.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Engine\Math\Matrix.cpp" />
     <ClCompile Include="Engine\Math\Vector2.cpp" />
     <ClCompile Include="Engine\Math\Vector3.cpp" />
@@ -428,13 +431,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\Game\Boss\Behavior\ATK\BossATKTypeManager.h" />
     <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\Stump\BossStump.h" />
     <ClInclude Include="Application\Game\Boss\Behavior\Idle\BossIdle.h" />
-    <ClInclude Include="Application\Game\Scene\GameScene.h" />
+    <ClInclude Include="Application\Game\Scene\InGameScene.h" />
     <ClInclude Include="Application\Game\Scene\TitleScene.h" />
     <ClInclude Include="Application\Game\Scene\GameOverScene.h" />
     <ClInclude Include="Application\Game\CirccleShadow\CirccleShadow.h" />
     <ClInclude Include="Application\Game\FollowCamera\FollowCamera.h" />
     <ClInclude Include="Application\Game\GameUI\GameUI.h" />
-    <ClInclude Include="Application\Game\items.h" />
     <ClInclude Include="Application\Game\Player\Player.h" />
     <ClInclude Include="Application\Game\Player\Behavior\ATKData\PlayerPunch.h" />
     <ClInclude Include="Application\Game\Player\Behavior\PlayerATKManager\PlayerATKManager.h" />
@@ -476,8 +478,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\base\Log\Log.h" />
     <ClInclude Include="Engine\base\MainSystem\MainSystem.h" />
     <ClInclude Include="Engine\ExtractionScene\ExtractionScene.h" />
-    <ClInclude Include="Engine\GVariableManager\GVaribleManager.h" />
-    <ClInclude Include="Engine\GVariableManager\GVariDatas.h" />
+    <ClInclude Include="Engine\GVariableManager\GlobalVaribleManager.h" />
+    <ClInclude Include="Engine\GVariableManager\GlobalVariableDatas.h" />
     <ClInclude Include="Engine\GvariGroup\GvariGroup.h" />
     <ClInclude Include="Engine\LightManager\LightManager.h" />
     <ClInclude Include="Engine\MapLoader\MapLoader.h" />
@@ -539,11 +541,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\jsonfile\enemyPopData.json" />
     <None Include="resources\GlobalVariables\StageWall.json" />
     <None Include="resources\jsonfile\resourcePath.json" />
     <None Include="resources\jsonfile\modelPathFile.json" />
-    <None Include="resources\jsonfile\PlayerATKData.json" />
     <None Include="resources\shaders\PostEffect\CopyImage.hlsli" />
     <None Include="resources\shaders\Models\InstancingObject.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

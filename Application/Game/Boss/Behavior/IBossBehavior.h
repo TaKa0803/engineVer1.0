@@ -3,20 +3,34 @@
 
 class Boss;
 
+//ボスの状態の基底クラス
 class IBossBehavior {
 
-public:
-	virtual ~IBossBehavior() = default;         // 純粋仮想関数
+public:	//**パブリック関数**//
 
-	//初期化
+	/// <summary>
+	/// 解放処理
+	/// </summary>
+	virtual ~IBossBehavior() = default;
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	virtual void Initialize()=0;
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	virtual void Update()=0;
 
-	//ツリー取得
-	GVariTree& GetTree() { return tree_; };
+	/// <summary>
+	/// ツリー取得
+	/// </summary>
+	/// <returns></returns>
+	GlobalVariableTree& GetTree() { return tree_; };
 
-public:
-	GVariTree tree_ = GVariTree("");
+public:	//**デバッグ用**//
+
+	//デバッグツリー
+	GlobalVariableTree tree_ = GlobalVariableTree("");
 };

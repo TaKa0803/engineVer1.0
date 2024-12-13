@@ -1,23 +1,21 @@
 #pragma once
 #include<string>
-#include"GVariableManager/GVariDatas.h"
+#include"GVariableManager/GlobalVariableDatas.h"
 
 //Gvariツリークラス
-class GVariTree {
+class GlobalVariableTree {
 
-public:
+public: //**パブリック関数**//
 
 	//ツリーデータ作成
-	GVariTree(const std::string& treeName);
-	~GVariTree() = default;
+	GlobalVariableTree(const std::string& treeName);
+	~GlobalVariableTree() = default;
 
 	//値追加
 	void SetValue(const std::string& name, std::variant<bool* ,int32_t*, float*,Vector2*, Vector3*, Vector4*> value);
 
 	//監視値追加
 	void SetMonitorValue(const std::string& name, std::variant<bool* ,int32_t*, float*, Vector3*, std::string*> value);
-
-
 
 	//ImGuiのコンボでデバッグ
 	void SetMonitorCombo(const std::string&name,  std::string*item,const std::vector<std::string>& items);
@@ -27,33 +25,29 @@ public:
 
 
 	//ツリーデータ格納
-	void SetTreeData(GVariTree& tree);
-public:
+	void SetTreeData(GlobalVariableTree& tree);
+
+public: //**パブリック変数**//
 
 	//ツリー名
 	std::string name_;
 
 	//データ
 	TreeData datas_;
-
-private:
-
-
-
 };
 
 //Gvariグループクラス
-class GVariGroup {
+class GlobalVariableGroup {
 
-public:
+public: //**パブリック関数**//
+
 	/// <summary>
 	/// 生成（日本語だと出力名がバグるので注意)
 	/// </summary>
 	/// <param name="groupName"></param>
-	GVariGroup(const std::string&groupName);
+	GlobalVariableGroup(const std::string&groupName);
 	//削除時データを送る
-	~GVariGroup();
-
+	~GlobalVariableGroup();
 
 	//デバッグ値追加
 	void SetValue(const std::string& name, std::variant<bool*,int32_t*, float*,Vector2*, Vector3*, Vector4*> value);
@@ -72,16 +66,15 @@ public:
 	/// ツリーデータ格納
 	/// </summary>
 	/// <param name="tree"></param>
-	void SetTreeData(GVariTree& tree);
-private:
+	void SetTreeData(GlobalVariableTree& tree);
+
+private: //**プライベート変数**//
 
 	//グループ名
 	std::string groupName_;
 
 	//データ
 	GroupData datas_;
-
-
 };
 
 

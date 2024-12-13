@@ -1,24 +1,40 @@
 #pragma once
 #include"SceneManager/SceneManager.h"
 #include"SingleGameObjects/Model.h"
+
+//アプリ層の最下層シーン
 class AppScene {
 
-public:
+public: //**パブリック関数**//
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	AppScene();
-	~AppScene();
 
-	//初期化
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~AppScene()=default;
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
-	//ゲーム更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
-	//描画
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
-private:
+private: //**プライベート変数**//
+
 	//シーンマネージャ
-	SceneManager* sceneManager = nullptr;
+	std::unique_ptr<SceneManager> sceneManager = nullptr;
 	
 };

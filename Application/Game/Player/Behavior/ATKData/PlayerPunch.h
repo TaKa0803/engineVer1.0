@@ -15,7 +15,7 @@ public://パブリック関数
 	//更新
 	void Update();
 
-	GVariTree& GetTree() { return tree_; }
+	GlobalVariableTree& GetTree() { return tree_; }
 
 private://プライベート関数
 
@@ -122,6 +122,6 @@ private://パラメータ
 private:
 
 	//ツリー
-	GVariTree tree_ = GVariTree("");
+	GlobalVariableTree tree_ = GlobalVariableTree("");
 
 };

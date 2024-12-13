@@ -14,8 +14,9 @@
 #include"ComputeShaders/SkinningCS.h"
 #include"GvariGroup/GvariGroup.h"
 
+//モデル倉さう
 class Model {
-public:
+public://**プライベート関数**//
 
 	Model();
 	/// <summary>
@@ -25,7 +26,6 @@ public:
 
 	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-
 	/// <summary>
 	/// OBJ作成
 	/// </summary>
@@ -33,19 +33,14 @@ public:
 	/// <returns><モデルデータ/returns>
 	static Model* CreateFromOBJ(const std::string& filePath);
 
+public://**パブリック関数**//
 
-public:
-
-
-	
 	/// <summary>
 	/// 描画
 	/// </summary>
 	/// <param name="WVP"></param>
 	/// <param name="texture"></param>
 	void Draw(const Matrix4x4& WVP, int texture = -1);
-
-
 
 	/// <summary>
 	/// アニメーション変更
@@ -54,22 +49,25 @@ public:
 	/// <param name="count">変わりきるまでの速度</param>
 	void ChangeAnimation(const std::string&animeName, float sec);
 
-	//アニメーションループフラグ
-	void SetAnimationRoop(bool isLoop) { isAnimeRoop_ = isLoop; };
-
-	void SetAnimationActive(bool isActive) { isAnimationActive_ = isActive; }
+public://**セッター**//
 
 	/// <summary>
-	/// Debug用ImGui表示
+	/// アニメーションループフラグ
 	/// </summary>
-	/// <param name="name"></param>
-	//void DebugParameter(const char* name);
+	/// <param name="isLoop">フラグ</param>
+	void SetAnimationRoop(bool isLoop) { isAnimeRoop_ = isLoop; };
+
+	/// <summary>
+	/// アニメーション有効化フラグ
+	/// </summary>
+	/// <param name="isActive">フラグ</param>
+	void SetAnimationActive(bool isActive) { isAnimationActive_ = isActive; }
 
 	/// <summary>
 	/// Gvariツリーの作成
 	/// </summary>
 	/// <param name="treeName">各パラメータの含まれたTreeの返却</param>
-	GVariTree& SetDebugParam(const std::string &treeName = "モデル");
+	GlobalVariableTree& SetDebugParam(const std::string &treeName = "モデル");
 
 	/// <summary>
 	/// シェーダー処理の切り替え
@@ -82,7 +80,7 @@ public:
 	/// </summary>
 	/// <param name="ans">画像を使うか</param>
 	void IsEnableTexture(bool ans) { materialData_->enableTexture = ans; }
-#pragma region セッター
+
 	//uv座標設定
 	void SetUVTranslate(Vector2 pos) { uvWorld_.translate_.x = pos.x; uvWorld_.translate_.y = pos.y; }
 	//uvサイズ設定
@@ -100,15 +98,12 @@ public:
 
 	void SetFillMode(FillMode fillmode) { fillMode_=fillmode; }
 
-	void SetAnimeSecond(float spd) { animationRoopSecond_ = spd; }
-
 	/// <summary>
 	/// アニメーションタイムを引数側から指定する
 	/// </summary>
 	/// <param name="isAct"></param>
 	/// <param name="t"></param>
 	void SetAnimationTime(bool isAct, float t) { isSetATime_ = isAct; setAt_ = t; };
-#pragma endregion
 
 	/// <summary>
 	/// 色の取得
@@ -120,7 +115,8 @@ public:
 
 	//ジョイント取得
 	Matrix4x4 GetJoint(const std::string& name);
-private:
+
+private://**プライベート関数**//
 
 	//初期化
 	void Initialize(
@@ -129,11 +125,21 @@ private:
 		int point
 	);
 
+	/// <summary>
+	/// アニメーション更新
+	/// </summary>
 	void UpdateAnimation();
 
+	/// <summary>
+	/// アニメーション処理
+	/// </summary>
+	/// <param name="skeleton">スケルトン</param>
+	/// <param name="animation">animationデータ</param>
+	/// <param name="animationTime">アニメーション時間</param>
+	/// <param name="designation"フラグ></param>
 	void ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime, bool designation);
 
-public:
+public://**パブリック変数**//
 
 	//UVのworldデータ
 	EulerWorldTransform uvWorld_{};
@@ -143,6 +149,7 @@ public:
 	//各ブレンドモード
 	BlendMode  blendMode_ = BlendMode::kNormal;
 
+	//マテリアルデータ
 	Material* materialData_ = nullptr;
 
 	//アニメーションフラグ
@@ -150,10 +157,12 @@ public:
 	//animationの一周までの秒数
 	float animationRoopSecond_ = 1.0f;
 
-private:
+private://**プライベート関数**//
 
+	//DXFのポインタ
 	DirectXFunc* DXF_;
 
+	//モデルマネージャ
 	ModelManager* modelM_;
 
 	//スキニング処理
@@ -247,9 +256,9 @@ private:
 	//モデルタイプ
 	ModelDataType modelType_;
 
-private://デバッグ用
+private://**デバッグ用**//
 
-	GVariTree tree = GVariTree("model");
+	GlobalVariableTree tree = GlobalVariableTree("model");
 };
 
 

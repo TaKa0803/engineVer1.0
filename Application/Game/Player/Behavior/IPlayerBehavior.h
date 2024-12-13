@@ -5,11 +5,11 @@
 class Player;
 
 //プレイヤー状態の基底クラス
-class IPlayerBehavior {
+class PlayerBaseBehavior {
 
 public:
 	//純粋仮想デストラクタ
-	virtual ~IPlayerBehavior() = default;
+	virtual ~PlayerBaseBehavior() = default;
 
 	//初期化
 	virtual void Initialize() = 0;
@@ -21,10 +21,10 @@ public:
 	/// デバッグ用のツリーデータ取得
 	/// </summary>
 	/// <returns>ツリーデータ</returns>
-	GVariTree& GetTree() { return tree_; }
+	GlobalVariableTree& GetTree() { return tree_; }
 public:
 	//プレイヤーポインタ
 	Player* player_;
 	//ツリーデータ
-	GVariTree tree_ = GVariTree("");
+	GlobalVariableTree tree_ = GlobalVariableTree("");
 };

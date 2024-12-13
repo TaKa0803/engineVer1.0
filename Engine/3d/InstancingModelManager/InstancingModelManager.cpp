@@ -9,16 +9,18 @@
 
 
 InstancingModelManager* InstancingModelManager::GetInstance() {
+	//インスタンス取得
 	static InstancingModelManager instance;
 	return &instance;
 }
 
 void InstancingModelManager::Initialize(bool loadAllModel)
 {
-
+	//PSO生成
 	pso_ = new InstancingPSO();
 	pso_->Initialize();
 
+	//タグ登録されているモデルをすべて読み込む
 	if (loadAllModel) {
 		LoadAllModel();
 	}
@@ -94,7 +96,7 @@ void InstancingModelManager::LoadAllModel() {
 
 void InstancingModelManager::Finalize()
 {
-
+	//解放処理
 	delete pso_;
 	pso_ = nullptr;
 
@@ -106,12 +108,12 @@ void InstancingModelManager::Finalize()
 
 void InstancingModelManager::DrawAllModel() {
 
+	//登録されているすべてのモデルの描画
 	for (auto& model : modelDatas_) {
 		if (model.second->GetWorldNum() != 0) {
 			model.second->Draw();
 		}
 	}
-
 }
 
 bool InstancingModelManager::SerchTag(const std::string& tag) {
@@ -121,9 +123,9 @@ bool InstancingModelManager::SerchTag(const std::string& tag) {
 		return true;
 	}
 	else {
+		//タグ不明
 		return false;
 	}
-
 }
 
 void InstancingModelManager::Debug(const std::string& tag,const char*name)
@@ -136,12 +138,11 @@ void InstancingModelManager::Debug(const std::string& tag,const char*name)
 		//見つからない
 		assert(false);
 	}
-
 }
 
 float InstancingModelManager::GetAlpha(const std::string& tag)
 {
-
+	//見つかれば処理
 	if (modelDatas_.find(tag) != modelDatas_.end()) {
 		return modelDatas_[tag]->GetColor().w;
 	}
@@ -153,8 +154,9 @@ float InstancingModelManager::GetAlpha(const std::string& tag)
 	return 0;
 }
 
- GVariTree& InstancingModelManager::CreateAndGetTree(const std::string& tag, const std::string& name)
+ GlobalVariableTree& InstancingModelManager::CreateAndGetTree(const std::string& tag, const std::string& name)
 {
+	 //見つかれば処理
 	if (modelDatas_.find(tag) != modelDatas_.end()) {
 		return modelDatas_[tag]->CreateAndGetTree(name);
 	}
@@ -168,6 +170,7 @@ float InstancingModelManager::GetAlpha(const std::string& tag)
 
 void InstancingModelManager::SetData(const std::string& tag, const EulerWorldTransform& world,const Vector4&color ) {
 
+	//見つかれば処理
 	if (modelDatas_.find(tag) != modelDatas_.end()) {
 		modelDatas_[tag]->AddInstancingData(world, color);
 	}
@@ -175,99 +178,104 @@ void InstancingModelManager::SetData(const std::string& tag, const EulerWorldTra
 		//タグミスによるエラー処理
 		assert(false);
 	}
-
 }
 
 void InstancingModelManager::SetTexture(const std::string& tag, int texture) {
-	////タグのモデルデータ探索
-	//for (auto& model : modeldatas_) {
-	//	//タグを発見
-	//	if (model->GetTag() == tag) {
-	//		//ワールドを追加
-	//		model->SetTexture(texture);
-	//	}
-	//}
-
-	modelDatas_[tag]->SetTexture(texture);
-
+	//見つかれば処理
+	if (modelDatas_.find(tag) != modelDatas_.end()) {
+		modelDatas_[tag]->SetTexture(texture);
+	}
+	else {
+		//タグミスによるエラー処理
+		assert(false);
+	}
 }
 
 void InstancingModelManager::SetBlendMode(const std::string& tag, BlendMode blend) {
-	////タグのモデルデータ探索
-	//for (auto& model : modeldatas_) {
-	//	//タグを発見
-	//	if (model->GetTag() == tag) {
-	//		//ワールドを追加
-	//		model->SetBlendMode(blend);
-	//	}
-	//}
+
 
 	modelDatas_[tag]->SetBlendMode(blend);
 }
 
 void InstancingModelManager::SetFillMode(const std::string& tag, FillMode fillMode) {
-	//タグのモデルデータ探索
-	//for (auto& model : modeldatas_) {
-	//	//タグを発見
-	//	if (model->GetTag() == tag) {
-	//		//ワールドを追加
-	//		model->SetFillMode(fillMode);
-	//	}
-	//}
-
-	modelDatas_[tag]->SetFillMode(fillMode);
-
+	//見つかれば処理
+	if (modelDatas_.find(tag) != modelDatas_.end()) {
+		modelDatas_[tag]->SetFillMode(fillMode);
+	}
+	else {
+		//タグミスによるエラー処理
+		assert(false);
+	}
 }
 
 void InstancingModelManager::SetAlpha(const std::string& tag, float alpha) {
 
 	////タグのモデルデータ探索
-	//for (auto& model : modeldatas_) {
-	//	//タグを発見
-	//	if (model->GetTag() == tag) {
-	//		//ワールドを追加
-	//		model->SetAlpha(alpha);
-	//	}
-	//}
-
-	modelDatas_[tag]->SetAlpha(alpha);
-
-	//タグ未発見
-	//assert(false);
+		//見つかれば処理
+	if (modelDatas_.find(tag) != modelDatas_.end()) {
+		modelDatas_[tag]->SetAlpha(alpha);
+	}
+	else {
+		//タグミスによるエラー処理
+		assert(false);
+	}
 }
 
-
-
 void InstancingModelManager::SetEnableTexture(const std::string& tag, bool isEnable) {
-	////タグのモデルデータ探索
-	//for (auto& model : modeldatas_) {
-	//	//タグを発見
-	//	if (model->GetTag() == tag) {
-	//		//ワールドを追加
-	//		model->SetEnableTexture(isEnable);
-	//	}
-	//}
-
-	modelDatas_[tag]->SetEnableTexture(isEnable);
-
+	//見つかれば処理
+	if (modelDatas_.find(tag) != modelDatas_.end()) {
+		modelDatas_[tag]->SetEnableTexture(isEnable);
+	}
+	else {
+		//タグミスによるエラー処理
+		assert(false);
+	}
 }
 
 void InstancingModelManager::SetEnableShader(const std::string& tag, bool isEnable)
 {
-	modelDatas_[tag]->SetEnableShader(isEnable);
+	//見つかれば処理
+	if (modelDatas_.find(tag) != modelDatas_.end()) {
+		modelDatas_[tag]->SetEnableShader(isEnable);
+	}
+	else {
+		//タグミスによるエラー処理
+		assert(false);
+	}
 }
 
 void InstancingModelManager::SetEnableEnviomentMap(const std::string& tag, bool isEnable, float num)
 {
-	modelDatas_[tag]->SetEnableEnviomentMap(isEnable, num);
+	//見つかれば処理
+	if (modelDatas_.find(tag) != modelDatas_.end()) {
+		modelDatas_[tag]->SetEnableEnviomentMap(isEnable, num);
+	}
+	else {
+		//タグミスによるエラー処理
+		assert(false);
+	}
 }
 
 void InstancingModelManager::SetAnimationRoopFrame(const std::string& tag, float sec,bool animeLoop)
 {
-	modelDatas_[tag]->SetAnimationSecond( sec,animeLoop);
+	//見つかれば処理
+	if (modelDatas_.find(tag) != modelDatas_.end()) {
+		modelDatas_[tag]->SetAnimationSecond(sec,animeLoop);
+	}
+	else {
+		//タグミスによるエラー処理
+		assert(false);
+	}
 }
 
-void InstancingModelManager::SetAnimeNum(const std::string& tag, const std::string&animeName)
+void InstancingModelManager::SetAnimeName(const std::string& tag, const std::string&animeName)
 {
-	modelDatas_[tag]->SetAnimeName(animeName);
+	//見つかれば処理
+	if (modelDatas_.find(tag) != modelDatas_.end()) {
+		modelDatas_[tag]->SetAnimeName(animeName);
+	}
+	else {
+		//タグミスによるエラー処理
+		assert(false);
+	}
 }

@@ -4,18 +4,19 @@
 
 DSVManager* DSVManager::GetInstance()
 {
+	//インスタンス取得
 	static DSVManager ins;
 	return &ins;
 }
 
 void DSVManager::Initialize()
 {
+	//DirectXFuncのインスタンス取得
 	DXF_ = DirectXFunc::GetInstance();
 
-
 	//DSV用のヒープでディスクリプタの数は１。DSVはShader内で触るものではないので、ShaderVisibleはfalse
-	dsvDescriptorHeap_ = CreateDescriptorHeap(DXF_->GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, maxDSVSize_, false);
-	descriptorSizeDSV_ = DXF_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+	descriptorHeap_ = CreateDescriptorHeap(DXF_->GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, maxDSVSize_, false);
+	descriptorSize_ = DXF_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 #pragma region DSV
 	//DepthStencilTextureをウィンドウサイズで作成
 	depthStencilResource = CreateDepthStencilTextureResource(DXF_->GetDevice(), WindowApp::kClientWidth, WindowApp::kClientHeight);
@@ -33,21 +34,24 @@ void DSVManager::Initialize()
 
 void DSVManager::Finalize()
 {
-	dsvDescriptorHeap_->Release();
+	//メモリの解放
+	descriptorHeap_->Release();
 	depthStencilResource->Release();
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE DSVManager::GetDescriptorHandle(uint32_t Num)
 {
-
-	if (Num < DSVNum_) {
-		return GetCPUDescriptorHandle(dsvDescriptorHeap_, descriptorSizeDSV_, Num);
+	//引数が仕様数以下の場合
+	if (Num < descriptorNum_) {
+		//あるものを返却
+		return GetCPUDescriptorHandle(descriptorHeap_, descriptorSize_, Num);
 	}
 	else {
-		D3D12_CPU_DESCRIPTOR_HANDLE ans = GetCPUDescriptorHandle(dsvDescriptorHeap_, descriptorSizeDSV_, DSVNum_);
-
-		DSVNum_++;
-
+		//新しく作成
+		D3D12_CPU_DESCRIPTOR_HANDLE ans = GetCPUDescriptorHandle(descriptorHeap_, descriptorSize_, descriptorNum_);
+		//数を増やす
+		descriptorNum_++;
+		//返却
 		return ans;
 	}
 }

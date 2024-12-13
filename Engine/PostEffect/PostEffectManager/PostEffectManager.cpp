@@ -114,7 +114,7 @@ void PostEffectManager::Initialize()
 
 	nowEffectName_ = effectName_[kNone];
 
-	std::unique_ptr<GVariGroup> gvg = std::make_unique<GVariGroup>("PostEffect");
+	std::unique_ptr<GlobalVariableGroup> gvg = std::make_unique<GlobalVariableGroup>("PostEffect");
 	gvg->SetMonitorCombo("エフェクト", &nowEffectName_,effectName_);
 
 }

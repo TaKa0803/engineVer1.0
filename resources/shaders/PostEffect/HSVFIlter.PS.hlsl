@@ -1,32 +1,37 @@
 #include "CopyImage.hlsli"
 
+//シーンの画像
 Texture2D<float32_t4> gTexture : register(t0);
+//サンプラー
 SamplerState gSampler : register(s0);
 
+//マテリアル
 struct Material
 {
-    float32_t hue;
-    float32_t saturation;
-    float32_t value;
+    float32_t hue;          //H
+    float32_t saturation;   //S
+    float32_t value;        //V
     
-    float32_t effective;
+    float32_t effective;    //効果量
 };
-
+//コンスタントバッファで作成
 ConstantBuffer<Material> gMaterial : register(b0);
 
-
+//ピクセルの出力
 struct PixelShaderOutput
 {
     float32_t4 color : SV_TARGET0;
 };
 
+//RGBをHSVにする
 float32_t3 RGBToHSV(float32_t3 rgb)
 {
-    
+    //RGBを取り出す
     float r, g, b;
     r = rgb.r;
     g = rgb.g;
     b = rgb.b;
+    
     
     float max = r > g ? r : g;
     max = max > b ? max : b;
@@ -60,8 +65,10 @@ float32_t3 RGBToHSV(float32_t3 rgb)
     float v = max;
     
     return float32_t3(h, s, v);
+    
 };
 
+//HSVをRGBにする
 float32_t3 HSVToRGB(float32_t3 hsv)
 {
     float h,s,v;

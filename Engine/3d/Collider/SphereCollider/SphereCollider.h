@@ -54,7 +54,7 @@ public:
 	//当たった時に行列更新するといい
 	void UpdateMatrix();
 
-	GVariTree& GetDebugTree(const std::string& name = "円コライダー");
+	GlobalVariableTree& GetDebugTree(const std::string& name = "円コライダー");
 public:
 
 	//半径取得
@@ -98,7 +98,7 @@ private:
 	float scale_ = 1.0f;
 
 	//デバッグ用ツリー
-	GVariTree tree_=GVariTree("");
+	GlobalVariableTree tree_=GlobalVariableTree("");
 public:
 
 	//有効処理

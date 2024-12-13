@@ -6,14 +6,20 @@
 
 Camera* Camera::GetInstance()
 {
+	//インスタンス取得
 	static Camera instance;
 	return &instance;
 }
 
 void Camera::Initialize() {
 
+	//メインカメラ行列初期化
 	mainCamera_.Initialize();
+
+	//ポイントカメラ用行列初期化
 	CameraMotionSupport_.Initialize();
+
+	//追従ワールド初期化
 	FeaturedWorldTransform_ = nullptr;
 
 	//カメラの初期距離を設定
@@ -31,12 +37,15 @@ void Camera::Initialize() {
 
 	//各種更新に必要な処理
 	view_ = Inverse(mainCamera_.matWorld_);
+	//プロジェクション生成
 	projection_ = MakePerspectiveFovMatrix(0.45f, (float)WindowApp::kClientWidth / (float)WindowApp::kClientHeight, 0.1f, FarZ);
+	//ビュープロジェクション行列生成
 	viewProjection_ = view_ * projection_;
 }
 
 void Camera::Update() {
 
+	//カメラの当たり判定無効化
 	isCollision_ = false;
 
 	////回転量Xの制限
@@ -59,26 +68,32 @@ void Camera::Update() {
 	if (FeaturedWorldTransform_) {
 		//座標のみ取得するフラグが起動しているとき
 		if (isOnlyGetPosition) {
+			//カメラ座標にポイントカメラ用基点の座標を足す
 			CameraMotionSupport_.translate_ = camerapos_ + FeaturedWorldTransform_->GetWorldTranslate();
+			//行列更新
 			CameraMotionSupport_.UpdateMatrix();
 		}
 		else {
+			//フラグが機能していないとき
+			//カメラ座標をそのまま渡す
 			CameraMotionSupport_.translate_ = camerapos_;
+			//行列更新
 			CameraMotionSupport_.UpdateMatrix();
 			//起動していないとき行列をかけて親子関係処理
 			CameraMotionSupport_.matWorld_ = CameraMotionSupport_.matWorld_ * FeaturedWorldTransform_->matWorld_;
 		}
 	}
 
-
 	//メインカメラの更新
 	mainCamera_.UpdateMatrix();
 
 	//各種更新に必要な処理
 	view_ = Inverse(mainCamera_.matWorld_);
+	//プロジェクション更新
 	projection_ = MakePerspectiveFovMatrix(0.45f, (float)WindowApp::kClientWidth / (float)WindowApp::kClientHeight, 0.1f, FarZ);
+	//ビュープロジェクション更新
 	viewProjection_ = view_ * projection_;
-
+	//ビューポート更新
 	viewPort_ = MakeViewPortMatrix(0, 0, (float)WindowApp::kClientWidth, (float)WindowApp::kClientHeight, 0, 1);
 
 #pragma region Segment設定
@@ -93,6 +108,7 @@ void Camera::Update() {
 
 }
 
+//#TODO：ここのデバック処理をツリーに実装する
 //void Camera::DrawDebugWindow(const char* name) {
 //#ifdef _DEBUG
 //
@@ -121,8 +137,11 @@ void Camera::UpdateMatrixes() {
 	mainCamera_.UpdateMatrix();
 
 	//各種更新に必要な処理
+	//ビュー更新
 	view_ = Inverse(mainCamera_.matWorld_);
+	//プロジェクション更新
 	projection_ = MakePerspectiveFovMatrix(0.45f, (float)WindowApp::kClientWidth / (float)WindowApp::kClientHeight, 0.1f, FarZ);
+	//ビュープロジェクション更新
 	viewProjection_ = view_ * projection_;
 }
 
@@ -179,7 +198,7 @@ void Camera::IsCollision(OBBCollider* obb)
 			return;
 		}
 		else {
-
+			//処理が行われていない場合
 			if (!isCollision_) {
 				mainCamera_.translate_.z = farFeaturedPos_;
 			}
@@ -192,19 +211,16 @@ void Camera::IsCollision(OBBCollider* obb)
 	}
 }
 
-void Camera::SetTarget(const EulerWorldTransform* parent) {
-	FeaturedWorldTransform_ = parent;
-}
-
 void Camera::SetCameraDirection(const float farZ) {
+	//値を保存
 	farFeaturedPos_ = farZ;
+	//値を適応
 	mainCamera_.translate_.z = farZ;
 }
 
-
 Vector3 Camera::SetDirection4Camera(const Vector3& velo)const
 {
+	//引数のベクトルをカメラから見た方向に傾ける
 	Vector3 ans = TransformNormal(velo, mainCamera_.matWorld_);
-
 	return ans;
 }

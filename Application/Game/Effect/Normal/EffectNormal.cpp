@@ -5,15 +5,18 @@
 
 EffectNormal::EffectNormal(const std::string& tag,const std::string& name)
 {
+	//インスタンシングモデルマネージャのインスタンス取得
 	IMM_ = InstancingModelManager::GetInstance();
 	//タグの検索
 	if (!IMM_->SerchTag(tag)) {
+		//見つからない
 		assert(false);
 	}
+	//タグ設定
 	tag_ = tag;
 
-
-	std::unique_ptr<GVariGroup> tree = std::make_unique<GVariGroup>(name);
+	//デバッグ用にパラメータをツリーに追加
+	std::unique_ptr<GlobalVariableGroup> tree = std::make_unique<GlobalVariableGroup>(name);
 	tree->SetValue("posMax", &emitData_.spawnMaxWide);
 	tree->SetValue("posMin", &emitData_.spawmMinWide);
 	tree->SetValue("size", &emitData_.size);
@@ -28,30 +31,38 @@ EffectNormal::EffectNormal(const std::string& tag,const std::string& name)
 
 void EffectNormal::Initialize()
 {
+	//残っているエフェクトデータ削除
 	datas_.clear();
 }
 
 void EffectNormal::Update()
 {
+	//現存するエフェクトすべての更新処理
 	for (auto& data : datas_) {
 		//カウントチェック
 		if (data.currentCount >= data.count) {
+			//死亡フラグON
 			data.isDead=true;
 		}
 		else {
 			//カウント進行
 			data.currentCount += (float)DeltaTimer::deltaTime_;
-			//移動処理
+			
+			//速度に加速度加算
 			data.velo += data.acce * (float)DeltaTimer::deltaTime_;
+			//速度分有働
 			data.world.translate_ += data.velo * (float)DeltaTimer::deltaTime_;
+			//行列更新
 			data.world.UpdateMatrix();
 
+			//高さが0以下の時0でとどまるように
 			if (data.world.translate_.y < 0) {
 				data.world.translate_.y = 0;
 			}
 		}
 	}
 
+	//死亡フラグがONのものを削除
 	datas_.remove_if([](EffectData data) {
 		if (data.isDead) {
 			return true;
@@ -64,7 +75,9 @@ void EffectNormal::Update()
 
 void EffectNormal::Draw()
 {
+	//すべてのモデル描画
 	for (auto& data : datas_) {
+		//データを送信
 		IMM_->SetData(tag_, data.world,data.color);
 	}
 }
@@ -89,6 +102,7 @@ void EffectNormal::SpawnEffect(const Vector3&pos)
 		//生存時間設定
 		data.count = RandomNumber::Get(emitData_.deadCount.x, emitData_.deadCount.y);
 
+		//データ追加
 		datas_.push_back(data);
 	}
 

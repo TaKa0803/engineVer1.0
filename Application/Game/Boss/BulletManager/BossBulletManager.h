@@ -4,23 +4,26 @@
 #include"Game/Effect/Normal/EffectNormal.h"
 #include<vector>
 
+//弾のデータ
 struct BossBulletData {
-	EulerWorldTransform world;
-	Vector3 velo;
+	EulerWorldTransform world;//座標
+	Vector3 velo;//速度
 };
 
+//ボスの弾の管理マネージャ
 class BossBulletManager :private InstancingGameObject{
 
-public:
+//TODO#シングルトンをやめる
+public://シングルトンパターン
 	static BossBulletManager* GetInstance();
-private:
+private://シングルトンパターン
 	BossBulletManager() = default;
 	~BossBulletManager() = default;
 	BossBulletManager(const BossBulletManager& o) = delete;
 	const BossBulletManager& operator=(const BossBulletManager& o) = delete;
 
+public: //**パブリック関数**//
 
-public:
 	/// <summary>
 	/// 一度呼び出せばよい
 	/// </summary>
@@ -29,7 +32,7 @@ public:
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	void Init();
+	void Initialize();
 
 	/// <summary>
 	/// 更新処理
@@ -55,7 +58,7 @@ public:
 	/// <returns></returns>
 	bool CheckCollision(const SphereCollider* co);
 
-public://ゲッター
+public: //**ゲッター**//
 
 	/// <summary>
 	/// 弾の数取得
@@ -64,10 +67,11 @@ public://ゲッター
 	int GetBulletCount() { return (int)datas_.size(); }
 
 	//ツリーの取得
-	GVariTree& GetTree() { return tree_; }
-private:
+	GlobalVariableTree& GetTree() { return tree_; }
 
-	//データ群
+private: //**プライベート変数**//
+
+	//弾データ群
 	struct Datas {
 		//弾のデータ
 		BossBulletData data;
@@ -82,10 +86,15 @@ private:
 		bool ishit = false;
 	};
 
+	//弾データ管理変数
 	std::vector<std::unique_ptr<Datas>>datas_;
 
+	//当たった時のエフェクト
 	std::unique_ptr<EffectNormal>hiteffect_;
-private://パラメータ
+
+private: //**パラメータ**//
+
+	//速度
 	float spd_=30.0f;
 
 	//死亡までの時間

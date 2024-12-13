@@ -5,26 +5,31 @@
 #include<imgui_impl_win32.h>
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 #pragma endregion
-
-
 #include<cassert>
 
 ImGuiManager* ImGuiManager::GetInstance()
 {
+	//インスタンス取得
 	static ImGuiManager Instance;
 	return &Instance;
 }
 
-void ImGuiManager::Initialize(WindowApp* winApp,DirectXFunc *DXF)
+void ImGuiManager::Initialize(WindowApp* winApp, DirectXFunc* DXF)
 {
+	//存在しない場合エラー
 	assert(winApp);
+	//ポインタ設定
 	winApp_ = winApp;
 
+	//存在しない場合エラー
 	assert(DXF);
+	//ポインタ設定
 	DXF_ = DXF;
 
+	//SRVマネージャのインスタンス取得
 	SRVM_ = SRVManager::GetInstance();
-	
+
+	//使われていないSRVのハンドル取得
 	Handles srvHandle = SRVM_->CreateNewSRVHandles();
 
 #pragma region ImGuiの初期化
@@ -47,11 +52,10 @@ void ImGuiManager::Initialize(WindowApp* winApp,DirectXFunc *DXF)
 
 void ImGuiManager::PreUpdate()
 {
-#pragma region フレームの先頭でImGuiにここからフレームが始まる旨を告げる	
+	//フレームの先頭でImGuiにここからフレームが始まる旨を告げる	
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-#pragma endregion
 }
 
 void ImGuiManager::PostUpdate()
@@ -62,11 +66,10 @@ void ImGuiManager::PostUpdate()
 
 void ImGuiManager::PreDraw()
 {
-#pragma region ImGuiの処理
 	//描画用のDescriptorHeapの設定
 	ID3D12DescriptorHeap* descriptorHeaps[] = { SRVM_->GetSRV() };
 	DXF_->GetCMDList()->SetDescriptorHeaps(1, descriptorHeaps);
-#pragma endregion
+
 }
 
 void ImGuiManager::PostDraw()
@@ -74,8 +77,6 @@ void ImGuiManager::PostDraw()
 	//実際のcommandListのImGuiの描画コマンドを積む
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), DXF_->GetCMDList());
 }
-
-
 
 void ImGuiManager::Finalize()
 {

@@ -5,25 +5,29 @@
 
 ExtractionScene* ExtractionScene::GetInstance()
 {
+	//インスタンス取得
 	static ExtractionScene ins;
 	return&ins;
 }
 
 void ExtractionScene::Initialize()
 {
+	//DirectXFuncのインスタンス取得
 	DXF_ = DirectXFunc::GetInstance();
+	//レンダー画像作成
 	renderTexture_ = DXF_->CreateRenderTextureResource(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTClearValue);
 
+	//デスクに値を設定
 	D3D12_RENDER_TARGET_VIEW_DESC rtDesc{};
 	rtDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	rtDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
-
+	//RTVマネージャのインスタンス取得
 	RTVManager* RTVM = RTVManager::GetInstance();
-
-
+	//使われていないCPUハンドルを取得
 	cHandle_ = RTVM->GetDescriptorHandle();
 	
+	//レンダー画像作成
 	DXF_->GetDevice()->CreateRenderTargetView(renderTexture_, &rtDesc, cHandle_);
 
 	//SRVの設定
@@ -32,8 +36,10 @@ void ExtractionScene::Initialize()
 	renderTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	renderTextureSrvDesc.Texture2D.MipLevels = 1;
 
+	//SRVを作成してGPUハンドル取得
 	gHandle_ = SRVManager::CreateSRV(renderTexture_, renderTextureSrvDesc).gpu;
 
+	//シーンコピークラスの生成
 	peOffScreen_ = std::make_unique<PEOffScreen>();
 
 	//バリア
@@ -52,9 +58,9 @@ void ExtractionScene::Initialize()
 
 void ExtractionScene::Finalize()
 {
+	//解放処理
 	renderTexture_->Release();
 	peOffScreen_->Release();
-
 }
 
 void ExtractionScene::LoadSceneTexture(ID3D12Resource*res,D3D12_CPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE gHandle, D3D12_CPU_DESCRIPTOR_HANDLE dsv)
@@ -98,12 +104,13 @@ void ExtractionScene::LoadSceneTexture(ID3D12Resource*res,D3D12_CPU_DESCRIPTOR_H
 
 	//描画先の設定
 	DXF_->GetCMDList()->OMSetRenderTargets(1, &cHandle_, false, &dsv);
-
+	//画像をクリア
 	DXF_->GetCMDList()->ClearRenderTargetView(cHandle_, &kRenderTClearValue.x, 0, nullptr);
-
+	//するピーンコピー処理のパイプライン呼び出し
 	peOffScreen_->PreDraw();
-
+	//画像をセット
 	DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(0, gHandle);
+	//描画処理
 	DXF_->GetCMDList()->DrawInstanced(3, 1, 0, 0);
 
 	//depthのバリア設定

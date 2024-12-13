@@ -7,23 +7,23 @@
 
 #include"imgui.h"
 
+//ImGuiの処理クラス
 class ImGuiManager
 {
-public:
+public:	//**シングルトンパターン**//
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns></returns>
 	static ImGuiManager* GetInstance();
-
-	static const size_t kNumDescriptors = 256;
-
-
 private://シングルトンパターン
-
 	ImGuiManager() = default;
 	~ImGuiManager() = default;
 	ImGuiManager(const ImGuiManager& o) = delete;
 	const ImGuiManager& operator=(const ImGuiManager& o) = delete;
 
+public:	//**パブリック関数**//
 
-public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -55,11 +55,23 @@ public:
 	/// </summary>
 	void Finalize();
 
-private:
+private: //**プライベート変数**//
+
 	//ポインタ
-	 WindowApp* winApp_ = nullptr;
+
+	//winAppのポインタ
+	WindowApp* winApp_ = nullptr;
+
+	//DirectXFuncのポインタ
 	DirectXFunc* DXF_ = nullptr;
+
+	//テクスチャマネージャのポインタ
 	TextureManager* textureManager_ = nullptr;
+
+	//SRVマネージャのポインタ
 	SRVManager* SRVM_=nullptr;
+
+	//ディスクリプタの数
+	const size_t kNumDescriptors = 256;
 };
 

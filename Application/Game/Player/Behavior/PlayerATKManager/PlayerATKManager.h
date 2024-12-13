@@ -4,16 +4,29 @@
 #include"Game/Player/Behavior/IPlayerBehavior.h"
 #include<iostream>
 
+//前方宣言
 class Player;
 
-class PlayerATKManager :public IPlayerBehavior{
+//プレイヤー攻撃マネージャ
+class PlayerATKManager :public PlayerBaseBehavior{
 
-public:
+public://**パブリック関数**//
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="player"></param>
 	PlayerATKManager(Player* player);
 	~PlayerATKManager() = default;
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize()override;
-
+	
+	/// <summary>
+	/// 更新処理
+	/// </summary>
 	void Update()override;
 
 public://パブリック変数
@@ -31,17 +44,23 @@ public://パブリック変数
 	ATKType type_ = Punch;
 private://各状態まとめ
 
+	//状態の初期化の関数ポインタ
 	static void (PlayerATKManager::* TypeInit[])();
+	//状態の更新の関数ポインタ
 	static void (PlayerATKManager::* TypeUpdate[])();
 
+	/// <summary>
+	/// パンチ初期化
+	/// </summary>
 	void InitPunch();
+
+	/// <summary>
+	/// パンチ更新
+	/// </summary>
 	void UpdatePunch();
 
+	//パンチ攻撃の処理クラス
 	std::unique_ptr<PlayerPunch> punch_;
-
-private://プライベート変数
-
-
 
 private://デバッグ関係
 

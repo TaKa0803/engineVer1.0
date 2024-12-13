@@ -8,34 +8,31 @@
 #include<wrl.h>
 #include<chrono>
 
-
-class VignettingPSO;
-
+//DirectXに関する処理をまとめたクラス
 class DirectXFunc {
-public://シングルトンパターン
+
+public: //**シングルトンパターン**//
 	static DirectXFunc* GetInstance();
 
-private://シングルトンパターン
-
+private: //**シングルトンパターン**//
 	DirectXFunc() = default;
 	~DirectXFunc() = default;
 	DirectXFunc(const DirectXFunc& o) = delete;
 	const DirectXFunc& operator=(const DirectXFunc& o) = delete;
 
-public:
-
+public: //**パブリック関数**//
 
 	/// <summary>
 	/// イニシャライズ
 	/// </summary>
-	/// <param name="winApp"></param>
+	/// <param name="winApp">winAppのポインタ</param>
 	void Initialize(WindowApp* winApp);
 
-
+	/// <summary>
+	/// 描画前処理
+	/// </summary>
 	void PreDraw();
 
-	
-	
 	/// <summary>
 	/// 描画後処理
 	/// </summary>
@@ -51,22 +48,32 @@ public:
 	/// </summary>
 	void Finalize();
 
+	/// <summary>
+	/// レンダーテクスチャの作成
+	/// </summary>
+	/// <param name="format">フォーマット</param>
+	/// <param name="clearColor">クリアする色</param>
+	/// <returns>リソースのポインタ</returns>
 	ID3D12Resource* CreateRenderTextureResource( DXGI_FORMAT format, const Vector4& clearColor);
 
+public: //**ゲッター**//
 
-#pragma region ゲッター
+	//デバイス取得
 	ID3D12Device* GetDevice()const { return device.Get(); }
 
+	//コマンドリスト取得
 	ID3D12GraphicsCommandList* GetCMDList()const { return commandList.Get(); }
 
+	//スワップチェインデスク取得
 	DXGI_SWAP_CHAIN_DESC1 GetswapChainDesc()const { return swapChainDesc; }
 
+	//RTVDesc取得
 	D3D12_RENDER_TARGET_VIEW_DESC GetrtvDesc()const { return rtvDesc; }
 
+	//スワップチェイン取得
 	IDXGISwapChain4* GetSwapChain() { return swapChain.Get(); }
-#pragma endregion
 
-private://メンバ関数
+private: //**プライベート関数**//
 
 	/// <summary>
 	/// FPS固定初期化
@@ -78,38 +85,52 @@ private://メンバ関数
 	/// </summary>
 	void UpdateFixFPS();
 
-#pragma region クラス内関数
-	void D3D12Devicenitialize();
 
-	void CommandInitialize();
+	/// <summary>
+	/// デバイス初期化
+	/// </summary>
+	void D3D12DeviceInit();
 
-	void SwapChainInitialize();
+	/// <summary>
+	/// コマンドリスト初期化
+	/// </summary>
+	void CommandInit();
 
-	void RTVInitialize();
+	/// <summary>
+	/// スワップチェイン初期化
+	/// </summary>
+	void SwapChainInit();
 
-	void DSVInitialize();
+	/// <summary>
+	/// レンダーターゲットビュー初期化
+	/// </summary>
+	void RTVInit();
 
-	void FenceInitialize();
+	/// <summary>
+	/// デプスステンシルビュー初期化
+	/// </summary>
+	void DSVInit();
 
-	void RenderTextureInitialize();
-#pragma endregion
+	/// <summary>
+	/// フェンス初期化
+	/// </summary>
+	void FenceInit();
 
-private://メンバ変数
+private: //**メンバ変数**//
 
-
+	//コムポインタの名前省略
 	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 #ifdef _DEBUG
+	//デバッグのみ使用
 	ComPtr<ID3D12InfoQueue> infoQueue = nullptr;
 #endif // _DEBUG
 
 	//ポインタ
 	WindowApp* winApp_ = nullptr;
 
-
-
+	//アダプター
 	ComPtr<IDXGIAdapter4> useAdapter = nullptr;
-
 	//dxgiファクトリー
 	ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
 	//デバイス
@@ -122,20 +143,20 @@ private://メンバ変数
 	ComPtr<ID3D12GraphicsCommandList> commandList = nullptr;
 	//スワップチェーン
 	ComPtr<IDXGISwapChain4> swapChain = nullptr;
-
+	//スワップチェインのデスク
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 
 	//スワップチェーンリソース
 	ComPtr<ID3D12Resource> swapChainResources[2] = { nullptr };
 
-
+	//レンダーターゲットビューのデスク
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 
+	//RTVのハンドル
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
 
 	//描画先のRTVとDSVを設定する
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
-
 
 	//フェンス
 	ComPtr<ID3D12Fence> fence = nullptr;
@@ -143,14 +164,9 @@ private://メンバ変数
 	//イベント
 	HANDLE fenceEvent;
 
-
-
-
 	//fps固定用
 	std::chrono::steady_clock::time_point reference_;
 
 	//開放チェックエラーで実行を止めるか	
 	const bool isAssertForgetReleasing_ = true;
-
-
 };

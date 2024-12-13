@@ -1,36 +1,32 @@
 #include "IATK.h"
 #include"DeltaTimer/DeltaTimer.h"
 
-bool IBossATK::isEnd_ = false;
+//ボスポインタ初期化
+Boss* BossBaseATK::boss_ = nullptr;
 
-Boss* IBossATK::boss_ = nullptr;
-
-void IBossATK::InitIATK()
+void BossBaseATK::InitIATK()
 {
-
 	//最初の状態に変更
 	behaviReq_ = AIMing;
 	//カウントをゼロに変更
 	currentCount_ = 0;
-
-	isEnd_ = false;
 }
 
-void IBossATK::UpdateBehavior()
+void BossBaseATK::UpdateBehavior()
 {
-
 #ifdef _DEBUG
+	//現在の状態の名前に変更
 	nowBehavior_ = behaviorName_[behavior_];
 #endif // _DEBUG
 
-
 	//状態の初期化処理
 	if (behaviReq_) {
+		//リクエストの値を渡す
 		behavior_ = behaviReq_.value();
+		//リクエストを空に
 		behaviReq_ = std::nullopt;
 		//実際の初期化処理
 		(this->*behaviorInit[(int)behavior_])();
-
 		//カウント初期化
 		currentCount_ = 0;
 	}
@@ -42,34 +38,35 @@ void IBossATK::UpdateBehavior()
 	(this->*behaviorUpdate[(int)behavior_])();
 }
 
-IBossATK::IBossATK()
+BossBaseATK::BossBaseATK()
 {
 	//デバッグ設定
 	//treeData_.SetMonitorValue("状態", &nowBehavior_);
 }
 
-void IBossATK::SetBossPointer(Boss* boss)
+void BossBaseATK::SetBossPointer(Boss* boss)
 {
+	//ボスのポインタ設定
 	boss_ = boss;
 }
 
-void IBossATK::Init()
+void BossBaseATK::Initialize()
 {
 	//共通パラ初期化
 	InitIATK();
 }
 
-void IBossATK::Update()
+void BossBaseATK::Update()
 {
 	//更新
 	UpdateBehavior();
 }
 
-void IBossATK::SetParam2Tree(const std::string& treename)
+void BossBaseATK::SetParam2Tree(const std::string& treename)
 {
+	//デバッグ用にツリーにパラメータ追加
 	treeData_.name_ = treename;
 	treeData_.SetMonitorValue("カウント", &currentCount_);
-
 	treeData_.SetValue("AIM状態時間", &parameters_.aimingSec);
 	treeData_.SetValue("実攻撃前状態時間", &parameters_.warningSec);
 	treeData_.SetValue("実攻撃状態時間", &parameters_.ATKSec);
@@ -78,18 +75,20 @@ void IBossATK::SetParam2Tree(const std::string& treename)
 
 }
 
-void (IBossATK::* IBossATK::behaviorInit[])() {
-	& IBossATK::InitAIMing,
-	& IBossATK::InitWarning,
-	& IBossATK::InitATK,
-	& IBossATK::InitStiffness,
-	& IBossATK::InitBack
+//初期化関数をまとめる
+void (BossBaseATK::* BossBaseATK::behaviorInit[])() {
+	& BossBaseATK::InitAIMing,
+	& BossBaseATK::InitWarning,
+	& BossBaseATK::InitATK,
+	& BossBaseATK::InitStiffness,
+	& BossBaseATK::InitBack
 };
 
-void(IBossATK::* IBossATK::behaviorUpdate[])() {
-	& IBossATK::UpdateAIMing,
-	& IBossATK::UpdateWarning,
-	& IBossATK::UpdateATK,
-	& IBossATK::UpdateStiffness,
-	& IBossATK::UpdateBack
+//更新処理関数をまとめる
+void(BossBaseATK::* BossBaseATK::behaviorUpdate[])() {
+	& BossBaseATK::UpdateAIMing,
+	& BossBaseATK::UpdateWarning,
+	& BossBaseATK::UpdateATK,
+	& BossBaseATK::UpdateStiffness,
+	& BossBaseATK::UpdateBack
 };

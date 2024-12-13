@@ -1,21 +1,29 @@
 #pragma once
 #include"Game/Player/Behavior/IPlayerBehavior.h"
 
-class Player;
+//弱ヒット
+class PlayerHit :public PlayerBaseBehavior{
 
-class PlayerHit :public IPlayerBehavior{
+public:	//**パブリック関数**//
 
-public:
-
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="player">プレイヤ</param>
 	PlayerHit(Player* player);
 	~PlayerHit()=default;
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize()override;
 
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update() override;
 
-
-private:
+private: ///**パラメータ**//
 
 	//ヒット時の速度減衰
 	float multiplySpd_ = 0.5f;
@@ -24,13 +32,10 @@ private:
 	float sec_ = 1.0f;
 	float current_ = 0;
 
-private:
-
-
-	GVariTree tree_ = GVariTree("ヒット");
-
-
+private: //**プライベート変数**//
+	
+	//ぷれいやーポインタ
 	Player* player_;
-
-
+	//デバッグツリー
+	GlobalVariableTree tree_ = GlobalVariableTree("ヒット");
 };

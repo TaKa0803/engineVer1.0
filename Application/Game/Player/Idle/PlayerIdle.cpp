@@ -3,11 +3,13 @@
 
 PlayerIdle::PlayerIdle(Player* player)
 {
+	//ポインタ取得
 	player_ = player;
 }
 
 void PlayerIdle::Initialize()
 {
+	//アニメーションセット
 	player_->SetAnimation(player_->animeName_[(int)Player::Behavior::IDLE], 0.2f, 1.0f);
 }
 

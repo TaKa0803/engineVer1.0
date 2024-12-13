@@ -3,41 +3,67 @@
 #include"DirectXFunc/DirectXFunc.h"
 #include"PostEffect/PEs/PEOffScreen.h"
 
+//そのシーンを画像として保持する処理
 class ExtractionScene {
 
-public:
+public:	//**シングルトンパターン**//
 
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns></returns>
 	static ExtractionScene* GetInstance();
-
 private:
-
 	ExtractionScene() = default;
 	~ExtractionScene() = default;
 	ExtractionScene(const ExtractionScene& o) = delete;
 	const ExtractionScene& operator=(const ExtractionScene& o) = delete;
 
-	const Vector4 kRenderTClearValue{ 0.0f,0.0f,0.0f,0.0f };
-public:
+public:	//**パブリック関数**//
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
+	/// <summary>
+	/// 終了処理
+	/// </summary>
 	void Finalize();
 
-	void LoadSceneTexture(ID3D12Resource* res, D3D12_CPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE gHandle,D3D12_CPU_DESCRIPTOR_HANDLE dsv);
+	/// <summary>
+	/// そのシーンを画像として保持
+	/// </summary>
+	/// <param name="res">リソース</param>
+	/// <param name="handle">CPUハンドル</param>
+	/// <param name="gHandle">GPUハンドル</param>
+	/// <param name="dsv"></param>
+	void LoadSceneTexture(ID3D12Resource* res, D3D12_CPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE gHandle, D3D12_CPU_DESCRIPTOR_HANDLE dsv);
 
-	//画像のGPUhandle
+	/// <summary>
+	/// 画像のGPUハンドル取得
+	/// </summary>
+	/// <returns>GPUハンドル</returns>
 	D3D12_GPU_DESCRIPTOR_HANDLE GetTexHandle() { return gHandle_; }
-private:
 
-	DirectXFunc* DXF_;
+private: //**プライベート変数**//
 
+	//DirectXFuncのポインタ
+	DirectXFunc* DXF_ = nullptr;
+
+	//変化無しでシーンをコピーする処理クラス
 	std::unique_ptr<PEOffScreen>peOffScreen_ = nullptr;
 
-	ID3D12Resource* renderTexture_;
+	//レンダーテクスチャ
+	ID3D12Resource* renderTexture_=nullptr;
 
+	//レンダーテクスチャのデスク
 	D3D12_SHADER_RESOURCE_VIEW_DESC renderTextureSrvDesc{};
-	D3D12_CPU_DESCRIPTOR_HANDLE cHandle_;
-	D3D12_GPU_DESCRIPTOR_HANDLE gHandle_;
+	//CPUhandle
+	D3D12_CPU_DESCRIPTOR_HANDLE cHandle_{};
+	//GPUハンドル
+	D3D12_GPU_DESCRIPTOR_HANDLE gHandle_{};
 
-
+	//クリアする色
+	const Vector4 kRenderTClearValue{ 0.0f,0.0f,0.0f,0.0f };
 };

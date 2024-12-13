@@ -2,25 +2,31 @@
 
 CirccleShadow::CirccleShadow(const EulerWorldTransform& world)
 {
+	//オブジェクト初期化
 	InstancingGameObject::Initialize("DZone");
 
 	//SetParent(&world);
+	//ペアレント設定
 	pworld_ = &world;
-
-	SetColor({ 0,0,0,1 });
-	SetTranslate({ 0,0.01f,0 });
-	SetScale(1.5f);
+	//色設定
+	SetColor(color_);
+	//座標設定
+	world_.translate_ = pos_;
+	//サイズ設定
+	SetScale(scale_);
 }
 
 void CirccleShadow::Update()
 {
+	//ターゲットの座標を取得
 	world_.translate_= pworld_->translate_;
-	world_.translate_.y = 0.01f;
+	//オブジェクト更新
 	InstancingGameObject::Update();
 }
 
 void CirccleShadow::SetShadowScale(float scale)
 {
+	//サイズ設定
 	SetScale(scale);
 }
 

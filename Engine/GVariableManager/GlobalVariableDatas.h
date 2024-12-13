@@ -9,11 +9,13 @@
 #include<vector>
 #include<map>
 
+//アイテムのデータ
 struct ItemData {
 	//値
 	std::variant<bool*,int32_t*, float*,Vector2*, Vector3*,Vector4*> value;	
 };
 
+//監視アイテムのデータ
 struct MonitorItemData {
 	//値
 	std::variant<bool*, int32_t*, float*, Vector3*,std::string*> value;
@@ -22,8 +24,7 @@ struct MonitorItemData {
 	std::vector<std::string> items;
 };
 
-
-
+//ツリーデータ
 struct TreeData {
 	//値
 	std::map<std::string, ItemData>value;
@@ -35,12 +36,15 @@ struct TreeData {
 	std::map<std::string, TreeData>tree;
 
 	//順に表示する用のキー
+	//値のキー
 	std::vector<std::string>valueKeys;
+	//モニター値のキー
 	std::vector<std::string>monitorKeys;
+	//ツリーのキー
 	std::vector<std::string>treeKeys;
-
 };
 
+//グループのデータ
 struct GroupData
 {
 	//値
@@ -53,18 +57,21 @@ struct GroupData
 	std::map<std::string, TreeData>tree;
 
 	//順に表示する用のキー
+	//値のキー
 	std::vector<std::string>valueKeys;
+	//モニター値のキー
 	std::vector<std::string>monitorKeys;
+	//ツリーのキー
 	std::vector<std::string>treeKeys;
-
 };
 
-
+//保存アイテムデータ
 struct SavedItemData {
 	//値
 	std::variant<bool,int32_t, float,Vector2, Vector3,Vector4> value;
 };
 
+//保存アイテムデータツリー
 struct SavedTreeData
 {
 	//値
@@ -74,6 +81,7 @@ struct SavedTreeData
 	std::map<std::string, SavedTreeData>tree;
 };
 
+//保存アイテムグループデータ
 struct SavedGroupData {
 	//値
 	std::map<std::string, SavedItemData>value;

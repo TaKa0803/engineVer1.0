@@ -2,59 +2,42 @@
 #include"Game/Boss/Behavior/ATK/IATK/IATK.h"
 #include"Vector3.h"
 
-class BossCharge : public IBossATK {
-public:
+//タックル攻撃
+class BossCharge : public BossBaseATK {
+public: //**パブリック関数**//
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	BossCharge();
 	~BossCharge() = default;
 
-	//void Init() override;
-	//void Update()override;
+public: //**各状態の処理関数**//
 
-public://状態のデータ
+	//各状態の初期化
 	void InitAIMing()override;
 	void InitWarning()override;
 	void InitATK() override;
 	void InitStiffness() override;
 	void InitBack() override ;
 
+	//各状態の更新
 	void UpdateAIMing() override;
 	void UpdateWarning() override;
 	void UpdateATK()  override;
 	void UpdateStiffness() override;
 	void UpdateBack()  override ;
 
-private://変数
+private: //**プライベート変数**//
 
-	struct AIMData
-	{
-		float maxSec = 0.5f;
-	};
-	struct WarningData
-	{
-		float maxSec = 1.0f;
-	};
+	//ダッシュ時の変数とパラメータ群
 	struct DashData
 	{
-		Vector3 prePos;
-		Vector3 velo;
-		float length = 0;
-		float spd = 40.0f;
-	};
-	struct StiffnessData {
-		float sec = 0.5f;
-	};
-	struct BackData {
-		float sec = 1.0f;
-	};
+		Vector3 prePos;		//開始時の座標
+		Vector3 velo;		//移動ベクトル
+		float length = 0;	//距離
+		float spd = 40.0f;	//速度
+		float animeSpd = 1.0f;	//アニメーション速度
+	}dash_;
 
-	struct ATKData
-	{
-		AIMData aim;
-		WarningData warning;
-		DashData dash;
-		StiffnessData stiffness;
-		BackData back;
-
-	}data_;
 };

@@ -9,14 +9,14 @@
 #include"Log/Log.h"
 #include"InstancingModelManager/InstancingModelManager.h"
 #include"Camera/Camera.h"
-
+#include"DeltaTimer/DeltaTimer.h"
 #include"ImGuiManager/ImGuiManager.h"
 #include<iostream>
 
 
 InstancingModel::~InstancingModel() {
 
-
+	//全解放処理
 	modelData_.skinCluster.influenceResource->Release();
 	modelData_.skinCluster.paletteResource->Release();
 
@@ -31,29 +31,16 @@ InstancingModel::~InstancingModel() {
 
 InstancingModel* InstancingModel::CreateFromOBJ(const std::string& directory, const std::string& filePath, int instancingNum) {
 
-
-#pragma region モデル
-
-	//もでるよみこみ
-	//Assimp::Importer importer;
+	//フルパス作成
 	std::string fileFullPath = directory + "/" + filePath + "/" + filePath + ".obj";
-
+	//モデルデータ読み込み
 	ModelAllData modeltea = LoadModelFile(directory, filePath);
-
-
-
-
-
-
-#pragma endregion
-
-
-
+	
+	//作成
 	InstancingModel* model = new InstancingModel();
 	model->Initialize(modeltea, modeltea.model.material.textureFilePath, UINT(modeltea.model.vertices.size()), instancingNum);
 
-
-
+	//ログに出力
 	Log("Instancing Model " + filePath + " is Created!\n");
 
 	return model;
@@ -61,10 +48,9 @@ InstancingModel* InstancingModel::CreateFromOBJ(const std::string& directory, co
 
 
 
-void InstancingModel::AddInstancingData(const EulerWorldTransform& world,  const Vector4& color) {
+void InstancingModel::AddInstancingData(const EulerWorldTransform& world, const Vector4& color) {
 	//データをコピー
 	InstancingData worl = { world,color };
-
 
 	//追加
 	instancingDatas_.push_back(std::move(worl));
@@ -73,18 +59,19 @@ void InstancingModel::AddInstancingData(const EulerWorldTransform& world,  const
 
 void InstancingModel::UpdateAnimationCount()
 {
-
+	//
 	if (nowAnimeName_ == "") {
 		return;
 	}
 
 	if (modelType_ != kOBJModel) {
 		if (isAnimationActive_) {
-
-			animationTime_ += animationRoopSecond_ / 60.0f;
+			//カウント進行
+			animationTime_ += animationRoopSecond_ *(float)DeltaTimer::deltaTime_;
 
 			Animation& anime = modelData_.animation[nowAnimeName_];
 
+			//ループ時の処理
 			if (isAnimeRoop_) {
 				animationTime_ = std::fmod(animationTime_, anime.duration);//最後まで行ったら最初からリピート再生
 			}
@@ -93,20 +80,19 @@ void InstancingModel::UpdateAnimationCount()
 					animationTime_ = anime.duration;
 				}
 			}
+
 			//マイナス領域の時の処理
 			if (animationRoopSecond_ < 0) {
 				if (animationTime_ < 0) {
+					//ループ時の処理
 					if (isAnimeRoop_) {
 						animationTime_ += anime.duration;
 					}
 					else {
-
 						animationTime_ = 0;
-
 					}
 				}
 			}
-
 		}
 	}
 }
@@ -123,7 +109,7 @@ void InstancingModel::UpdateAnimationBone(const std::string& animeName)
 			//ボーンのあるモデルの場合
 			if (modelType_ == kSkinningGLTF) {
 				//animationの更新を行って骨ごとのローカル情報を更新
-				ApplyAnimation(modelData_.skeleton,anime , animationTime_);
+				ApplyAnimation(modelData_.skeleton, anime, animationTime_);
 				//骨ごとのLocal情報をもとにSkeletonSpaceの情報更新
 				Update(modelData_.skeleton);
 				//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
@@ -152,24 +138,18 @@ void InstancingModel::UpdateAnimationBone(const std::string& animeName)
 
 void InstancingModel::Draw(int texture) {
 
+	//アニメーションカウント進行
 	UpdateAnimationCount();
 	//カウントに合わせたボーン状態に変更
 	UpdateAnimationBone(nowAnimeName_);
 
-
+	//カメラのインスタンス取得
 	Camera* camera = Camera::GetInstance();
-
-
-
-
-
-
-
 
 	int index = 0;
 	for (auto& data : instancingDatas_) {
 
-		//data.world.UpdateMatrix();
+		//行列を計算
 		Matrix4x4 WVP = data.world.matWorld_ * camera->GetViewProjectionMatrix();;
 
 		//ボーンアニメーション以外は動く
@@ -210,21 +190,18 @@ void InstancingModel::Draw(int texture) {
 		index++;
 	}
 
-
-
+	//最初のインスタンス以上の場合
 	if (index > instancingNum_) {
 		tag_;
 		//indexが初期作成量よりおおい
 		assert(false);
 	}
 
-
-
-
+	//０ではないとき描画処理
 	if (index > 0) {
-
+		
+		//各データをセット
 		materialData_->uvTransform = uvWorld_.UpdateMatrix();
-
 		cameraData_->worldPosition = camera->GetMainCamera().GetWorldTranslate();
 
 		PointLight pl = LightManager::GetInstance()->GetPLight();
@@ -269,7 +246,7 @@ void InstancingModel::Draw(int texture) {
 		//ポイントライト
 		DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(5, pointlightResource_->GetGPUVirtualAddress());
 
-
+		//画像が未指定の場合
 		if (setTexture_ == -1) {
 			if (texture == -1) {
 				DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, texture_);
@@ -282,12 +259,10 @@ void InstancingModel::Draw(int texture) {
 		else {
 			DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, SRVManager::GetInstance()->GetTextureDescriptorHandle(setTexture_));
 		}
+		//インスタンシング用GHandle設定
 		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(1, instancingHandle_);
 
 
-
-		//描画！		
-		//DXF_->GetCMDList()->DrawInstanced(point_, index, 0, 0);
 		//描画！		
 		DXF_->GetCMDList()->DrawIndexedInstanced(static_cast<UINT>(modelData_.model.indices.size()), index, 0, 0, 0);
 
@@ -302,10 +277,12 @@ void InstancingModel::Draw(int texture) {
 
 void InstancingModel::Debug(const char* name)
 {
+	//デバッグ用UI表示
+
+#ifdef _DEBUG
 	bool uselight = materialData_->enableLighting;
 	bool useHalfLam = materialData_->enableHalfLambert;
 	bool useTex = materialData_->enableTexture;
-
 
 	Vector4 color = materialData_->color;
 
@@ -319,22 +296,23 @@ void InstancingModel::Debug(const char* name)
 
 		ImGui::EndMenu();
 	}
+#endif // _DEBUG
 }
 
 const float InstancingModel::GetWorldNum()
 {
+	//登録されている数取得
 	float ans = 0;
-
 	ans = (float)instancingDatas_.size();
 
 	return ans;
 }
 
-GVariTree& InstancingModel::CreateAndGetTree(const std::string& tree)
+GlobalVariableTree& InstancingModel::CreateAndGetTree(const std::string& tree)
 {
 
+	//デバッグ用にツリーにパラメータをセットする
 	tree_.name_ = tree;
-
 	tree_.SetTreeData(uvWorld_.GetDebugTree("UV"));
 	tree_.SetMonitorValue("モデル", &drawModel_);
 	tree_.SetMonitorValue("ジョイント", &drawJoint_);
@@ -343,7 +321,7 @@ GVariTree& InstancingModel::CreateAndGetTree(const std::string& tree)
 	tree_.SetValue("ライティング", &materialData_->enableLighting);
 	tree_.SetValue("ハーフランバート", &materialData_->enableHalfLambert);
 
-
+	//ツリー返却
 	return tree_;
 }
 
@@ -353,7 +331,7 @@ void InstancingModel::Initialize(
 	int point,
 	int instancingNum
 ) {
-
+	//DXFのインスタンス追加
 	DXF_ = DirectXFunc::GetInstance();
 
 	modelData_ = modelData;
@@ -362,9 +340,6 @@ void InstancingModel::Initialize(
 	modelData_.skinCluster = CreateSkinCluster(*DXF_->GetDevice(), modelData_.skeleton, modelData_.model);
 	//SkeletonSpaceの情報をもとにSkinClusterのまｔりｘPaletteを更新
 	Update(modelData_.skinCluster, modelData_.skeleton);
-
-
-	//animationTime_ = { 0 };
 
 	//ジョイントのMの作成
 	IMM_ = InstancingModelManager::GetInstance();
@@ -496,14 +471,14 @@ void InstancingModel::Initialize(
 		modelType_ = kOBJModel;
 	}
 
+	//スキニング用の処理クラス生成と初期化
 	skinningCS_ = std::make_unique<SkinningCS>();
 	skinningCS_->Initialize(modelData_);
-
-
 }
 
 void InstancingModel::ApplyAnimation(Skeleton& skeleton, const Animation& animation, float animationTime)
 {
+	//ジョイントのキーフレームから現トランスフォーム変更
 	for (Joint& joint : skeleton.joints) {
 		if (auto it = animation.nodeAnimations.find(joint.name); it != animation.nodeAnimations.end()) {
 			const NodeAnimation& rootNodeAnimation = (*it).second;

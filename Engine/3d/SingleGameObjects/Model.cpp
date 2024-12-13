@@ -477,7 +477,7 @@ void Model::ChangeAnimation(const std::string& animeName, float sec)
 }
 
 
-GVariTree& Model::SetDebugParam(const std::string& treeName)
+GlobalVariableTree& Model::SetDebugParam(const std::string& treeName)
 {
 	tree.name_ = treeName;
 	tree.SetValue("model", &drawModel_);
@@ -495,12 +495,12 @@ GVariTree& Model::SetDebugParam(const std::string& treeName)
 	tree.SetValue("金属光沢",&materialData_->enableEnvironmentMap);
 	tree.SetValue("光沢度", &materialData_->enviromentCoefficient);
 
-	GVariTree uvTree = GVariTree("UV");
+	GlobalVariableTree uvTree = GlobalVariableTree("UV");
 	uvTree.SetValue("座標", &uvWorld_.translate_);
 	uvTree.SetValue("回転", &uvWorld_.rotate_);
 	uvTree.SetValue("サイズ", &uvWorld_.scale_);
 
-	GVariTree animation = GVariTree("アニメーション");
+	GlobalVariableTree animation = GlobalVariableTree("アニメーション");
 	animation.SetMonitorCombo("アニメーション", &nowAnimeName_, modelData_.name);
 	animation.SetMonitorValue("アニメーションの自動再生フラグ", &isSetATime_);
 	animation.SetMonitorValue("アニメーションの補間フラグ", &isSupplementation_);

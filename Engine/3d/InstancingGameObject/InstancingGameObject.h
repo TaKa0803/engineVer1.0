@@ -4,42 +4,27 @@
 #include"WorldTransform/WorldTransform.h"
 #include<vector>
 
+//インスタンシングのゲームオブジェクト
 class InstancingGameObject {
 
-public:
+public:	//**パブリック変数**//
+
 	//モデルのタグ
 	std::string tag_;
 
 	//ワールド
 	EulerWorldTransform world_{};
 
-
-
 	//インスタンシングモデルマネージャー
 	InstancingModelManager* IMM_=nullptr;
 
 	//色
 	Vector4 color_ = { 1,1,1,1 };
-public:
-	//ワールド取得
-	const EulerWorldTransform& GetWorld()const { return world_; }
 
-	void SetTranslate(const Vector3& trans) { world_.translate_ = trans; }
+	//デバッグツリー
+	GlobalVariableTree tree_ = GlobalVariableTree("");
 
-	void SetScale(float scale) { world_.scale_ = { scale,scale ,scale }; }
-
-	void SetScale(const Vector3& scale) { world_.scale_ = scale; }
-
-
-	void SetRotate(const Vector3& rotate) { world_.rotate_ = rotate; }
-
-	void SetRotateY(const float rotate) { world_.rotate_.y = rotate; }
-
-	void SetParent(const EulerWorldTransform* parent) { world_.parent_ = parent; }
-
-	void SetColor(const Vector4& color) { color_ = color; }
-
-	GVariTree& GetDebugTree(const std::string&name = "オブジェクト");
+public:	//**パブリック関数**//
 
 	//開放処理
 	virtual ~InstancingGameObject();
@@ -51,16 +36,49 @@ public:
 	virtual void Initialize(const std::string& tag);
 
 	/// <summary>
-	/// 行列とワールド追加
+	/// 更新
 	/// </summary>
 	virtual void Update();
 
+	/// <summary>
+	/// 描画
+	/// </summary>
 	virtual void Draw();
 
-	virtual void Debug(const char*name);
+	/// <summary>
+	/// デバッグ表示
+	/// </summary>
+	/// <param name="name">名前</param>
+	virtual void Debug(const char* name);
 
-public:
+public:	//**セッター**//
 
-	GVariTree tree_ = GVariTree("");
+	/// <summary>
+	/// スケール等倍
+	/// </summary>
+	/// <param name="scale">等倍サイズ</param>
+	void SetScale(float scale) { world_.scale_ = { scale,scale ,scale }; }
+
+	/// <summary>
+	/// 親設定
+	/// </summary>
+	/// <param name="parent"></param>
+	void SetParent(const EulerWorldTransform* parent) { world_.parent_ = parent; }
+
+	/// <summary>
+	/// 色の設定
+	/// </summary>
+	/// <param name="color"></param>
+	void SetColor(const Vector4& color) { color_ = color; }
+
+public:	//**ゲッター**//
+
+	/// <summary>
+	/// デバッグツリーを取得
+	/// </summary>
+	/// <param name="name"></param>
+	/// <returns></returns>
+	GlobalVariableTree& GetDebugTree(const std::string&name = "オブジェクト");
+
 };
 

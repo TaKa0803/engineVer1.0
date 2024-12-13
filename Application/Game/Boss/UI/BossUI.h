@@ -1,16 +1,23 @@
 #pragma once
 #include"Sprite/Sprite.h"
 
-//前方宣言
+//ボスの前方宣言
 class Boss;
 
+//ボス関係のUI処理
 class BossUI {
-public:
+public: //**パブリック関数**//
 
-	//コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="boss">ボスのポインタ</param>
 	BossUI(Boss* boss);
 	~BossUI()=default;
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
 	/// <summary>
@@ -23,23 +30,29 @@ public:
 	/// </summary>
 	void Draw();
 
-public:
+public: //**ゲッター**//
 
-	//ツリーデータ取得
-	GVariTree& GetTree() { return tree_; }
+	/// <summary>
+	///	ツリーデータ取得
+	/// </summary>
+	/// <returns>ツリーデータ</returns>
+	GlobalVariableTree& GetTree() { return tree_; }
 
-private:
+private: //**プライベート変数**//
 
+	//ボスのポインタ
 	Boss* boss_=nullptr;
 
-	//HPバー
+	//HPバー画像
 	std::unique_ptr<Sprite>hpBar_=nullptr;
 
 	//最大サイズ
 	float maxScale_=0;
-private:
+
+private: //**デバッグ用変数**//
+
 	//デバッグツリー
-	GVariTree tree_= GVariTree("");
+	GlobalVariableTree tree_= GlobalVariableTree("");
 
 
 };

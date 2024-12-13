@@ -1,19 +1,15 @@
 #include "AppScene.h"
-#include"GVariableManager/GVaribleManager.h"
+#include"GVariableManager/GlobalVaribleManager.h"
 
 AppScene::AppScene()
 {
-	sceneManager =new SceneManager();
-}
-
-AppScene::~AppScene()
-{
-	delete sceneManager;
-	sceneManager = nullptr;
+	//シーンマネージャ生成
+	sceneManager =std::make_unique<SceneManager>();
 }
 
 void AppScene::Initialize()
 {
+	//シーンマネージャの初期化
 	sceneManager->Initialize();
 
 	//セットされたデータに保存したものがあればそれを適応する
@@ -22,10 +18,12 @@ void AppScene::Initialize()
 
 void AppScene::Update()
 {
+	//シーンマネージャ更新
 	sceneManager->Update();
 }
 
 void AppScene::Draw()
 {
+	//シーンマネージャ描画
 	sceneManager->Draw();
 }

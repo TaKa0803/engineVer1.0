@@ -13,12 +13,16 @@
 #include<assimp/postprocess.h>
 
 
-
+//Vector3の遷移処理
 Vector3 CalculateValue(const std::vector<KayframeVector3>& keyframes, float time) {
+	//キーが空ならエラーを出す
 	assert(!keyframes.empty());
+	//サイズが１又は初期キーの時間が引数より少ないばあい
 	if (keyframes.size() == 1 || time <= keyframes[0].time) {
+		//そのまま返す
 		return keyframes[0].value;
 	}
+	//キーフレームのサイズ分処理
 	for (size_t index = 0; index < keyframes.size() - 1; ++index) {
 		size_t nextIndex = index + 1;
 
@@ -31,11 +35,15 @@ Vector3 CalculateValue(const std::vector<KayframeVector3>& keyframes, float time
 	return (*keyframes.rbegin()).value;
 }
 
+
 Quaternion CalculateValue(const std::vector<KayframeQuaternion>& keyframes, float time) {
+	//キーがが空ならエラー
 	assert(!keyframes.empty());
+	//サイズが１又は初期キーの時間が引数より少ないばあい
 	if (keyframes.size() == 1 || time <= keyframes[0].time) {
 		return keyframes[0].value;
 	}
+	//キーフレームのサイズ分取得
 	for (size_t index = 0; index < keyframes.size() - 1; ++index) {
 		size_t nextIndex = index + 1;
 
@@ -50,16 +58,22 @@ Quaternion CalculateValue(const std::vector<KayframeQuaternion>& keyframes, floa
 
 
 std::map<std::string, Animation> LoadAnimationFile(const std::string& directoryPath, const std::string& filename,std::vector<std::string>&names) {
+	//返却する変数作成
 	std::map<std::string, Animation> ans;
 
+	//Assimpでの読み込み処理
 	Assimp::Importer importer;
 	std::string filePath = directoryPath + "/" + filename;
 
+	//モデルのシーン読み込み
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
+
+	//アニメーションが０なら空で返却
 	if (scene->mNumAnimations == 0) {
 		return ans;
 	}
 
+	//アニメーションの数読み込み
 	for (uint32_t i = 0; i < scene->mNumAnimations; i++) {
 		aiAnimation* animationAssimp = scene->mAnimations[i];//最初のアニメーションのみ読み込み
 		Animation  result;
@@ -72,6 +86,7 @@ std::map<std::string, Animation> LoadAnimationFile(const std::string& directoryP
 			//参照渡し
 			NodeAnimation& nodeAnimation = result.nodeAnimations[nodeAnimationAssimp->mNodeName.C_Str()];
 
+			//ノードアニメーションのキーの数分座標取得
 			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex) {
 				aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
 				KayframeVector3 keyframe;
@@ -80,6 +95,7 @@ std::map<std::string, Animation> LoadAnimationFile(const std::string& directoryP
 				nodeAnimation.translate.keyframes.push_back(keyframe);
 			}
 
+			//ノードアニメーションのキーの数分回転取得
 			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex) {
 				aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
 				KayframeQuaternion keyframe;
@@ -87,6 +103,8 @@ std::map<std::string, Animation> LoadAnimationFile(const std::string& directoryP
 				keyframe.value = { keyAssimp.mValue.x,-keyAssimp.mValue.y,-keyAssimp.mValue.z,keyAssimp.mValue.w };//右手ー＞左手
 				nodeAnimation.rotate.keyframes.push_back(keyframe);
 			}
+
+			//ノードアニメーションのキーの数分スケール取得
 			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex) {
 				aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
 				KayframeVector3 keyframe;
@@ -96,8 +114,10 @@ std::map<std::string, Animation> LoadAnimationFile(const std::string& directoryP
 			}
 		}
 
+		//アニメ名の所にデータを挿入
 		ans[name]=result;
 
+		//データ群に追加
 		names.push_back(name);
 	}
 
@@ -107,31 +127,14 @@ std::map<std::string, Animation> LoadAnimationFile(const std::string& directoryP
 
 
 Node ReadNode(aiNode* node) {
+	//編伽ky値
 	Node result;
-	//aiMatrix4x4 aiLocalMatrix = node->mTransformation;
-	//aiLocalMatrix.Transpose();
-	//result.localMatrix.m[0][0] = aiLocalMatrix[0][0];
-	//result.localMatrix.m[1][0] = aiLocalMatrix[1][0];
-	//result.localMatrix.m[2][0] = aiLocalMatrix[2][0];
-	//result.localMatrix.m[3][0] = aiLocalMatrix[3][0];
 
-	//result.localMatrix.m[0][1] = aiLocalMatrix[0][1];
-	//result.localMatrix.m[1][1] = aiLocalMatrix[1][1];
-	//result.localMatrix.m[2][1] = aiLocalMatrix[2][1];
-	//result.localMatrix.m[3][1] = aiLocalMatrix[3][1];
-
-	//result.localMatrix.m[0][2] = aiLocalMatrix[0][2];
-	//result.localMatrix.m[1][2] = aiLocalMatrix[1][2];
-	//result.localMatrix.m[2][2] = aiLocalMatrix[2][2];
-	//result.localMatrix.m[3][2] = aiLocalMatrix[3][2];
-
-	//result.localMatrix.m[0][3] = aiLocalMatrix[0][3];
-	//result.localMatrix.m[1][3] = aiLocalMatrix[1][3];
-	//result.localMatrix.m[2][3] = aiLocalMatrix[2][3];
-	//result.localMatrix.m[3][3] = aiLocalMatrix[3][3];
-
+	//ノード名登録
 	result.name = node->mName.C_Str();
+	//子のサイズを設定
 	result.children.resize(node->mNumChildren);
+	//子のノードを読み込む
 	for (uint32_t childIndex = 0; childIndex < node->mNumChildren; ++childIndex) {
 		result.children[childIndex] = ReadNode(node->mChildren[childIndex]);
 	}
@@ -140,22 +143,29 @@ Node ReadNode(aiNode* node) {
 	aiVector3D scale, translate;
 	aiQuaternion rotate;
 	node->mTransformation.Decompose(scale, rotate, translate);//assimp行列からSRTを抽出する関数を利用
+	//各値設定
 	result.transform.scale_ = { scale.x,scale.y,scale.z };
 	result.transform.rotate_ = { rotate.x,-rotate.y,-rotate.z,rotate.w };
 	result.transform.translate_ = { -translate.x,translate.y,translate.z };
-
+	//行列を更新
 	result.transform.UpdateMatrix();
-
+	//出た結果をローカル行列とする
 	result.localMatrix = result.transform.matWorld_;
 
 	return result;
 }
 
 void Update(Skeleton& skeleton) {
+
+	//スケルトン行列の更新
 	for (Joint& joint : skeleton.joints) {
+		//ジョイントの行列更新
 		joint.transform.UpdateMatrix();
+		//ローカル行列更新
 		joint.localMatrix = joint.transform.matWorld_;
+		//親がいる場合
 		if (joint.parent) {
+			//親を含めた行列計算を行う
 			joint.skeletonSpaceMatrix = joint.localMatrix * skeleton.joints[*joint.parent].skeletonSpaceMatrix;
 		}
 		else {//親がいないのでlocalMとskeletonは一致する
@@ -164,20 +174,34 @@ void Update(Skeleton& skeleton) {
 	}
 }
 
+/// <summary>
+/// ジョイントの作成
+/// </summary>
+/// <param name="node">ノード情報</param>
+/// <param name="parent">親</param>
+/// <param name="joints">ジョイントデータ</param>
+/// <returns></returns>
 int32_t CreateJoint(const Node& node,
 	const std::optional<int32_t>& parent,
 	std::vector<Joint>& joints) {
+	//ジョイント作成
 	Joint joint;
+	//名前設定
 	joint.name = node.name;
+	//ノードのローカルをジョイントのローカルに
 	joint.localMatrix = node.localMatrix;
+	//アイデンティティ作成
 	joint.skeletonSpaceMatrix = MakeIdentity4x4();
+	//ノードのワールドを渡す
 	joint.transform = node.transform;
-	joint.index = int32_t(joints.size());//登録され輝和をIndexに
+	//登録され輝和をIndexに
+	joint.index = int32_t(joints.size());
 	joint.parent = parent;
 	joints.push_back(joint);
 	for (const Node& child : node.children) {
 		//子ジョイントを作成しそのIndexを登録
 		int32_t childIndex = CreateJoint(child, joint.index, joints);
+		//データを追加
 		joints[joint.index].children.push_back(childIndex);
 	}
 
@@ -185,7 +209,9 @@ int32_t CreateJoint(const Node& node,
 }
 
 Skeleton CreateSkeleton(const Node& node) {
+	//スケルトン定義
 	Skeleton skeleton;
+	//ジョイントからスケルトンノード作成
 	skeleton.root = CreateJoint(node, {}, skeleton.joints);
 
 	//名前とindexのマッピングを行いアクセスしやすくする
@@ -193,15 +219,16 @@ Skeleton CreateSkeleton(const Node& node) {
 		skeleton.jointMap.emplace(joint.name, joint.index);
 	}
 
+	//更新処理
 	Update(skeleton);
 
 	return skeleton;
 }
 
 SkinCluster CreateSkinCluster(ID3D12Device& device, const Skeleton& skeleton, const ModelData& modelData) {
-
+	//データを作成
 	SkinCluster skinCluster;
-
+	//使っていないSRVのハンドル取得
 	Handles handles = SRVManager::GetInstance()->CreateNewSRVHandles();
 #pragma region MatrixPaletteの作成
 	//palette用のResourceを確保
@@ -221,6 +248,7 @@ SkinCluster CreateSkinCluster(ID3D12Device& device, const Skeleton& skeleton, co
 	paletteSRVDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 	paletteSRVDesc.Buffer.NumElements = UINT(skeleton.joints.size());
 	paletteSRVDesc.Buffer.StructureByteStride = sizeof(WellForGPU);
+	//リソースの作成
 	device.CreateShaderResourceView(skinCluster.paletteResource, &paletteSRVDesc, skinCluster.paletteSrvHandle.first);
 #pragma endregion
 
@@ -235,7 +263,7 @@ SkinCluster CreateSkinCluster(ID3D12Device& device, const Skeleton& skeleton, co
 	skinCluster.influenceSrvHandle.first = ihandles.cpu;
 	skinCluster.influenceSrvHandle.second = ihandles.gpu;
 
-
+	//influence用のSRVデスク
 	D3D12_SHADER_RESOURCE_VIEW_DESC iSRVDesc{};
 	iSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
 	iSRVDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -245,6 +273,7 @@ SkinCluster CreateSkinCluster(ID3D12Device& device, const Skeleton& skeleton, co
 	iSRVDesc.Buffer.NumElements = UINT(modelData.vertices.size());
 	iSRVDesc.Buffer.StructureByteStride = sizeof(VertexInfluence);
 	
+	//リソースの作成
 	device.CreateShaderResourceView(skinCluster.influenceResource, &iSRVDesc, skinCluster.influenceSrvHandle.first);
 
 	//InverseBindPoseMatrixを格納する場所を作成して単位行列で埋める
@@ -272,12 +301,11 @@ SkinCluster CreateSkinCluster(ID3D12Device& device, const Skeleton& skeleton, co
 		}
 	}
 #pragma endregion
-
-
 	return skinCluster;
 }
 
 void Update(SkinCluster& skinCluster, const Skeleton& skeleton) {
+	//スケルトンデータからクラスタデータ更新
 	for (size_t jointIndex = 0; jointIndex < skeleton.joints.size(); ++jointIndex) {
 		assert(jointIndex < skinCluster.inverseBindPoseMatrices.size());
 		skinCluster.mappedPalette[jointIndex].skeletonSpaceMatrix =
@@ -384,128 +412,14 @@ ModelAllData LoadModelFile(const std::string& directoryPath, const std::string& 
 		}
 	}
 
-#pragma region ノード解析
+	//ノード解析
 	modeldata.model.rootNode = ReadNode(scene->mRootNode);
-#pragma endregion
+
 
 
 	return modeldata;
 
 }
-
-
-//MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename) {
-//	//1中で必要になる変数の宣言
-//	MaterialData materialdata;
-//
-//	std::string line;
-//	//２ファイルを開く
-//	std::ifstream file(directoryPath + "/" + filename + "/" + filename + ".mtl");
-//	assert(file.is_open());
-//	//３実際にファイルを読みまてりあｌDataを構築
-//	while (std::getline(file, line)) {
-//		std::string identifier;
-//		std::istringstream s(line);
-//		s >> identifier;
-//
-//		//
-//		if (identifier == "map_Kd") {
-//			std::string textureFilename;
-//			s >> textureFilename;
-//			//連結してファイルパスにする
-//			materialdata.textureFilePath = directoryPath + "/" + filename + "/" + textureFilename;
-//		}
-//	}
-//	//４MaterialDataを返す
-//	return materialdata;
-//
-//}
-//ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename) {
-//#pragma region 中で必要となる変数の宣言
-//	ModelData modeldata;//構築するModelData
-//	std::vector<Vector4> positions;//位置
-//	std::vector<Vector3>normals;//法線
-//	std::vector<Vector2>texcoords;//texture座標
-//	std::string line;//ファイルからよんだ一行を格納するもの	
-//#pragma endregion
-//#pragma region ファイルを開く
-//
-//	std::ifstream file(directoryPath + "/" + filename + "/" + filename + ".obj");
-//	assert(file.is_open());//開けなかったら止める
-//#pragma endregion
-//#pragma region 実際にファイルを読みModelDataを構築していく
-//	while (std::getline(file, line)) {
-//		std::string identifier;
-//		std::istringstream s(line);
-//		s >> identifier;//先頭の識別子を読む
-//
-//		if (identifier == "v") {
-//			Vector4 position;
-//			s >> position.x >> position.y >> position.z;
-//			position.w = 1.0f;
-//			position.x *= -1.0f;
-//			positions.push_back(position);
-//		}
-//		else if (identifier == "vt") {
-//			Vector2 texcoord;
-//			s >> texcoord.x >> texcoord.y;
-//			texcoord.y = 1.0f - texcoord.y;
-//			//texcoord.x = 1.0f - texcoord.x;
-//			texcoords.push_back(texcoord);
-//		}
-//		else if (identifier == "vn") {
-//			Vector3 normal;
-//			s >> normal.x >> normal.y >> normal.z;
-//			normal.x *= -1.0f;
-//
-//			normals.push_back(normal);
-//		}
-//		else if (identifier == "f") {
-//			//面は三角形限定その他は未対応
-//			VertexData triangle[3];
-//			for (int32_t faceVertex = 0; faceVertex < 3; ++faceVertex) {
-//				std::string vertexDefinition;
-//				s >> vertexDefinition;
-//				//頂点の要素へのIndexは位置//UV/法線で格納されているので、分解してIndexを取得する
-//				std::istringstream v(vertexDefinition);
-//				uint32_t elementIndices[3];
-//
-//				for (int32_t element = 0; element < 3; ++element) {
-//					std::string index;
-//					std::getline(v, index, '/');//区切りでインデクスを読んでいく
-//					elementIndices[element] = std::stoi(index);
-//
-//
-//				}
-//				//要素へのIndexから、実際の要素の値を取得して頂点を構築する
-//				Vector4 position = positions[elementIndices[0] - 1];
-//				Vector2 texcoord = texcoords[elementIndices[1] - 1];
-//				Vector3 normal = normals[elementIndices[2] - 1];
-//				//VertexData vertex = { position,texcoord,normal };
-//				//modeldata.vertices.push_back(vertex);
-//
-//				triangle[faceVertex] = { position,texcoord,normal };
-//			}
-//			modeldata.vertices.push_back(triangle[2]);
-//			modeldata.vertices.push_back(triangle[1]);
-//			modeldata.vertices.push_back(triangle[0]);
-//		}
-//		else if (identifier == "mtllib") {
-//			//materialTemplateLibraryファイルの名前を変更する
-//			std::string materialFilename;
-//			materialFilename = filename;
-//			//基本的にobjファイルと同一改装にmtlは存在させるので、ディレクトリ名とファイル名を渡す
-//			modeldata.material = LoadMaterialTemplateFile(directoryPath, materialFilename);
-//		}
-//
-//
-//	}
-//#pragma endregion
-//#pragma region 4.ModelDataを返す
-//	return modeldata;
-//#pragma endregion
-//}
-//
 
 ID3D12Resource* CreateUAVBufferResource(ID3D12Device* device, size_t sizeInBytes) {
 #pragma region VertexResourceを生成する
@@ -528,6 +442,8 @@ ID3D12Resource* CreateUAVBufferResource(ID3D12Device* device, size_t sizeInBytes
 
 	ResorceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 #pragma endregion
+
+	//頂点リソース作成
 	ID3D12Resource* vertexResource = nullptr;
 	HRESULT hr;
 	hr = device->CreateCommittedResource(
@@ -560,6 +476,7 @@ ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes) {
 	//バッファの場合はこれにする決まり
 	vertexResorceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 #pragma endregion
+	//頂点リソース
 	ID3D12Resource* vertexResource = nullptr;
 	HRESULT hr;
 	hr = device->CreateCommittedResource(
@@ -608,6 +525,7 @@ ID3D12Resource* CreateDepthStencilTextureResource(ID3D12Device* device, int32_t 
 	depthClearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;//フォーマット、Resourceと合わせる
 #pragma endregion
 #pragma region Resourceの生成
+	//リソース
 	ID3D12Resource* resource = nullptr;
 	HRESULT hr;
 	hr = device->CreateCommittedResource(
@@ -627,13 +545,17 @@ ID3D12Resource* CreateDepthStencilTextureResource(ID3D12Device* device, int32_t 
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, uint32_t descriptorSize, uint32_t index) {
+	//ヒープの開始地点取得
 	D3D12_CPU_DESCRIPTOR_HANDLE handleCPU = descriptorHeap->GetCPUDescriptorHandleForHeapStart();
+	//サイズ分ずらした位置を取得
 	handleCPU.ptr += (descriptorSize * index);
 	return handleCPU;
 }
 
 D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descriptorHeap, uint32_t descriptorSize, uint32_t index) {
+	//ヒープの開始地点取得
 	D3D12_GPU_DESCRIPTOR_HANDLE handleGPU = descriptorHeap->GetGPUDescriptorHandleForHeapStart();
+	//サイズ分ずらした位置を取得
 	handleGPU.ptr += (descriptorSize * index);
 	return handleGPU;
 }

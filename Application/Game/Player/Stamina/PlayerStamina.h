@@ -23,7 +23,7 @@ public:
 	~PlayerStamina()=default;
 
 	//初期化
-	void Init();
+	void Initialize();
 
 	//更新
 	void Update();
@@ -45,7 +45,7 @@ public:
 	void UseStamina(Type type);
 
 	//ツリー取得
-	GVariTree& GetTree() { return tree_; }
+	GlobalVariableTree& GetTree() { return tree_; }
 private:
 	
 	//スタミナゲージ
@@ -110,6 +110,6 @@ private://パラメータ
 	float preT_ = 0;
 
 private://デバッグ関係
-	GVariTree tree_ = GVariTree("スタミナ");
+	GlobalVariableTree tree_ = GlobalVariableTree("スタミナ");
 
 };

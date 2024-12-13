@@ -134,7 +134,7 @@ Sprite* Sprite::Create(int texture, const Vector2 size, const Vector2 Rect, cons
 
 
 
-GVariTree& Sprite::GetTree(const std::string& name)
+GlobalVariableTree& Sprite::GetTree(const std::string& name)
 {
 	
 	tree_.name_ = name;

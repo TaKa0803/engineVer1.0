@@ -4,25 +4,28 @@
 #include"SphereCollider/SphereCollider.h"
 #include"struct.h"
 
-
+//カメラ処理
 class Camera {
 
-public:
+public: //**シングルトンパターン**//
 
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns>インスタンス</returns>
 	static Camera* GetInstance();
-
 private:
-
 	Camera() = default;
 	~Camera() = default;
 	Camera(const Camera& o) = delete;
 	const Camera& operator=(const Camera& o) = delete;
 
-public:
+public: //**パブリック変数**//
 
-	//カメラ本体
+	//カメラ本体のワールド
 	EulerWorldTransform mainCamera_;
-public:
+
+public: //**パブリック関数**//
 
 	/// <summary>
 	/// 初期化処理
@@ -35,19 +38,17 @@ public:
 	void Update();
 
 	/// <summary>
-	/// デバッグウィンドウ表示
-	/// </summary>
-	/// <param name="name">ウィンドウ名</param>
-	//void DrawDebugWindow(const char* name);
-
-	/// <summary>
 	/// マトリックス更新
 	/// </summary>
 	void UpdateMatrixes();
 
-	//カメラとobb判定
+	/// <summary>
+	/// カメラとOBBの判定を取って埋まらないようにする処理
+	/// </summary>
+	/// <param name="obb">コライダー</param>
 	void IsCollision(OBBCollider*obb);
-public:
+
+public: //**ゲッター**//
 
 	/// <summary>
 	/// カメラが注目しているものの座標取得
@@ -55,6 +56,10 @@ public:
 	/// <returns>translateを返却</returns>
 	const Vector3& GetFeaturedPos()const { return CameraMotionSupport_.translate_; }
 
+	/// <summary>
+	/// ポイントカメラの親のワールド取得
+	/// </summary>
+	/// <returns></returns>
 	const EulerWorldTransform& GetFeaturedWorld()const { return *FeaturedWorldTransform_; }
 
 	/// <summary>
@@ -69,13 +74,22 @@ public:
 	/// <returns>ViewProjectionの4x4行列を返却</returns>
 	const Matrix4x4& GetViewProjectionMatrix() const { return viewProjection_; }
 
+	/// <summary>
+	/// ビューポート取得
+	/// </summary>
+	/// <returns>ビューポートの行列</returns>
 	const Matrix4x4& GetViewportMatrix()const { return viewPort_; }
 
-	const Matrix4x4& GetProjectionMatrix()const { return projection_; }
 	/// <summary>
-	/// 
+	/// プロジェクション行列取得
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>プロジェクション行列</returns>
+	const Matrix4x4& GetProjectionMatrix()const { return projection_; }
+
+	/// <summary>
+	/// ポイントカメラ時の回転量Yを取得
+	/// </summary>
+	/// <returns>回転量Y</returns>
 	float GetPCameraR_Y() { return CameraMotionSupport_.rotate_.y; }
 
 	/// <summary>
@@ -83,38 +97,59 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	const Segment GetSegment() { return segment_; }
-public:
-	//ターゲット設定
-	void SetTarget(const EulerWorldTransform* parent);
 
-	//カメラのターゲットとの距離設定
+public: //**セッター**//
+
+	/// <summary>
+	/// カメラの追従ターゲット設定
+	/// </summary>
+	/// <param name="parent">追従座標</param>
+	void SetTarget(const EulerWorldTransform* parent) { FeaturedWorldTransform_ = parent; };
+
+	/// <summary>
+	/// カメラのターゲットとの距離設定
+	/// </summary>
+	/// <param name="far">距離</param>
 	void SetCameraDirection(const float far);
 
-	//メインカメラ座標
+	/// <summary>
+	/// メインカメラの座標設定
+	/// </summary>
+	/// <param name="pos">座標</param>
 	void SetMainCameraPos(const Vector3& pos) { camerapos_ = pos; }
 
-	//カメラ野注目手座標設定
+	/// <summary>
+	/// ポイントカメラの基点の座標変更
+	/// </summary>
+	/// <param name="pos">座標</param>
 	void SetCameraFeaturedPos(const Vector3& pos) { CameraMotionSupport_.translate_ = pos; }
 
-	//カメラの回転量Ysettei 
+	/// <summary>
+	/// ポイントカメラの回転量Yに値を追加
+	/// </summary>
+	/// <param name="y">追加する回転量Y</param>
 	void AddCameraR_Y(float y) { CameraMotionSupport_.rotate_.y += y; }
 
+	/// <summary>
+	/// ポイントカメラの回転量Xに値を追加
+	/// </summary>
+	/// <param name="x">追加する回転量X</param>
 	void AddCameraR_X(float x) { CameraMotionSupport_.rotate_.x += x; }
 
-	//カメラから見たベクトル方向に変換
+	/// <summary>
+	/// カメラからみたベクトル方向に変換
+	/// </summary>
+	/// <param name="velo">元のベクトル</param>
+	/// <returns>変換したベクトル</returns>
 	Vector3 SetDirection4Camera(const Vector3&velo)const;
-private:
 
+private: //**プライベート変数**//
 
 	//カメラの平行移動
 	Vector3 camerapos_{};
 
 	//カメラの注目点があるときの回転処理用
 	EulerWorldTransform CameraMotionSupport_;
-
-	//カメラの回転量
-	const float maxRotateX = 1.0f;
-	const float minRotateX = 0.01f;
 
 	//注目しているWorldT
 	const EulerWorldTransform* FeaturedWorldTransform_ = nullptr;
@@ -134,9 +169,10 @@ private:
 	//プロジェクション
 	Matrix4x4 projection_ = MakeIdentity4x4();
 
-	//VP
+	//ビュープロジェクション
 	Matrix4x4 viewProjection_ = MakeIdentity4x4();
 
+	//ビューポート
 	Matrix4x4 viewPort_ = MakeIdentity4x4();
 
 	//注目点都の値
@@ -148,5 +184,6 @@ private:
 	//あたった時の追加で寄せる量
 	float direction = 0;
 
+	//カメラのオブジェクト当たり判定
 	bool isCollision_ = false;
 };

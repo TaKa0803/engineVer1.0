@@ -4,6 +4,7 @@
 
 BossBulletManager* BossBulletManager::GetInstance()
 {
+	//インスタンス取得
 	static BossBulletManager ins;
 	return &ins;
 }
@@ -12,7 +13,7 @@ BossBulletManager* BossBulletManager::GetInstance()
 
 void BossBulletManager::SetUp()
 {
-
+	//ヒットエフェクト生成
 	hiteffect_ = std::make_unique<EffectNormal>("smallDebris","hitplaneEffect");
 
 	//あらかじめメモリを確保しておく
@@ -20,6 +21,7 @@ void BossBulletManager::SetUp()
 	InstancingGameObject::Initialize("BossBullet");
 	IMM_->SetTexture(tag_,TextureManager::LoadTexShortPath("AL/whiteGrid.png").texNum);
 
+	//デバッグ用にツリーにパラメータを設定
 	tree_.name_ = "弾マネージャ";
 	tree_.SetValue("弾の速度", &spd_);
 	tree_.SetValue("死亡までのカウント", &maxDeadSec_);
@@ -31,9 +33,11 @@ void BossBulletManager::SetUp()
 	
 }
 
-void BossBulletManager::Init()
+void BossBulletManager::Initialize()
 {
+	//データを初期化
 	datas_.clear();
+	//ヒットエフェクト初期化
 	hiteffect_->Initialize();
 }
 
@@ -58,7 +62,9 @@ void BossBulletManager::Update()
 
 			//地面めり込みで削除
 			if (d->data.world.GetWorldTranslate().y <= 0) {
+				//ヒットフラグON
 				d->ishit = true;
+				//ヒットエフェクト生成
 				hiteffect_->SpawnEffect(d->data.world.GetWorldTranslate());
 			}
 		}
@@ -71,34 +77,43 @@ void BossBulletManager::Update()
 			if (data->ishit) {
 				return true; 
 			};
+			//未ヒットなので消さない
 			return false; }),
 		datas_.end());
 
+	//ヒットエフェクト更新
 	hiteffect_->Update();
 }
 
 void BossBulletManager::Draw()
 {
+	//弾の描画
 	for (auto& d : datas_) {
+		//データを送信
 		IMM_->SetData(tag_, d->data.world);
-
+		//コライダー描画
 		d->collider->Draw();
 	}
+	//ヒットエフェクトを描画
 	hiteffect_->Draw();
 }
 
 void BossBulletManager::SetData(const BossBulletData& data)
 {
-
+	//新しいデータポインタ生成
 	std::unique_ptr<Datas> newd = std::make_unique<Datas>();
+	//基本データ格納
 	newd->data = data;
+	//サイズ設定
 	newd->data.world.SetScale(ammoScale_);
+	//速度設定
 	newd->data.velo.SetNormalize();
 	newd->data.velo *= spd_;
+	//コライダー初期化
 	newd->collider = std::make_unique<SphereCollider>();
 	newd->collider->Initialize("bossB",newd->data.world);
 	newd->collider->SetRadius(colliderScale_);
-
+	//データセット
 	datas_.push_back(std::move(newd));
 
 }

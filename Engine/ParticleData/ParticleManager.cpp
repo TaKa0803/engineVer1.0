@@ -311,7 +311,7 @@ void ParticleManager::SpawnE(const Vector3& pos)
 	emiterData_->emit = 1;
 }
 
-GVariTree& ParticleManager::GetTreeData(const std::string&name)
+GlobalVariableTree& ParticleManager::GetTreeData(const std::string&name)
 {
 	
 	tree_.name_ = name;
@@ -320,7 +320,7 @@ GVariTree& ParticleManager::GetTreeData(const std::string&name)
 	tree_.SetValue("画像の有効化", &materialData_->enableTex);
 	tree_.SetValue("関数呼び出し時のみ出力", &onlyImpact_);
 
-	GVariTree emiter = GVariTree("エミッター");
+	GlobalVariableTree emiter = GlobalVariableTree("エミッター");
 	emiter.SetValue("生成間隔/Sec", &emiterData_->frequency);
 	emiter.SetValue("最小/最大：出現半径", &emiterData_->radius);
 	emiter.SetValue("最小/最大：一度の生成量", &emiterData_->count);

@@ -48,9 +48,9 @@ public://Getter
 		return matTranslation;
 	};
 
-	GVariTree& GetDebugTree(const std::string& name = "ワールド");
+	GlobalVariableTree& GetDebugTree(const std::string& name = "ワールド");
 
-	GVariTree& GetDebugMonitorTree(const std::string& name = "ワールド");
+	GlobalVariableTree& GetDebugMonitorTree(const std::string& name = "ワールド");
 
 public:
 	/// <summary>
@@ -64,7 +64,7 @@ public:
 #pragma endregion
 	
 	//デバッグ用ツリー
-	GVariTree tree_ = GVariTree("");
+	GlobalVariableTree tree_ = GlobalVariableTree("");
 
 };
 

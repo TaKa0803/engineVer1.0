@@ -70,21 +70,21 @@ Player::Player() {
 	hpBar_.reset(Sprite::Create(TextureManager::white_,{1,1},{1,1},{1,1},{0,0},{0.0f,0.5f}));
 
 	//Gvariの値設定
-	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("Player");
+	std::unique_ptr<GlobalVariableGroup>gvg = std::make_unique<GlobalVariableGroup>("Player");
 
 #ifdef _DEBUG
 	gvg->SetMonitorValue("デバッグ用ヒットフラグ", &debugIsHit_);
 #endif // _DEBUG
 
 	gvg->SetMonitorValue("体力", &data_.currentHP);
-	gvg->SetValue("最大体力", &data_.maxHP);
+	gvg->SetValue("最大体力", &data_.nowHP);
 	gvg->SetValue("移動速度", &data_.spd_);
 	gvg->SetValue("ダッシュ時の速度倍率", &data_.dashMultiply);
 	gvg->SetValue("無敵時間", &data_.noHitTime_);
 
 	gvg->SetValue("HPバー最大サイズ", &maxBarScale_);
 
-	GVariTree anime = GVariTree("アニメーション速度");
+	GlobalVariableTree anime = GlobalVariableTree("アニメーション速度");
 	anime.SetValue("待機", &idleAnimeMulti_);
 	anime.SetValue("歩き", &moveAnimeMulti_);
 	anime.SetValue("走り", &runAnimeMulti_);
@@ -114,7 +114,7 @@ void Player::Initialize() {
 
 	SetAnimation(animeName_[AnimationData::Idle], 0, idleAnimeMulti_);
 
-	stamina_->Init();
+	stamina_->Initialize();
 
 	moveE_->Initialize({ 1,1,1,1 });
 
@@ -209,7 +209,7 @@ void Player::OnCollision()
 			//HPを減らす
 			data_.currentHP+=1.0f/3.0f;
 
-			if (data_.currentHP >= data_.maxHP) {
+			if (data_.currentHP >= data_.nowHP) {
 				//状態をヒット状態へ
 				behaviorReq_ = Behavior::KNOCKBACK;
 				//無敵時間を設定
@@ -442,7 +442,7 @@ void Player::ModelRoop(bool ismove, bool isDash)
 void Player::HPBarUpdate()
 {
 	//現HPとの割合を取得
-	float t = data_.currentHP / data_.maxHP;
+	float t = data_.currentHP / data_.nowHP;
 	float scaleX = Lerp( maxBarScale_,0, t);
 	Vector3 s = hpBar_->GetScale();
 	s.x = scaleX;

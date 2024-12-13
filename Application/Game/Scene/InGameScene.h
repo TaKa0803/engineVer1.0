@@ -17,29 +17,45 @@
 #include"Game/FollowCamera/FollowCamera.h"
 #include"Game/GameUI/GameUI.h"
 
-class GameScene : public IScene {
+//ゲームメインでの処理
+class InGameScene : public IScene {
 
-public:
+public:	//**パブリック関数**//
 
-	//コンストラクタ
-	GameScene();
-	~GameScene()=default;
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	InGameScene();
+	~InGameScene()=default;
 
-	//初期化処理
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize() override;
-	//更新処理
+	
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update() override;
-	//描画処理
+	
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw() override;
 
-private:
-	//当たり判定処理
+private: //**プライベート関数
+
+	/// <summary>
+	/// 当たり判定処理まとめ
+	/// </summary>
 	void Collision();
 
-	//シーン変更処理
+	/// <summary>
+	/// シーン変更処理
+	/// </summary>
 	void SceneChange();
 
-private:
+private: //**プライベート変数**//
 
 	//キー入力
 	Input* input_ = nullptr;
@@ -61,8 +77,6 @@ private:
 
 	//地面
 	std::unique_ptr<Plane>plane_;
-
-
 
 	//シーンチェンジ用
 	std::string white = "resources/Texture/SystemResources/white.png";

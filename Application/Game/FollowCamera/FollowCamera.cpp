@@ -21,17 +21,22 @@ Vector3 rotationToDirection(const Vector3&offset,const Vector3& velo) {
 
 FollowCamera::FollowCamera(const EulerWorldTransform* world, const EulerWorldTransform* target)
 {
+	//入力のインスタンス取得
 	input_ = Input::GetInstance();
-	//中身設定
+	//カメラのインスタンス取得
 	camera_ = Camera::GetInstance();
-	//ペアレント元保存
+
+	//プレイヤーワールド保存
 	player_ = world;
 
+	//ボスワールド保存
 	boss_ = target;
 
+	//メインカメラにペアレント
 	camera_->mainCamera_.parent_ = &cameraPoint_;
 
-	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("追従カメラ");
+	//デバッグ用にGvariGroupに値を設定
+	std::unique_ptr<GlobalVariableGroup>gvg = std::make_unique<GlobalVariableGroup>("追従カメラ");
 	gvg->SetValue("X軸のカメラ回転最大制限", &rotateLimitMax);
 	gvg->SetValue("X軸のカメラ回転最小制限", &rotateLimitMin);
 
@@ -78,36 +83,36 @@ void FollowCamera::Update(bool& isShake)
 	cPos += direc * length_;
 	cPos.y = cameraHeight_;
 
+	//座標を渡す
 	camera_->mainCamera_.translate_ = cPos+pDiffPos_;
 
-	//カメラ
+	//ボスを見る処理
 	SetFocusBoss();
 
 	//カメラ振動処理
 	if (isShake) {
-
+		//ランダムにずれの値を求める
 		Vector3 pos = {
 		RandomNumber::Get(-0.5f,0.5f),
 		RandomNumber::Get(-0.5f,0.5f),
 		0
 		};
-
+		//ずれの文の値を足した座標を渡す
 		Vector3 newp = tempP_ + pos;
-
 		camera_->SetMainCameraPos(newp);
 
+		//カウントが0で終わり
 		if (cameraShakeCount_-- <= 0) {
+			//フラグを切る
 			isShake = false;
 			cameraShakeCount_ = 0;
 			camera_->SetMainCameraPos(tempP_);
 		}
-
 	}
 
+	//行列更新
 	cameraPoint_.UpdateMatrix();
 }
-
-
 
 void FollowCamera::SetFocusBoss()
 {
@@ -127,6 +132,7 @@ void FollowCamera::SetFocusBoss()
 
 	Vector3 rotate = rotationToDirection(offset, direc);
 
+	//回転量の制限処理
 	if (rotate.x > rotateLimitMax) {
 		rotate.x = rotateLimitMax;
 	}
@@ -134,5 +140,6 @@ void FollowCamera::SetFocusBoss()
 		rotate.x = rotateLimitMin;
 	}
 
+	//計算した回転量を渡す
 	camera_->mainCamera_.rotate_ = rotate;
 }

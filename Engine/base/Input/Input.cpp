@@ -9,19 +9,19 @@
 #include<cassert>
 
 Input* Input::GetInstance() {
+	//インスタンス取得
 	static Input instance;
 	return &instance;
 }
 
 void Input::Initialize(WindowApp* winApp) {
 
-
 	//インスタンス生成
 	ComPtr<IDirectInput8>directInput = nullptr;
 	HRESULT hr = DirectInput8Create(winApp->GetWc().hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
 	assert(SUCCEEDED(hr));
-	//キーボードデバイス
 
+	//キーボードデバイス
 	hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboad, NULL);
 	assert(SUCCEEDED(hr));
 
@@ -37,24 +37,28 @@ void Input::Initialize(WindowApp* winApp) {
 
 void Input::Update() {
 
+	//キーの入力状態を過去に保存
 	memcpy(preKey, key, sizeof(key));
 
+	//コントローラ系列も
 	preJoyState_ = joyState;
 
 	//キーボード情報取得開始
 	keyboad->Acquire();
 
-
+	//状態を取得
 	keyboad->GetDeviceState(sizeof(key), key);
 
-
+	//コントローラ取得
 	DWORD res = XInputGetState(0, &joyState);
 	if (res != ERROR_SUCCESS) {
 		//assert(false);
 	}
 }
 
-bool Input::PushKey(BYTE keyNum) {
+bool Input::PushKey(BYTE keyNum) 
+{
+	//有効の場合true
 	if (key[keyNum]) {
 		return true;
 	}
@@ -62,17 +66,20 @@ bool Input::PushKey(BYTE keyNum) {
 }
 
 bool Input::TriggerKey(BYTE keyNum) {
-
+	//現在はTで過去がFの時true
 	if (key[keyNum] && !preKey[keyNum]) {
 		return true;
 	}
-
 	return false;
 }
 
 Vector3 Input::GetWASD() {
+	//3DでのXZ平面想定での簡易移動入力取得処理
+
+	//返却地
 	Vector3 ans{};
 
+	//フラグを取得
 	if (key[DIK_W]) {
 		ans.z += 1;
 	}
@@ -86,13 +93,17 @@ Vector3 Input::GetWASD() {
 		ans.x -= 1;
 	}
 
+	//返却
 	return ans;
 }
 
 
 Vector3 Input::GetAllArrowKey() {
+	//3DでのXZ平面想定での簡易移動入力取得処理
+	//返却する値をいれる変数
 	Vector3 result;
 
+	//入力チェック
 	if (key[DIK_UP]) {
 		result.z += 1;
 	}
@@ -106,21 +117,23 @@ Vector3 Input::GetAllArrowKey() {
 		result.x -= 1;
 	}
 
+	//返却
 	return result;
 
 }
 
 bool Input::IsControllerActive() {
 
+	//コントローラーが有効かチェック
 	if (XInputGetState(0, &joyState) == ERROR_SUCCESS) {
 		return true;
 	}
-
 	return false;
 }
 
 bool Input::IsPushSomeButtons() {
 
+	//どれかでも入力があれば帰す
 	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) {
 		return true;
 	}
@@ -140,10 +153,14 @@ bool Input::IsPushSomeButtons() {
 }
 
 Vector2 Input::GetjoyStickR() {
+
+	//入力方向を受け取る（０-１）
 	Vector2 r = {
 		(float)joyState.Gamepad.sThumbRX / SHRT_MAX,
 		(float)joyState.Gamepad.sThumbRY / SHRT_MAX,
 	};
+
+	//デッドラインより少なければ０
 	if (r.x > 0 && r.x < deadLine_) {
 		r.x = 0;
 	}
@@ -158,14 +175,18 @@ Vector2 Input::GetjoyStickR() {
 		r.y = 0;
 	}
 
+	//帰す
 	return r;
 }
 
 Vector2 Input::GetjoyStickL() {
+	//入力方向を受け取る（０-１）
 	Vector2 r = {
 		(float)joyState.Gamepad.sThumbLX / SHRT_MAX,
 		(float)joyState.Gamepad.sThumbLY / SHRT_MAX,
 	};
+
+	//デッドラインより少なければ０
 	if (r.x > 0 && r.x < deadLine_) {
 		r.x = 0;
 	}
@@ -184,11 +205,16 @@ Vector2 Input::GetjoyStickL() {
 }
 
 Vector3 Input::GetjoyStickLV3() {
+	//XZ平面のゲームで移動処理を容易にできる関数
+
+		//入力方向を受け取る（０-１）
 	Vector3 r = {
 		(float)joyState.Gamepad.sThumbLX / SHRT_MAX,
 		0,
 		(float)joyState.Gamepad.sThumbLY / SHRT_MAX,
 	};
+
+	//デッドラインより少なければ０
 	if (r.x > 0 && r.x < deadLine_) {
 		r.x = 0;
 	}
@@ -203,11 +229,13 @@ Vector3 Input::GetjoyStickLV3() {
 		r.z = 0;
 	}
 
+	//返却
 	return r;
 }
 
 bool Input::IsPushButton(kPadButton kButton) {
-
+	//ボタンを押しているかチェック
+	//ボタンに合わせた処理に移行
 	switch (kButton) {
 	case kButtonA:
 		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) {
@@ -265,12 +293,16 @@ bool Input::IsPushButton(kPadButton kButton) {
 		break;
 	}
 
-
+	//なかったのでfalse
 	return false;
 }
 
 bool Input::IsTriggerButton(kPadButton kButton) {
+
+	//今押されているかチェック
 	if (IsPushButton(kButton)) {
+
+		//過去に押されていないかチェック
 		switch (kButton) {
 		case kButtonA:
 			if (preJoyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A) {

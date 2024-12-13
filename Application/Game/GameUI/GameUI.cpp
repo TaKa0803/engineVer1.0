@@ -37,9 +37,7 @@ GameUI::GameUI()
 
 
 	//デバッグのために値をセット
-	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("UI");
-
-
+	std::unique_ptr<GlobalVariableGroup>gvg = std::make_unique<GlobalVariableGroup>("UI");
 	gvg->SetTreeData(BButton_->GetTree("Bボタン"));
 	gvg->SetTreeData(XButton_->GetTree("Xボタン"));
 	gvg->SetTreeData(AButton_->GetTree("Aボタン"));
@@ -61,13 +59,13 @@ void GameUI::Update()
 
 void GameUI::Draw()
 {
-	//パンチ画像描画
+	//操作アイコン画像描画
 	punchSp_->Draw();
 	dashSp_->Draw();
 	rollSp_->Draw();
 
 
-	//Bボタン画像描画
+	//ボタン画像描画
 	BButton_->Draw();
 	XButton_->Draw();
 	AButton_->Draw();

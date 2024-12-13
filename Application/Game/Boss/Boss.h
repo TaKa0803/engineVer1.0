@@ -13,51 +13,54 @@
 //ボスクラス
 class Boss : public GameObject {
 
-public://パブリック変数：状態管理関係
+public: //**パブリック変数：状態管理関係**//
 
 	//各アニメーション
 	enum class Animation {
-		Idle1,
-		Idle2,
-		Idle3,
+		Idle1,			//待機１
+		Idle2,			//待機２
+		Idle3,			//待機３
 
-		Walk,
+		Walk,			//歩く
 
-		PreCharge,
-		Charging,
-		EdCharge,
+		PreCharge,		//タックル構え
+		Charging,		//タックル中
+		EdCharge,		//タックル後
 
-		PreStump,
-		Fly2Stump,
-		Stump,
-		EdStump,
+		PreStump,		//ジャンプ構え
+		Fly2Stump,		//ジャンプ中
+		Stump,			//落下
+		EdStump,		//落下後
 
-		Down,
+		Down,			//ダウン
 
-		Preshot,
-		Shot,
-		RevShot,
+		Preshot,		//弾発射構え
+		Shot,			//発射
+		RevShot,		//反転した動きで発射
 
-		PrePunch,
-		Punch,
+		PrePunch,		//パンチ構え
+		Punch,			//パンチ中
 	
-		PreSumersolt,
-		SumerSolt,
+		PreSumersolt,	//サマーソルト前
+		SumerSolt,		//サマーソルト中
 
-		BackStep,
+		BackStep,		//バックステップ
 
-		Grap,
-		GrapMiss,
+		Grap,			//掴み
+		GrapMiss,		//掴みミス
 
-		PreThrow,
-		Throw,
+		PreThrow,		//投げ構え
+		Throw,			//投げる
 
-		Roll,
+		Roll,			//回転
 
-		CountAnimation
+		CountAnimation	//アニメーション数
 	};
 
-	//アニメーション名
+	/// <summary>
+	/// 各アニメーションの文字列
+	/// enum class Animationと併用して扱う
+	/// </summary>
 	std::string animeName_[(int)Animation::CountAnimation] = {
 
 		"Idle",
@@ -99,25 +102,28 @@ public://パブリック変数：状態管理関係
 
 	//ボスの状態
 	enum class Behavior {
-		IDLE,	//待機状態
-		DOWN,	//移動
-		ATK,    //攻撃
-		CountBehavior
+		IDLE,			//待機状態
+		DOWN,			//移動
+		ATK,			//攻撃
+		CountBehavior	//ボスの状態の数
 	};
 
 	//攻撃終了感知フラグ
 	bool isFinishedATK_ = false;
 
-public://パブリック関数
+public: //**パブリック関数**//
 
-	//コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="player">プレイヤーのポインタ</param>
 	Boss(Player* player);
 	~Boss()=default;
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Initialize();
 
 	/// <summary>
 	/// 更新
@@ -134,17 +140,29 @@ public://パブリック関数
 	/// </summary>
 	void DrawUI();
 
-	//攻撃ヒット時の処理
+	/// <summary>
+	/// 攻撃ヒット時の処理
+	/// </summary>
 	void OnCollision();
 
-	//エフェクト有効処理委取得
+	/// <summary>
+	/// エフェクト有効処理
+	/// </summary>
+	/// <param name="pos">エフェクト発生座標</param>
 	void SpawnStumpEffect(const Vector3& pos) { stumpEffect_->Spawn(pos); }
-public://ゲッター
 
-	//体コライダー取得
+public: //**ゲッター**//
+
+	/// <summary>
+	/// 体コライダー取得
+	/// </summary>
+	/// <returns>体コライダー</returns>
 	SphereCollider& GetBodyCollider()& { return *bodyCollider_.get(); }
 
-	//攻撃用コライダー取得
+	/// <summary>
+	/// 攻撃コライダー取得
+	/// </summary>
+	/// <returns>攻撃コライダー</returns>
 	SphereCollider& GetATKCollider()& { return *atkCollider_.get(); }
 
 	/// <summary>
@@ -157,11 +175,14 @@ public://ゲッター
 	/// プレイヤーのワールド座標取得
 	/// </summary>
 	/// <returns></returns>
-	Vector3 GetPlayerWorldTranslate() { return player_->GetWorld().GetWorldTranslate(); };
+	Vector3 GetPlayerWorldTranslate() { return player_->world_.GetWorldTranslate(); };
 
-public://セッター
+public: //**セッター**//
 
-	//現在の攻撃パターンで攻撃を予約(攻撃番号指定
+	/// <summary>
+	/// 現在の攻撃パターンで攻撃を予約(攻撃番号指定
+	/// </summary>
+	/// <param name="atkNum">攻撃の番号</param>
 	void SetNextATK(int atkNum);
 
 	/// <summary>
@@ -184,12 +205,14 @@ public://セッター
 	/// <param name="isLoop">ループフラグ</param>
 	void SetAnimation(const std::string& animeName, float sec, float loopSec=1.0f, bool isLoop = true);
 
-	///アニメーション進行をこちらで管理する処理
+	/// <summary>
+	/// アニメーション進行を０-１で管理
+	/// </summary>
+	/// <param name="active">管理の有効フラグ</param>
+	/// <param name="t">０-１のアニメーション進行度</param>
 	void SetAnimeTime(bool active, float t = 0) { model_->SetAnimationTime(active, t); }
-private://状態管理
 
-
-private://**参照
+private://**参照**//
 
 	//入力
 	Input* input_ = nullptr;
@@ -199,14 +222,21 @@ private://**参照
 
 	//弾マネージャ
 	BossBulletManager* bulletM_;
-private://**変数
+
+private: //**変数**//
 
 	//ボスーの状態
 	Behavior behavior_ = Behavior::IDLE;
+
 	//状態リクエスト
 	std::optional<Behavior>behaviorReq_ = std::nullopt;
+
+	//状態群
+	std::vector<std::unique_ptr<IBossBehavior>>behaviors_;
+
 	//簡易影
 	std::unique_ptr<CirccleShadow>shadow_;
+
 	//コライダー
 	std::unique_ptr<SphereCollider> bodyCollider_;
 	//攻撃コライダー
@@ -214,29 +244,33 @@ private://**変数
 
 	//UI
 	std::unique_ptr<BossUI>ui_;
-	
-	//状態群
-	std::vector<std::unique_ptr<IBossBehavior>>behaviors_;
 
+	//落下攻撃エフェクト
 	std::unique_ptr<EffectLargeDebris>stumpEffect_;
-public://**パラメータ
 
+public: //**パラメータ**//
+
+	//最大体力
 	int maxHP_ = 20;
 
-	int maxHP = 20;
+	//現在体力
+	int nowHP = 20;
 
+	//死亡フラグ
 	bool isDead_ = false;
-private://ImGui用
 
-	//思考処理
+private: //**デバッグ用**//
+
+	//思考処理フラグ
 	bool brein_ = true;
 
+	//当たり判定フラグ
 	bool hit_ = true;
 
 	//デバッググループ名
 	const std::string groupName_ = "ボス";
 
-	//
+	//デバッグ用状態の名前群
 	std::string behaviorName_[(int)Behavior::CountBehavior] = {
 		"Idle",
 		"Move",

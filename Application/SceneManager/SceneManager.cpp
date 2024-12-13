@@ -6,7 +6,7 @@
 #pragma region シーンのh
 #include"Debug/DebugScene.h"
 #include"Game/Scene/TitleScene.h"
-#include"Game/Scene/GameScene.h"
+#include"Game/Scene/InGameScene.h"
 #include"Game/Scene/GameOverScene.h"
 #include"Game/Scene/GameClearScene.h"
 #pragma endregion
@@ -15,7 +15,7 @@
 
 SceneManager::SceneManager()
 {
-	std::unique_ptr<GVariGroup>gvg = std::make_unique<GVariGroup>("SceneManager");
+	std::unique_ptr<GlobalVariableGroup>gvg = std::make_unique<GlobalVariableGroup>("SceneManager");
 
 	gvg->SetValue("scene Value", &IScene::GetSceneNo());
 	gvg->SetMonitorValue("scene", &scenename_);
@@ -43,7 +43,7 @@ void SceneManager::Initialize()
 	//各シーンの情報設定
 	sceneArr_[Debug] = std::make_unique<DebugScnene>();
 	sceneArr_[TITLE] = std::make_unique<TitleScene>();
-	sceneArr_[GAME] = std::make_unique<GameScene>();
+	sceneArr_[GAME] = std::make_unique<InGameScene>();
 	sceneArr_[GAMEOVER] = std::make_unique<GameOverScene>();
 	sceneArr_[GAMECLEAR] = std::make_unique<GameClearScene>();
 	
