@@ -10,7 +10,7 @@
 #include<memory>
 #include<wrl.h>
 
-
+//マテリアル
 struct SpriteMaterial
 {
 	//色
@@ -26,11 +26,18 @@ struct SpriteMaterial
 };
 
 
+//スプライトクラス
 class Sprite {
-public:
+public://**パブリック関数**//
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	Sprite();
 
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~Sprite();
 
 	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -48,14 +55,6 @@ public:
 	/// <param name="anchor">アンカー</param>
 	/// <returns>画像サイズ</returns>
 	static Sprite* Create(int texture, const Vector2 size,const Vector2 Rect, const Vector2 scale = { 1,1 }, const Vector2 translate = { 640,360 },  const Vector2 anchor = { 0.5f,0.5f }, const float rotate = 0);
-
-
-
-	/// <summary>
-	/// デバッグウィンドウ表示
-	/// </summary>
-	/// <param name="name">ウィンドウの名前</param>
-	//void DrawDebugImGui(const char* name);
 
 	/// <summary>
 	/// 描画処理
@@ -100,13 +99,16 @@ public:///セッター
 	/// <param name="uvPos">代入する</param>
 	void SetTVTranslate(const Vector2 uvPos) { uvWorld_.translate_.x = uvPos.x; uvWorld_.translate_.y = uvPos.y; }
 
-
 	/// <summary>
 	/// 画像のカラーを設定
 	/// </summary>
 	/// <param name="color"></param>
 	void SetMaterialDataColor(const Vector4& color) { materialData_->color = color; }
 
+	/// <summary>
+	/// 透明度設定
+	/// </summary>
+	/// <param name="alpha"></param>
 	void SetColorAlpha(float alpha) { materialData_->color.w = alpha; }
 
 	/// <summary>
@@ -117,7 +119,9 @@ public:///セッター
 
 	//親子関係取得
 	void SetParent(const EulerWorldTransform& parent) { world_.parent_ = &parent; }
-public:
+
+public://**ゲッター**//
+
 	/// <summary>
 	/// マテリアルデータ構造体取得
 	/// </summary>
@@ -149,11 +153,16 @@ public:
 	GlobalVariableTree& GetTree(const std::string&name);
 
 
-	
+private://**プライベート関数**//
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
+	/// <param name="texture">画像</param>
+	/// <param name="world">ワールド情報</param>
+	/// <param name="vertexResource">頂点リソース</param>
+	/// <param name="indexResourceSprite">インデックスリソース</param>
+	/// <param name="indexBufferViewSprite">インデックスバッファビュー</param>
 	void Initialize(int texture,
 
 	EulerWorldTransform world,
@@ -166,41 +175,36 @@ public:
 	);
 
 	
-private:
+private://**プライベート変数**//
 
-
-
+	//DXFポインタ
 	DirectXFunc* DXF_ = nullptr;
 
-	
+	//フィルモード
 	FillMode fillMode_ = FillMode::kSolid;
 	BlendMode blendMode_ = BlendMode::kNormal;
 
-
+	//指定画像
 	int texture_=-1;
 
-	
 	//頂点関係
 	ID3D12Resource* vertexResource_=nullptr;
 	ID3D12Resource* indexResource_=nullptr;
-	//
+	//バッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
 	
-
 	//座標関係
 	ID3D12Resource* transformationMatrixResource_ = nullptr;;
 	//データ
 	WorldTransformation* transformationMatrixData_ = nullptr;
-
 
 	//マテリアル関係
 	ID3D12Resource* materialResource_ = nullptr;
 	//データ
 	SpriteMaterial* materialData_ = nullptr;;
 	
-
-	Matrix4x4 viewMatrixSprite = MakeIdentity4x4();
+	Matrix4x4 viewMatrix = MakeIdentity4x4();
 
 	
 	//スプライトのワールドデータ
@@ -209,7 +213,7 @@ private:
 	//uvのWorld
 	EulerWorldTransform uvWorld_{};
 
-private:
+private://**デバッグ値**//
 
 	//デバッグ用ツリー
 	GlobalVariableTree tree_=GlobalVariableTree("");

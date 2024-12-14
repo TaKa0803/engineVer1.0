@@ -15,55 +15,24 @@ Sprite::Sprite() {
 
 Sprite::~Sprite() {
 	
+	//解放処理
 	vertexResource_->Release();
 	indexResource_->Release();
 	transformationMatrixResource_->Release();
 	materialResource_->Release();
 }
 
-//void Sprite::DrawDebugImGui(const char* name) {	
-//#ifdef _DEBUG
-//	Vector4 color = materialData_->color;
-//	if (ImGui::BeginMenu(name)) {
-//		ImGui::DragFloat3("pos", &world_.translate_.x, 0.1f);
-//		ImGui::DragFloat("rotate", &world_.rotate_.z);
-//		ImGui::DragFloat2("scale", &world_.scale_.x, 0.1f);
-//
-//		ImGui::Text("UV");
-//		ImGui::DragFloat2("uv pos", &uvWorld_.translate_.x, 0.1f);
-//		ImGui::DragFloat("uv rotate", &uvWorld_.rotate_.z, 0.1f);
-//		ImGui::DragFloat2("uv scale", &uvWorld_.scale_.x, 0.1f);
-//
-//		BlendMode blend = blendMode_;
-//		const char* items[] = { "None","Normal","Add","Subtract","Multiply","Screen" };
-//		int currentItem = static_cast<int>(blend);
-//
-//		if (ImGui::Combo("blendmode", &currentItem, items, IM_ARRAYSIZE(items))) {
-//			blend = static_cast<BlendMode>(currentItem);
-//		}
-//
-//		blendMode_ = blend;
-//
-//
-//		ImGui::EndMenu();
-//	}
-//#endif // _DEBUG
-//}
-
-
-
-
 Sprite* Sprite::Create(int texture, const Vector2 size, const Vector2 Rect, const Vector2 scale , const Vector2 translate, const Vector2 anchor, const float rotate) {
+	//DXFのインスタンス取得
 	DirectXFunc* DXF = DirectXFunc::GetInstance();
-	
+	//ワールド作成
 	EulerWorldTransform newWorld;
 	newWorld.translate_ = { translate.x,translate.y,0 };
 	newWorld.rotate_.z = rotate;
 	newWorld.scale_ = { scale.x,scale.y,1 };
 #pragma region Sprite
+	//リソース作成
 	ID3D12Resource* vertexResource;
-
-	
 	ID3D12Resource* indexResourceSprite;
 	D3D12_INDEX_BUFFER_VIEW indexBufferViewSprite{};
 
@@ -75,11 +44,8 @@ Sprite* Sprite::Create(int texture, const Vector2 size, const Vector2 Rect, cons
 	VertexData* vertexDataSprite = nullptr;
 	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataSprite));
 	//一枚目の三角形
-
 	Vector2 minv = { 1 * (-anchor.x),1 * (-anchor.y) };
-
 	Vector2 maxV = { 1 * (1 - anchor.x),1 * (1 - anchor.y) };
-
 	Vector2 maxUV = { Rect.x / size.x,Rect.y/size.y };
 
 	vertexDataSprite[0].position = { minv.x,maxV.y,0.0f,1.0f };
@@ -106,7 +72,7 @@ Sprite* Sprite::Create(int texture, const Vector2 size, const Vector2 Rect, cons
 	indexBufferViewSprite.SizeInBytes = sizeof(uint32_t) * 6;
 	//インデックス
 	indexBufferViewSprite.Format = DXGI_FORMAT_R32_UINT;
-
+	//インデックス作成
 	uint32_t* indexDataSprite = nullptr;
 	indexResourceSprite->Map(0, nullptr, reinterpret_cast<void**>(&indexDataSprite));
 	indexDataSprite[0] = 1;
@@ -117,34 +83,28 @@ Sprite* Sprite::Create(int texture, const Vector2 size, const Vector2 Rect, cons
 	indexDataSprite[4] = 2;
 	indexDataSprite[5] = 0;
 
-
 #pragma endregion
 
-
-
+	//生成して初期化
 	Sprite* sprite = new Sprite();
 	sprite->Initialize(texture,newWorld, vertexResource, indexResourceSprite, indexBufferViewSprite);
 
-	
+	//ログ出力
 	Log("Sprite is Created!\n");
 
 	return sprite;
 }
 
-
-
-
 GlobalVariableTree& Sprite::GetTree(const std::string& name)
 {
 	
+	//デバッグ用のツリーにデータを登録
 	tree_.name_ = name;
-
 	tree_.SetTreeData(world_.GetDebugTree());
 	tree_.SetTreeData(uvWorld_.GetDebugTree("UVワールド"));
 	tree_.SetValue("画像", &materialData_->enableTexture);
 	tree_.SetValue("色", &materialData_->color);
 	tree_.SetValue("棄却量", &materialData_->discardNum);
-
 	return tree_;
 }
 
@@ -160,13 +120,12 @@ void Sprite::Initialize(int texture,
 ) {
 	DXF_ = DirectXFunc::GetInstance();
 
-	//データコピー
-
+	//作成したデータコピー
 	texture_ = texture;
-
 	world_ = world;
-
 	vertexResource_ = vertexResource;
+	indexResource_ = indexResourceSprite;
+	indexBufferView_ = indexBufferView;
 
 	//頂点バッファビューを作成する
 	//リソース用の先頭のアドレスから使う
@@ -176,14 +135,7 @@ void Sprite::Initialize(int texture,
 	//頂点当たりのサイズ
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
-	indexResource_ = indexResourceSprite;
-
-	indexBufferView_ = indexBufferView;
-
-
-
-
-#pragma region Transform周りを作る
+	//Transform周りを作る
 	transformationMatrixResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(WorldTransformation));
 	//データを書き込む
 
@@ -191,18 +143,15 @@ void Sprite::Initialize(int texture,
 	transformationMatrixResource_->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData_));
 	transformationMatrixData_->WVP = MakeIdentity4x4();
 	transformationMatrixData_->World = MakeIdentity4x4();
-#pragma endregion
+
 
 	//Sprite用のマテリアルリソース
-	materialResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(SpriteMaterial));
+	materialResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(Sprite));
 	//マテリアルにデータを書き込む
-
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);	
 	materialData_->uvTransform = MakeIdentity4x4();
 	materialData_->enableTexture = true;
-#pragma endregion
-
 
 }
 
@@ -224,7 +173,7 @@ void Sprite::Draw(int texture) {
 
 	//スプライト用データ
 	Matrix4x4 projectionMatrixSprite = MakeOrthographicMatrix(0.0f, 0.0f, float(WindowApp::kClientWidth), float(WindowApp::kClientHeight), 0.0f, 100.0f);
-	Matrix4x4 VPSprite = viewMatrixSprite * projectionMatrixSprite;
+	Matrix4x4 VPSprite = viewMatrix * projectionMatrixSprite;
 	Matrix4x4 WVP = World * VPSprite;
 	//データ代入
 	transformationMatrixData_->WVP = WVP;
@@ -267,7 +216,7 @@ void Sprite::Draw(D3D12_GPU_DESCRIPTOR_HANDLE tex)
 
 	//スプライト用データ
 	Matrix4x4 projectionMatrixSprite = MakeOrthographicMatrix(0.0f, 0.0f, float(WindowApp::kClientWidth), float(WindowApp::kClientHeight), 0.0f, 100.0f);
-	Matrix4x4 VPSprite = viewMatrixSprite * projectionMatrixSprite;
+	Matrix4x4 VPSprite = viewMatrix * projectionMatrixSprite;
 	Matrix4x4 WVP = World * VPSprite;
 	//データ代入
 	transformationMatrixData_->WVP = WVP;
@@ -282,10 +231,8 @@ void Sprite::Draw(D3D12_GPU_DESCRIPTOR_HANDLE tex)
 	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 	//TransformationMatrixCBufferの場所を設定
 	DXF_->GetCMDList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_->GetGPUVirtualAddress());
-	//
-	
+	//画像設定
 	DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, tex);
-
 	//描画！！（DrawCall
 	DXF_->GetCMDList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }

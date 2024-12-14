@@ -15,24 +15,19 @@
 
 SceneManager::SceneManager()
 {
+	//デバッグ用の値セット
 	std::unique_ptr<GlobalVariableGroup>gvg = std::make_unique<GlobalVariableGroup>("SceneManager");
-
 	gvg->SetValue("scene Value", &IScene::GetSceneNo());
 	gvg->SetMonitorValue("scene", &scenename_);
-
+	
 	sceneName_.clear();
 	sceneName_.push_back("DEBUG");
 	sceneName_.push_back("TITLE");
 	sceneName_.push_back("GAME");
 	sceneName_.push_back("GAMEOVER");
 	sceneName_.push_back("GAMECLEAR");
-
 	scenename_ = sceneName_[currentSceneNo_].c_str();
 
-}
-
-SceneManager::~SceneManager()
-{
 }
 
 void SceneManager::Initialize()
@@ -46,17 +41,13 @@ void SceneManager::Initialize()
 	sceneArr_[GAME] = std::make_unique<InGameScene>();
 	sceneArr_[GAMEOVER] = std::make_unique<GameOverScene>();
 	sceneArr_[GAMECLEAR] = std::make_unique<GameClearScene>();
-	
-
 
 	//初期シーン設定
 	IScene::SetSceneNo(TITLE);
-
 }
 
 void SceneManager::Update()
 {
-	
 	//シーンチェック
 	prevSceneNo_ = currentSceneNo_;
 	currentSceneNo_ = IScene::GetSceneNo();
@@ -74,8 +65,6 @@ void SceneManager::Update()
 	
 	//シーン更新処理
 	sceneArr_[currentSceneNo_]->Update();
-
-
 }
 
 void SceneManager::Draw()

@@ -1,23 +1,43 @@
 #pragma once
 #include"GvariGroup/GvariGroup.h"
 
+//プレイヤー前方宣言
 class Player;
 
+//プレイヤーパンチ
 class PlayerPunch {
 
-public://パブリック関数
+public://**パブリック変数**//
+
+	//終了フラグ
+	bool isEnd_ = false;
+
+public://**パブリック関数**//
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="player"></param>
 	PlayerPunch(Player* player);
 	~PlayerPunch() = default;
 
-	//初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
+	/// <summary>
+	/// ツリー取得
+	/// </summary>
+	/// <returns></returns>
 	GlobalVariableTree& GetTree() { return tree_; }
 
-private://プライベート関数
+private://**プライベート関数**//
 
 	/// <summary>
 	/// 各状態での処理の変更
@@ -29,20 +49,21 @@ private://プライベート関数
 	/// </summary>
 	void ChangeAnimation();
 
-public:
 
-	//パブリック変数
-	bool isEnd_ = false;
 
-private://プライベート変数
+private://**プライベート変数**//
+
+	//プレイヤーポインタ
 	Player* player_;
 
 	//最大攻撃回数
 	const int maxAtkCount_ = 3;
 
 private://パラメータ
+
 	struct Com1
 	{
+		//移動速度倍率
 		float multiSpd = 0.1f;
 		//開始交直
 		float stStiffnessSec = 0.2f;
@@ -54,6 +75,7 @@ private://パラメータ
 
 	struct Com2
 	{
+		//移動速度倍率
 		float multiSpd = 0.1f;
 		//開始交直
 		float stStiffnessSec = 0.3f;
@@ -65,6 +87,7 @@ private://パラメータ
 
 	struct Com3
 	{
+		//移動速度倍率
 		float multiSpd = 0.1f;
 		//開始交直
 		float stStiffnessSec = 0.4f;
@@ -106,16 +129,17 @@ private://パラメータ
 		Ed,
 		CheckEnd,
 		_countAtkState
-	};
-	AtkState state_=St;
+	}state_=St;
 
+	//パラメータ変数
 	Parameters parameters_ = Parameters{};
 
 	//音のデータポインタ
+	//パンチ
 	int punchSound_;
-
+	//キック
 	int kickSound_;
-
+	//ドリル
 	int drilSound_;
 
 

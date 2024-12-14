@@ -7,11 +7,19 @@
 
 #include"DirectXFunc/DirectXFunc.h"
 
+//スプライトのパイプライン
 class SpritePSO {
 
-public:
+public://**パブリック関数**//
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	SpritePSO();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~SpritePSO();
 
 	/// <summary>
@@ -24,9 +32,9 @@ public:
 	/// </summary>
 	void PreDraw(BlendMode blendMode);
 
+private://**プライベート変数**//
 
-private:
-
+	//DXFのポインタ
 	DirectXFunc* DXF_;
 
 	//ルートシグネチャ

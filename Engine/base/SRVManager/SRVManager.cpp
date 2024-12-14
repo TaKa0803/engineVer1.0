@@ -9,6 +9,7 @@ SRVManager* SRVManager::GetInstance() {
 
 Handles SRVManager::CreateTextureSRV(ID3D12Resource* textureResource, ID3D12Resource* intermediateResource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvdesc)
 {
+	//SRVマネージャインスタンス取得
 	SRVManager* SRVM = SRVManager::GetInstance();
 	
 	//SRVを作成するDescriptorHeapの場所を決める
@@ -36,11 +37,11 @@ Handles SRVManager::CreateTextureSRV(ID3D12Resource* textureResource, ID3D12Reso
 			.textureNum{texnum}
 	};	
 	return data;
-
 }
 
 Handles SRVManager::CreateSRV(ID3D12Resource* resource, D3D12_SHADER_RESOURCE_VIEW_DESC& srvDesc)
 {
+	//SRVマネージャインスタンス取得
 	SRVManager* SRVM = SRVManager::GetInstance();
 
 	//SRVを作成するDescriptorHeapの場所を決める
@@ -64,6 +65,7 @@ Handles SRVManager::CreateSRV(ID3D12Resource* resource, D3D12_SHADER_RESOURCE_VI
 
 Handles SRVManager::CreateNewSRVHandles()
 {
+	//インスタンス取得
 	SRVManager* SRVM = SRVManager::GetInstance();
 
 	//SRVを作成するDescriptorHeapの場所を決める

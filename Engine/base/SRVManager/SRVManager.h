@@ -7,23 +7,23 @@
 
 #include"struct.h"
 
-
-
-
-
+//SRVの管理マネージャ
 class SRVManager {
 
 public://シングルトンパターン
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns>インスタンス</returns>
 	static SRVManager* GetInstance();
-
-
 private:
 	SRVManager() = default;
 	~SRVManager() = default;
 	SRVManager(const SRVManager& o) = delete;
 	const SRVManager& operator=(const SRVManager& o) = delete;
 
-public:
+public://**パブリック関数**//
+
 	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 	/// <summary>
@@ -77,8 +77,8 @@ public:
 		return hDatas_[num];
 	}
 
+private://**プライベート関数**//
 
-private:
 	/// <summary>
 	/// リソースをデータ群に追加してデータ群のポインタ返却
 	/// </summary>
@@ -105,14 +105,10 @@ private:
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPU_DES_HANDLE();
 
 
-private:
+private://**プラべーと変数**//
 
+	//DXFのポインタ
 	ID3D12Device* DXF_ = nullptr;
-
-private:
-
-	
-	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 	//SRV用のヒープでディスクリプタの数は１２８。SRVはSHADER内で触るものなので、ShaderVisibleはtrue
 	ID3D12DescriptorHeap* srvDescriptorHeap = nullptr;

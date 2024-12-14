@@ -3,38 +3,61 @@
 #include"Input/Input.h"
 #include"Sprite/Sprite.h"
 
+//タイトルシーン
 class TitleScene : public IScene {
 
-public:
+public://**パブリック関数**//
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	TitleScene();
 
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~TitleScene();
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize() override;
 
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update() override;
 
-	
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw() override;
 
-private:
+private://**プライベート関数**//
 
+	/// <summary>
+	/// デバッグ処理
+	/// </summary>
 	void Debug();
 
-	//シーン変更処理
+	/// <summary>
+	/// シーン変更処理
+	/// </summary>
 	void SceneChange();
 
-private:
+private://**プライベート変数**//
+
 	//キー入力
 	Input* input_ = nullptr;
 
+	//タイトル画像
 	std::unique_ptr<Sprite> sprite_;
 
+	//プレス画像
 	std::unique_ptr<Sprite>pressSp_;
 
+	//Bボタン画像
 	std::unique_ptr<Sprite>BButtonSp_;
-
 
 	//シーンチェンジ用
 	std::string white = "resources/Texture/SystemResources/white.png";
@@ -46,8 +69,10 @@ private:
 	//シーン転換処理をするか否か
 	bool isSceneChange_ = false;
 
+	//シーン変更カウント
 	const float maxSceneChangeCount_ = 60;
 
+	//カウント
 	float sceneXhangeCount_ = 0;
 
 	//点滅
@@ -55,7 +80,6 @@ private:
 	int tenmetuCount = 0;
 	bool isDrawB_ = true;
 
-
+	//タイトルの音
 	int titleSound_;
-
 };

@@ -1,24 +1,46 @@
 #pragma once
 #include"InstancingGameObject/InstancingGameObject.h"
 
-
+//OBBコライダー前方宣言
 class OBBCollider;
 
-
+//円コライダー
 class SphereCollider : InstancingGameObject {
 
-public:
-	//
-	SphereCollider();
+public://パブリック変数
 
-	//親のサイズのみ非参照につき注意。サイズ変更はradius
+	//有効処理
+	bool isActive_ = true;
+
+public://**パブック関数**//
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	SphereCollider();
+	~SphereCollider()=default;
+
+	/// <summary>
+	/// 親を設定して初期化
+	/// </summary>
+	/// <param name="tag">コライダー名</param>
+	/// <param name="parent">親</param>
 	void Initialize(const std::string& tag,const EulerWorldTransform& parent);
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="tag">コライダー名</param>
 	void Initialize(const std::string& tag);
 
-
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
+	/// <summary>
+	/// デバッグのみ描画
+	/// </summary>
 	void Draw();
 
 	/// <summary>
@@ -37,7 +59,7 @@ public:
 	/// <returns>引数の押し出しベクトルに値を渡して成否チェック</returns>
 	bool IsCollision(OBBCollider& obb, Vector3& backVec, float divisionVolume);
 
-
+public://**セッター**//
 
 	//透明度設定
 	void SetAlpha(const float alpha) { alpha_ = alpha; }
@@ -54,8 +76,10 @@ public:
 	//当たった時に行列更新するといい
 	void UpdateMatrix();
 
+public://**ゲッター**//
+
+	//ツリー取得
 	GlobalVariableTree& GetDebugTree(const std::string& name = "円コライダー");
-public:
 
 	//半径取得
 	float GetRadius();
@@ -72,8 +96,9 @@ public:
 	//過去ワールド取得
 	EulerWorldTransform GetPreWorld()const { return preWorld_; }
 
-private:
+private://**プライベート変数**//
 
+	//ターゲット
 	const EulerWorldTransform* parent_;
 
 	//コライダータグ
@@ -99,9 +124,7 @@ private:
 
 	//デバッグ用ツリー
 	GlobalVariableTree tree_=GlobalVariableTree("");
-public:
 
-	//有効処理
-	bool isActive_ = true;
+
 
 };

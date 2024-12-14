@@ -4,8 +4,9 @@
 #include"Quaternion.h"
 #include"GvariGroup/GvariGroup.h"
 
+//ワールドトランスフォーム
 class EulerWorldTransform {
-public://変数
+public://パブリック変数**//
 
 	//座標
 	Vector3 translate_ = { 0.0f,0.0f,0.0f };
@@ -22,7 +23,8 @@ public://変数
 	//親
 	const EulerWorldTransform* parent_ = nullptr;
 
-public:
+public://**パブリック関数**//
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -32,8 +34,8 @@ public:
 	/// 更新
 	/// </summary>
 	Matrix4x4 UpdateMatrix();
-#pragma region ゲッター
-public://Getter
+
+public://**ゲッター**//
 
 	/// <summary>
 	/// matWorldのTranslate取得
@@ -48,11 +50,22 @@ public://Getter
 		return matTranslation;
 	};
 
+	/// <summary>
+	/// デバッグ用のツリー取得
+	/// </summary>
+	/// <param name="name">ツリー名</param>
+	/// <returns>ツリー</returns>
 	GlobalVariableTree& GetDebugTree(const std::string& name = "ワールド");
 
+	/// <summary>
+	/// モニター用デバッグツリー取得
+	/// </summary>
+	/// <param name="name">ツリー名</param>
+	/// <returns>ツリー</returns>
 	GlobalVariableTree& GetDebugMonitorTree(const std::string& name = "ワールド");
 
-public:
+public://**セッター**//
+
 	/// <summary>
 	/// すべて同じ値でサイズ設定
 	/// </summary>
@@ -63,14 +76,17 @@ public:
 
 #pragma endregion
 	
+public://**デバッグ用**//
+
+
 	//デバッグ用ツリー
 	GlobalVariableTree tree_ = GlobalVariableTree("");
 
 };
 
-
+//クォータニオン回転でのワールドトランスフォーム
 class QuaterinionWorldTransform {
-public://変数
+public://パブリック変数**//
 
 	//座標
 	Vector3 translate_ = { 0.0f,0.0f,0.0f };
@@ -87,7 +103,8 @@ public://変数
 	//親
 	const QuaterinionWorldTransform* parent_ = nullptr;
 
-public:
+public://**パブリック関数**//
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -98,14 +115,7 @@ public:
 	/// </summary>
 	Matrix4x4 UpdateMatrix();
 
-	/// <summary>
-	/// パラメータデバッグ表示
-	/// </summary>
-	//void DrawDebug(const char* name);
-
-
-#pragma region ゲッター
-public://Getter
+public://**ゲッター**//
 
 	/// <summary>
 	/// matWorldのTranslate取得
@@ -121,18 +131,18 @@ public://Getter
 		return matTranslation;
 	}
 
-public:
+public://**セッター**//
+
 	/// <summary>
 	/// すべて同じ値でサイズ設定
 	/// </summary>
 	/// <param name="radius"></param>
 	void SetScale(float radius) { scale_ = { radius,radius,radius }; }
 
+	/// <summary>
+	/// サイズ設定
+	/// </summary>
+	/// <param name="scale">サイズ</param>
 	void SetScale(Vector3 scale) { scale_ = scale; }
-#pragma endregion
-
-private:
-
-
 
 };

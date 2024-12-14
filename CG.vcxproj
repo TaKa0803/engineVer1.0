@@ -185,10 +185,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\GvariGroup\GvariGroup.cpp" />
     <ClCompile Include="Engine\LightManager\LightManager.cpp" />
     <ClCompile Include="Engine\MapLoader\MapLoader.cpp" />
-    <ClCompile Include="Engine\Math\Matirx.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Engine\Math\Matrix.cpp" />
     <ClCompile Include="Engine\Math\Vector2.cpp" />
     <ClCompile Include="Engine\Math\Vector3.cpp" />
@@ -216,7 +212,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\PostEffect\PEs\PESepia.cpp" />
     <ClCompile Include="Engine\PostEffect\PEs\PESmoothing.cpp" />
     <ClCompile Include="Engine\PostEffect\PEs\PEVignetting.cpp" />
-    <ClCompile Include="Engine\PostEffect\SimplePostEffect\SimplePostEffect.cpp" />
     <ClCompile Include="Engine\RandomNum\RandomNum.cpp" />
     <ClCompile Include="Engine\3d\Collider\SphereCollider\SphereCollider.cpp" />
     <ClCompile Include="Engine\2d\Sprite\Sprite.cpp" />
@@ -416,7 +411,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\Game\Boss\UI\BossUI.h" />
     <ClInclude Include="Application\Game\Effect\LargeDebris\EffectLargeDebris.h" />
     <ClInclude Include="Application\Game\Effect\Normal\EffectNormal.h" />
-    <ClInclude Include="Application\Game\Player\Behavior\IDLE\PlayerIdle.h" />
     <ClInclude Include="Application\Game\Player\Behavior\IPlayerBehavior.h" />
     <ClInclude Include="Application\Game\Player\hit\PlayerHit.h" />
     <ClInclude Include="Application\Game\Player\Idle\PlayerIdle.h" />
@@ -456,7 +450,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\3d\SkyBoxModel\SkyBoxModel.h" />
     <ClInclude Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.h" />
     <ClInclude Include="Engine\base\AudioManager\AudioManager.h" />
-    <ClInclude Include="Engine\base\AudioManager\SoundData.h" />
     <ClInclude Include="Engine\base\DeltaTimer\DeltaTimer.h" />
     <ClInclude Include="Engine\base\DSVManager\DSVManager.h" />
     <ClInclude Include="Engine\base\DXC\DXCManager.h" />
@@ -512,7 +505,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\PostEffect\PEs\PESepia.h" />
     <ClInclude Include="Engine\PostEffect\PEs\PESmoothing.h" />
     <ClInclude Include="Engine\PostEffect\PEs\PEVignetting.h" />
-    <ClInclude Include="Engine\PostEffect\SimplePostEffect\SimpleSostEffect.h" />
     <ClInclude Include="Engine\RandomNum\RandomNum.h" />
     <ClInclude Include="Engine\3d\Collider\SphereCollider\SphereCollider.h" />
     <ClInclude Include="Engine\2d\Sprite\Sprite.h" />

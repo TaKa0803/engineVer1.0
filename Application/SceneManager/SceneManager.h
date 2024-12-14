@@ -10,10 +10,13 @@
 /// </summary>
 class SceneManager {
 
-public:
+public://**パブリック関数**//
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	SceneManager();
-	~SceneManager();
+	~SceneManager()=default;
 
 	/// <summary>
 	/// 初期化処理
@@ -25,13 +28,12 @@ public:
 	/// </summary>
 	void Update();
 
-
 	/// <summary>
 	/// 描画処理
 	/// </summary>
 	void Draw();
 
-private:
+private://**プライベート変数**//
 
 	/// <summary>
 	/// 各種シーン管理
@@ -51,6 +53,4 @@ private:
 	int currentSceneNo_ = 0;
 	//1F前のシーン
 	int prevSceneNo_ = -1;
-
-
 };

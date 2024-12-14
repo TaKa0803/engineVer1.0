@@ -97,8 +97,6 @@ void InGameScene::Initialize() {
 
 }
 
-
-
 void InGameScene::Update() {
 	//ポストエフェクトのデバッグウィンドウをだす
 	PostEffectManager::GetInstance()->Debug();

@@ -5,9 +5,11 @@
 //前方宣言
 class Player;
 
+//プレイヤーのスタミナ管理
 class PlayerStamina {
 
-public:
+public://**パブリック変数**//
+
 	//動きのタイプ
 	enum class Type {
 		DASH,
@@ -17,15 +19,22 @@ public:
 		CountType
 	};
 
-public:
-	//コンストラクタ
+public://**パブリック関数**//
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	PlayerStamina();
 	~PlayerStamina()=default;
 
-	//初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
 	//gage
@@ -44,9 +53,13 @@ public:
 	/// <param name="type"></param>
 	void UseStamina(Type type);
 
-	//ツリー取得
+	/// <summary>
+	/// ツリーを取得
+	/// </summary>
+	/// <returns>ﾂﾘｰ</returns>
 	GlobalVariableTree& GetTree() { return tree_; }
-private:
+
+private://**プライベート変数**//
 	
 	//スタミナゲージ
 	std::unique_ptr<Sprite>gage_;
@@ -54,12 +67,10 @@ private:
 	//赤ゲージ
 	std::unique_ptr<Sprite>redGage_;
 
-private://パラメータ
+private://**パラメータ**//
 
 	//スタミナデータ
-	struct StaminaData {
-		
-		
+	struct StaminaData {	
 		//スタミナ関係
 		float maxStamina = 100;
 		float currentStamina = StaminaData::maxStamina;

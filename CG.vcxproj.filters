@@ -1,16 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <FxCompile Include="resources\shaders\Sprite\Sprite.PS.hlsl" />
-    <FxCompile Include="resources\shaders\Sprite\Sprite.VS.hlsl" />
-    <FxCompile Include="resources\shaders\Skybox\SkyBox.VS.hlsl" />
-    <FxCompile Include="resources\shaders\Skybox\SkyBox.PS.hlsl" />
-    <FxCompile Include="resources\shaders\PostEffect\Sepia.PS.hlsl" />
-    <FxCompile Include="resources\shaders\PostEffect\Vignetting.PS.hlsl" />
-    <FxCompile Include="resources\shaders\PostEffect\Smoothing.PS.hlsl" />
-    <FxCompile Include="resources\shaders\PostEffect\RadialBlur.PS.hlsl" />
-    <FxCompile Include="resources\shaders\PostEffect\Random.PS.hlsl" />
-    <FxCompile Include="resources\shaders\ComputeShader\Skinning.CS.hlsl" />
     <FxCompile Include="resources\shaders\PostEffect\Bloom.PS.hlsl">
       <Filter>resources\Shaders\PostEffect</Filter>
     </FxCompile>
@@ -68,34 +58,39 @@
     <FxCompile Include="resources\shaders\PostEffect\PickHighLuminance.PS.hlsl">
       <Filter>resources\Shaders\PostEffect</Filter>
     </FxCompile>
+    <FxCompile Include="resources\shaders\PostEffect\RadialBlur.PS.hlsl">
+      <Filter>resources\Shaders\PostEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\PostEffect\Random.PS.hlsl">
+      <Filter>resources\Shaders\PostEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\PostEffect\Sepia.PS.hlsl">
+      <Filter>resources\Shaders\PostEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\ComputeShader\Skinning.CS.hlsl">
+      <Filter>resources\Shaders\Skinning</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Skybox\SkyBox.PS.hlsl">
+      <Filter>resources\Shaders\SkyBox</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Skybox\SkyBox.VS.hlsl">
+      <Filter>resources\Shaders\SkyBox</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\PostEffect\Smoothing.PS.hlsl">
+      <Filter>resources\Shaders\PostEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Sprite\Sprite.PS.hlsl">
+      <Filter>resources\Shaders\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Sprite\Sprite.VS.hlsl">
+      <Filter>resources\Shaders\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\PostEffect\Vignetting.PS.hlsl">
+      <Filter>resources\Shaders\PostEffect</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Application\SceneManager\SceneManager.cpp" />
-    <ClCompile Include="Engine\Math\Vector2.cpp" />
-    <ClCompile Include="Engine\Math\Vector3.cpp" />
-    <ClCompile Include="Engine\Math\Quaternion.cpp" />
-    <ClCompile Include="Engine\RandomNum\RandomNum.cpp" />
-    <ClCompile Include="Engine\3d\Collider\SphereCollider\SphereCollider.cpp" />
-    <ClCompile Include="Engine\2d\Sprite\Sprite.cpp" />
-    <ClCompile Include="Engine\base\SRVManager\SRVManager.cpp" />
-    <ClCompile Include="Engine\base\TextureManager\TextureManager.cpp" />
-    <ClCompile Include="Engine\base\WinApp\WinApp.cpp" />
-    <ClCompile Include="Engine\3d\WorldTransform\WorldTransform.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Engine\Math\Vector4.cpp" />
-    <ClCompile Include="Application\Game\Scene\TitleScene.cpp" />
-    <ClCompile Include="Engine\2d\SpriteManager\SpriteManager.cpp" />
-    <ClCompile Include="Engine\2d\SpritePSO\SpritePSO.cpp" />
-    <ClCompile Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.cpp" />
-    <ClCompile Include="Engine\3d\SkyBoxModel\SkyBoxModel.cpp" />
-    <ClCompile Include="Engine\PostEffect\PostEffectManager\PostEffectManager.cpp" />
-    <ClCompile Include="Engine\base\RTVManager\RTVManager.cpp" />
-    <ClCompile Include="Engine\ComputeShaders\SkinningCS.cpp" />
-    <ClCompile Include="Engine\base\UAVManager\UAVManager.cpp" />
-    <ClCompile Include="Application\Game\Player\PlayerRoll\PlayerRoll.cpp" />
-    <ClCompile Include="Application\Game\Player\Behavior\ATKData\PlayerPunch.cpp" />
-    <ClCompile Include="Engine\PostEffect\SimplePostEffect\SimplePostEffect.cpp" />
-    <ClCompile Include="Application\Game\Player\Stamina\PlayerStamina.cpp" />
     <ClCompile Include="Engine\base\AudioManager\AudioManager.cpp">
       <Filter>Engine\base\AudioManager</Filter>
     </ClCompile>
@@ -261,9 +256,6 @@
     <ClCompile Include="Engine\MapLoader\MapLoader.cpp">
       <Filter>Engine\MapLoader</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Math\Matirx.cpp">
-      <Filter>Engine\base\Math</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Math\Matrix.cpp">
       <Filter>Engine\base\Math</Filter>
     </ClCompile>
@@ -294,48 +286,6 @@
     <ClCompile Include="Engine\ParticleData\Update\ParticleUpdateCS.cpp">
       <Filter>Engine\GPUParticle</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\PostEffect\PEs\PEBloom.cpp">
-      <Filter>Engine\PostEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\PostEffect\PEs\PEDepthBasedOutline.cpp">
-      <Filter>Engine\PostEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\PostEffect\PEs\PEDissolve.cpp">
-      <Filter>Engine\PostEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\PostEffect\PEs\PEGaussianFilter.cpp">
-      <Filter>Engine\PostEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\PostEffect\PEs\PEGrayScale.cpp">
-      <Filter>Engine\PostEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\PostEffect\PEs\PEHighLuminance.cpp">
-      <Filter>Engine\PostEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\PostEffect\PEs\PEHSVFilter.cpp">
-      <Filter>Engine\PostEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\PostEffect\PEs\PELightOutline.cpp">
-      <Filter>Engine\PostEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\PostEffect\PEs\PEOffScreen.cpp">
-      <Filter>Engine\PostEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\PostEffect\PEs\PERadialBlur.cpp">
-      <Filter>Engine\PostEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\PostEffect\PEs\PERandom.cpp">
-      <Filter>Engine\PostEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\PostEffect\PEs\PESepia.cpp">
-      <Filter>Engine\PostEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\PostEffect\PEs\PESmoothing.cpp">
-      <Filter>Engine\PostEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\PostEffect\PEs\PEVignetting.cpp">
-      <Filter>Engine\PostEffect</Filter>
-    </ClCompile>
     <ClCompile Include="Application\Game\Plane\Plane.cpp">
       <Filter>Application\Game\Plane</Filter>
     </ClCompile>
@@ -357,35 +307,122 @@
     <ClCompile Include="Application\Game\Player\Idle\PlayerIdle.cpp">
       <Filter>Application\Game\Player\Behavior\Idle</Filter>
     </ClCompile>
+    <ClCompile Include="Application\Game\Player\Behavior\ATKData\PlayerPunch.cpp">
+      <Filter>Application\Game\Player\Behavior\ATKManager\ATKs\Punch</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Player\PlayerRoll\PlayerRoll.cpp">
+      <Filter>Application\Game\Player\Behavior\Roll</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Player\Stamina\PlayerStamina.cpp">
+      <Filter>Application\Game\Player\Stamina</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PostEffect\PEs\PEBloom.cpp">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PostEffect\PEs\PEDepthBasedOutline.cpp">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PostEffect\PEs\PEDissolve.cpp">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PostEffect\PEs\PEGaussianFilter.cpp">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PostEffect\PEs\PEGrayScale.cpp">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PostEffect\PEs\PEHighLuminance.cpp">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PostEffect\PEs\PEHSVFilter.cpp">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PostEffect\PEs\PELightOutline.cpp">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PostEffect\PEs\PEOffScreen.cpp">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PostEffect\PEs\PERadialBlur.cpp">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PostEffect\PEs\PERandom.cpp">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PostEffect\PEs\PESepia.cpp">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PostEffect\PEs\PESmoothing.cpp">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PostEffect\PEs\PEVignetting.cpp">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PostEffect\PostEffectManager\PostEffectManager.cpp">
+      <Filter>Engine\PostEffect\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Math\Quaternion.cpp">
+      <Filter>Engine\base\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\RandomNum\RandomNum.cpp">
+      <Filter>Engine\RandomNumber</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\base\RTVManager\RTVManager.cpp">
+      <Filter>Engine\base\RTVManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\SceneManager\SceneManager.cpp">
+      <Filter>Application\SceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\ComputeShaders\SkinningCS.cpp">
+      <Filter>Engine\3D\Skinning</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3d\SkyBoxModel\SkyBoxModel.cpp">
+      <Filter>Engine\3D\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.cpp">
+      <Filter>Engine\3D\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3d\Collider\SphereCollider\SphereCollider.cpp">
+      <Filter>Engine\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\2d\SpriteManager\SpriteManager.cpp">
+      <Filter>Engine\2D\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\2d\Sprite\Sprite.cpp">
+      <Filter>Engine\2D\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\2d\SpritePSO\SpritePSO.cpp">
+      <Filter>Engine\2D\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\base\SRVManager\SRVManager.cpp">
+      <Filter>Engine\base\SRVManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\base\TextureManager\TextureManager.cpp">
+      <Filter>Engine\base\TextureManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Scene\TitleScene.cpp">
+      <Filter>Application\Game\Scenes\TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\base\UAVManager\UAVManager.cpp">
+      <Filter>Engine\base\UAVManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Math\Vector2.cpp">
+      <Filter>Engine\base\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Math\Vector3.cpp">
+      <Filter>Engine\base\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Math\Vector4.cpp">
+      <Filter>Engine\base\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3d\WorldTransform\WorldTransform.cpp">
+      <Filter>Engine\WorldTransform</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\base\WinApp\WinApp.cpp">
+      <Filter>Engine\base\WinApp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application\SceneManager\SceneManager.h" />
-    <ClInclude Include="Engine\base\AudioManager\SoundData.h" />
-    <ClInclude Include="Engine\Math\Vector2.h" />
-    <ClInclude Include="Engine\Math\Vector3.h" />
-    <ClInclude Include="Engine\Math\Vector4.h" />
-    <ClInclude Include="Engine\Math\Quaternion.h" />
-    <ClInclude Include="Engine\RandomNum\RandomNum.h" />
-    <ClInclude Include="Engine\3d\Collider\SphereCollider\SphereCollider.h" />
-    <ClInclude Include="Engine\2d\Sprite\Sprite.h" />
-    <ClInclude Include="Engine\base\SRVManager\SRVManager.h" />
-    <ClInclude Include="Engine\base\TextureManager\TextureManager.h" />
-    <ClInclude Include="Engine\base\WinApp\WinApp.h" />
-    <ClInclude Include="Engine\3d\WorldTransform\WorldTransform.h" />
-    <ClInclude Include="Application\Game\Scene\TitleScene.h" />
-    <ClInclude Include="Engine\2d\SpriteManager\SpriteManager.h" />
-    <ClInclude Include="Engine\2d\SpritePSO\SpritePSO.h" />
-    <ClInclude Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.h" />
-    <ClInclude Include="Engine\3d\SkyBoxModel\SkyBoxModel.h" />
-    <ClInclude Include="Engine\PostEffect\PostEffectManager\PostEffectManager.h" />
-    <ClInclude Include="Engine\base\RTVManager\RTVManager.h" />
-    <ClInclude Include="Engine\ComputeShaders\SkinningCS.h" />
-    <ClInclude Include="Engine\base\UAVManager\UAVManager.h" />
-    <ClInclude Include="Application\Game\Player\PlayerRoll\PlayerRoll.h" />
-    <ClInclude Include="Application\Game\Player\Behavior\ATKData\PlayerPunch.h" />
-    <ClInclude Include="Engine\PostEffect\SimplePostEffect\SimpleSostEffect.h" />
-    <ClInclude Include="Application\Game\Player\Behavior\IDLE\PlayerIdle.h" />
-    <ClInclude Include="Application\Game\Player\Stamina\PlayerStamina.h" />
     <ClInclude Include="Engine\base\AudioManager\AudioManager.h">
       <Filter>Engine\base\AudioManager</Filter>
     </ClInclude>
@@ -602,48 +639,6 @@
     <ClInclude Include="Engine\ParticleData\ParticlePSO\ParticlePSO.h">
       <Filter>Engine\GPUParticle</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\PostEffect\PEs\PEBloom.h">
-      <Filter>Engine\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\PostEffect\PEs\PEDepthBasedOutline.h">
-      <Filter>Engine\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\PostEffect\PEs\PEDissolve.h">
-      <Filter>Engine\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\PostEffect\PEs\PEGaussianFilter.h">
-      <Filter>Engine\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\PostEffect\PEs\PEGrayScale.h">
-      <Filter>Engine\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\PostEffect\PEs\PEHighLuminance.h">
-      <Filter>Engine\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\PostEffect\PEs\PEHSVFilter.h">
-      <Filter>Engine\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\PostEffect\PEs\PELightOutline.h">
-      <Filter>Engine\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\PostEffect\PEs\PEOffScreen.h">
-      <Filter>Engine\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\PostEffect\PEs\PERadialBlur.h">
-      <Filter>Engine\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\PostEffect\PEs\PERandom.h">
-      <Filter>Engine\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\PostEffect\PEs\PESepia.h">
-      <Filter>Engine\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\PostEffect\PEs\PESmoothing.h">
-      <Filter>Engine\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\PostEffect\PEs\PEVignetting.h">
-      <Filter>Engine\PostEffect</Filter>
-    </ClInclude>
     <ClInclude Include="Application\Game\Plane\Plane.h">
       <Filter>Application\Game\Plane</Filter>
     </ClInclude>
@@ -665,12 +660,122 @@
     <ClInclude Include="Application\Game\Player\Idle\PlayerIdle.h">
       <Filter>Application\Game\Player\Behavior\Idle</Filter>
     </ClInclude>
+    <ClInclude Include="Application\Game\Player\Behavior\ATKData\PlayerPunch.h">
+      <Filter>Application\Game\Player\Behavior\ATKManager\ATKs\Punch</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Player\PlayerRoll\PlayerRoll.h">
+      <Filter>Application\Game\Player\Behavior\Roll</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Player\Stamina\PlayerStamina.h">
+      <Filter>Application\Game\Player\Stamina</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PostEffect\PEs\PEBloom.h">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PostEffect\PEs\PEDepthBasedOutline.h">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PostEffect\PEs\PEDissolve.h">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PostEffect\PEs\PEGaussianFilter.h">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PostEffect\PEs\PEGrayScale.h">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PostEffect\PEs\PEHighLuminance.h">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PostEffect\PEs\PEHSVFilter.h">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PostEffect\PEs\PELightOutline.h">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PostEffect\PEs\PEOffScreen.h">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PostEffect\PEs\PERadialBlur.h">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PostEffect\PEs\PERandom.h">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PostEffect\PEs\PESepia.h">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PostEffect\PEs\PESmoothing.h">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PostEffect\PEs\PEVignetting.h">
+      <Filter>Engine\PostEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PostEffect\PostEffectManager\PostEffectManager.h">
+      <Filter>Engine\PostEffect\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Math\Quaternion.h">
+      <Filter>Engine\base\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\RandomNum\RandomNum.h">
+      <Filter>Engine\RandomNumber</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\base\RTVManager\RTVManager.h">
+      <Filter>Engine\base\RTVManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\SceneManager\SceneManager.h">
+      <Filter>Application\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ComputeShaders\SkinningCS.h">
+      <Filter>Engine\3D\Skinning</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.h">
+      <Filter>Engine\3D\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3d\SkyBoxModel\SkyBoxModel.h">
+      <Filter>Engine\3D\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3d\Collider\SphereCollider\SphereCollider.h">
+      <Filter>Engine\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\2d\SpriteManager\SpriteManager.h">
+      <Filter>Engine\2D\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\2d\Sprite\Sprite.h">
+      <Filter>Engine\2D\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\2d\SpritePSO\SpritePSO.h">
+      <Filter>Engine\2D\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\base\SRVManager\SRVManager.h">
+      <Filter>Engine\base\SRVManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\base\TextureManager\TextureManager.h">
+      <Filter>Engine\base\TextureManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Scene\TitleScene.h">
+      <Filter>Application\Game\Scenes\TitleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\base\UAVManager\UAVManager.h">
+      <Filter>Engine\base\UAVManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Math\Vector2.h">
+      <Filter>Engine\base\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Math\Vector3.h">
+      <Filter>Engine\base\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Math\Vector4.h">
+      <Filter>Engine\base\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3d\WorldTransform\WorldTransform.h">
+      <Filter>Engine\WorldTransform</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\base\WinApp\WinApp.h">
+      <Filter>Engine\base\WinApp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\GlobalVariables\StageWall.json" />
-    <None Include="resources\jsonfile\resourcePath.json" />
-    <None Include="resources\shaders\Sprite\Sprite.hlsli" />
-    <None Include="resources\shaders\Skybox\SkyBox.hlsli" />
     <None Include="resources\shaders\PostEffect\CopyImage.hlsli">
       <Filter>resources\Shaders\PostEffect</Filter>
     </None>
@@ -685,6 +790,18 @@
     </None>
     <None Include="resources\shaders\Particles\Particle.hlsli">
       <Filter>resources\Shaders\Particle</Filter>
+    </None>
+    <None Include="resources\jsonfile\resourcePath.json">
+      <Filter>resources\json</Filter>
+    </None>
+    <None Include="resources\shaders\Skybox\SkyBox.hlsli">
+      <Filter>resources\Shaders\SkyBox</Filter>
+    </None>
+    <None Include="resources\shaders\Sprite\Sprite.hlsli">
+      <Filter>resources\Shaders\Sprite</Filter>
+    </None>
+    <None Include="resources\GlobalVariables\StageWall.json">
+      <Filter>resources\json</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -915,6 +1032,75 @@
     </Filter>
     <Filter Include="Application\Game\Player\Behavior\Idle">
       <UniqueIdentifier>{d4be481f-99e1-43c6-a1a4-8a5d052dba6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Game\Player\Behavior\ATKManager\ATKs">
+      <UniqueIdentifier>{025e2e4d-ba9c-464a-a2d3-ddd319ffcca4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Game\Player\Behavior\ATKManager\ATKs\Punch">
+      <UniqueIdentifier>{60a5ed0d-094c-4044-a468-6f98b2b7e488}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Game\Player\Behavior\Roll">
+      <UniqueIdentifier>{d321cbb4-1bc3-4dbf-8bc4-c15a0ee1da08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Game\Player\Stamina">
+      <UniqueIdentifier>{74a40c70-0bc0-4bdc-ae9c-fa88aec7f26c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\PostEffect\Manager">
+      <UniqueIdentifier>{6af60d5e-b43f-4529-b046-3b6c33e7bdd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\PostEffect\Effects">
+      <UniqueIdentifier>{64af0eab-ca37-488c-a53a-27ae94c7c8fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\RandomNumber">
+      <UniqueIdentifier>{1c85db12-9bc2-4cac-89cc-3bf42974084c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\base\RTVManager">
+      <UniqueIdentifier>{8685f464-cc2b-4f5b-8f2f-5e4936b92aa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\SceneManager">
+      <UniqueIdentifier>{21fe5b5b-17df-4e36-9a8a-3cea4a04e279}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\Shaders\Skinning">
+      <UniqueIdentifier>{18ef8bf8-cb1d-45cc-88b1-96d6ab64473d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\Shaders\SkyBox">
+      <UniqueIdentifier>{13fe56a5-8b73-4ef1-973b-9acc27284839}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\3D\Skinning">
+      <UniqueIdentifier>{0ea7ca29-9ce6-4ee1-9e98-78e5de6715bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\3D\SkyBox">
+      <UniqueIdentifier>{22b671c7-4b5e-4ef4-9b66-5600800d6177}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\2D">
+      <UniqueIdentifier>{0b45fa50-e5d8-417c-9e88-d0db50f57c69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\Shaders\Sprite">
+      <UniqueIdentifier>{e8118c9d-499b-4cbe-9af4-4fdb36035497}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\2D\Manager">
+      <UniqueIdentifier>{374c248a-283f-45a9-8101-6b6a3fb14bc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\2D\Sprite">
+      <UniqueIdentifier>{9477e0c2-f9ab-486a-b5ac-ec9caf4f991d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\base\SRVManager">
+      <UniqueIdentifier>{a935f2e9-46ab-4997-b1f9-27dba3b2c3ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\base\TextureManager">
+      <UniqueIdentifier>{ce58f707-4d33-47c6-be6b-f82813788b9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Game\Scenes\TitleScene">
+      <UniqueIdentifier>{d7038d31-9726-456d-8335-5750ad89334e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\base\UAVManager">
+      <UniqueIdentifier>{88802832-125c-4560-9abe-eb5ee6f77115}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\WorldTransform">
+      <UniqueIdentifier>{f2127253-d5a2-4c3b-a268-dea2d017cd89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\base\WinApp">
+      <UniqueIdentifier>{e3c675cb-4303-4981-9851-02c2165145aa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

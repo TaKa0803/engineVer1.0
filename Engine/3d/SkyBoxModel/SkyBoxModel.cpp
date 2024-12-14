@@ -4,15 +4,18 @@
 
 SkyBoxModel::SkyBoxModel(const std::string& texPath)
 {
+	//DXFインスタンス取得
 	DXF_ = DirectXFunc::GetInstance();
 
+	//パイプライン初期化
 	pso_ = new SkyBoxPSO();
 	pso_->Initialize();
 
+	//画像読み込み
 	texture_ = TextureManager::GetInstance()->LoadTex(texPath).gpuHandle;
 
+	//頂点リソース作成
 	vertexResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(VertexData) * 8);
-	
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * 8);
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
@@ -122,6 +125,8 @@ SkyBoxModel::SkyBoxModel(const std::string& texPath)
 
 SkyBoxModel::~SkyBoxModel()
 {
+
+	//解放処理
 	delete pso_;
 	pso_ = nullptr;
 	vertexResource_->Release();
@@ -132,25 +137,29 @@ SkyBoxModel::~SkyBoxModel()
 
 void SkyBoxModel::Initialize()
 {
+	//ワールド初期化
 	world_.Initialize();
-
 }
 
 void SkyBoxModel::Update()
 {
+	//ワールド更新
 	world_.UpdateMatrix();
 }
 
 void SkyBoxModel::Draw()
 {
+	//カメラインスタンス取得
 	Camera* camera = Camera::GetInstance();
 
+	//PSO処理
 	pso_->PreDraw();
 
+	//WVPを求める
 	Matrix4x4 WVP = world_.matWorld_ * camera->GetViewProjectionMatrix();
-
 	wvpData_->WVP = WVP;
 
+	//バッファ設定
 	DXF_->GetCMDList()->IASetVertexBuffers(0,1,&vertexBufferView_);
 	DXF_->GetCMDList()->IASetIndexBuffer(&indexBufferView_);
 	//wvp

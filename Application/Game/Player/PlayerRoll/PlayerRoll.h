@@ -7,26 +7,16 @@
 //前方宣言
 class Player;
 
+//プレイヤー回避行動
 class PlayerRoll :public PlayerBaseBehavior{
 
-public:
-	//コンストラクタ
-	PlayerRoll(Player* player);
-	~PlayerRoll() = default;
+public://**パブリック変数**//
 
-	//初期化
-	void Initialize()override;
-
-	//更新
-	void Update()override;
-
-
-public:
 	//データ
 	struct Data {
 
 		//移動速度
-		float spd=40.0f;
+		float spd = 40.0f;
 
 		//止まるまでの時間
 		float stopSec = 0.5f;
@@ -35,14 +25,31 @@ public:
 		float currentStop = 0;
 
 		//移動するする秒数
-		float rollSec=1.0f;
+		float rollSec = 1.0f;
 		//移動時間時間カウント
 		float currentRoll = 0;
-	};
+	}data_{};
 
-	//パラメータ群
-	Data data_{};
-private:
+public://**パブリック関数**//
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="player">プレイヤーポインタ</param>
+	PlayerRoll(Player* player);
+	~PlayerRoll() = default;
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Initialize()override;
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update()override;
+
+private://**プライベート変数**//
 
 	//入力
 	Input* inp_;

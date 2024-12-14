@@ -4,7 +4,6 @@
 #include<wrl.h>
 #include<xaudio2.h>
 #include<vector>
-#include"AudioManager/SoundData.h"
 
 
 //音声データ

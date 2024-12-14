@@ -13,15 +13,17 @@ DirectX::ScratchImage LoadTexture(const std::string& filePath) {
 	
 	HRESULT hr;
 	if (filePathW.ends_with(L".dds")) {
+		//ddsファイルの場合特別処理
 		hr = DirectX::LoadFromDDSFile(filePathW.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
 	}
 	else {
+		//それ以外はこっち
 		hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
 	}
 	assert(SUCCEEDED(hr));
 	
 
-	/**/
+	//ミップイメージ作成
 	DirectX::ScratchImage mipImages{};
 	if (DirectX::IsCompressed(image.GetMetadata().format)) {//圧縮フォーマットなのか調べる
 		mipImages = std::move(image);//圧縮じょーまっとならそのまま使うのでmoveする
@@ -30,11 +32,9 @@ DirectX::ScratchImage LoadTexture(const std::string& filePath) {
 		hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
 	}
 	assert(SUCCEEDED(hr));
-	
 
 	//みっぷマップ月のデータを返す
 	return mipImages;
-
 }
 
 ID3D12Resource* CreateTextureResource(ID3D12Device* device, const DirectX::TexMetadata& metadata) {
@@ -75,13 +75,13 @@ ID3D12Resource* CreateTextureResource(ID3D12Device* device, const DirectX::TexMe
 [[nodiscard]]
 ID3D12Resource* UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages,
 	ID3D12Device* device, ID3D12GraphicsCommandList* commandList) {
-
+	//
 	std::vector<D3D12_SUBRESOURCE_DATA> subresources;
 	DirectX::PrepareUpload(device, mipImages.GetImages(), mipImages.GetImageCount(), mipImages.GetMetadata(), subresources);
 	uint64_t intermediateSize = GetRequiredIntermediateSize(texture, 0, UINT(subresources.size()));
 	ID3D12Resource* intermediateResource = CreateBufferResource(device, intermediateSize);
 	UpdateSubresources(commandList, texture, intermediateResource, 0, 0, UINT(subresources.size()), subresources.data());
-	//
+	//バリア設定
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
@@ -97,6 +97,7 @@ ID3D12Resource* UploadTextureData(ID3D12Resource* texture, const DirectX::Scratc
 
 #pragma endregion
 
+//画像番号の初期化
 int TextureManager::uvChecker_ = -1;
 
 int TextureManager::white_ = -1;
@@ -104,40 +105,35 @@ int TextureManager::white_ = -1;
 #pragma region インスタンスと初期化
 TextureManager* TextureManager::GetInstance()
 {
+	//インスタンス取得
 	static TextureManager instance;
 	return &instance;
 }
 void TextureManager::Initialize(DirectXFunc* DXF_)
 {	
+	//DXFポインタ取得
 	DXF = DXF_;
 
+	//仮画像読み込み
 	uvChecker_ = TextureManager::LoadTex(uvCheckerTex).texNum;
 
 	white_ = TextureManager::LoadTex("resources/Texture/SystemResources/white.png").texNum;
 
+	//ログ出力
 	Log("Complete TextureManager Initialize\n");
 
 }
 
 void TextureManager::Finalize() {
-	tagNumDatas_.clear();
 
+	//データをクリアする
+	tagNumDatas_.clear();
 	texDatas_.clear();
 }
-
-
 #pragma endregion
-
-
-
-
-
-
 
 ReturnData TextureManager::LoadTex(const std::string& filePath)
 {
-	
-
 	//パスがすでに呼ばれているかチェック
 	if (!TextureManager::GetInstance()->CheckSameData(filePath)) {
 		//呼ばれていない場合
@@ -180,8 +176,10 @@ ReturnData TextureManager::LoadTexShortPath(const std::string& filePath)
 
 ReturnData TextureManager::CreateData(const std::string& filePath,const DirectX::ScratchImage& mipImages) {
 
+	//SRVマネージャん取得
 	SRVManager* SRVM = SRVManager::GetInstance();
 
+	//データ作成
 	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
 	ID3D12Resource* textureResource = CreateTextureResource(DXF->GetDevice(), metadata);
 	ID3D12Resource* intermediateResource = UploadTextureData(textureResource, mipImages, DXF->GetDevice(), DXF->GetCMDList());
@@ -218,13 +216,8 @@ ReturnData TextureManager::CreateData(const std::string& filePath,const DirectX:
 }
 
 bool TextureManager::CheckSameData(const std::string& filepath) {
-	//同じデータか確認
-	/*for (auto& data : datas_) {
-		if (data->filePath == filepath) {
-			return true;
-		}
-	}*/
 
+	//データを探索
 	auto it = tagNumDatas_.find(filepath);
 
 	if (it != tagNumDatas_.end()) {
@@ -235,13 +228,12 @@ bool TextureManager::CheckSameData(const std::string& filepath) {
 		//無ければ
 		return false;
 	}
-
-
 }
 
 ReturnData TextureManager::GetDataFromPath(const std::string& path) {
-	auto it = tagNumDatas_.find(path);
 
+	//データを探索
+	auto it = tagNumDatas_.find(path);
 	if (it != tagNumDatas_.end()) {
 		//見つかった場合
 		return tagNumDatas_[path];

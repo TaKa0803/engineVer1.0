@@ -8,13 +8,21 @@
 #include"struct.h"
 #include"DirectXFunc/DirectXFunc.h"
 
-
+//スカイボックスのパイプライン
 class SkyBoxPSO {
 
-public:
+public://**パブリック関数**//
+
 	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	SkyBoxPSO();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~SkyBoxPSO();
 
 	/// <summary>
@@ -28,12 +36,9 @@ public:
 	/// <param name="commandList">コマンドリスト</param>
 	void PreDraw();
 
+private://**プライベート変数**//
 
-private:
-
-
-private:
-
+	//DirectXFuncのポインタ
 	DirectXFunc* DXF_;
 
 	//ルートシグネチャ
@@ -41,6 +46,4 @@ private:
 
 	//グラフィックパイプライン
 	ID3D12PipelineState* graphicsPipelineState_ =  nullptr ;
-
-	bool isInitialize_ = false;
 };

@@ -6,14 +6,14 @@
 PlayerStamina::PlayerStamina()
 {
 
+	//ゲージスプライト生成
 	gage_.reset(Sprite::Create(TextureManager::white_, { 1,1 }, { 1,1 }, { 64,64 }, { 640,360 }, { 0.0f,0.5f }));
+	//赤ゲージスプライト再生
 	redGage_.reset(Sprite::Create(TextureManager::white_, { 1,1 }, { 1,1 }, { 64,64 }, { 640,360 }, { 0.0f,0.5f }));
 
-
-
+	//デバッグ用にパラメータをツリーに登録
 	tree_.SetMonitorValue("現スタミナ", &data_.currentStamina);
 	tree_.SetMonitorValue("回復開始カウント", &data_.currentCharge);
-
 	tree_.SetValue("最大スタミナ", &data_.maxStamina);
 	tree_.SetValue("回復開始までの時間", &data_.rechargeSec);
 	tree_.SetValue("一秒間の回復量", &data_.healSec);
@@ -32,7 +32,9 @@ PlayerStamina::PlayerStamina()
 
 void PlayerStamina::Initialize()
 {
+	//スタミナを再設定
 	data_.currentStamina = data_.maxStamina;
+	//カウント初期化
 	data_.currentCharge = 0;
 }
 
@@ -47,7 +49,7 @@ void PlayerStamina::Update()
 
 		//回復処理
 		data_.currentStamina += data_.healSec * (float)DeltaTimer::deltaTime_;
-		//オーバーヒール処理
+		//オーバーヒール対策処理
 		if (data_.currentStamina > data_.maxStamina) {
 			data_.currentStamina = data_.maxStamina;
 		}
@@ -57,13 +59,16 @@ void PlayerStamina::Update()
 	//割合取得
 	float staminaT = data_.currentStamina / data_.maxStamina;
 	float scale = Lerp(0, maxScaleX_, staminaT);
+	//サイズを再設定
 	Vector3 scaleVec3 = gage_->GetScale();
 	scaleVec3.x = scale;
 	gage_->SetScale(scaleVec3);
+	//色を割合で変更
 	gage_->SetMaterialDataColor(Lerp(minColor_, maxColor_, staminaT));
 
 	//赤ゲージの進行処理
 	if (isRedgage_) {
+		//カウントゲージ以上で描画しない
 		if (currentRedGage_ >= fadeOutRedGageSec_) {
 			isRedgage_ = false;
 		}
@@ -94,6 +99,7 @@ void PlayerStamina::Update()
 			gage_->SetPosition(basePos_);
 		}
 		else {
+			//カウント進行わ
 			currentShake_ += (float)DeltaTimer::deltaTime_;
 
 			//左右のずれ取得
@@ -110,10 +116,12 @@ void PlayerStamina::Update()
 
 void PlayerStamina::DrawGage()
 {
+	//赤ゲージはフラグ有効時描画
 	if (isRedgage_) {
 		redGage_->Draw();
 	}
 
+	//ゲージ描画
 	gage_->Draw();
 }
 
@@ -123,7 +131,6 @@ bool PlayerStamina::CheckStamina(Type type)
 	switch (type)
 	{
 	case PlayerStamina::Type::DASH://ダッシュ処理
-
 		//スタミナが足りる場合
 		if (data_.currentStamina >= data_.dashCostSec * (float)DeltaTimer::deltaTime_) {
 			//可能だと返却
@@ -180,8 +187,7 @@ bool PlayerStamina::CheckStamina(Type type)
 void PlayerStamina::UseStamina(Type type)
 {
 
-	preT_ = data_.currentStamina / data_.maxStamina;;
-
+	//タイプごとに分かれて処理
 	switch (type)
 	{
 	case PlayerStamina::Type::DASH:
@@ -212,10 +218,10 @@ void PlayerStamina::UseStamina(Type type)
 	//スタミナの回復開始のカウントをリセット
 	data_.currentCharge = 0;
 
+	//赤ゲージを表示
 	isRedgage_ = true;
+	//カウントリセット
 	currentRedGage_ = 0;
-	nowT_ = data_.currentStamina / data_.maxStamina;
-
 
 }
 

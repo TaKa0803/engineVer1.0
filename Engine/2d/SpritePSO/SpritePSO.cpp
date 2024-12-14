@@ -12,16 +12,11 @@ SpritePSO::SpritePSO()
 
 SpritePSO::~SpritePSO()
 {
-	//rootSignature_->Release();
-	//for (auto& pso : psoState_) {
-	//	pso->Release();
-	//	pso = nullptr;
-	//}
 }
 
 void SpritePSO::Initialize()
 {
-
+	//DXFインスタンス取得
 	DXF_ = DirectXFunc::GetInstance();
 
 #pragma region RootSignatureを生成する
@@ -255,6 +250,7 @@ void SpritePSO::Initialize()
 #pragma endregion
 		}
 	
+	//ログ出力
 	Log("Complete SpritePSO Initialized!\n");
 }
 

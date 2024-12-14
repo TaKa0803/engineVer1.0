@@ -3,6 +3,7 @@
 #include<imgui.h>
 
 void EulerWorldTransform::Initialize() {
+	//すべての値を初期値に
 	translate_ = { 0.0f,0.0f,0.0f };
 	rotate_ = { 0.0f,0.0f,0.0f };
 	scale_ = { 1.0f,1.0f,1.0f };
@@ -12,8 +13,9 @@ void EulerWorldTransform::Initialize() {
 }
 
 Matrix4x4 EulerWorldTransform::UpdateMatrix() {
+	//行列を更新
 	matWorld_ = MakeAffineMatrix(scale_, rotate_, translate_);
-
+	//親がいる場合親の行列を含める
 	if (parent_) {
 		matWorld_ = matWorld_* parent_->matWorld_;
 	}
@@ -25,6 +27,7 @@ Matrix4x4 EulerWorldTransform::UpdateMatrix() {
 
 GlobalVariableTree& EulerWorldTransform::GetDebugTree(const std::string& name)
 {
+	//デバッグ用にパラメータをツリーに入れる
 	tree_.name_=name;
 
 	tree_.SetValue("座標", &translate_);
@@ -36,6 +39,7 @@ GlobalVariableTree& EulerWorldTransform::GetDebugTree(const std::string& name)
 
 GlobalVariableTree& EulerWorldTransform::GetDebugMonitorTree(const std::string& name)
 {
+	//モニターするパラメータをツリーに追加
 	tree_.name_=name;
 
 	tree_.SetMonitorValue("座標", &translate_);

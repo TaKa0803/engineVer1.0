@@ -9,25 +9,18 @@ SkyBoxPSO::SkyBoxPSO()
 
 SkyBoxPSO::~SkyBoxPSO()
 {
+	//解放処理
 	rootSignature->Release();
 	rootSignature = nullptr;
 
 	graphicsPipelineState_->Release();
 	graphicsPipelineState_ = nullptr;
-
-
 }
 
 void SkyBoxPSO::Initialize()
 {
-	if (isInitialize_) {
-		return;
-	}
-	else {
-		isInitialize_ = true;
-		DXF_ = DirectXFunc::GetInstance();
-	}
-
+	//DXFのインスタンス取得
+	DXF_ = DirectXFunc::GetInstance();
 #pragma region RootSignatureを生成する
 
 	//RootSignatureの作成
@@ -48,10 +41,6 @@ void SkyBoxPSO::Initialize()
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;	//PixelShaderで使う
 	rootParameters[1].Descriptor.ShaderRegister = 0;						//レジスタ番号０とバインド
 
-
-
-#pragma region 
-#pragma endregion
 
 #pragma region PixelShaderで使う画像用 ディスクリプタレンジとテーブル
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
@@ -118,17 +107,14 @@ void SkyBoxPSO::Initialize()
 	inputElementDescs[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	inputElementDescs[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
-
-
-
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
 	inputLayoutDesc.NumElements = _countof(inputElementDescs);
 #pragma endregion
 #pragma region ShaderをCompileする
 
+	//DXCのインスタンス取得
 	DXCManager* DXC = DXCManager::GetInstance();
-
 	//Shaderをコンパイルする
 	IDxcBlob* vertexShaderBlob = CompileShader(L"resources/shaders/Skybox/SkyBox.VS.hlsl", L"vs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
 	assert(vertexShaderBlob != nullptr);
@@ -154,9 +140,6 @@ void SkyBoxPSO::Initialize()
 
 	//ブレンドなし
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-
-
-
 #pragma endregion
 #pragma region RasterizeStateの設定を行う
 	//RasterizerState
@@ -165,8 +148,6 @@ void SkyBoxPSO::Initialize()
 	rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
 
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
-
-
 #pragma endregion
 #pragma region PSOを生成
 	//psoDesc
@@ -198,7 +179,7 @@ void SkyBoxPSO::Initialize()
 #pragma endregion
 #pragma endregion
 
-
+	//ログ出力
 	Log("Complete Model GraphicsSystem Initialize\n");
 }
 

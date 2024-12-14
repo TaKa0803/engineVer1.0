@@ -4,21 +4,26 @@
 #include"Math/Vector3.h"
 #include"struct.h"
 
+//乱数取得クラス
 class RandomNumber {
 
 public://シングルトンパターン
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns>インスタンス</returns>
 	static RandomNumber* GetInstance();
-
 private://シングルトンパターン
-
 	RandomNumber() = default;
 	~RandomNumber() = default;
 	RandomNumber(const RandomNumber& o) = delete;
 	const RandomNumber& operator=(const RandomNumber& o) = delete;
 
-public:
+public:	//**パブリック関数**//
 
-	//エンジンで呼び出しているのでほかで使う必要なし
+	/// <summary>
+	/// エンジン側での初期化
+	/// </summary>
 	void RandomNumberProcessInitialize();
 
 	/// <summary>
@@ -53,17 +58,27 @@ public:
 	static Vector4 Get(const Vector4& minNum, const Vector4& maxNum);
 
 
-private:
+private: //**プライベート関数**//
+
 	/// <summary>
 	/// randomEngine取得
 	/// </summary>
 	/// <returns></returns>
 	std::mt19937_64& GetrandEngine() { return randomEngine_; }
 
+	/// <summary>
+	/// 乱数取得
+	/// </summary>
+	/// <param name="min"></param>
+	/// <param name="max"></param>
+	/// <returns></returns>
 	float GetRandomNum(const float min, const float max);
 
-	std::mt19937_64 randomEngine_;
+private://**プライベート変数**//
 
+	//乱数エンジン
+	std::mt19937_64 randomEngine_;
+	//乱数獲得処理
 	std::uniform_real_distribution<float>distribution(float x, float y);
 	
 };

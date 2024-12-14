@@ -14,7 +14,7 @@ PlayerRoll::PlayerRoll(Player* player)
 	//カメラのインスタンス取得
 	camera_ = Camera::GetInstance();
 
-	//ツリーにデバッグ値を追加
+	//デバッグ用にパラメータをツリーに追加
 	tree_.name_ = "roll";
 	tree_.SetValue("速度", &data_.spd);
 	tree_.SetValue("ロール時間", &data_.rollSec);
@@ -66,7 +66,6 @@ void PlayerRoll::Update()
 	//もし指定量以上移動したら減速
 	if (data_.currentRoll >= data_.rollSec) {
 
-
 		//カウント量で段々速度低下
 		Vector3 ve = Lerp(player_->data_.velo_, { 0,0,0 }, data_.currentStop);
 		player_->data_.velo_ = ve;
@@ -95,6 +94,7 @@ void PlayerRoll::Update()
 	else {
 		//アニメーション進行
 		float t = data_.currentRoll / data_.rollSec;
+		//アニメーション再生をTで管理
 		player_->SetAnimeTime(true,t);
 	}
 }
