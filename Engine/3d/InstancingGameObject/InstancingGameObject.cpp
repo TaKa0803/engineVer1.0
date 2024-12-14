@@ -42,6 +42,7 @@ void InstancingGameObject::Draw()
 
 void InstancingGameObject::Debug(const char* name)
 {
+	name;
 #ifdef _DEBUG
 	//デバッグUI表示
 	if (ImGui::BeginMenu(name)) {

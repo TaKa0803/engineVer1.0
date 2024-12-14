@@ -18,7 +18,7 @@ const char** CreateCStringArray(const std::vector<std::string>& strings) {
 
 //アイテムのImGui表記
 void ItemImGui(const std::string name, std::variant<bool*,int32_t*, float*,Vector2*, Vector3*, Vector4*> value) {
-
+	value;
 #ifdef _DEBUG
 	//各アイテムをImGuiで操作
 
@@ -55,6 +55,7 @@ void ItemImGui(const std::string name, std::variant<bool*,int32_t*, float*,Vecto
 //モニター値に設定された物の操作
 void MonitorItemImGui(const std::string name, MonitorItemData&data) {
 
+	name; data;
 #ifdef _DEBUG
 
 	//値を参照

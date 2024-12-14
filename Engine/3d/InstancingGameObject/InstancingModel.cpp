@@ -278,7 +278,7 @@ void InstancingModel::Draw(int texture) {
 void InstancingModel::Debug(const char* name)
 {
 	//デバッグ用UI表示
-
+	name;
 #ifdef _DEBUG
 	bool uselight = materialData_->enableLighting;
 	bool useHalfLam = materialData_->enableHalfLambert;
