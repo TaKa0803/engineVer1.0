@@ -1,6 +1,7 @@
 #include "EffectNormal.h"
 #include"DeltaTimer/DeltaTimer.h"
 #include"RandomNum/RandomNum.h"
+#include"GlobalVariable/Group/GlobalVariableGroup.h"
 #include<cassert>
 
 EffectNormal::EffectNormal(const std::string& tag,const std::string& name)

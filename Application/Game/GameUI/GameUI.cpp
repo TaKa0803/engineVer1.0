@@ -1,6 +1,6 @@
 #include "GameUI.h"
 #include"TextureManager/TextureManager.h" 
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Group/GlobalVariableGroup.h"
 
 GameUI::GameUI()
 {

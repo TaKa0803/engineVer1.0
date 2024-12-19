@@ -1,5 +1,5 @@
 #pragma once
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Tree/GlobalVariableTree.h"
 #include<optional>
 
 //ボスの前方宣言

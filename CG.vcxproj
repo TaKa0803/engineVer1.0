@@ -181,8 +181,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\base\Log\Log.cpp" />
     <ClCompile Include="Engine\base\MainSystem\MainSystem.cpp" />
     <ClCompile Include="Engine\ExtractionScene\ExtractionScene.cpp" />
-    <ClCompile Include="Engine\GVariableManager\GlobalVaribleManager.cpp" />
-    <ClCompile Include="Engine\GvariGroup\GvariGroup.cpp" />
+    <ClCompile Include="Engine\GlobalVariable\Group\GlobalVariableGroup.cpp" />
+    <ClCompile Include="Engine\GlobalVariable\Manager\GlobalVaribleManager.cpp" />
+    <ClCompile Include="Engine\GlobalVariable\Tree\GlobalVariableTree.cpp" />
     <ClCompile Include="Engine\LightManager\LightManager.cpp" />
     <ClCompile Include="Engine\MapLoader\MapLoader.cpp" />
     <ClCompile Include="Engine\Math\Matrix.cpp" />
@@ -471,9 +472,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\base\Log\Log.h" />
     <ClInclude Include="Engine\base\MainSystem\MainSystem.h" />
     <ClInclude Include="Engine\ExtractionScene\ExtractionScene.h" />
-    <ClInclude Include="Engine\GVariableManager\GlobalVaribleManager.h" />
-    <ClInclude Include="Engine\GVariableManager\GlobalVariableDatas.h" />
-    <ClInclude Include="Engine\GvariGroup\GvariGroup.h" />
+    <ClInclude Include="Engine\GlobalVariable\GlobalVariableDatas.h" />
+    <ClInclude Include="Engine\GlobalVariable\Group\GlobalVariableGroup.h" />
+    <ClInclude Include="Engine\GlobalVariable\Manager\GlobalVaribleManager.h" />
+    <ClInclude Include="Engine\GlobalVariable\Tree\GlobalVariableTree.h" />
     <ClInclude Include="Engine\LightManager\LightManager.h" />
     <ClInclude Include="Engine\MapLoader\MapLoader.h" />
     <ClInclude Include="Engine\Math\Matrix.h" />

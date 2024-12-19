@@ -1,6 +1,6 @@
 #pragma once
 #include"Game/Boss/Behavior/ATK/IATK/IATK.h"
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Tree/GlobalVariableTree.h"
 #include<iostream>
 #include<vector>
 

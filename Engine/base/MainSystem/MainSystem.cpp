@@ -10,8 +10,8 @@
 #include"SpriteManager/SpriteManager.h"
 #include"PostEffect/PostEffectManager/PostEffectManager.h"
 #include"UAVManager/UAVManager.h"
-#include"GVariableManager/GlobalVaribleManager.h"
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Manager/GlobalVaribleManager.h"
+
 
 
 MainSystem* MainSystem::GetInstance() {
@@ -92,8 +92,7 @@ void MainSystem::Initializes() {
 	//スプライトマネージャ初期化
 	SpriteManager::GetInstance()->Initialize();
 
-	//すべての保存データを読み込む
-	GlobalVariableManager::GetInstance()->LoadAllSaveData();
+
 }
 
 void MainSystem::MainRoop() {

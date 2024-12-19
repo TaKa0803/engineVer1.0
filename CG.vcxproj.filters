@@ -190,12 +190,6 @@
     <ClCompile Include="Application\Game\GameUI\GameUI.cpp">
       <Filter>Application\Game\UI</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GVariableManager\GlobalVaribleManager.cpp">
-      <Filter>Engine\GlobalVariable\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GvariGroup\GvariGroup.cpp">
-      <Filter>Engine\GlobalVariable\Group</Filter>
-    </ClCompile>
     <ClCompile Include="Application\Game\Boss\Behavior\ATK\IATK\IATK.cpp">
       <Filter>Application\Game\Boss\Behavior\BaseATK</Filter>
     </ClCompile>
@@ -421,6 +415,9 @@
     <ClCompile Include="Engine\base\WinApp\WinApp.cpp">
       <Filter>Engine\base\WinApp</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GlobalVariable\Group\GlobalVariableGroup.cpp" />
+    <ClCompile Include="Engine\GlobalVariable\Manager\GlobalVaribleManager.cpp" />
+    <ClCompile Include="Engine\GlobalVariable\Tree\GlobalVariableTree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\base\AudioManager\AudioManager.h">
@@ -521,15 +518,6 @@
     </ClInclude>
     <ClInclude Include="Application\Game\GameUI\GameUI.h">
       <Filter>Application\Game\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GVariableManager\GlobalVaribleManager.h">
-      <Filter>Engine\GlobalVariable\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GVariableManager\GlobalVariableDatas.h">
-      <Filter>Engine\GlobalVariable</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GvariGroup\GvariGroup.h">
-      <Filter>Engine\GlobalVariable\Group</Filter>
     </ClInclude>
     <ClInclude Include="Application\Game\Boss\Behavior\ATK\IATK\IATK.h">
       <Filter>Application\Game\Boss\Behavior\BaseATK</Filter>
@@ -774,6 +762,10 @@
     <ClInclude Include="Engine\base\WinApp\WinApp.h">
       <Filter>Engine\base\WinApp</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GlobalVariable\Group\GlobalVariableGroup.h" />
+    <ClInclude Include="Engine\GlobalVariable\Tree\GlobalVariableTree.h" />
+    <ClInclude Include="Engine\GlobalVariable\Manager\GlobalVaribleManager.h" />
+    <ClInclude Include="Engine\GlobalVariable\GlobalVariableDatas.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\PostEffect\CopyImage.hlsli">

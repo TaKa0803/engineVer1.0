@@ -20,7 +20,7 @@
 #include"PostEffect/PEs/PEHighLuminance.h"
 #include"PostEffect/PEs/PEBloom.h"
 
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Group/GlobalVariableGroup.h"
 #include"ImGuiManager/ImGuiManager.h"
 #include<cassert>
 

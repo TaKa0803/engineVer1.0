@@ -1,7 +1,7 @@
 #pragma once
 #include"Input/Input.h"
 #include"Camera/Camera.h"
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Tree/GlobalVariableTree.h"
 #include"Game/Player/Behavior/IPlayerBehavior.h"
 
 //前方宣言

@@ -4,7 +4,7 @@
 #include"TextureManager/TextureManager.h"
 #include"DeltaTimer/DeltaTimer.h"
 #include"Game/Boss/Boss.h"
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Group/GlobalVariableGroup.h"
 
 #include"Game/Player/Stamina/PlayerStamina.h"
 #include"Game/Player/Idle/PlayerIdle.h"

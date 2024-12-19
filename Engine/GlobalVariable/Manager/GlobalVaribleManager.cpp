@@ -1,8 +1,11 @@
 #include "GlobalVaribleManager.h"
 #include"ImGuiManager/ImGuiManager.h"
+
 #include<json.hpp>
 #include<fstream>
 #include <iostream>
+
+
 
 const char** CreateCStringArray(const std::vector<std::string>& strings) {
 	//文字列サイズ取得
@@ -266,6 +269,8 @@ void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 
 GlobalVariableManager* GlobalVariableManager::GetInstance()
 {
+	
+
 	//インスタンス取得
 	static GlobalVariableManager ins;
 	return &ins;

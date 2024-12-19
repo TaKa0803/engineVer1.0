@@ -1,6 +1,5 @@
 #pragma once
 #include"InstancingModelManager/InstancingModelManager.h"
-#include"GvariGroup/GvariGroup.h"
 
 #include<list>
 

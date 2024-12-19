@@ -1,5 +1,5 @@
 #include "AppScene.h"
-#include"GVariableManager/GlobalVaribleManager.h"
+#include"GlobalVariable/Manager/GlobalVaribleManager.h"
 
 AppScene::AppScene()
 {
@@ -11,6 +11,8 @@ void AppScene::Initialize()
 {
 	//シーンマネージャの初期化
 	sceneManager->Initialize();
+
+	GlobalVariableManager::GetInstance()->LoadAllSaveData();
 
 	//セットされたデータに保存したものがあればそれを適応する
 	GlobalVariableManager::GetInstance()->SetLoadAllData();

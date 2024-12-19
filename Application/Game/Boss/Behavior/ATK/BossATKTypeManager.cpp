@@ -1,6 +1,6 @@
 #include "BossATKTypeManager.h"
 #include"Game/Boss/Boss.h"
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Group/GlobalVariableGroup.h"
 
 
 BossATKTypeManager::BossATKTypeManager(Boss* boss)

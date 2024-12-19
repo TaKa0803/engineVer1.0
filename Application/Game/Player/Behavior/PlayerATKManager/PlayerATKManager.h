@@ -1,6 +1,5 @@
 #pragma once
 #include"Game/Player/Behavior/ATKData/PlayerPunch.h"
-#include"GvariGroup/GvariGroup.h"
 #include"Game/Player/Behavior/IPlayerBehavior.h"
 #include<iostream>
 

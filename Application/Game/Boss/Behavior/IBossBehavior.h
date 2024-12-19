@@ -1,6 +1,5 @@
 #pragma once
-#include"GvariGroup/GvariGroup.h"
-
+#include"GlobalVariable/Tree/GlobalVariableTree.h"
 class Boss;
 
 //ボスの状態の基底クラス

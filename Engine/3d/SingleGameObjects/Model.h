@@ -12,7 +12,7 @@
 #include"InstancingModelManager/InstancingModelManager.h"
 #include"LightManager/LightManager.h"
 #include"ComputeShaders/SkinningCS.h"
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Tree/GlobalVariableTree.h"
 
 //モデル倉さう
 class Model {

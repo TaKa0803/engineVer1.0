@@ -1,6 +1,7 @@
 #include "Boss.h"
 #include"ImGuiManager/ImGuiManager.h"
-#include"GVariableManager/GlobalVaribleManager.h"
+#include"GlobalVariable/Group/GlobalVariableGroup.h"
+#include"GlobalVariable/Manager/GlobalVaribleManager.h"
 
 #include"Game/Boss/Behavior/Idle/BossIdle.h"
 #include"Game/Boss/Behavior/Down/BossDown.h"

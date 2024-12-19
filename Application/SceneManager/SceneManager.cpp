@@ -1,5 +1,5 @@
 #include"SceneManager/SceneManager.h"
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Group/GlobalVariableGroup.h"
 #include<imgui.h>
 
 

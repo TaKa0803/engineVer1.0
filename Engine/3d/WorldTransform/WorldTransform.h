@@ -2,7 +2,7 @@
 //#include"struct.h"
 #include"Math/Matrix.h"
 #include"Quaternion.h"
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Tree/GlobalVariableTree.h"
 
 //ワールドトランスフォーム
 class EulerWorldTransform {

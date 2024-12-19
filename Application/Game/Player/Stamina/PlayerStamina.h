@@ -1,5 +1,5 @@
 #pragma once
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Tree/GlobalVariableTree.h"
 #include"Sprite/Sprite.h"
 
 //前方宣言

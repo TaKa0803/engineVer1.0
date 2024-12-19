@@ -11,7 +11,7 @@
 #include"PostEffect/PEs/PEVignetting.h"
 #include"ColliderOBB/OBBCollider.h"
 #include"Game/Boss/BulletManager/BossBulletManager.h"
-#include"GVariableManager/GlobalVaribleManager.h"
+#include"GlobalVariable/Manager/GlobalVaribleManager.h"
 
 InGameScene::InGameScene() {
 

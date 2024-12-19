@@ -2,6 +2,7 @@
 #include"TextureManager/TextureManager.h"
 #include"PostEffect/PostEffectManager/PostEffectManager.h"
 #include"AudioManager/AudioManager.h"
+#include"GlobalVariable/Group/GlobalVariableGroup.h"
 
 GameClearScene::GameClearScene()
 {

@@ -9,7 +9,7 @@
 #include"ParticleData/Initialize/ParticleInitialize.h"
 #include"ParticleData/Emiter/ParticleEmiterCS.h"
 
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Tree/GlobalVariableTree.h"
 #include<stdint.h>
 
 struct ParticleMaterialData

@@ -1,6 +1,6 @@
 #include "FollowCamera.h"
 #include"RandomNum/RandomNum.h"
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Group/GlobalVariableGroup.h"
 
 #pragma region 三次元ベクトルの回転
 // 正面を {0, 0, 1} としたときの方向ベクトル `velo` への回転量を求める関数

@@ -6,7 +6,7 @@
 #include<iostream>
 
 #include"InstancingGameObject/InstancingPSO.h"
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Tree/GlobalVariableTree.h"
 
 //前方宣言
 class InstancingModel;

@@ -1,5 +1,6 @@
 #pragma once
-#include"GlobalVariableDatas.h"
+#include"GlobalVariable/GlobalVariableDatas.h"
+
 
 //すべてのGlobalVariableの管理  
 class GlobalVariableManager {
@@ -77,3 +78,8 @@ private: //**プライベート変数**//
 	//ノード表記にまとめ始める量
 	size_t nodeSize_ = 4;
 };
+
+/// <summary>
+/// GlobalVariablesManagerの別名
+/// </summary>
+using GvariM = GlobalVariableManager;

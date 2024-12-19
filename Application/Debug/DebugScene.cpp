@@ -4,7 +4,7 @@
 #include"LightManager/LightManager.h"
 #include"PostEffect/PostEffectManager/PostEffectManager.h"
 
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Group/GlobalVariableGroup.h"
 
 DebugScnene::DebugScnene()
 {

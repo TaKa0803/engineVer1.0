@@ -5,7 +5,7 @@
 #include"struct.h"
 #include"Math/Vector2.h"
 #include"WorldTransform/WorldTransform.h"
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Tree/GlobalVariableTree.h"
 
 #include<memory>
 #include<wrl.h>

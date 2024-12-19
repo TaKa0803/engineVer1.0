@@ -13,7 +13,7 @@
 #include"struct.h"
 
 #include"LightManager/LightManager.h"
-#include"GvariGroup/GvariGroup.h"
+#include"GlobalVariable/Tree/GlobalVariableTree.h"
 
 //モデルマネージャの前方宣言
 class InstancingModelManager;
