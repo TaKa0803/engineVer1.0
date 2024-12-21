@@ -7,11 +7,19 @@
 #include"DirectXFunc/DirectXFunc.h"
 #include"struct.h"
 
+//スキニングのCS処理
 class SkinningCS {
 
-public:
+public://パブリック関数**//
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	SkinningCS();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~SkinningCS();
 
 	/// <summary>
@@ -25,23 +33,27 @@ public:
 	/// <param name="commandList">コマンドリスト</param>
 	D3D12_VERTEX_BUFFER_VIEW PreDraw();
 
+	/// <summary>
+	/// 描画前処理
+	/// </summary>
 	void PostDraw();
-private:
 
+private://**プライベート変数**//
 
-private:
-
+	//DXFのポインタ
+	DirectXFunc* DXF_=nullptr;
+	
 	//モデルとanimationデータ
 	const ModelAllData* modelData_=nullptr;
 
+	//リソースまとめ
 	struct SRVMaterialResource
 	{
 		ID3D12Resource* resource;
 		Handles handle;
 	};
 
-	DirectXFunc* DXF_=nullptr;
-
+	//CSファイルへのパス
 	std::wstring csPass = L"resources/shaders/ComputeShader/Skinning.CS.hlsl";
 
 	//ルートシグネチャ
@@ -50,27 +62,21 @@ private:
 	//グラフィックパイプライン
 	ID3D12PipelineState* graphicsPipelineState_ = nullptr;
 
-	bool isInitialize_ = false;
-
-	//SRVMaterialResource wellResource_;
-	//std::span<WellForGPU> wellPalette_;
-
+	//頂点リソース
 	SRVMaterialResource vertexResource_;
 	VertexData* vertexData_ = nullptr;
 
-	//SRVMaterialResource influenceResource_;
-	//std::span<VertexInfluence> influenceData_;
-
+	//出力頂点リソース
 	SRVMaterialResource outputVerticesResource_;
 	D3D12_VERTEX_BUFFER_VIEW vbv_;
 
-	//VertexData* outputVerticesData_ = nullptr;
-
+	//スキニング情報まとめ
 	struct SkinningInformation
 	{
 		int32_t numVertices;
 	};
 
+	//スキニング情報リソース
 	ID3D12Resource* skinningInfoResource_ = nullptr;
 	SkinningInformation* skinningInfoData_ = nullptr;
 };

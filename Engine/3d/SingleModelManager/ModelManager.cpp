@@ -15,6 +15,7 @@
 #pragma region ModelManager
 
 ModelManager* ModelManager::GetInstance() {
+	//インスタンス生成
 	static ModelManager instance;
 	return &instance;
 }
@@ -87,11 +88,9 @@ void ModelManager::Finalize()
 	//PSO削除
 	delete grarphics_;
 	grarphics_ = nullptr;
-
 }
 
 ModelAllData ModelManager::GetModelData(const std::string& filename) {
-
 
 	//データ型に該当するものを追加
 	for (auto& modeldata : modelDatas) {
@@ -118,9 +117,10 @@ ModelAllData ModelManager::GetModelData(const std::string& filename) {
 
 	
 }
+
 void ModelManager::PreDraw( BlendMode blendMode,FillMode fillMode)
 {
-
+	//モデルの描画前処理
 	ModelManager::GetInstance()->grarphics_->PreDraw(fillMode, blendMode);
 }
 #pragma endregion

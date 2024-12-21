@@ -146,7 +146,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\Game\Player\Behavior\PlayerATKManager\PlayerATKManager.cpp" />
     <ClCompile Include="Application\Game\Player\Down\PlayerDown.cpp" />
     <ClCompile Include="Application\Game\Player\PlayerRoll\PlayerRoll.cpp" />
-    <ClCompile Include="Application\Effect\EffectMove\EffectMove.cpp" />
+    <ClCompile Include="Application\Game\Effect\Move\EffectMove.cpp" />
     <ClCompile Include="Application\Game\Player\Player.cpp" />
     <ClCompile Include="Application\Debug\DebugScene.cpp" />
     <ClCompile Include="Application\Game\Plane\Plane.cpp" />
@@ -156,7 +156,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\2d\SpriteManager\SpriteManager.cpp" />
     <ClCompile Include="Engine\2d\SpritePSO\SpritePSO.cpp" />
     <ClCompile Include="Engine\3d\Collider\ColliderOBB\OBBCollider.cpp" />
-    <ClCompile Include="Engine\3d\Collider\ColliderPlane\PlaneCollider.cpp" />
     <ClCompile Include="Engine\3d\Collider\IsCollisions.cpp" />
     <ClCompile Include="Engine\3d\SkyBoxModel\SkyBoxModel.cpp" />
     <ClCompile Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.cpp" />
@@ -438,7 +437,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\Game\Player\Down\PlayerDown.h" />
     <ClInclude Include="Application\Game\Player\PlayerRoll\PlayerRoll.h" />
     <ClInclude Include="Application\Debug\DebugScene.h" />
-    <ClInclude Include="Application\Effect\EffectMove\EffectMove.h" />
+    <ClInclude Include="Application\Game\Effect\Move\EffectMove.h" />
     <ClInclude Include="Application\Game\Plane\Plane.h" />
     <ClInclude Include="Application\AppScene\AppScene.h" />
     <ClInclude Include="Application\IScene\IScene.h" />
@@ -446,7 +445,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\2d\SpriteManager\SpriteManager.h" />
     <ClInclude Include="Engine\2d\SpritePSO\SpritePSO.h" />
     <ClInclude Include="Engine\3d\Collider\ColliderOBB\OBBCollider.h" />
-    <ClInclude Include="Engine\3d\Collider\ColliderPlane\PlaneCollider.h" />
     <ClInclude Include="Engine\3d\Collider\IsCollisions.h" />
     <ClInclude Include="Engine\3d\SkyBoxModel\SkyBoxModel.h" />
     <ClInclude Include="Engine\3d\SkyBoxPSO\SkyBoxPSO.h" />

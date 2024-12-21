@@ -12,6 +12,7 @@
 
 ParticleUpdateCS::ParticleUpdateCS()
 {
+	//インスタンス取得
 	DXF_ = DirectXFunc::GetInstance();
 #pragma region RootSignatureを生成する
 
@@ -69,32 +70,29 @@ ParticleUpdateCS::ParticleUpdateCS()
 	rootParameters[3].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeList);	//tableで利用する
 
 #pragma endregion
-
+	//値をセット
 	descriptionRootSignature.pParameters = rootParameters;					//ルートパラメータ配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);		//配列の長さ
-
 
 	//シリアライズしてバイナリにする
 	ID3DBlob* signatureBlob = nullptr;
 	ID3DBlob* errorBlob = nullptr;
 	HRESULT hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
 	if (FAILED(hr)) {
+		//エラーログ
 		Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 		assert(false);
 	}
 	//バイナリをもとに生成
-
 	hr = DXF_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
 	assert(SUCCEEDED(hr));
 #pragma endregion
-
 #pragma region ShaderをCompileする
 	DXCManager* DXC = DXCManager::GetInstance();
 	//Shaderをコンパイルする
 	IDxcBlob* computeShaderBlob = CompileShader(csPass, L"cs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
 	assert(computeShaderBlob != nullptr);
 #pragma endregion
-
 #pragma region PSOを生成
 	D3D12_COMPUTE_PIPELINE_STATE_DESC computePipelineDesc{};
 	computePipelineDesc.CS = {
@@ -108,16 +106,15 @@ ParticleUpdateCS::ParticleUpdateCS()
 	assert(SUCCEEDED(hr));
 #pragma endregion
 
-
+	//ログを出力
 	Log("Complete ParticleUpdate ComputeShader Initialize!\n");
 }
 
 ParticleUpdateCS::~ParticleUpdateCS()
 {
+	//リソースの解放
 	rootSignature_->Release();
 	graphicsPipelineState_->Release();
-
-
 }
 
 void ParticleUpdateCS::Initialize()
@@ -135,12 +132,13 @@ void ParticleUpdateCS::UpdateGPU(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_V
 	cmd->SetComputeRootSignature(rootSignature_);
 	cmd->SetPipelineState(graphicsPipelineState_);
 	
+	//各ハンドル設定
 	cmd->SetComputeRootDescriptorTable(0, handle);
 	cmd->SetComputeRootConstantBufferView(1, adress);
 
 	cmd->SetComputeRootDescriptorTable(2, chandle);
 	cmd->SetComputeRootDescriptorTable(3, listhandle);
-
+	//処理
 	cmd->Dispatch(1024, 1, 1);
 	
 }

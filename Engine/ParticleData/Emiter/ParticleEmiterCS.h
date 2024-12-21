@@ -4,29 +4,52 @@
 #include"ParticleData/ParticleData.h"
 #include<cstdint>
 
-
-
+//パーティクルのエミッター処理
 class ParticleEmiterCS {
-public:
+public://**パブリック関数**//
 
-	//各生成処理
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	ParticleEmiterCS();
-	//解放処理
-	~ParticleEmiterCS();
 
-	//初期化処理
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~ParticleEmiterCS();
+	
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="emiterDataAddress"></param>
+	/// <param name="emiterData"></param>
 	void Initialize(D3D12_GPU_VIRTUAL_ADDRESS emiterDataAddress,EmiterSphere* emiterData);
 
-	//更新処理
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name="onlyImpact">カウント停止フラグ</param>
 	void Update(bool onlyImpact);
-
-	//CSの処理実行
+	
+	/// <summary>
+	/// CSの処理実行
+	/// </summary>
+	/// <param name="handle"></param>
+	/// <param name="chandle"></param>
+	/// <param name="listhand"></param>
 	void EmitGPU(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhand);
 
+	/// <summary>
+	/// エミッターデータ取得
+	/// </summary>
+	/// <returns>データ</returns>
 	EmiterSphere* GetEmiterData() { return emiterData_; }
-private:
 
+private://**プライベート変数**//
+
+	//DXFのポインタ
 	DirectXFunc* DXF_ = nullptr;
+	
 	//CSのパス
 	std::wstring csPass = L"resources/shaders/ComputeShader/ParticleEmiter.CS.hlsl";
 
@@ -39,9 +62,11 @@ private:
 	//パーティクル最大数
 	size_t maxDataCount_ = 1024;
 
+	//エミッターデータ関連
 	D3D12_GPU_VIRTUAL_ADDRESS emiterDataAddress_;
 	EmiterSphere* emiterData_ = nullptr;
 
+	//リソース
 	ID3D12Resource* perFrameResource_;
 	PerFrame* perFrameData_ = nullptr;
 

@@ -4,10 +4,20 @@
 
 #include"Quaternion.h"
 
+//円コライダー前方宣言
 class SphereCollider;
 
+//OBB判定のコライダー
 class OBBCollider : public InstancingGameObject {
-public:
+
+public://**パブリック変数**//
+
+	//有効フラグ
+	bool isActive_ = true;
+	//コライダータグ
+	std::string colliderTag_;
+
+public://**パブリック関数**//
 
 	/// <summary>
 	/// 初期化
@@ -31,12 +41,6 @@ public:
 	/// 描画（Releaseでは描画されない
 	/// </summary>
 	void Draw();
-
-	/// <summary>
-	/// デバッグImGui表示
-	/// </summary>
-	/// <param name="name">window名</param>
-	//void Debug(const char* name);
 
 	/// <summary>
 	/// 行列のみ更新(押し込み処理後に呼び出し
@@ -84,7 +88,7 @@ public:
 	/// <param name="scale"></param>
 	void SetScale(const float scale) { world_.scale_ = { scale,scale,scale }; }
 
-public:
+public://**ゲッター**//
 
 	/// <summary>
 	/// OBBのworldmatrix取得
@@ -98,20 +102,18 @@ public:
 	/// <returns></returns>
 	const Matrix4x4& GetInverseWorldM()const { return inverseM_; }
 
-	//有効フラグ
-	bool isActive_ = true;
-	//コライダータグ
-	std::string colliderTag_;
-private:
+private://**プライベート関数**//
 
+	/// <summary>
+	/// 最近接点描画
+	/// </summary>
+	/// <param name="pos">座標</param>
 	void DrawClosestP(const Vector3& pos);
+
+private://**プライベート変数**//
 
 	//すべての描画フラグ
 	static bool isDraw_;
-
-
-
-	Quaternion rotation_ = {};
 
 	//透明度
 	float alpha_ = 0.5f;
@@ -121,15 +123,12 @@ private:
 	//ヒット時色
 	Vector4 hitColor = { 1,0,0,alpha_ };
 
-	
-
+	//OBBの情報
 	struct OBB {
 		Vector3 center;
 		Vector3 orientations[3];
 		Vector3 size;				//各半径
-	};
-
-	OBB obb_;
+	}obb_;
 
 	//過去情報
 	EulerWorldTransform preWorld_;

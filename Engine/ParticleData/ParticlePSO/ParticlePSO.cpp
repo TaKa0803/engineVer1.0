@@ -11,6 +11,7 @@ ParticlePSO::ParticlePSO()
 
 ParticlePSO::~ParticlePSO()
 {
+	//解放処理
 	rootSignature_->Release();
 	for (int h = 0; h < int(BlendMode::kCountOfBlendMode); h++) {
 		if (graphicsPipelineState_[h] != nullptr) {
@@ -22,7 +23,7 @@ ParticlePSO::~ParticlePSO()
 
 
  void SetSRV_UAVRootParameter(D3D12_ROOT_PARAMETER& result,int32_t registerNum, D3D12_SHADER_VISIBILITY visibility, D3D12_DESCRIPTOR_RANGE_TYPE rangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV) {
-	
+	//レンジ設定
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
 	descriptorRange[0].BaseShaderRegister = registerNum;
 	descriptorRange[0].NumDescriptors = 1;
@@ -34,12 +35,11 @@ ParticlePSO::~ParticlePSO()
 	result.ShaderVisibility = visibility;	//PixelShaderで使う
 	result.DescriptorTable.pDescriptorRanges = descriptorRange;
 	result.DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
-
 }
 
 void ParticlePSO::Initialize()
 {
-
+	//DXFのポインタ設定
 	DXF_ = DirectXFunc::GetInstance();
 
 #pragma region RootSingnatureの生成
@@ -117,7 +117,6 @@ void ParticlePSO::Initialize()
 		assert(false);
 	}
 	//バイナリをもとに生成
-
 	hr = DXF_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
 	assert(SUCCEEDED(hr));
 #pragma endregion
@@ -164,9 +163,7 @@ void ParticlePSO::Initialize()
 #pragma endregion
 
 #pragma region ShaderをCompileする
-
 	DXCManager* DXC = DXCManager::GetInstance();
-
 	//Shaderをコンパイルする
 	IDxcBlob* vertexShaderBlob = CompileShader(vsPass, L"vs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
 	assert(vertexShaderBlob != nullptr);
@@ -301,8 +298,8 @@ void ParticlePSO::Initialize()
 #pragma endregion
 	}
 
+	//ログ出力
 	Log("Complete Instancing GraphicsSystem Initialize\n");
-
 }
 
 void ParticlePSO::PreDraw(const BlendMode& blendMode)

@@ -5,11 +5,12 @@
 #include"SRVManager/SRVManager.h"
 #include"functions/function.h"
 #include"UAVManager/UAVManager.h"
-
+#include"DeltaTimer/DeltaTimer.h"
 #include<cassert>
 
 ParticleEmiterCS::ParticleEmiterCS()
 {
+	//DXFのインスタンス取得
 	DXF_ = DirectXFunc::GetInstance();
 #pragma region RootSignatureを生成する
 
@@ -88,7 +89,6 @@ ParticleEmiterCS::ParticleEmiterCS()
 		assert(false);
 	}
 	//バイナリをもとに生成
-
 	hr = DXF_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
 	assert(SUCCEEDED(hr));
 #pragma endregion
@@ -113,9 +113,7 @@ ParticleEmiterCS::ParticleEmiterCS()
 	assert(SUCCEEDED(hr));
 #pragma endregion
 
-
-
-
+	//リソース作成
 	perFrameResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(PerFrame));
 	perFrameResource_->Map(0, nullptr, reinterpret_cast<void**>(&perFrameData_));
 	perFrameData_->time = 0;
@@ -124,6 +122,7 @@ ParticleEmiterCS::ParticleEmiterCS()
 
 ParticleEmiterCS::~ParticleEmiterCS()
 {
+	//各リソース解放
 	rootSignature_->Release();
 	graphicsPipelineState_->Release();
 	perFrameResource_->Release();
@@ -131,6 +130,7 @@ ParticleEmiterCS::~ParticleEmiterCS()
 
 void ParticleEmiterCS::Initialize(D3D12_GPU_VIRTUAL_ADDRESS emiterDataAddress,EmiterSphere* emiterData)
 {
+	//アドレス取得
 	emiterDataAddress_ = emiterDataAddress;
 	//ポインタを共用
 	emiterData_ = emiterData;
@@ -138,13 +138,13 @@ void ParticleEmiterCS::Initialize(D3D12_GPU_VIRTUAL_ADDRESS emiterDataAddress,Em
 
 void ParticleEmiterCS::Update(bool onlyImpact)
 {
-
+	//時間加算
 	perFrameData_->time++;
-
-
+	
+	//フラグ処理のみフラグが無効の場合
 	if (!onlyImpact) {
-		//仮でデルタタイム直
-		float deltaTime = 1.0f / 60.0f;
+		//デルタタイム直
+		float deltaTime = (float)DeltaTimer::deltaTime_;
 
 		//エミッター更新
 		emiterData_->frequencyTime += deltaTime;
@@ -155,10 +155,12 @@ void ParticleEmiterCS::Update(bool onlyImpact)
 			emiterData_->emit = 1;
 		}
 		else {
+			//フラグは無効
 			emiterData_->emit = 0;
 		}
 	}
 	else {
+		//問答無用で無効
 		emiterData_->emit = 0;
 	}
 
@@ -166,21 +168,23 @@ void ParticleEmiterCS::Update(bool onlyImpact)
 
 void ParticleEmiterCS::EmitGPU(D3D12_GPU_DESCRIPTOR_HANDLE handle, D3D12_GPU_DESCRIPTOR_HANDLE chandle, D3D12_GPU_DESCRIPTOR_HANDLE listhandle)
 {
-
+	//コマンドリスト取得
 	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
 
+	//ヒープ取得
 	ID3D12DescriptorHeap* des[] = { UAVManager::GetInstance()->GetDescriptorHeap() };
 
+	//各値追加
 	cmd->SetDescriptorHeaps(1, des);
 	cmd->SetComputeRootSignature(rootSignature_);
 	cmd->SetPipelineState(graphicsPipelineState_);
-
 	cmd->SetComputeRootDescriptorTable(0, handle);
 	cmd->SetComputeRootConstantBufferView(1, emiterDataAddress_);
 	cmd->SetComputeRootConstantBufferView(2, perFrameResource_->GetGPUVirtualAddress());
 	cmd->SetComputeRootDescriptorTable(3, chandle);
 	cmd->SetComputeRootDescriptorTable(4, listhandle);
 
+	//処理
 	cmd->Dispatch(1, 1, 1);
 
 }

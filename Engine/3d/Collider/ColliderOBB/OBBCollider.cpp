@@ -49,45 +49,28 @@ void OBBCollider::Update()
 
 	//ワールドデータを更新
 	world_.UpdateMatrix();
-
 }
 
 void OBBCollider::Draw()
 {
+	//デバッグ時のみ描画
 #ifdef _DEBUG
+	//描画フラグ有効時描画
 	if (isDraw_) {
 		InstancingModelManager::GetInstance()->SetData(tag_, world_, color_);
 	}
 #endif // _DEBUG
 }
 
-//void OBBCollider::Debug(const char* name)
-//{
-//
-//#ifdef _DEBUG
-//	ImGui::Begin(name);
-//	ImGui::DragFloat3("trans", &world_.translate_.x, 0.10f);
-//	ImGui::DragFloat3("rotation", &world_.rotate_.x, 0.01f);
-//	ImGui::DragFloat3("scale", &world_.scale_.x, 0.01f);
-//
-//	ImGui::ColorEdit4("hit color", &hitColor.x);
-//	ImGui::Checkbox("isDraw", &isDraw_);
-//	ImGui::Text("dot : %f", getDot);
-//	ImGui::End();
-//#endif // _DEBUG
-//
-//
-//}
-
 bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int division)
 {
+	//処理分割数が1以下なら１にする
 	if (division < 1) {
 		division = 1;
 	}
 #pragma region OBBのワールド行列をスケールなしで作成
 	//回転量取得
 	Vector3 rotate = GetAllRotate(world_);
-
 	//回転行列
 	Matrix4x4 rotateM = MakeRotateXMatrix(rotate.x) * (MakeRotateYMatrix(rotate.y) * MakeRotateZMatrix(rotate.z));
 	//座標行列
@@ -107,14 +90,15 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 	aabb_ = { .minV = -size,.maxV = size };
 #pragma endregion
 
+	//補完時の一メモリの進行度
 	float addNum =  1.0f/division;
+	//カウントT
 	float t = 0;
 
 	//ワールド座標
 	Vector3 preCWorld = collider->GetPreWorld().GetWorldTranslate();
 	//ワールド座標
 	Vector3 CWorld = collider->GetWorld().GetWorldTranslate();
-
 
 	while (true) {
 
@@ -195,27 +179,18 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 				backVec = backV + diffV;
 			}
 
-
-			////最近接点描画
-			//DrawClosestP(Transform(saikin, OBBM_));
-
 			//ヒットカラー処理
 			SetColor(true);
 			collider->SetColor(true);
 
 			return true;
-
-
-
 		}
 
 		t += addNum;
 
 		if (t > 1.0f) {
 			//最近接点描画
-			//OBBLocalPosCange
 			//DrawClosestP(Transform(saikin, OBBM_));
-
 
 			//色の変更
 			SetColor(false);
@@ -227,9 +202,6 @@ bool OBBCollider::IsCollision(SphereCollider* collider, Vector3& backVec, int di
 }
 
 bool OBBCollider::IsCollision(const Segment& seg) {
-
-
-
 	//各OBBローカル上に作成
 	Vector3 localOri = Transform(seg.origin, inverseM_);
 	Vector3 localEnd = Transform(seg.origin + seg.diff, inverseM_);
@@ -243,25 +215,34 @@ bool OBBCollider::IsCollision(const Segment& seg) {
 
 void OBBCollider::SetColor(bool hit)
 {
+	//当たった時
 	if (hit) {
+		//当たった時の色
 		color_ = hitColor;
 	}
 	else {
+		//当たっていないときの色
 		color_ = normalColor;
 	}
 }
 
 void OBBCollider::DrawClosestP(const Vector3& pos)
 {
+	//最近接点描画処理
+	//ワールド生成
 	EulerWorldTransform sWo;
+	//差表設定
 	sWo.translate_ = pos;
+	//サイズは小さく
 	sWo.scale_ = { 0.1f,0.1f,0.1f };
 	sWo.UpdateMatrix();
+	//データ追加
 	IMM_->SetData("sphere", sWo);
 }
 
 void OBBCollider::UpdateMatrix()
 {
+	//行列更新
 	world_.UpdateMatrix();
 
 #pragma region OBBのワールド行列をスケールなしで作成

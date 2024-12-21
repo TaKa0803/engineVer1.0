@@ -13,13 +13,16 @@ SphereCollider::SphereCollider() {
 
 
 void SphereCollider::Initialize(const std::string& tag, const EulerWorldTransform& world) {
+	//タグ整合性チェック
 	InstancingGameObject::Initialize("sphere");
 
-	//parent_ = (&world);
+	//親を設定
 	world_.parent_ = &world;
 
+	//名前設定
 	colliderTag_ = tag;
 
+	//モデル設定
 	IMM_->SetFillMode(tag_, FillMode::kWireFrame);
 	IMM_->SetAlpha(tag_, alpha_);
 	IMM_->SetEnableTexture(tag_, false);
@@ -28,10 +31,13 @@ void SphereCollider::Initialize(const std::string& tag, const EulerWorldTransfor
 
 void SphereCollider::Initialize(const std::string& tag)
 {
+	//タグ整合性チェック
 	InstancingGameObject::Initialize("sphere");
 
+	//コライダー名設定
 	colliderTag_ = tag;
 
+	//モデル設定
 	IMM_->SetFillMode(tag_, FillMode::kWireFrame);
 	IMM_->SetAlpha(tag_, alpha_);
 	IMM_->SetEnableTexture(tag_, false);
@@ -41,16 +47,21 @@ void SphereCollider::Initialize(const std::string& tag)
 
 void SphereCollider::Update() {
 
+	//現在のワールド情報を保存
 	preWorld_ = world_;
 	
+	//サイズを設定
 	world_.scale_ = { scale_,scale_,scale_ };
 
+	//更新
 	world_.UpdateMatrix();
 	
 }
 
 void SphereCollider::Draw() {
+	//デバッグのみ描画
 #ifdef _DEBUG
+	//描画フラグが有効の場合のみ描画
 	if (isDraw_) {
 		InstancingModelManager::GetInstance()->SetData(tag_, world_, color_);
 	}
@@ -59,9 +70,6 @@ void SphereCollider::Draw() {
 }
 
 bool SphereCollider::IsCollision(const SphereCollider* sphere, Vector3& backVec) {
-
-
-
 	//各点取得
 	Vector3 pos = sphere->world_.GetWorldTranslate();
 	Vector3 myP = world_.GetWorldTranslate();
@@ -73,6 +81,7 @@ bool SphereCollider::IsCollision(const SphereCollider* sphere, Vector3& backVec)
 	//距離計算
 	Vector3 sub = myP - pos;
 
+	//計算した距離を保存
 	Vector3 leng = sub;
 	//ヒットチェック
 	if (Length(sub) < wide + myW) {
@@ -89,13 +98,13 @@ bool SphereCollider::IsCollision(const SphereCollider* sphere, Vector3& backVec)
 		if (!isActive_ || !sphere->isActive_) {
 			return false;
 		}
-
+		//色を変更
 		SetColor(true);
 
 		//返却
 		return true;
 	}
-
+	//色を変更
 	SetColor(false);
 	//当たっていない
 	return false;

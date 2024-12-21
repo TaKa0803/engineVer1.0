@@ -9,13 +9,21 @@
 #include"struct.h"
 #include"DirectXFunc/DirectXFunc.h"
 
-
+//シングルオブジェクトのパイプライン
 class ObjectPSO {
 
-public:
+public://**パブリック関数**//
+
 	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	ObjectPSO();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~ObjectPSO();
 
 	/// <summary>
@@ -29,12 +37,9 @@ public:
 	/// <param name="commandList">コマンドリスト</param>
 	void PreDraw(FillMode fillmode,BlendMode blendMode);
 
+private://**プライベート変数**//
 
-private:
-
-
-private:
-
+	//DXFのポインタ
 	DirectXFunc* DXF_;
 
 	//ルートシグネチャ

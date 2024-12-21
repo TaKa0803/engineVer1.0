@@ -9,10 +9,15 @@
 #include"SingleGameObjects/ObjectPSO.h"
 #include"struct.h"
 
-
+//モデルの管理マネージャ
 class ModelManager {
 
 public://シングルトンパターン
+
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns></returns>
 	static ModelManager* GetInstance();
 
 private://シングルトンパターン
@@ -20,7 +25,8 @@ private://シングルトンパターン
 	~ModelManager() = default;
 	ModelManager(const ModelManager& o) = delete;
 	const ModelManager& operator=(const ModelManager& o) = delete;
-public:	
+
+public:	//**パブリック関数**//
 
 	/// <summary>
 	/// 初期化
@@ -51,7 +57,8 @@ public:
 	/// <param name="blendMode">ブレンド設定</param>
 	/// <param name="fillMode">埋めるか否か</param>
 	static void PreDraw(BlendMode blendMode = BlendMode::kNormal, FillMode fillMode = FillMode::kSolid );
-private:
+
+private://**プライベート変数**//
 
 	//各モデル描画用のPSO
 	ObjectPSO* grarphics_ = nullptr;
@@ -80,7 +87,5 @@ private:
 
 	//パスに含まれないモデルを読み込まないか否か
 	bool isAnotherModelLoad_ = false;
-
-
 };
 

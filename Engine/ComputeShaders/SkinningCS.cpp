@@ -9,14 +9,9 @@
 
 SkinningCS::SkinningCS()
 {
-	if (isInitialize_) {
-		return;
-	}
-	isInitialize_ = true;
-
+	//DXFのインスタンス取得
 	DXF_ = DirectXFunc::GetInstance();
 #pragma region RootSignatureを生成する
-
 	//RootSignatureの作成
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags =
@@ -111,51 +106,53 @@ SkinningCS::SkinningCS()
 	ID3DBlob* signatureBlob = nullptr;
 	ID3DBlob* errorBlob = nullptr;
 	HRESULT hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
+	//エラーチェック
 	if (FAILED(hr)) {
+		//ログ出力
 		Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 		assert(false);
 	}
 	//バイナリをもとに生成
-
 	hr = DXF_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
 	assert(SUCCEEDED(hr));
 
 #pragma endregion
 #pragma region ShaderをCompileする
+	//インスタンス取得
 	DXCManager* DXC = DXCManager::GetInstance();
 	//Shaderをコンパイルする
 	IDxcBlob* computeShaderBlob = CompileShader(csPass, L"cs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());
 	assert(computeShaderBlob != nullptr);
 #pragma endregion
 
-
-
 #pragma region PSOを生成
+	//生成前にパイプラインデスク設定
 	D3D12_COMPUTE_PIPELINE_STATE_DESC computePipelineDesc{};
 	computePipelineDesc.CS = {
 		.pShaderBytecode = computeShaderBlob->GetBufferPointer(),
 		.BytecodeLength = computeShaderBlob->GetBufferSize()
 	};
+	//RootSingnature設定
 	computePipelineDesc.pRootSignature = rootSignature_;
-
+	//実際に生成
 	hr = DXF_->GetDevice()->CreateComputePipelineState(&computePipelineDesc,
 		IID_PPV_ARGS(&graphicsPipelineState_));
 	assert(SUCCEEDED(hr));
 #pragma endregion
 
+	//ログに出力
 	Log("Complete Skinning Compute Shader Initialize!\n");
 }
 
 SkinningCS::~SkinningCS()
 {
+	//各リソースの解放
 	rootSignature_->Release();
 	rootSignature_ = nullptr;
 
 	graphicsPipelineState_->Release();
 	graphicsPipelineState_ = nullptr;
 
-	//	wellResource_.resource->Release();
-	//influenceResource_.resource->Release();
 	vertexResource_.resource->Release();
 
 	outputVerticesResource_.resource->Release();
@@ -168,31 +165,14 @@ void SkinningCS::Initialize(const ModelAllData& data)
 	//ポインタに情報設定
 	modelData_ = &data;
 
+	//兆点サイズ取得
 	size_t verticesSize = modelData_->model.vertices.size();
 
 #pragma region 各シェーダデータ
-
-
-#pragma region WellPalette
-	//WellForGPU* wData = nullptr;
-	//Handles handles = SRVManager::GetInstance()->CreateNewSRVHandles();
-	//wellResource_.resource = CreateBufferResource(DXF_->GetDevice(), sizeof(WellForGPU) * jointsSize);
-	//wellResource_.resource->Map(0, nullptr, reinterpret_cast<void**>(&wData));
-	//wellPalette_ = { wData , jointsSize };
-	//wellResource_.handle = handles;
-
-	//D3D12_SHADER_RESOURCE_VIEW_DESC pSRVDesc{};
-	//pSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
-	//pSRVDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	//pSRVDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
-	//pSRVDesc.Buffer.FirstElement = 0;
-	//pSRVDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-	//pSRVDesc.Buffer.NumElements = UINT(jointsSize);
-	//pSRVDesc.Buffer.StructureByteStride = sizeof(WellForGPU);
-	//DXF_->GetDevice()->CreateShaderResourceView(wellResource_.resource, &pSRVDesc, wellResource_.handle.cpu);
-#pragma endregion
 #pragma region Vertex
+	//使っていないSRVのハンドル取得
 	Handles vhandles = SRVManager::GetInstance()->CreateNewSRVHandles();
+	//リソース生成
 	vertexResource_.resource = CreateBufferResource(DXF_->GetDevice(), sizeof(VertexData) * verticesSize);
 	vertexResource_.resource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
 	std::memcpy(vertexData_, data.model.vertices.data(), sizeof(VertexData) * data.model.vertices.size());
@@ -207,23 +187,11 @@ void SkinningCS::Initialize(const ModelAllData& data)
 	vSRVDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 	vSRVDesc.Buffer.NumElements = UINT(verticesSize);
 	vSRVDesc.Buffer.StructureByteStride = sizeof(VertexData);
-
+	//SRV生成
 	DXF_->GetDevice()->CreateShaderResourceView(vertexResource_.resource, &vSRVDesc, vertexResource_.handle.cpu);
 #pragma endregion
-	//#pragma region Influence
-	//	VertexInfluence* vertexInfluence = nullptr;
-	//	
-	//	influenceResource_.resource = CreateBufferResource(DXF_->GetDevice(), sizeof(VertexInfluence) * verticesSize);
-	//	influenceResource_.resource->Map(0, nullptr, reinterpret_cast<void**>(&vertexInfluence));
-	//	influenceData_ = { vertexInfluence,verticesSize };
-	//	influenceResource_.handle = ihandles;
-	//
-	//	
-	//#pragma endregion
-
 #pragma region OutputVertices
-
-
+	//UAV生成
 	outputVerticesResource_.resource = CreateUAVBufferResource(DXF_->GetDevice(), sizeof(VertexData) * verticesSize);
 
 	vbv_.BufferLocation = outputVerticesResource_.resource->GetGPUVirtualAddress();
@@ -241,39 +209,35 @@ void SkinningCS::Initialize(const ModelAllData& data)
 	oUAVDesc.Buffer.CounterOffsetInBytes = 0;
 	oUAVDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 	oUAVDesc.Buffer.StructureByteStride = sizeof(VertexData);
-
+	//UAV作成
 	DXF_->GetDevice()->CreateUnorderedAccessView(outputVerticesResource_.resource, nullptr, &oUAVDesc, outputVerticesResource_.handle.cpu);
 #pragma endregion
-
 #pragma region SkinningInfomation
+	//リソース生成
 	skinningInfoResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(SkinningInformation));
 	skinningInfoResource_->Map(0, nullptr, reinterpret_cast<void**>(&skinningInfoData_));
 	skinningInfoData_->numVertices = (int32_t)verticesSize;
-
-
 #pragma endregion
-
 #pragma endregion
-
-
-
 }
 
 D3D12_VERTEX_BUFFER_VIEW SkinningCS::PreDraw()
 {
 	//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	ID3D12GraphicsCommandList* cmd = DXF_->GetCMDList();
-
+	//シグネチャ設定
 	cmd->SetComputeRootSignature(rootSignature_);
+	//パイプライン設定
 	cmd->SetPipelineState(graphicsPipelineState_);
 
+	//テーブル設定
 	cmd->SetComputeRootDescriptorTable(0, modelData_->skinCluster.paletteSrvHandle.second);
 	cmd->SetComputeRootDescriptorTable(1, vertexResource_.handle.gpu);
 	cmd->SetComputeRootDescriptorTable(2, modelData_->skinCluster.influenceSrvHandle.second);
 	cmd->SetComputeRootDescriptorTable(3, outputVerticesResource_.handle.gpu);
 	cmd->SetComputeRootConstantBufferView(4, skinningInfoResource_->GetGPUVirtualAddress());
 
-
+	//CS処理
 	cmd->Dispatch(UINT(modelData_->model.vertices.size() + 1023) / 1024, 1, 1);
 
 	// リソースバリアの設定
@@ -283,7 +247,6 @@ D3D12_VERTEX_BUFFER_VIEW SkinningCS::PreDraw()
 	barrier.Transition.pResource = outputVerticesResource_.resource;  // 頂点バッファリソースへのポインタ
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
-	//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 
 	// コマンドリストにバリアを設定
 	cmd->ResourceBarrier(1, &barrier);

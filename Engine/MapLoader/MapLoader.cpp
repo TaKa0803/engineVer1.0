@@ -9,25 +9,39 @@
 #include"ImGuiManager/ImGuiManager.h"
 MapLoader* MapLoader::GetInstance()
 {
+	//インスタンス生成
 	static MapLoader ins;
 	return &ins;
 }
 
 void MapLoader::Initialize()
 {
+	//レベルデータのクリア
 	levelDatas_.clear();
 }
 
+/// <summary>
+/// DigreeをRadianに変換
+/// </summary>
+/// <param name="dig">digree</param>
+/// <returns></returns>
 float Dig2Rad(float dig) {
 	return dig * ((float)std::numbers::pi / 180);
 }
 
+/// <summary>
+/// マップ読み込み
+/// </summary>
+/// <param name="deserialized">jsonデータ</param>
+/// <param name="objects">データを入れるところ</param>
+/// <param name="tag">タグ</param>
 void LoadMap(nlohmann::json& deserialized, std::vector<ObjectData>& objects, std::string tag) {
+	//タグのオブジェクト取得
 	for (nlohmann::json& object : deserialized[tag]) {
+		//typeがなければ取得
 		assert(object.contains("type"));
 		//種別を取得
 		std::string type = object["type"].get<std::string>();
-
 
 		//MESHがある場合
 		if (type.compare("MESH") == 0) {
@@ -36,12 +50,12 @@ void LoadMap(nlohmann::json& deserialized, std::vector<ObjectData>& objects, std
 			objects.emplace_back(ObjectData{});
 			ObjectData& obData = objects.back();
 
-
 			//名前があったら追加
 			if (object.contains("file_name")) {
 				//ファイル名
 				obData.filename = object["file_name"];
 			}
+
 			//トランスフォーム値取得
 			nlohmann::json& transform = object["transform"];
 			//平行移動
@@ -52,19 +66,16 @@ void LoadMap(nlohmann::json& deserialized, std::vector<ObjectData>& objects, std
 			obData.transform.rotate_.x = Dig2Rad( - (float)transform["rotation"][0]);
 			obData.transform.rotate_.y = Dig2Rad( - (float)transform["rotation"][2]);
 			obData.transform.rotate_.z = Dig2Rad( - (float)transform["rotation"][1]);
-
-			
-
 			//スケーリング
 			obData.transform.scale_.x = (float)transform["scaling"][0];
 			obData.transform.scale_.y = (float)transform["scaling"][2];
 			obData.transform.scale_.z = (float)transform["scaling"][1];
 
-			//コライダー
-			
+			//コライダー			
 			if(object.contains("collider") ){
+				//データをいれるところ参照
 				nlohmann::json& collider = object["collider"];
-
+				//type取得
 				obData.collider.type = collider["type"];
 				//中心点
 				obData.collider.center.x = (float)collider["center"][0];
@@ -76,18 +87,16 @@ void LoadMap(nlohmann::json& deserialized, std::vector<ObjectData>& objects, std
 				obData.collider.size.z = (float)collider["size"][1];
 			}
 
-
-
 			//オブジェクトタグ走査
 			for (auto it = object.begin(); it != object.end();++it) {
 
+				//キー取得
 				std::string prop = it.key();
 
+				//どれかでも一致する場合流す
 				if (prop == "collider" || prop == "file_name" || prop == "transform") {
 					continue;
 				}
-
-
 
 				//トランスフォーム値取得
 				nlohmann::json& transform2 = object["transform"];
@@ -115,27 +124,32 @@ void LoadMap(nlohmann::json& deserialized, std::vector<ObjectData>& objects, std
 				}
 			}
 
-
+			//子供がいる場合
 			if (object.contains("children")) {
 				//nlohmann::json& child = object["children"];
+				//再帰処理
 				LoadMap(object, obData.child, "children");
 			}
-		}
-		
-		
+		}		
 	}
 }
 
+/// <summary>
+/// カスタムデータの読み込み
+/// </summary>
+/// <param name="deserialized">元データ</param>
+/// <param name="objects">データを入れるところ</param>
+/// <param name="tag">タグ</param>
 void LoadItem(nlohmann::json& deserialized, std::vector<Itemdata>& objects, std::string tag) {
+	//タグのところをすべて参照
 	for (nlohmann::json& object : deserialized[tag]) {
+		//typeがない場合エラー
 		assert(object.contains("type"));
 		//種別を取得
 		std::string type = object["type"].get<std::string>();
 
+		//指定名前がある場合
 		if (type.compare("SpawnPoint")==0) {
-
-			
-
 			//要素追加
 			objects.emplace_back(Itemdata{});
 			Itemdata& itData = objects.back();
@@ -149,8 +163,10 @@ void LoadItem(nlohmann::json& deserialized, std::vector<Itemdata>& objects, std:
 			//オブジェクトタグ走査
 			for (auto it = object.begin(); it != object.end(); ++it) {
 
+				//キー取得
 				std::string prop = it.key();
 
+				//いずれか一致する場合スキップ
 				if (prop == "collider" || prop == "file_name" || prop == "transform") {
 					continue;
 				}
@@ -187,11 +203,13 @@ void LoadItem(nlohmann::json& deserialized, std::vector<Itemdata>& objects, std:
 void MapLoader::LoadLevelEditor(const std::string& filename, const std::string& kExtension)
 {
 #pragma region 読み込み処理
+	//フルパス作成
 	const std::string fullpath = baseDirectory_ + filename + kExtension;
 
 	//ファイルストリーム
 	std::ifstream file;
 
+	//ファイルp－分
 	file.open(fullpath);
 	//失敗チェック
 	if (file.fail()) {
@@ -215,22 +233,24 @@ void MapLoader::LoadLevelEditor(const std::string& filename, const std::string& 
 	//正しいレベルデータファイルかチェック
 	assert(name.compare("scene") == 0);
 
-
 	//レベルデータ格納用インスタンスを取得
 	Leveldata* leveldata = new Leveldata();
 
-
+	//オブジェクトの座標、回転、サイズ取得
 	LoadMap(deserialized, leveldata->objects, "objects");
+	//カスタムパラメータ追加
 	LoadItem(deserialized, leveldata->items, "objects");
 
-
+	//データの保存
 	levelDatas_.emplace_back(leveldata);
 }
 
 
 void MapLoader::CreateModel(int mapNum)
 {
+	//ステージ番号登録
 	stageNum_ = mapNum;
+	//モデルをすべて読み込む
 	LoadModel(levelDatas_[mapNum]->objects);
 }
 
@@ -238,6 +258,7 @@ std::vector<Vector3> MapLoader::LoadObjectPosition(int mapNum)
 {
 	std::vector<Vector3>ans;
 
+	//すべてのオブジェクトの座標のみ保存
 	for (auto& data : levelDatas_[mapNum]->objects) {
 		ans.emplace_back(data.transform.translate_);
 	}
@@ -247,10 +268,12 @@ std::vector<Vector3> MapLoader::LoadObjectPosition(int mapNum)
 
 void MapLoader::UpdateLevelData()
 {
+	//モデルの更新
 	for (auto& data : models_[stageNum_]) {
 		data->Update();
 	}
 
+	//コライダーの更新
 	for (auto& data : colliders_) {
 		data->Update();
 	}
@@ -267,13 +290,15 @@ void MapLoader::UpdateLevelData()
 
 void MapLoader::DrawLevelData()
 {
+	//描画フラグが有効の場合
 	if (isDraw_) {
 		for (auto& data : models_[stageNum_]) {
 			data->Draw();
 		}
 	}
 
-	if (isDrawC_) {
+	//コライダー描画フラグが有効の場合
+	if (isDrawCollider_) {
 		for (auto& data : colliders_) {
 			if (data->isActive_) {
 				data->Draw();
@@ -284,9 +309,10 @@ void MapLoader::DrawLevelData()
 
 bool MapLoader::IsCollisionMap(SphereCollider* collider,Vector3& backV)
 {
-
+	//処理をおこなったらフラグ
 	bool ans = false;
 
+	//すべてのコライダーとの当たり判定
 	Vector3 backVec;
 	for (auto& cdata : colliders_) {
 		if (cdata->isActive_&&cdata->IsCollision(collider, backVec, 5)) {
@@ -300,10 +326,13 @@ bool MapLoader::IsCollisionMap(SphereCollider* collider,Vector3& backV)
 
 std::optional<float> MapLoader::GetObjectFloatValue(const std::string filename, const std::string valueName)
 {
+	//ステージ番号のオブジェクト取得
 	for (auto& object : levelDatas_[stageNum_]->objects) {
+		//名前が一致した場合
 		if (object.filename == filename) {
-
+			//値名取得
 			auto it = object.floatValue_.find(valueName);
+			//見つかった場合
 			if (it != object.floatValue_.end()) {
 				//キーが存在する場合
 				return it->second;
@@ -322,10 +351,13 @@ std::optional<float> MapLoader::GetObjectFloatValue(const std::string filename, 
 
 std::optional<Vector2> MapLoader::GetObjectVec2Value(const std::string filename, const std::string valueName)
 {
+	//ステージ番号のオブジェクト取得
 	for (auto& object : levelDatas_[stageNum_]->objects) {
+		//名前が一致した場合
 		if (object.filename == filename) {
-
+			//値名取得
 			auto it = object.v2Value_.find(valueName);
+			//見つかった場合
 			if (it != object.v2Value_.end()) {
 				//キーが存在する場合
 				return it->second;
@@ -344,10 +376,13 @@ std::optional<Vector2> MapLoader::GetObjectVec2Value(const std::string filename,
 
 std::optional<Vector3> MapLoader::GetObjectVec3Value(const std::string filename, const std::string valueName)
 {
+	//ステージ番号のオブジェクト取得
 	for (auto& object : levelDatas_[stageNum_]->objects) {
+		//名前が一致した場合
 		if (object.filename == filename) {
-
+			//値名取得
 			auto it = object.v3Value_.find(valueName);
+			//見つかった場合
 			if (it != object.v3Value_.end()) {
 				//キーが存在する場合
 				return it->second;
@@ -364,24 +399,27 @@ std::optional<Vector3> MapLoader::GetObjectVec3Value(const std::string filename,
 	return std::nullopt;
 }
 
-
-
 void MapLoader::LoadModel(const std::vector<ObjectData>&d)
 {
 	//今は一番前の飲み読み込み
 	for (auto& data : d) {
+		//インスタンスオブジェクト生成
 		std::unique_ptr<InstancingGameObject>obj = std::make_unique<InstancingGameObject>();
+		//初期化
 		obj->Initialize(data.filename);
+		//座標設定
 		obj->world_ = data.transform;
-		
-
+		//値設定
 		models_[stageNum_].push_back(std::move(obj));
+
+		//子がいるかチェック
 		if (data.child.size() != 0) {
 			LoadModel(data.child);
 		}
 
 		//こライダーデータ
 		if (data.collider.type == "BOX") {
+			//コライダー生成
 			std::unique_ptr<OBBCollider>newC = std::make_unique<OBBCollider>();
 			newC->Initialize(data.filename+" c");
 			newC->SetParent(&models_[stageNum_].back()->world_);

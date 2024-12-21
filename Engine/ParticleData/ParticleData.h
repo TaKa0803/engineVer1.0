@@ -5,13 +5,15 @@
 #include"struct.h"
 
 struct PerFrame {
+	//時間
 	float time;
+	//デルタタイム
 	float deltaTime;
 };
 
 //円範囲のエミッター
 struct EmiterSphere {
-
+	//色
 	Vector4 color;
 
 	//float padd;
@@ -25,9 +27,9 @@ struct EmiterSphere {
 
 
 	Vector2 speed;			//最小最大速度
-	Vector2 veloX;			//
-	Vector2 veloY;
-	Vector2 veloZ;
+	Vector2 veloX;			//最小最大向き方向X
+	Vector2 veloY;			//最小最大向き方向Y
+	Vector2 veloZ;			//最小最大向き方向Z
 
 	float emit;			//射出許可
 
@@ -35,7 +37,7 @@ struct EmiterSphere {
 	
 	float frequencyTime;	//生成時間カウント
 
-	float lifetime;
+	float lifetime;			//生成時間
 
 
 };
@@ -52,7 +54,10 @@ struct Particle {
 };
 
 struct PerView {
+	//ビュープロジェクション
 	Matrix4x4 viewProjection;
+	//ビルボードマトリックス
 	Matrix4x4 billboardMatrix;
+	//デルタタイム
 	float deltaTime;
 };

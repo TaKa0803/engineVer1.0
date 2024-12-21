@@ -151,5 +151,5 @@ private://**プライベート変数**//
 	bool isDraw_ = true;
 
 	//コライダー描画フラグ
-	bool isDrawC_ = true;
+	bool isDrawCollider_ = true;
 };

@@ -3,7 +3,7 @@
 #include"Input/Input.h"
 #include"Camera/Camera.h"
 #include"SphereCollider/SphereCollider.h"
-#include"Effect/EffectMove/EffectMove.h"
+#include"Game/Effect/Move/EffectMove.h"
 #include"Game/CirccleShadow/CirccleShadow.h"
 #include"Game/Player/Behavior/PlayerATKManager/PlayerATKManager.h"
 #include"Game/Player/Behavior/IPlayerBehavior.h"

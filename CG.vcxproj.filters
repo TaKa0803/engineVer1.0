@@ -160,7 +160,7 @@
     <ClCompile Include="Application\Game\Effect\LargeDebris\EffectLargeDebris.cpp">
       <Filter>Application\Game\Effect\LargeDebris</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Effect\EffectMove\EffectMove.cpp">
+    <ClCompile Include="Application\Game\Effect\Move\EffectMove.cpp">
       <Filter>Application\Game\Effect\Move</Filter>
     </ClCompile>
     <ClCompile Include="Application\Game\Effect\Normal\EffectNormal.cpp">
@@ -282,9 +282,6 @@
     </ClCompile>
     <ClCompile Include="Application\Game\Plane\Plane.cpp">
       <Filter>Application\Game\Plane</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\3d\Collider\ColliderPlane\PlaneCollider.cpp">
-      <Filter>Engine\Collider</Filter>
     </ClCompile>
     <ClCompile Include="Application\Game\Player\Player.cpp">
       <Filter>Application\Game\Player</Filter>
@@ -415,9 +412,15 @@
     <ClCompile Include="Engine\base\WinApp\WinApp.cpp">
       <Filter>Engine\base\WinApp</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GlobalVariable\Group\GlobalVariableGroup.cpp" />
-    <ClCompile Include="Engine\GlobalVariable\Manager\GlobalVaribleManager.cpp" />
-    <ClCompile Include="Engine\GlobalVariable\Tree\GlobalVariableTree.cpp" />
+    <ClCompile Include="Engine\GlobalVariable\Group\GlobalVariableGroup.cpp">
+      <Filter>Engine\GlobalVariable\Group</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GlobalVariable\Tree\GlobalVariableTree.cpp">
+      <Filter>Engine\GlobalVariable\Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GlobalVariable\Manager\GlobalVaribleManager.cpp">
+      <Filter>Engine\GlobalVariable\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\base\AudioManager\AudioManager.h">
@@ -489,7 +492,7 @@
     <ClInclude Include="Application\Game\Effect\LargeDebris\EffectLargeDebris.h">
       <Filter>Application\Game\Effect\LargeDebris</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Effect\EffectMove\EffectMove.h">
+    <ClInclude Include="Application\Game\Effect\Move\EffectMove.h">
       <Filter>Application\Game\Effect\Move</Filter>
     </ClInclude>
     <ClInclude Include="Application\Game\Effect\Normal\EffectNormal.h">
@@ -630,9 +633,6 @@
     <ClInclude Include="Application\Game\Plane\Plane.h">
       <Filter>Application\Game\Plane</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\3d\Collider\ColliderPlane\PlaneCollider.h">
-      <Filter>Engine\Collider</Filter>
-    </ClInclude>
     <ClInclude Include="Application\Game\Player\Player.h">
       <Filter>Application\Game\Player</Filter>
     </ClInclude>
@@ -762,10 +762,18 @@
     <ClInclude Include="Engine\base\WinApp\WinApp.h">
       <Filter>Engine\base\WinApp</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GlobalVariable\Group\GlobalVariableGroup.h" />
-    <ClInclude Include="Engine\GlobalVariable\Tree\GlobalVariableTree.h" />
-    <ClInclude Include="Engine\GlobalVariable\Manager\GlobalVaribleManager.h" />
-    <ClInclude Include="Engine\GlobalVariable\GlobalVariableDatas.h" />
+    <ClInclude Include="Engine\GlobalVariable\GlobalVariableDatas.h">
+      <Filter>Engine\GlobalVariable</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GlobalVariable\Group\GlobalVariableGroup.h">
+      <Filter>Engine\GlobalVariable\Group</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GlobalVariable\Tree\GlobalVariableTree.h">
+      <Filter>Engine\GlobalVariable\Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GlobalVariable\Manager\GlobalVaribleManager.h">
+      <Filter>Engine\GlobalVariable\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\PostEffect\CopyImage.hlsli">
@@ -1093,6 +1101,9 @@
     </Filter>
     <Filter Include="Engine\base\WinApp">
       <UniqueIdentifier>{e3c675cb-4303-4981-9851-02c2165145aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GlobalVariable\Tree">
+      <UniqueIdentifier>{3a8f8554-6483-4776-9d00-e9a0d152083f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
