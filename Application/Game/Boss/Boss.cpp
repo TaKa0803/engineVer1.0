@@ -95,6 +95,9 @@ void Boss::Initialize()
 	//死亡フラグを切る
 	isDead_ = false;
 
+	//アニメーションセット
+	SetAnimation(animeName_[(int)Boss::Animation::Idle2], 0,1.0f);
+
 	//状態初期化
 	behaviorReq_ = Behavior::IDLE;
 

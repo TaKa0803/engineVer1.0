@@ -17,10 +17,10 @@ SceneManager::SceneManager()
 {
 	sceneArr_.resize((int)SCENE::SceneCount);
 	sceneArr_[(int)SCENE::Debug] = std::make_unique<DebugScnene>();
-	//sceneArr_[(int)SCENE::TITLE] = std::make_unique<TitleScene>();
-	//sceneArr_[(int)SCENE::GAME] = std::make_unique<InGameScene>();
-	//sceneArr_[(int)SCENE::GAMEOVER] = std::make_unique<GameOverScene>();
-	//sceneArr_[(int)SCENE::GAMECLEAR] = std::make_unique<GameClearScene>();
+	sceneArr_[(int)SCENE::TITLE] = std::make_unique<TitleScene>();
+	sceneArr_[(int)SCENE::GAME] = std::make_unique<InGameScene>();
+	sceneArr_[(int)SCENE::GAMEOVER] = std::make_unique<GameOverScene>();
+	sceneArr_[(int)SCENE::GAMECLEAR] = std::make_unique<GameClearScene>();
 
 
 	//デバッグ用の値セット
@@ -32,7 +32,7 @@ SceneManager::SceneManager()
 void SceneManager::Initialize()
 {
 	//初期シーン設定
-	IScene::SetScene(SCENE::Debug);
+	IScene::SetScene(SCENE::TITLE);
 }
 
 void SceneManager::Update()
