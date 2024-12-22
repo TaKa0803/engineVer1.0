@@ -28,7 +28,7 @@ DebugScnene::DebugScnene()
 
 	//パーティクルマネージャ生成
 	particleManager_ = std::make_unique<ParticleManager>();
-	particleManager_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
+	particleManager_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png"));
 }
 
 DebugScnene::~DebugScnene() { 

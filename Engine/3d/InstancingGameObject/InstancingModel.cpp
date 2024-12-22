@@ -439,7 +439,9 @@ void InstancingModel::Initialize(
 	}
 	else {
 		//指定があった場合
-		texture_ = TextureManager::LoadTex(name).gpuHandle;
+		//一度読み込む処理を挟む
+		TextureManager::LoadTex(name);
+		texture_ = TextureManager::GetGPUHandle(name);
 		//texture_ = SRVM->GetTextureDescriptorHandle(texture);
 	}
 #pragma endregion

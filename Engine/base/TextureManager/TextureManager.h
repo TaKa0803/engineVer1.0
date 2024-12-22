@@ -1,26 +1,17 @@
 #pragma once
+#include"DirectXFunc/DirectXFunc.h"
+#include"struct.h"
+
 #include<string>
 #include<vector>
-
 #include<array>
-
-#include"DirectXTex/d3dx12.h"
-
-#include"DirectXTex/DirectXTex.h"
-
-
-#include"DirectXFunc/DirectXFunc.h"
+#include<DirectXTex/d3dx12.h>
+#include<DirectXTex/DirectXTex.h>
 
 #include<wrl.h>
 #include<map>
 
-//
-struct ReturnData
-{
-	D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle;
-	int texNum;
-};
-
+//画像管理マネージャ
 class TextureManager {
 public://シングルトンパターン
 	/// <summary>
@@ -53,14 +44,28 @@ public://**パブリック関数**//
 	/// </summary>
 	/// <param name="filePath"></param>
 	/// <returns></returns>
-	static ReturnData LoadTex(const std::string& filePath);
+	static int LoadTex(const std::string& filePath);
 
 	/// <summary>
 	/// resources/Texture/のショートパスで読み込み
 	/// </summary>
 	/// <param name="filePath">画像パス</param>
 	/// <returns></returns>
-	static ReturnData LoadTexShortPath(const std::string& filePath);
+	static int LoadTexShortPath(const std::string& filePath);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="texNum">画像番号</param>
+	/// <returns>GPUハンドル</returns>
+	static D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(int texNum);
+
+	/// <summary>
+	/// 読み込んである画像のGPUハンドルを返す
+	/// </summary>
+	/// <param name="name">画像のパス</param>
+	/// <returns></returns>
+	static D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(std::string name);
 
 
 	/// <summary>
@@ -82,7 +87,7 @@ private://**プライベート関数**//
 	/// <param name="filePath">ファイルパス</param>
 	/// <param name="mipImages"></param>
 	/// <returns></returns>
-	ReturnData CreateData(const std::string& filePath, const DirectX::ScratchImage& mipImages);
+	int CreateData(const std::string& filePath, const DirectX::ScratchImage& mipImages);
 
 	/// <summary>
 	/// 似たようなデータがないかチェック
@@ -96,7 +101,7 @@ private://**プライベート関数**//
 	/// </summary>
 	/// <param name="path">パス</param>
 	/// <returns>イテレータ番号</returns>
-	ReturnData GetDataFromPath(const std::string& path);
+	int GetDataFromPath(const std::string& path);
 
 private://**プライベート変数**//
 
@@ -106,25 +111,14 @@ private://**プライベート変数**//
 	//簡易パス
 	std::string shortPath_ = "resources/Texture/";
 
-	//画像データ
-	struct Texturedata {
-		//パスに対応したイテレータ番号
-		int texManagementNumber;
-		//パス
-		std::string filePath;
-	};
+	//タグとHandleのデータ群
+	std::map<std::string, Handles>tagNumDatas_;
 
-	//データ群
-	//std::vector<Texturedata*>datas_;
-
-	//タグとGPUHandleのデータ群
-	std::map<std::string, ReturnData>tagNumDatas_;
-
-	//画像データ群
-	std::map<int, Texturedata*>texDatas_;
+	//番号から参照する用の
+	std::map<int, std::string>texDatas_;
 
 	//UVチェッカー画像のパス
-	std::string uvCheckerTex = "resources/Texture/SystemResources/uvChecker.png";
+	std::string uvCheckerTex_ = "resources/Texture/SystemResources/uvChecker.png";
 
 	//const size_t maxTexNum_ = 256;
 };

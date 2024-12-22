@@ -44,9 +44,11 @@ InGameScene::InGameScene() {
 	plane_ = std::make_unique<Plane>();
 
 	//シーン遷移の画像読み込み
-	int texture = TextureManager::LoadTex(white).texNum;
+	int texture = TextureManager::white_;
+
 	//遷移につかう画像の生成
 	sceneC_.reset(Sprite::Create(texture, { 1,1 }, { 1,1 }, { 1280,720 }));
+
 	//色をセット
 	sceneC_->SetMaterialDataColor({ 0,0,0,1 });
 

@@ -37,7 +37,7 @@ Player::Player() {
 	//パーティクルマネージャの生成
 	hitPariticle = std::make_unique<ParticleManager>();
 	//パーティクルとして出す画像をセットして初期化
-	hitPariticle->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
+	hitPariticle->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png"));
 
 	//スタミナマネージャ生成
 	stamina_ = std::make_unique<PlayerStamina>();

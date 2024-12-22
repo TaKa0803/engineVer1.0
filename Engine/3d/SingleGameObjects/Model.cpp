@@ -27,8 +27,8 @@ Model::Model()
 
 Model::~Model() {
 
-	modelData_.skinCluster.influenceResource->Release();
-	modelData_.skinCluster.paletteResource->Release();
+	//modelData_.skinCluster.influenceResource->Release();
+	//modelData_.skinCluster.paletteResource->Release();
 
 	indexResource_->Release();
 	vertexResource_->Release();
@@ -253,16 +253,14 @@ void Model::Initialize(
 
 	localM_ = MakeIdentity4x4();
 
-	SRVManager* SRVM = SRVManager::GetInstance();
-
 	//スプライトの指定がない場合
 	if (name == "") {
 		int tex = TextureManager::uvChecker_;
-		texture_ = SRVM->GetTextureDescriptorHandle(tex);
+		texture_ = TextureManager::GetGPUHandle(tex);
 	}
 	else {
 		//指定があった場合
-		texture_ = TextureManager::LoadTex(name).gpuHandle;
+		texture_ = TextureManager::GetGPUHandle(TextureManager::LoadTex(name));
 	}
 
 
@@ -424,14 +422,14 @@ void Model::Draw(const Matrix4x4& worldMatrix, int texture)
 			DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(2, SRVManager::GetInstance()->GetTextureDescriptorHandle(texture));
 		}
 		
-		//仮
-		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(6, TextureManager::LoadTex("resources/Texture/CG/rostock_laage_airport_4k.dds").gpuHandle);
-
+		//仮で環境マップ画像を設定
+		DXF_->GetCMDList()->SetGraphicsRootDescriptorTable(6, TextureManager::GetGPUHandle(TextureManager::LoadTex("resources/Texture/CG/rostock_laage_airport_4k.dds")));
 
 		//描画！		
 		DXF_->GetCMDList()->DrawIndexedInstanced(static_cast<UINT>(modelData_.model.indices.size()), 1, 0, 0, 0);
 	}
 
+	//描画後スキニング処理
 	skinningCS_->PostDraw();
 }
 

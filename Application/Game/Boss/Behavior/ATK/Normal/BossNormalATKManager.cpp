@@ -30,7 +30,10 @@ BossNormalATKManager::BossNormalATKManager(Boss* boss)
 	typeArr_[(int)ATKType::BackStep] = std::make_unique<BossBackStep>();
 
 
+
 	//デバッグ用にパラメータをツリーに入れる
+	tree.name_ = "normal";
+	
 	//デバッグ用に文字列をまとめる
 	std::vector<std::string> atkname;
 	atkname.resize((int)ATKType::CountOfATKData);
@@ -46,7 +49,7 @@ BossNormalATKManager::BossNormalATKManager(Boss* boss)
 	}
 }
 
-void BossNormalATKManager::Initialize(std::optional<int>contract)
+void BossNormalATKManager::Initialize()
 {
 	//ランダムな技を選択して使用
 	//ここでtypeを変える処理
@@ -65,8 +68,10 @@ void BossNormalATKManager::Initialize(std::optional<int>contract)
 	Debug();
 
 	//攻撃を指定されていた場合その値にする
-	if (contract) {
-		type_ = (ATKType)contract.value();
+	if (contract_) {
+		type_ = (ATKType)contract_.value();
+		//値削除
+		contract_ = std::nullopt;
 	}
 
 	////初期化

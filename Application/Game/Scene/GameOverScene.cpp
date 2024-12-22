@@ -7,7 +7,7 @@ GameOverScene::GameOverScene()
 	inp_ = Input::GetInstance();
 
 	//画像を読み込む
-	int tex = TextureManager::LoadTex("resources/Texture/AL/gameover.png").texNum;
+	int tex = TextureManager::LoadTex("resources/Texture/AL/gameover.png");
 	//読み込んだ画像でスプライトを生成
 	logo_.reset(Sprite::Create(tex, { 1280,720 }, { 1280,720 }, { 1280,720 }));
 

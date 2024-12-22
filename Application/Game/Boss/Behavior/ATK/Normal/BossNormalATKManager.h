@@ -1,14 +1,12 @@
 #pragma once
+#include"Game/Boss/Behavior/ATK/IATKManager/IBossATKManager.h"
 #include"Game/Boss/Behavior/ATK/IATK/IATK.h"
 #include"GlobalVariable/Tree/GlobalVariableTree.h"
 #include<iostream>
 #include<vector>
 
-//ボスの前方宣言
-class Boss;
-
 //ノーマル状態の攻撃の管理クラス
-class BossNormalATKManager {
+class BossNormalATKManager :public IBossATKManager {
 
 public: //**パブリック関数**//
 
@@ -22,19 +20,12 @@ public: //**パブリック関数**//
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	/// <param name="contract">指定攻撃番号</param>
-	void Initialize(std::optional<int>contract);
+	void Initialize()override;
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
-
-	/// <summary>
-	/// ツリーの取得
-	/// </summary>
-	/// <returns>ツリーの参照データ</returns>
-	GlobalVariableTree& GetTree() { return tree; };
+	void Update()override;
 
 private: /**プライベート関数**/
 
@@ -42,11 +33,6 @@ private: /**プライベート関数**/
 	/// デバッグ処理まとめ
 	/// </summary>
 	void Debug();
-
-private: //**参照物**//
-
-	//ボスのポインタ
-	Boss* boss_;
 
 private://**ノーマルの攻撃手段**//
 
@@ -64,11 +50,7 @@ private://**ノーマルの攻撃手段**//
 	//攻撃状態群
 	std::vector<std::unique_ptr<BossBaseATK>> typeArr_;
 
-
 private: //**デバッグ変数**//
-
-	//デバッグ用ツリー
-	GlobalVariableTree tree = GlobalVariableTree("normal");
 
 	//攻撃の文字列
 	std::string atkTypeName_[CountOfATKData]={
@@ -79,13 +61,4 @@ private: //**デバッグ変数**//
 		//"サマーソルト",
 		"バックステップ",
 	};
-
-	//現在の攻撃の名前
-	std::string nowAtkName_ = "";
-
-	//攻撃指定
-	bool isDesignate_ = false;
-
-	//指定攻撃
-	int designateType_ = 0;
 };

@@ -12,7 +12,7 @@ SkyBoxModel::SkyBoxModel(const std::string& texPath)
 	pso_->Initialize();
 
 	//画像読み込み
-	texture_ = TextureManager::GetInstance()->LoadTex(texPath).gpuHandle;
+	texture_ = TextureManager::GetGPUHandle(TextureManager::LoadTex(texPath));
 
 	//頂点リソース作成
 	vertexResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(VertexData) * 8);

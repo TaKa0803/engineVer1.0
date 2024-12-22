@@ -10,7 +10,7 @@ EffectMove::EffectMove()
 void EffectMove::Initialize(const Vector4& color)
 {
 	//パーてぅくるクラス初期化
-	particleM_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png").texNum);
+	particleM_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png"));
 	//関数呼び出し時のみ発生するフラグON
 	particleM_->SetOnlyImpact(true);
 	//パーティクルのエミッターパラメータ設定

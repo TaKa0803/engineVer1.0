@@ -250,6 +250,7 @@ private: //**変数**//
 	//状態群
 	std::vector<std::unique_ptr<IBossBehavior>>behaviors_;
 
+
 	//簡易影
 	std::unique_ptr<CirccleShadow>shadow_;
 

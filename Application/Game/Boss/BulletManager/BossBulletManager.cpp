@@ -10,7 +10,7 @@ BossBulletManager::BossBulletManager()
 	//あらかじめメモリを確保しておく
 	datas_.reserve(10);
 	InstancingGameObject::Initialize("BossBullet");
-	IMM_->SetTexture(tag_, TextureManager::LoadTexShortPath("AL/whiteGrid.png").texNum);
+	IMM_->SetTexture(tag_, TextureManager::LoadTexShortPath("AL/whiteGrid.png"));
 
 	//デバッグ用にツリーにパラメータを設定
 	tree_.name_ = "弾マネージャ";

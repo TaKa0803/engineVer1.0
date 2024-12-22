@@ -7,14 +7,15 @@ BossATKTypeManager::BossATKTypeManager(Boss* boss)
 {
 	//ボスのポインタ取得
 	boss_ = boss;
+	//サイズ分拡張
+	behaviors_.resize(CountModeType);
 	//通常攻撃の生成
-	normal_ = std::make_unique<BossNormalATKManager>(boss);
+	behaviors_[Normal]= std::make_unique<BossNormalATKManager>(boss);
 
 	//デバッグ用にパラメータ設定
 	std::unique_ptr<GlobalVariableGroup> gvg = std::make_unique<GlobalVariableGroup>("BossATKManager");
 	gvg->SetMonitorValue("behavior", &nowTypeName_);
 	gvg->SetTreeData(normal_->GetTree());
-
 }
 
 void BossATKTypeManager::SceneInit()
@@ -30,7 +31,7 @@ void BossATKTypeManager::Initialize()
 	boss_->isFinishedATK_ = false;
 
 	//実際の初期化処理
-	(this->*TypeInit[(int)modeType])(plannedATK_);
+	(this->*TypeInit[(int)modeType])();
 
 	//もし値がある場合消す
 	if (plannedATK_) {
@@ -59,7 +60,7 @@ void BossATKTypeManager::Update()
 }
 
 //TODO関数テーブルからポリモーフィズムに変更
-void (BossATKTypeManager::* BossATKTypeManager::TypeInit[])(std::optional<int>contract) {
+void (BossATKTypeManager::* BossATKTypeManager::TypeInit[])() {
 	&BossATKTypeManager::InitNormal,
 };
 void (BossATKTypeManager::* BossATKTypeManager::TypeUpdate[])() {
@@ -68,7 +69,7 @@ void (BossATKTypeManager::* BossATKTypeManager::TypeUpdate[])() {
 
 #pragma region 各状態の初期化と更新
 //TODO関数テーブルからポリモーフィズムに変更
-void BossATKTypeManager::InitNormal(std::optional<int>contract) { normal_->Initialize(contract); }
+void BossATKTypeManager::InitNormal() { normal_->Initialize(); }
 void BossATKTypeManager::UpdateNormal() { normal_->Update(); }
 #pragma endregion
 

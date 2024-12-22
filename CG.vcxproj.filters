@@ -775,6 +775,7 @@
       <Filter>Engine\GlobalVariable\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Application\SceneFactory\SceneFactory.h" />
+    <ClInclude Include="Application\Game\Boss\Behavior\ATK\IATKManager\IBossATKManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\PostEffect\CopyImage.hlsli">

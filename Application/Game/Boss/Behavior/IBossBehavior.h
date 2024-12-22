@@ -30,6 +30,8 @@ public:	//**パブリック関数**//
 
 public:	//**デバッグ用**//
 
+	Boss* boss_=nullptr;
+
 	//デバッグツリー
 	GlobalVariableTree tree_ = GlobalVariableTree("");
 };

@@ -5,36 +5,34 @@
 GameUI::GameUI()
 {
 	//ボタン画像読み込み
-	int texture = TextureManager::LoadTex("resources/Texture/AL/B.png").texNum;
+	int texture = TextureManager::LoadTex("resources/Texture/AL/B.png");
 	//スプライト生成
 	BButton_.reset(Sprite::Create(texture, { 180,90 }, { 90,90 }, { 64,64 }, { 1045, 650 }));
 
 	//ボタン画像読み込み
-	texture = TextureManager::LoadTexShortPath("AL/X.png").texNum;
+	texture = TextureManager::LoadTexShortPath("AL/X.png");
 	//スプライト生成
 	XButton_.reset(Sprite::Create(texture, { 180,90 }, { 90,90 }, { 64,64 }, { 1045, 650 }));
 
 	//ボタン画像読み込み
-	texture = TextureManager::LoadTexShortPath("AL/A.png").texNum;
+	texture = TextureManager::LoadTexShortPath("AL/A.png");
 	//スプライト生成
 	AButton_.reset(Sprite::Create(texture, { 180,90 }, { 90,90 }, { 64,64 }, { 1045, 650 }));
 
 
 	//攻撃アイコン画像読み込み
-	texture = TextureManager::LoadTexShortPath("AL/punch.png").texNum;
+	texture = TextureManager::LoadTexShortPath("AL/punch.png");
 	//スプライト生成
 	punchSp_.reset(Sprite::Create(texture, { 180,90 }, { 90,90 }, { 90,90 }, { 1070,650 }));
 
 
-	texture = TextureManager::LoadTexShortPath("AL/dash.png").texNum;
+	texture = TextureManager::LoadTexShortPath("AL/dash.png");
 	//スプライト生成
 	dashSp_.reset(Sprite::Create(texture, { 180,90 }, { 90,90 }, { 90,90 }, { 1070,650 }));
 	
-	texture = TextureManager::LoadTexShortPath("AL/roll.png").texNum;
+	texture = TextureManager::LoadTexShortPath("AL/roll.png");
 	//スプライト生成
 	rollSp_.reset(Sprite::Create(texture, { 180,90 }, { 90,90 }, { 90,90 }, { 1070,650 }));
-
-
 
 	//デバッグのために値をセット
 	std::unique_ptr<GlobalVariableGroup>gvg = std::make_unique<GlobalVariableGroup>("UI");

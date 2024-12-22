@@ -179,10 +179,10 @@ PEDissolve::PEDissolve()
 	materialData_->discardColor = { 1,1,1,0 };
 	materialData_->edgeColor = { 1.0f,0.4f,0.3f,1.0f };
 
-	noice1_ = TextureManager::LoadTex("resources/Texture/Systemresources/noise0.png").gpuHandle;
-	noice2_ = TextureManager::LoadTex("resources/Texture/Systemresources/noise1.png").gpuHandle;
+	noice1_ = TextureManager::GetGPUHandle(TextureManager::LoadTex("resources/Texture/Systemresources/noise0.png"));
+	noice2_ = TextureManager::GetGPUHandle(TextureManager::LoadTex("resources/Texture/Systemresources/noise1.png"));
 
-
+	//ログ出力
 	Log("Complete DissolvePSO Initialized!\n");
 }
 
@@ -226,7 +226,9 @@ void PEDissolve::Release()
 
 void PEDissolve::SetDissolveTexture(const std::string& path)
 {
-	dissolveTexture_ = TextureManager::LoadTex(path).gpuHandle;
+	//マスク画像設定
+	dissolveTexture_ = TextureManager::GetGPUHandle(path);
 
+	//画像セットフラグ有効
 	isSetTexture_ = true;
 }

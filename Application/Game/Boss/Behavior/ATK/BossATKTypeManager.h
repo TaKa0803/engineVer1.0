@@ -1,6 +1,7 @@
 #pragma once
-#include"Game/Boss/Behavior/ATK/Normal/BossNormalATKManager.h"
 #include"Game/Boss/Behavior/IBossBehavior.h"
+#include"Game/Boss/Behavior/ATK/BossATKTypeManager.h"
+#include"Game/Boss/Behavior/ATK/Normal/BossNormalATKManager.h"
 #include<iostream>
 
 
@@ -37,10 +38,6 @@ public: //**パブリック関数**//
 	/// <param name="atknum"></param>
 	void GetATKContract(int atknum) { plannedATK_ = atknum; };
 
-private: //**参照物**//
-	//ボスのポインタ
-	Boss* boss_;
-
 private: //**ボス攻撃タイプによる変化**//
 	
 	//ボスの攻撃タイプ
@@ -48,21 +45,24 @@ private: //**ボス攻撃タイプによる変化**//
 		Normal,			//通常
 		Katana,			//カタナ持ち
 		Bow,			//弓
-		_countModeType	//攻撃タイプ数
+		CountModeType	//攻撃タイプ数
 	};
 
 	//現在のタイプ
 	ModeTypes modeType = Normal;
 
 	//初期化関数テーブル
-	static void(BossATKTypeManager::* TypeInit[]) (std::optional<int>contract);
+	static void(BossATKTypeManager::* TypeInit[]) ();
 	//更新関数テーブル
 	static void(BossATKTypeManager::* TypeUpdate[]) ();
 
 	//通常初期化
-	void InitNormal(std::optional<int>contract);
+	void InitNormal();
 	//更新初期化
 	void UpdateNormal();
+
+	//ボスの攻撃タイプ群
+	std::vector<std::unique_ptr<IBossATKManager>>behaviors_;
 
 	//通常状態の攻撃処理
 	std::unique_ptr<BossNormalATKManager>normal_;
@@ -75,7 +75,7 @@ private: //**変数**//
 private: //**デバッグ**//
 
 	//攻撃タイプの名前群
-	std::string typeName_[_countModeType]{
+	std::string typeName_[CountModeType]{
 		"Normal",	//通常
 		"Katana",	//カタナ
 		"Bow"		//弓
