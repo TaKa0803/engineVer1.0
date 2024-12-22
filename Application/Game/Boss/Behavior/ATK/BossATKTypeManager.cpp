@@ -2,6 +2,7 @@
 #include"Game/Boss/Boss.h"
 #include"GlobalVariable/Group/GlobalVariableGroup.h"
 
+#include"Game/Boss/Behavior/ATK/Normal/BossNormalATKManager.h"
 
 BossATKTypeManager::BossATKTypeManager(Boss* boss)
 {

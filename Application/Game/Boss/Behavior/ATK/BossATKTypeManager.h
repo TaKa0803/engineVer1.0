@@ -1,7 +1,7 @@
 #pragma once
 #include"Game/Boss/Behavior/IBossBehavior.h"
-#include"Game/Boss/Behavior/ATK/BossATKTypeManager.h"
-#include"Game/Boss/Behavior/ATK/Normal/BossNormalATKManager.h"
+#include"Game/Boss/Behavior/ATK/IATKManager/IBossATKManager.h"
+
 #include<iostream>
 
 
