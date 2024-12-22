@@ -51,21 +51,8 @@ private: //**ボス攻撃タイプによる変化**//
 	//現在のタイプ
 	ModeTypes modeType = Normal;
 
-	//初期化関数テーブル
-	static void(BossATKTypeManager::* TypeInit[]) ();
-	//更新関数テーブル
-	static void(BossATKTypeManager::* TypeUpdate[]) ();
-
-	//通常初期化
-	void InitNormal();
-	//更新初期化
-	void UpdateNormal();
-
 	//ボスの攻撃タイプ群
 	std::vector<std::unique_ptr<IBossATKManager>>behaviors_;
-
-	//通常状態の攻撃処理
-	std::unique_ptr<BossNormalATKManager>normal_;
 
 private: //**変数**//
 

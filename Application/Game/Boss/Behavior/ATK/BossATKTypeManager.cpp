@@ -15,7 +15,7 @@ BossATKTypeManager::BossATKTypeManager(Boss* boss)
 	//デバッグ用にパラメータ設定
 	std::unique_ptr<GlobalVariableGroup> gvg = std::make_unique<GlobalVariableGroup>("BossATKManager");
 	gvg->SetMonitorValue("behavior", &nowTypeName_);
-	gvg->SetTreeData(normal_->GetTree());
+	gvg->SetTreeData(behaviors_[Normal]->GetTree());
 }
 
 void BossATKTypeManager::SceneInit()
@@ -31,10 +31,11 @@ void BossATKTypeManager::Initialize()
 	boss_->isFinishedATK_ = false;
 
 	//実際の初期化処理
-	(this->*TypeInit[(int)modeType])();
+	behaviors_[Normal]->Initialize();
 
 	//もし値がある場合消す
 	if (plannedATK_) {
+		behaviors_[Normal]->SetATKNum(plannedATK_.value());
 		plannedATK_ = std::nullopt;
 	}
 }
@@ -48,7 +49,7 @@ void BossATKTypeManager::Update()
 #endif // _DEBUG
 
 	//状態の更新
-	(this->*TypeUpdate[(int)modeType])();
+	behaviors_[Normal]->Update();
 
 	//攻撃が終わった場合の処理
 	//追い討ちなどかけない場合は素直にIDLE状態へ
@@ -58,18 +59,3 @@ void BossATKTypeManager::Update()
 		boss_->SetBehavior(Boss::Behavior::IDLE);
 	}
 }
-
-//TODO関数テーブルからポリモーフィズムに変更
-void (BossATKTypeManager::* BossATKTypeManager::TypeInit[])() {
-	&BossATKTypeManager::InitNormal,
-};
-void (BossATKTypeManager::* BossATKTypeManager::TypeUpdate[])() {
-	&BossATKTypeManager::UpdateNormal
-};
-
-#pragma region 各状態の初期化と更新
-//TODO関数テーブルからポリモーフィズムに変更
-void BossATKTypeManager::InitNormal() { normal_->Initialize(); }
-void BossATKTypeManager::UpdateNormal() { normal_->Update(); }
-#pragma endregion
-
