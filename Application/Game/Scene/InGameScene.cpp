@@ -194,7 +194,7 @@ void InGameScene::Collision() {
 	}
 
 	//プレイヤーとボスの弾と判定
-	if (BossBulletManager::GetInstance()->CheckCollision(player_->GetCollider())) {
+	if (boss_->CheckCollisionAmmo(player_->GetCollider())) {
 		//プレイヤー接触判定
 		player_->OnCollision();
 		//カメラシェイク処理ON
@@ -243,11 +243,11 @@ void InGameScene::SceneChange() {
 			sceneC_->SetColorAlpha(1);
 			if (player_->data_.isDead) {
 				//ゲームシーンに変更
-				sceneNo = GAMEOVER;
+				SetScene(SCENE::GAMEOVER);
 			}
 			else if (boss_->isDead_) {
 				//ゲームシーンに変更
-				sceneNo = GAMECLEAR;
+				SetScene(SCENE::GAMECLEAR);
 			}
 		}
 		else {

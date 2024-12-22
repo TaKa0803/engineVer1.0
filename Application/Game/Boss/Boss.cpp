@@ -20,9 +20,7 @@ Boss::Boss(Player* player)
 	input_->SetDeadLine(0.3f);
 
 	//弾マネージャのインスタンス取得
-	bulletM_ = BossBulletManager::GetInstance();
-	//初期設定
-	bulletM_->SetUp();
+	bulletM_ = std::make_unique<BossBulletManager>();
 
 	//落下エフェクト生成
 	stumpEffect_ = std::make_unique<EffectLargeDebris>();
@@ -207,6 +205,11 @@ void Boss::OnCollision()
 		//HPを減らす
 		nowHP--;
 	}
+}
+
+bool Boss::CheckCollisionAmmo(const SphereCollider* co)
+{
+	return bulletM_->CheckCollision(co);
 }
 
 Vector3 Boss::GetBoss2PlayerDirection()

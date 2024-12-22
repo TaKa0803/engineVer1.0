@@ -281,7 +281,7 @@ void MapLoader::UpdateLevelData()
 #ifdef _DEBUG
 	ImGui::Begin("maploader");
 	ImGui::Checkbox("drawM", &isDraw_);
-	ImGui::Checkbox("drawC", &isDrawC_);
+	//ImGui::Checkbox("drawC", &isDrawC_);
 
 	ImGui::End();
 #endif // _DEBUG

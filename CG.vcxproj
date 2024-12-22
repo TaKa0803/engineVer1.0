@@ -441,6 +441,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\Game\Plane\Plane.h" />
     <ClInclude Include="Application\AppScene\AppScene.h" />
     <ClInclude Include="Application\IScene\IScene.h" />
+    <ClInclude Include="Application\SceneFactory\SceneFactory.h" />
     <ClInclude Include="Application\SceneManager\SceneManager.h" />
     <ClInclude Include="Engine\2d\SpriteManager\SpriteManager.h" />
     <ClInclude Include="Engine\2d\SpritePSO\SpritePSO.h" />

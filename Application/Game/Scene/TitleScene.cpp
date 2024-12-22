@@ -127,7 +127,7 @@ void TitleScene::SceneChange()
 
 		if (sceneXhangeCount_++ >= maxSceneChangeCount_) {
 			sceneC_->SetColorAlpha(1);
-			sceneNo = GAME;
+			SetScene(SCENE::GAME);
 		}
 	}
 	else {

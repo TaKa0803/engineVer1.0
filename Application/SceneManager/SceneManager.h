@@ -36,14 +36,9 @@ public://**パブリック関数**//
 private://**プライベート変数**//
 
 	/// <summary>
-	/// 各種シーン管理
+	/// シーン
 	/// </summary>
-	std::vector<std::unique_ptr<IScene>> sceneArr_;
-
-	/// <summary>
-	/// シーンの名前
-	/// </summary>
-	std::vector<std::string> sceneName_;
+	std::unique_ptr<IScene> sceneArr_;
 
 	//現在のシーン
 	std::string scenename_ = "";

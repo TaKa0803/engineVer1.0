@@ -4,9 +4,6 @@
 
 BossShotBullet::BossShotBullet()
 {
-	//弾マネージャのインスタンス取得
-	bulletM_ = BossBulletManager::GetInstance();
-
 	//デバッグ用にパラメータを設定
 	treeData_.name_ = "弾発射";
 	treeData_.SetValue("弾の数", &shotNum_);
@@ -103,7 +100,7 @@ void BossShotBullet::UpdateWarning()
 			newData.velo = boss_->GetPlayerWorldTranslate() - newData.world.translate_;
 
 			//データ追加
-			bulletM_->SetData(newData);
+			boss_->SetAmmoData(newData);
 
 			//発生カウント増加
 			shotCount_++;
@@ -131,7 +128,7 @@ void BossShotBullet::UpdateWarning()
 void BossShotBullet::UpdateATK()
 {
 	//弾がすべて消えたら元に戻る処理
-	if (bulletM_->GetBulletCount() == 0) {
+	if (boss_->GetBulletCount() == 0) {
 		//状態を変更
 		behaviReq_ = Back;
 	}

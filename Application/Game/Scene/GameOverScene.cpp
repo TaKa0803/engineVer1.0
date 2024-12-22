@@ -22,7 +22,7 @@ void GameOverScene::Update()
 	//キー入力で次シーンへ
 	if (inp_->TriggerKey(DIK_SPACE) || inp_->IsTriggerButton(kPadButton::kButtonB)) {
 		//タイトルへ戻る
-		sceneNo = TITLE;
+		SetScene(SCENE::TITLE);
 	}
 }
 

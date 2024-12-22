@@ -40,7 +40,7 @@ public: //**パブリック変数：状態管理関係**//
 
 		PrePunch,		//パンチ構え
 		Punch,			//パンチ中
-	
+
 		PreSumersolt,	//サマーソルト前
 		SumerSolt,		//サマーソルト中
 
@@ -118,7 +118,7 @@ public: //**パブリック関数**//
 	/// </summary>
 	/// <param name="player">プレイヤーのポインタ</param>
 	Boss(Player* player);
-	~Boss()=default;
+	~Boss() = default;
 
 	/// <summary>
 	/// 初期化
@@ -151,6 +151,13 @@ public: //**パブリック関数**//
 	/// <param name="pos">エフェクト発生座標</param>
 	void SpawnStumpEffect(const Vector3& pos) { stumpEffect_->Spawn(pos); }
 
+	/// <summary>
+	/// ボスの弾との当たり判定
+	/// </summary>
+	/// <param name="co">ヒット確認するコライダー</param>
+	/// <returns>当たったか否か</returns>
+	bool CheckCollisionAmmo(const SphereCollider* co);
+
 public: //**ゲッター**//
 
 	/// <summary>
@@ -176,6 +183,12 @@ public: //**ゲッター**//
 	/// </summary>
 	/// <returns></returns>
 	Vector3 GetPlayerWorldTranslate() { return player_->world_.GetWorldTranslate(); };
+
+	/// <summary>
+	/// 弾の数を取得
+	/// </summary>
+	/// <returns>弾の数</returns>
+	int GetBulletCount() { return bulletM_->GetBulletCount(); }
 
 public: //**セッター**//
 
@@ -203,7 +216,7 @@ public: //**セッター**//
 	/// <param name="sec">変わりきるまでの秒数</param>
 	/// <param name="loopSec">ループ時間</param>
 	/// <param name="isLoop">ループフラグ</param>
-	void SetAnimation(const std::string& animeName, float sec, float loopSec=1.0f, bool isLoop = true);
+	void SetAnimation(const std::string& animeName, float sec, float loopSec = 1.0f, bool isLoop = true);
 
 	/// <summary>
 	/// アニメーション進行を０-１で管理
@@ -212,16 +225,19 @@ public: //**セッター**//
 	/// <param name="t">０-１のアニメーション進行度</param>
 	void SetAnimeTime(bool active, float t = 0) { model_->SetAnimationTime(active, t); }
 
+	/// <summary>
+	/// 弾データをセット
+	/// </summary>
+	/// <param name="data"></param>
+	void SetAmmoData(const BossBulletData& data) { bulletM_->SetData(data); }
+
 private://**参照**//
 
 	//入力
 	Input* input_ = nullptr;
 
 	//プレイヤー
-	Player*player_;
-
-	//弾マネージャ
-	BossBulletManager* bulletM_;
+	Player* player_;
 
 private: //**変数**//
 
@@ -247,6 +263,9 @@ private: //**変数**//
 
 	//落下攻撃エフェクト
 	std::unique_ptr<EffectLargeDebris>stumpEffect_;
+
+	//弾マネージャ
+	std::unique_ptr<BossBulletManager> bulletM_;
 
 public: //**パラメータ**//
 
@@ -277,5 +296,5 @@ private: //**デバッグ用**//
 		"ATK"
 	};
 	//現在の状態の名前
-	std::string nowBehaviorName_="";
+	std::string nowBehaviorName_ = "";
 };

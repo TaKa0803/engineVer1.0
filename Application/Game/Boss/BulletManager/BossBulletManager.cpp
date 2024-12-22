@@ -2,24 +2,15 @@
 #include"DeltaTimer/DeltaTimer.h"
 #include"TextureManager/TextureManager.h"
 
-BossBulletManager* BossBulletManager::GetInstance()
-{
-	//インスタンス取得
-	static BossBulletManager ins;
-	return &ins;
-}
-
-
-
-void BossBulletManager::SetUp()
+BossBulletManager::BossBulletManager()
 {
 	//ヒットエフェクト生成
-	hiteffect_ = std::make_unique<EffectNormal>("smallDebris","hitplaneEffect");
+	hiteffect_ = std::make_unique<EffectNormal>("smallDebris", "hitplaneEffect");
 
 	//あらかじめメモリを確保しておく
 	datas_.reserve(10);
 	InstancingGameObject::Initialize("BossBullet");
-	IMM_->SetTexture(tag_,TextureManager::LoadTexShortPath("AL/whiteGrid.png").texNum);
+	IMM_->SetTexture(tag_, TextureManager::LoadTexShortPath("AL/whiteGrid.png").texNum);
 
 	//デバッグ用にツリーにパラメータを設定
 	tree_.name_ = "弾マネージャ";
@@ -27,10 +18,7 @@ void BossBulletManager::SetUp()
 	tree_.SetValue("死亡までのカウント", &maxDeadSec_);
 	tree_.SetValue("弾のサイズ", &ammoScale_);
 	tree_.SetValue("コライダーサイズ", &colliderScale_);
-	tree_.SetTreeData(IMM_->CreateAndGetTree(tag_,"モデル"));
-	
-
-	
+	tree_.SetTreeData(IMM_->CreateAndGetTree(tag_, "モデル"));
 }
 
 void BossBulletManager::Initialize()

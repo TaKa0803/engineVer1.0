@@ -38,7 +38,6 @@ Model::~Model() {
 	cameraResource_->Release();
 	pointlightResource_->Release();
 
-	skinningCS_.reset();
 }
 
 

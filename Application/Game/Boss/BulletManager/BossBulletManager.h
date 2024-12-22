@@ -13,21 +13,14 @@ struct BossBulletData {
 //ボスの弾の管理マネージャ
 class BossBulletManager :private InstancingGameObject{
 
-//TODO#シングルトンをやめる
-public://シングルトンパターン
-	static BossBulletManager* GetInstance();
-private://シングルトンパターン
-	BossBulletManager() = default;
-	~BossBulletManager() = default;
-	BossBulletManager(const BossBulletManager& o) = delete;
-	const BossBulletManager& operator=(const BossBulletManager& o) = delete;
-
 public: //**パブリック関数**//
 
 	/// <summary>
-	/// 一度呼び出せばよい
+	/// コンストラクタ
 	/// </summary>
-	void SetUp();
+	BossBulletManager();
+	~BossBulletManager()=default;
+
 
 	/// <summary>
 	/// 初期化処理

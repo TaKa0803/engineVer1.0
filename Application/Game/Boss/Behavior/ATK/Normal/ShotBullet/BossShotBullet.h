@@ -1,6 +1,5 @@
 #pragma once
 #include"Game/Boss/Behavior/ATK/IATK/IATK.h"
-#include"Game/Boss/BulletManager/BossBulletManager.h"
 
 //ボスの弾発射攻撃処理
 class BossShotBullet : public BossBaseATK {
@@ -27,11 +26,6 @@ public: //**各状態の処理関数**//
 	void UpdateATK()  override;
 	void UpdateStiffness() override {};
 	void UpdateBack()  override;
-
-private: //**参照物**//
-
-	//弾マネージャ
-	BossBulletManager* bulletM_=nullptr;
 
 private: //**変数**//
 

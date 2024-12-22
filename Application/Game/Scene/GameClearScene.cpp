@@ -10,12 +10,12 @@ GameClearScene::GameClearScene()
 	inp_ = Input::GetInstance();
 
 	//スクリーンショットスプライト生成
-	screanShot_.reset(Sprite::Create(TextureManager::white_, { 1280,720 }, { 1280,720 },{1280,720}));
+	screanShot_.reset(Sprite::Create(TextureManager::white_, { 1280,720 }, { 1280,720 }, { 1280,720 }));
 	//クリアテキスト画像を読み込んでスプライト生成
 	clearText_.reset(Sprite::Create(TextureManager::LoadTex("resources/Texture/AL/gameClear.png").texNum, { 1280,720 }, { 1280,720 }, { 1280,720 }));
 	//Bボタン画像を読み込んでスプライト生成
 	bButton_.reset(Sprite::Create(TextureManager::LoadTex("resources/Texture/AL/B.png").texNum, { 180,90 }, { 90,90 }, { 60,60 }));
-	
+
 	//デバッグ用にパラメータをグループに設定
 	std::unique_ptr<GlobalVariableGroup>gvg = std::make_unique<GlobalVariableGroup>("クリアシーン");
 	gvg->SetTreeData(clearText_->GetTree("クリアテキスト"));
@@ -40,7 +40,7 @@ void GameClearScene::Update()
 		//音を止める
 		AudioManager::GetInstance()->StopAllSounds();
 		//タイトルシーンへ
-		sceneNo = TITLE;
+		SetScene(SCENE::TITLE);
 	}
 }
 

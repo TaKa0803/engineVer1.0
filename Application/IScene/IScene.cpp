@@ -1,6 +1,6 @@
 #include"IScene/IScene.h"
 
-int IScene::sceneNo = 0;
+int IScene::sceneNo = (int)SCENE::TITLE;
 
 bool IScene::leaveGame = false;
 
@@ -8,4 +8,4 @@ IScene::~IScene() {}
 
 int& IScene::GetSceneNo() { return sceneNo; }
 
-void IScene::SetSceneNo(int num) { sceneNo = num; }
+void IScene::SetScene(SCENE num) { sceneNo = (int)num; }
