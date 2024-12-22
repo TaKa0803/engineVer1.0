@@ -18,23 +18,23 @@ DebugScnene::DebugScnene()
 	object = std::make_unique<GameObject>();
 
 	//山オブジェクト生成
-	terrain = new GameObject();
+	//terrain = new GameObject();
 
 	//スカイボックス生成
-	skybox_ = new SkyBoxModel("resources/Texture/CG/rostock_laage_airport_4k.dds");
+	//skybox_ = new SkyBoxModel("resources/Texture/CG/rostock_laage_airport_4k.dds");
 
 	//MapLoader::GetInstance()->LoadLevelEditor("untitled",".json");
 	//MapLoader::GetInstance()->CreateModel(0);
 
 	//パーティクルマネージャ生成
-	particleManager_ = std::make_unique<ParticleManager>();
-	particleManager_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png"));
+	//particleManager_ = std::make_unique<ParticleManager>();
+	//particleManager_->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png"));
 }
 
 DebugScnene::~DebugScnene() { 
 	//解放処理
-	delete terrain;
-	delete skybox_; 
+	//delete terrain;
+	//delete skybox_; 
 }
 
 void DebugScnene::Initialize()
@@ -48,28 +48,28 @@ void DebugScnene::Initialize()
 	//object->Initialize("Boss");
 
 	//山初期化
-	terrain->Initialize("terrain");
+	//terrain->Initialize("terrain");
 
 	//カメラ初期化
 	camera_->Initialize();
 	//タゲ設定
-	camera_->SetTarget(&object->world_);
+	//camera_->SetTarget(&object->world_);
 
 	//スカイボックス初期化
-	skybox_->Initialize();
+	//skybox_->Initialize();
 	//サイズ設定
-	skybox_->world_.scale_ = { 500,500,500 };
+	//skybox_->world_.scale_ = { 500,500,500 };
 
 	//ポイイトライト初期化
 	pointLight_ = PointLight();
 
 	//パーティクルが関数呼び出しのみエフェクト発生するよう処理
-	particleManager_->SetOnlyImpact(true);
+	//particleManager_->SetOnlyImpact(true);
 
 	//デバッグ用にパラメータ設定
 	std::unique_ptr<GlobalVariableGroup>gvg = std::make_unique<GlobalVariableGroup>("DebugScene");
-	gvg->SetTreeData(object->model_->SetDebugParam());
-	gvg->SetValue("オブジェクト回転",&object->world_.rotate_);
+	//gvg->SetTreeData(object->model_->SetDebugParam());
+	//gvg->SetValue("オブジェクト回転",&object->world_.rotate_);
 }
 
 void DebugScnene::Update()
@@ -78,7 +78,7 @@ void DebugScnene::Update()
 	Debug();
 
 	//パーティクルデバッグ
-	particleManager_->Debug("particle");
+	//particleManager_->Debug("particle");
 
 	//移動入力取得
 	Vector3 move = input_->GetAllArrowKey();
@@ -87,9 +87,9 @@ void DebugScnene::Update()
 	pointLight_.position += move;
 
 	//各オブジェクト更新
-	object->Update();
-	terrain->Update();
-	skybox_->Update();
+	//object->Update();
+	//terrain->Update();
+	//skybox_->Update();
 	camera_->Update();
 
 	//ライトを設定
@@ -97,11 +97,11 @@ void DebugScnene::Update()
 	LightManager::GetInstance()->SetDLight(dLight_);
 	
 	//パーティクルを更新
-	particleManager_->Update();
+	//particleManager_->Update();
 	
 	//スペースキーでエフェクト発生
 	if (input_->PushKey(DIK_SPACE)) {
-		particleManager_->SpawnE({0,0,0});
+		//particleManager_->SpawnE({0,0,0});
 	} 
 }
 
@@ -114,17 +114,17 @@ void DebugScnene::Draw()
 
 	//terrain->Draw();
 	//モデル描画
-	object->Draw();
+	//object->Draw();
 
 	//MapLoader::GetInstance()->DrawLevelData();
 	//現在のすべてのインスタンシングモデル描画
-	InstancingModelManager::GetInstance()->DrawAllModel();
+	//InstancingModelManager::GetInstance()->DrawAllModel();
 
 	//パーティクル描画
-	particleManager_->Draw();
+	//particleManager_->Draw();
 	
 	//現在のすべてのインスタンシングモデル描画
-	PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kBloom, true);
+	//PostEffectManager::GetInstance()->PostEffectDraw(PostEffectManager::kBloom, true);
 }
 
 void DebugScnene::Debug()

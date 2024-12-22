@@ -412,6 +412,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\Game\Boss\UI\BossUI.h" />
     <ClInclude Include="Application\Game\Effect\LargeDebris\EffectLargeDebris.h" />
     <ClInclude Include="Application\Game\Effect\Normal\EffectNormal.h" />
+    <ClInclude Include="Application\Game\Player\Behavior\ATKData\BasePlayerATK.h" />
     <ClInclude Include="Application\Game\Player\Behavior\IPlayerBehavior.h" />
     <ClInclude Include="Application\Game\Player\hit\PlayerHit.h" />
     <ClInclude Include="Application\Game\Player\Idle\PlayerIdle.h" />

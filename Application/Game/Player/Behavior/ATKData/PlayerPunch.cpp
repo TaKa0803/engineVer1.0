@@ -44,7 +44,6 @@ void PlayerPunch::Initialize()
 {
 	//攻撃の状態取得
 	state_ = St;
-	isEnd_ = false;
 
 	//各シーンカウント
 	parameters_.count = 0;
@@ -125,13 +124,7 @@ void PlayerPunch::Update()
 	}
 	else {
 		//終了状態にいっている場合
-
-
-
-			//終了する
-		isEnd_ = true;
-
-
+		player_->data_.isEndATK_ = true;
 	}
 
 }
@@ -191,7 +184,7 @@ void PlayerPunch::CheckNextState()
 			player_->SetAnimeTime(true, 1);
 		}
 		break;
-	case PlayerPunch::_countAtkState:
+	case PlayerPunch::CountAtkState:
 		break;
 	default:
 		break;

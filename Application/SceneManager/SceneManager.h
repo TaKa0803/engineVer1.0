@@ -38,14 +38,14 @@ private://**プライベート変数**//
 	/// <summary>
 	/// シーン
 	/// </summary>
-	std::unique_ptr<IScene> sceneArr_;
+	std::vector<std::unique_ptr<IScene>> sceneArr_;
 
 	//現在のシーン
 	std::string scenename_ = "";
 
 	///呼び出すステージの管理
 	//現在のシーン
-	int currentSceneNo_ = 0;
+	int currentSceneNo_ = -1;
 	//1F前のシーン
 	int prevSceneNo_ = -1;
 };

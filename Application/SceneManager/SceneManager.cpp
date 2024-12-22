@@ -15,6 +15,14 @@
 
 SceneManager::SceneManager()
 {
+	sceneArr_.resize((int)SCENE::SceneCount);
+	sceneArr_[(int)SCENE::Debug] = std::make_unique<DebugScnene>();
+	//sceneArr_[(int)SCENE::TITLE] = std::make_unique<TitleScene>();
+	//sceneArr_[(int)SCENE::GAME] = std::make_unique<InGameScene>();
+	//sceneArr_[(int)SCENE::GAMEOVER] = std::make_unique<GameOverScene>();
+	//sceneArr_[(int)SCENE::GAMECLEAR] = std::make_unique<GameClearScene>();
+
+
 	//デバッグ用の値セット
 	std::unique_ptr<GlobalVariableGroup>gvg = std::make_unique<GlobalVariableGroup>("SceneManager");
 	gvg->SetValue("シーン番号", &IScene::GetSceneNo());
@@ -24,7 +32,7 @@ SceneManager::SceneManager()
 void SceneManager::Initialize()
 {
 	//初期シーン設定
-	IScene::SetScene(SCENE::TITLE);
+	IScene::SetScene(SCENE::Debug);
 }
 
 void SceneManager::Update()
@@ -37,27 +45,26 @@ void SceneManager::Update()
 	if (prevSceneNo_ != currentSceneNo_)
 	{
 		//変更していたら		
-		sceneArr_ = SceneFactory::CreateScene((SCENE)currentSceneNo_);
-
-		if (sceneArr_ == nullptr) {
-			assert(false);
-		}
-
+		//sceneArr_ = SceneFactory::CreateScene((SCENE)currentSceneNo_);
+		//if (sceneArr_ == nullptr) {
+		//	assert(false);
+		//}
+		// 
 		//初期化処理
-		sceneArr_->Initialize();
+		sceneArr_[currentSceneNo_]->Initialize();
 	}
 
 	//デバッグ用現シーン名に変更
-	scenename_ = sceneArr_->name_;
+	scenename_ = sceneArr_[currentSceneNo_]->name_;
 	
 	//シーン更新処理
-	sceneArr_->Update();
+	sceneArr_[currentSceneNo_]->Update();
 }
 
 void SceneManager::Draw()
 {	
 	//描画処理
-	sceneArr_->Draw();
+	sceneArr_[currentSceneNo_]->Draw();
 }
 
 

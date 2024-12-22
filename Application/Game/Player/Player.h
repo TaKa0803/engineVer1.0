@@ -106,9 +106,10 @@ public://パブリック変数
 
 		//無敵時間
 		float noHitTime_ = 1.0f;
-	};
 
-	PlayerData data_;
+		//攻撃終了フラグ
+		bool isEndATK_ = false;
+	}data_;
 #pragma endregion
 
 public:

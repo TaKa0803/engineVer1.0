@@ -30,9 +30,6 @@ public://**パブリック関数**//
 
 public://パブリック変数
 
-	//終了取得
-	bool isEnd_ = false;
-
 	//攻撃のタイプ指定
 	enum ATKType {
 		Punch,

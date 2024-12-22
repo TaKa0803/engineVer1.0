@@ -27,8 +27,8 @@ Model::Model()
 
 Model::~Model() {
 
-	//modelData_.skinCluster.influenceResource->Release();
-	//modelData_.skinCluster.paletteResource->Release();
+	modelData_.skinCluster.influenceResource->Release();
+	modelData_.skinCluster.paletteResource->Release();
 
 	indexResource_->Release();
 	vertexResource_->Release();

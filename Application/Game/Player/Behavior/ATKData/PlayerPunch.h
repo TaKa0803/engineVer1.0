@@ -1,16 +1,8 @@
 #pragma once
-#include"GlobalVariable/Tree/GlobalVariableTree.h"
-
-//プレイヤー前方宣言
-class Player;
+#include"Game//Player/Behavior/ATKData/BasePlayerATK.h"
 
 //プレイヤーパンチ
-class PlayerPunch {
-
-public://**パブリック変数**//
-
-	//終了フラグ
-	bool isEnd_ = false;
+class PlayerPunch :private BasePlayerATK{
 
 public://**パブリック関数**//
 
@@ -24,12 +16,12 @@ public://**パブリック関数**//
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	void Initialize()override;
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update()override;
 
 	/// <summary>
 	/// ツリー取得
@@ -52,9 +44,6 @@ private://**プライベート関数**//
 
 
 private://**プライベート変数**//
-
-	//プレイヤーポインタ
-	Player* player_;
 
 	//最大攻撃回数
 	const int maxAtkCount_ = 3;
@@ -128,7 +117,7 @@ private://パラメータ
 		Atk,
 		Ed,
 		CheckEnd,
-		_countAtkState
+		CountAtkState
 	}state_=St;
 
 	//パラメータ変数
@@ -143,9 +132,5 @@ private://パラメータ
 	int drilSound_;
 
 
-private:
-
-	//ツリー
-	GlobalVariableTree tree_ = GlobalVariableTree("");
 
 };

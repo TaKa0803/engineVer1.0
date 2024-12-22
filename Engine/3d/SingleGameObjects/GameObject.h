@@ -10,7 +10,7 @@ class GameObject {
 public:	//**パブリック変数**//
 
 	//モデルデータ
-	Model* model_ = nullptr;
+	std::unique_ptr<Model>model_ = nullptr;
 
 	//座標
 	EulerWorldTransform world_;

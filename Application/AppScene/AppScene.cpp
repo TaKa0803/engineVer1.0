@@ -12,10 +12,10 @@ void AppScene::Initialize()
 	//シーンマネージャの初期化
 	sceneManager->Initialize();
 
-	GlobalVariableManager::GetInstance()->LoadAllSaveData();
+	//GlobalVariableManager::GetInstance()->LoadAllSaveData();
 
 	//セットされたデータに保存したものがあればそれを適応する
-	GlobalVariableManager::GetInstance()->SetLoadAllData();
+	//GlobalVariableManager::GetInstance()->SetLoadAllData();
 }
 
 void AppScene::Update()

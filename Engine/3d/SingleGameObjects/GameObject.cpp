@@ -3,15 +3,13 @@
 
 
 GameObject::~GameObject() {
-	//モデルの削除
-	delete model_;
 }
 
 void GameObject::Initialize(const std::string& filepath) {
 	//モデルがnullの場合
 	if (model_ == nullptr) {
 		//モデルを作成
-		model_ = Model::CreateFromOBJ(filepath);
+		model_.reset(Model::CreateFromOBJ(filepath));
 	}
 }
 

@@ -105,7 +105,7 @@ void Boss::Initialize()
 	atkCollider_->isActive_ = false;
 
 	//セットしたパラメータのセーブデータ読み込み
-	GlobalVariableManager::GetInstance()->SetLoadGroupData(groupName_);
+	//GlobalVariableManager::GetInstance()->SetLoadGroupData(groupName_);
 
 	//UI初期化
 	ui_->Initialize();

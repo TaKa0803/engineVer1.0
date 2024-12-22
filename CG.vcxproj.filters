@@ -776,6 +776,7 @@
     </ClInclude>
     <ClInclude Include="Application\SceneFactory\SceneFactory.h" />
     <ClInclude Include="Application\Game\Boss\Behavior\ATK\IATKManager\IBossATKManager.h" />
+    <ClInclude Include="Application\Game\Player\Behavior\ATKData\BasePlayerATK.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\PostEffect\CopyImage.hlsli">

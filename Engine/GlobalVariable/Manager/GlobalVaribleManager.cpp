@@ -269,8 +269,6 @@ void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 
 GlobalVariableManager* GlobalVariableManager::GetInstance()
 {
-	
-
 	//インスタンス取得
 	static GlobalVariableManager ins;
 	return &ins;

@@ -77,7 +77,7 @@ void InGameScene::Initialize() {
 	followCamera_->Initialize();
 
 	//登録されているすべてのグローバルな値をセット
-	GlobalVariableManager::GetInstance()->SetLoadAllData();
+	//GlobalVariableManager::GetInstance()->SetLoadAllData();
 
 	//シーン遷移のカウントを最大値にセット
 	currentSceneXhangeCount_ = maxSceneChangeCount_;
