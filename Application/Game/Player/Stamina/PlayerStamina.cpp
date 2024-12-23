@@ -5,7 +5,6 @@
 
 PlayerStamina::PlayerStamina()
 {
-
 	//ゲージスプライト生成
 	gage_.reset(Sprite::Create(TextureManager::white_, { 1,1 }, { 1,1 }, { 64,64 }, { 640,360 }, { 0.0f,0.5f }));
 	//赤ゲージスプライト再生

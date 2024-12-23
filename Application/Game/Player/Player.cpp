@@ -6,10 +6,11 @@
 #include"Game/Boss/Boss.h"
 #include"GlobalVariable/Group/GlobalVariableGroup.h"
 
-#include"Game/Player/Stamina/PlayerStamina.h"
-#include"Game/Player/Idle/PlayerIdle.h"
-#include"Game/Player/Down/PlayerDown.h"
-#include"Game/Player/hit/PlayerHit.h"
+
+#include"Game/Player/Behavior/PlayerRoll/PlayerRoll.h"
+#include"Game/Player/Behavior/Idle/PlayerIdle.h"
+#include"Game/Player/Behavior/Down/PlayerDown.h"
+#include"Game/Player/Behavior/hit/PlayerHit.h"
 
 #include<imgui.h>
 #include<json.hpp>
@@ -18,10 +19,9 @@
 #include<numbers>
 
 Player::Player() {
-	//一回しかしない初期化情報
-	input_ = Input::GetInstance();
-	//デッドライン設定
-	input_->SetDeadLine(0.3f);
+
+	//プレイヤー入力マネージャ生成
+	input_ = std::make_unique<PlayerInputManager>();
 
 	//状態の数取得
 	behaviors_.resize((size_t)Behavior::kNumStates);
@@ -33,11 +33,13 @@ Player::Player() {
 	behaviors_[(int)Behavior::HITACTION] = std::make_unique<PlayerHit>(this);
 	behaviors_[(int)Behavior::KNOCKBACK] = std::make_unique<PlayerDown>(this);
 
-
 	//パーティクルマネージャの生成
 	hitPariticle = std::make_unique<ParticleManager>();
 	//パーティクルとして出す画像をセットして初期化
 	hitPariticle->Initialize(TextureManager::LoadTex("resources/Texture/CG/circle.png"));
+
+	//UIクラス生成
+	UI_ = std::make_unique<PlayerUI>(this);
 
 	//スタミナマネージャ生成
 	stamina_ = std::make_unique<PlayerStamina>();
@@ -66,9 +68,6 @@ Player::Player() {
 	//円影生成
 	shadow_ = std::make_unique<CirccleShadow>(world_);
 
-	//HPバー画像生成
-	hpBar_.reset(Sprite::Create(TextureManager::white_,{1,1},{1,1},{1,1},{0,0},{0.0f,0.5f}));
-
 	//Gvariの値設定
 	std::unique_ptr<GlobalVariableGroup>gvg = std::make_unique<GlobalVariableGroup>("Player");
 
@@ -82,15 +81,11 @@ Player::Player() {
 	gvg->SetValue("ダッシュ時の速度倍率", &data_.dashMultiply);
 	gvg->SetValue("無敵時間", &data_.noHitTime_);
 
-	gvg->SetValue("HPバー最大サイズ", &maxBarScale_);
-
 	GlobalVariableTree anime = GlobalVariableTree("アニメーション速度");
 	anime.SetValue("待機", &idleAnimeMulti_);
 	anime.SetValue("歩き", &moveAnimeMulti_);
 	anime.SetValue("走り", &runAnimeMulti_);
 	gvg->SetTreeData(anime);
-
-
 
 	//ツリーセット
 	gvg->SetTreeData(stamina_->GetTree());
@@ -103,7 +98,7 @@ Player::Player() {
 	gvg->SetTreeData(model_->SetDebugParam("model"));
 	gvg->SetTreeData(bodyCollider_->GetDebugTree("体コライダー"));
 	gvg->SetTreeData(atkCollider_->GetDebugTree("攻撃コライダー"));
-	gvg->SetTreeData(hpBar_->GetTree("HPバー"));
+	gvg->SetTreeData(UI_->GetTree());
 }
 
 void Player::Initialize() {
@@ -173,7 +168,6 @@ void Player::Draw() {
 
 	bodyCollider_->Draw();
 	atkCollider_->Draw();
-
 }
 
 void Player::DrawParticle()
@@ -186,7 +180,7 @@ void Player::DrawParticle()
 void Player::DrawUI()
 {
 	stamina_->DrawGage();
-	hpBar_->Draw();
+	UI_->DrawUI();
 }
 
 void Player::OnCollision()
@@ -266,12 +260,7 @@ void Player::OnCollisionBack(const Vector3& backV)
 Vector3 Player::SetInputDirection(bool& isZero)
 {
 	//入力方向をチェック
-	Vector3 move = input_->GetWASD().SetNormalize();
-
-	//ローラーがあるならその値を追加
-	if (input_->IsControllerActive()) {
-		move += input_->GetjoyStickLV3();
-	}
+	Vector3 move = input_->GetMoveVelo();
 
 	//入力が行われていない場合
 	if (move == Vector3{ 0,0,0 }) {
@@ -313,48 +302,7 @@ const Vector3 Player::GetP2BossVelo()
 
 bool Player::GetStaminaOfATK()
 {
-
 	return stamina_->CheckStamina(PlayerStamina::Type::ATK);
-}
-
-bool Player::GetATKInput()
-{
-	//キー入力でおこなわれていたか取得
-	int isATK = (int)input_->TriggerKey(DIK_Z);
-
-	//コントローラーがあるときの処理
-	if (input_->IsControllerActive()) {
-		isATK += (int)input_->IsTriggerButton(kButtonB);
-	}
-
-	//１以上はどちらか有効なので１に
-	if (isATK > 1) {
-		isATK = 1;
-	}
-
-	//boolにして返却
-	return (bool)isATK;
-}
-
-bool Player::GetRollInput()
-{
-	//キー入力を取得
-	int ans = input_->TriggerKey(DIK_SPACE);
-	//コントローラーでの入力を取得
-	if (input_->IsControllerActive()) {
-		ans += input_->IsPushButton(kButtonA);
-	}
-
-	return ans;
-}
-
-bool Player::GetDashInput()
-{
-	int ans = input_->PushKey(DIK_LSHIFT);
-	if (input_->IsControllerActive()) {
-		ans += input_->IsPushButton(kButtonX);
-	}
-	return ans;
 }
 
 void Player::Move(bool canDash, float spdMulti) {
@@ -372,7 +320,7 @@ void Player::Move(bool canDash, float spdMulti) {
 	move *= data_.spd_;
 
 	//ダッシュキー併用で速度アップ
-	if (canDash && isMoveInput && GetDashInput() && stamina_->CheckStamina(PlayerStamina::Type::DASH)) {
+	if (canDash && isMoveInput && input_->CheckInput(PlayerInputManager::DASH) && stamina_->CheckStamina(PlayerStamina::Type::DASH)) {
 		//スタミナを消費
 		stamina_->UseStamina(PlayerStamina::Type::DASH);
 		//ダッシュフラグをONに
@@ -403,13 +351,15 @@ void Player::ChangeBehavior()
 	bool isATK, isRoll = { false };
 
 	//各入力取得
-	isATK = GetATKInput();
-	isRoll = GetRollInput();
+	isATK = input_->CheckInput(PInputM::ATK);
+	isRoll = input_->CheckInput(PInputM::ROLL);
 
+	//入力とスタミナチェックで変更
 	if (isATK && stamina_->CheckStamina(PlayerStamina::Type::ATK)) {
 		behaviorReq_ = Behavior::ATK;
 	}
 
+	//入力とスタミナチェックで変更
 	if (isRoll && stamina_->CheckStamina(PlayerStamina::Type::ROLL)) {
 		behaviorReq_ = Behavior::Rolling;
 	}
@@ -438,17 +388,6 @@ void Player::ModelRoop(bool ismove, bool isDash)
 			SetAnimation(animeName_[Dash], animeBlend_, runAnimeMulti_);
 		}
 	}
-
-}
-
-void Player::HPBarUpdate()
-{
-	//現HPとの割合を取得
-	float t = data_.currentHP / data_.nowHP;
-	float scaleX = Lerp( maxBarScale_,0, t);
-	Vector3 s = hpBar_->GetScale();
-	s.x = scaleX;
-	hpBar_->SetScale(s);
 }
 
 void Player::SetAnimation(const std::string& animeName, float count, float loopSec, bool isLoop)
@@ -498,8 +437,8 @@ void Player::GlobalUpdate()
 		}
 	}
 
-	//HPbarの更新
-	HPBarUpdate();
+	//UIの更新
+	UI_->Update();
 
 	//行列更新
 	world_.UpdateMatrix();

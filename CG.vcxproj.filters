@@ -289,19 +289,13 @@
     <ClCompile Include="Application\Game\Player\Behavior\PlayerATKManager\PlayerATKManager.cpp">
       <Filter>Application\Game\Player\Behavior\ATKManager</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Game\Player\Down\PlayerDown.cpp">
-      <Filter>Application\Game\Player\Behavior\Down</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Game\Player\hit\PlayerHit.cpp">
+    <ClCompile Include="Application\Game\Player\Behavior\hit\PlayerHit.cpp">
       <Filter>Application\Game\Player\Behavior\Hit</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Game\Player\Idle\PlayerIdle.cpp">
-      <Filter>Application\Game\Player\Behavior\Idle</Filter>
     </ClCompile>
     <ClCompile Include="Application\Game\Player\Behavior\ATKData\PlayerPunch.cpp">
       <Filter>Application\Game\Player\Behavior\ATKManager\ATKs\Punch</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Game\Player\PlayerRoll\PlayerRoll.cpp">
+    <ClCompile Include="Application\Game\Player\Behavior\PlayerRoll\PlayerRoll.cpp">
       <Filter>Application\Game\Player\Behavior\Roll</Filter>
     </ClCompile>
     <ClCompile Include="Application\Game\Player\Stamina\PlayerStamina.cpp">
@@ -421,6 +415,10 @@
     <ClCompile Include="Engine\GlobalVariable\Manager\GlobalVaribleManager.cpp">
       <Filter>Engine\GlobalVariable\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="Application\Game\Player\Behavior\Down\PlayerDown.cpp" />
+    <ClCompile Include="Application\Game\Player\Behavior\Idle\PlayerIdle.cpp" />
+    <ClCompile Include="Application\Game\Player\InputManager\PlayerInputManager.cpp" />
+    <ClCompile Include="Application\Game\Player\UI\PlayerUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\base\AudioManager\AudioManager.h">
@@ -639,19 +637,13 @@
     <ClInclude Include="Application\Game\Player\Behavior\PlayerATKManager\PlayerATKManager.h">
       <Filter>Application\Game\Player\Behavior\ATKManager</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Game\Player\Down\PlayerDown.h">
-      <Filter>Application\Game\Player\Behavior\Down</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Game\Player\hit\PlayerHit.h">
+    <ClInclude Include="Application\Game\Player\Behavior\hit\PlayerHit.h">
       <Filter>Application\Game\Player\Behavior\Hit</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Game\Player\Idle\PlayerIdle.h">
-      <Filter>Application\Game\Player\Behavior\Idle</Filter>
     </ClInclude>
     <ClInclude Include="Application\Game\Player\Behavior\ATKData\PlayerPunch.h">
       <Filter>Application\Game\Player\Behavior\ATKManager\ATKs\Punch</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Game\Player\PlayerRoll\PlayerRoll.h">
+    <ClInclude Include="Application\Game\Player\Behavior\PlayerRoll\PlayerRoll.h">
       <Filter>Application\Game\Player\Behavior\Roll</Filter>
     </ClInclude>
     <ClInclude Include="Application\Game\Player\Stamina\PlayerStamina.h">
@@ -777,6 +769,10 @@
     <ClInclude Include="Application\SceneFactory\SceneFactory.h" />
     <ClInclude Include="Application\Game\Boss\Behavior\ATK\IATKManager\IBossATKManager.h" />
     <ClInclude Include="Application\Game\Player\Behavior\ATKData\BasePlayerATK.h" />
+    <ClInclude Include="Application\Game\Player\Behavior\Down\PlayerDown.h" />
+    <ClInclude Include="Application\Game\Player\Behavior\Idle\PlayerIdle.h" />
+    <ClInclude Include="Application\Game\Player\InputManager\PlayerInputManager.h" />
+    <ClInclude Include="Application\Game\Player\UI\PlayerUI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\PostEffect\CopyImage.hlsli">

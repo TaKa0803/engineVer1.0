@@ -23,7 +23,7 @@ void PlayerDown::Initialize()
 	behavior_ = Behavior::Flying;
 
 	//吹き飛び方向取得
-	Vector3 v =player_->GetP2BossVelo()*-1;
+	Vector3 v = player_->GetP2BossVelo() * -1;
 	v.y = 0;
 	v.SetNormalize();
 
@@ -67,15 +67,15 @@ void PlayerDown::Update()
 			}
 		}
 	}//起き上がり処理
-	else if(behavior_ == Behavior::landing){
+	else if (behavior_ == Behavior::landing) {
 		currentLand_ += (float)DeltaTimer::deltaTime_;
 
 		//
 		if (currentLand_ >= randSec_) {
-				player_->SetBehaviorReq(Player::Behavior::IDLE);	
+			player_->SetBehaviorReq(Player::Behavior::IDLE);
 		}
 		else {
-			player_->Move(false,0.5f);
+			player_->Move(false, 0.5f);
 
 			float t = currentLand_ / randSec_;
 			player_->SetAnimeTime(true, t);

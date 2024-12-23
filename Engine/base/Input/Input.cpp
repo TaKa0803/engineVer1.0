@@ -56,7 +56,7 @@ void Input::Update() {
 	}
 }
 
-bool Input::PushKey(BYTE keyNum) 
+bool Input::PushKey(BYTE keyNum)
 {
 	//有効の場合true
 	if (key[keyNum]) {
@@ -204,10 +204,15 @@ Vector2 Input::GetjoyStickL() {
 	return r;
 }
 
-Vector3 Input::GetjoyStickLV3() {
+Vector3 Input::GetjoyStickLVec3() {
 	//XZ平面のゲームで移動処理を容易にできる関数
 
-		//入力方向を受け取る（０-１）
+	//入力がなければ０で返却
+	if (!IsControllerActive()) {
+		return { 0,0,0 };
+	}
+
+	//入力方向を受け取る（０-１）
 	Vector3 r = {
 		(float)joyState.Gamepad.sThumbLX / SHRT_MAX,
 		0,
@@ -298,6 +303,12 @@ bool Input::IsPushButton(kPadButton kButton) {
 }
 
 bool Input::IsTriggerButton(kPadButton kButton) {
+
+	//コントローラーが無効の場合
+	if (!IsControllerActive()) {
+		//早期リターン
+		return false;
+	}
 
 	//今押されているかチェック
 	if (IsPushButton(kButton)) {

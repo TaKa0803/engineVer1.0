@@ -84,10 +84,9 @@ void PlayerPunch::Update()
 		ChangeAnimation();
 
 		//攻撃入力が含まれていた場合
-		if (!parameters_.isNextInput && player_->GetATKInput()) {
+		if (!parameters_.isNextInput && player_->input_->CheckInput(PInputM::ATK)) {
 			parameters_.isNextInput = true;
 		}
-
 
 		//次段が有効＆次段入力済なら実行
 		if (state_ == Ed && (parameters_.atkCount_ + 1) < maxAtkCount_ && parameters_.isNextInput&&player_->GetStaminaOfATK()) {

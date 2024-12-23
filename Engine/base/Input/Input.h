@@ -105,7 +105,7 @@ public:	//**パブリック関数**//
 	/// yを0にしたxzで値を変換
 	/// </summary>
 	/// <returns></returns>
-	Vector3 GetjoyStickLV3();
+	Vector3 GetjoyStickLVec3();
 
 	/// <summary>
 	/// PADボタン押したか否か

@@ -1,10 +1,8 @@
 #pragma once
-#include"Vector3.h"
-
 #include"Game/Player/Behavior/IPlayerBehavior.h"
 
 //ダウンする処理
-class PlayerDown :public PlayerBaseBehavior{
+class PlayerDown :public PlayerBaseBehavior {
 
 public:	//**パブック関数
 
@@ -40,7 +38,7 @@ private: //**プライベート変数**//
 	Behavior behavior_ = Behavior::Flying;
 
 private://パラメータ
-	
+
 	//速度
 	float spd_ = 10;
 
@@ -58,9 +56,9 @@ private://パラメータ
 
 	//ランダム時間
 	float randSec_ = 1.0f;
-	
+
 	//カウント
-	float currentLand_=0.0f;
+	float currentLand_ = 0.0f;
 
 	//戻りアニメ時間
 	float returnAnimeSec_ = 1.0;

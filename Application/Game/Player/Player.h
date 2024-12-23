@@ -8,15 +8,17 @@
 #include"Game/Player/Behavior/PlayerATKManager/PlayerATKManager.h"
 #include"Game/Player/Behavior/IPlayerBehavior.h"
 
-#include"PlayerRoll/PlayerRoll.h"
-#include"Stamina/PlayerStamina.h"
+
+#include"Game/Player/Stamina/PlayerStamina.h"
+#include"Game/Player/InputManager/PlayerInputManager.h"
+#include"Game/Player/UI/PlayerUI.h"
 
 #include<vector>
 
 
 class Player :public GameObject {
 
-public://パブリック変数
+public://**パブリック変数**//
 
 #pragma region アニメーション関係
 	enum  AnimationData {
@@ -110,7 +112,10 @@ public://パブリック変数
 	}data_;
 #pragma endregion
 
-public:
+	//プレイヤー入力管理
+	std::unique_ptr<PlayerInputManager>input_;
+
+public://**パブリック関数**//
 
 	//コンストラクタ
 	Player();
@@ -150,7 +155,6 @@ public:
 	/// <param name="backV">押し戻し量</param>
 	void OnCollisionBack(const Vector3& backV);
 
-
 	//移動処理
 	void Move(bool isDash = true, float spdMulti = 1.0f);
 
@@ -163,11 +167,7 @@ public:
 	//攻撃時の初期化処理
 	void InitATK();
 
-	//全状態共通初期化
-	void GlobalInitialize();
 
-	//全体共通更新
-	void GlobalUpdate();
 public://ゲッター
 
 	//コライダー取得
@@ -187,18 +187,10 @@ public://ゲッター
 	const Vector3 GetP2BossVelo();
 
 	/// <summary>
-	/// 
+	/// 攻撃時のスタミナ取得
 	/// </summary>
 	/// <returns></returns>
 	bool GetStaminaOfATK();
-
-	//攻撃入力の取得処理まとめ
-	bool GetATKInput();
-	//回転入力の処理まとめ
-	bool GetRollInput();
-	//ダッシュ入力の処理まとめ
-	bool GetDashInput();
-
 
 public://セッター
 
@@ -219,11 +211,15 @@ public://セッター
 
 private://メンバ関数
 
+	//全状態共通初期化
+	void GlobalInitialize();
+
+	//全体共通更新
+	void GlobalUpdate();
+
 	//アニメーションによるモデルの変更
 	void ModelRoop(bool ismove, bool isDash);
 
-	//HPバーの更新
-	void HPBarUpdate();
 private://状態管理
 
 	//プレイヤーの状態
@@ -237,7 +233,6 @@ private://状態管理
 	
 
 private://ポインタ参照
-	Input* input_ = nullptr;
 
 	const Camera* camera_ = nullptr;
 
@@ -250,6 +245,9 @@ private://変数
 	std::unique_ptr<SphereCollider> bodyCollider_;
 	std::unique_ptr<SphereCollider> atkCollider_;
 
+	//UIデータ
+	std::unique_ptr<PlayerUI>UI_;
+
 	//スタミナ管理
 	std::unique_ptr<PlayerStamina>stamina_;
 
@@ -258,8 +256,7 @@ private://変数
 	//丸い影
 	std::unique_ptr<CirccleShadow>shadow_;
 
-	//HPゲージ
-	std::unique_ptr<Sprite>hpBar_;
+
 
 	//あたるかの判定
 	bool isHit_ = true;
@@ -278,8 +275,7 @@ private://パラメータ
 	//走りアニメ速度
 	float runAnimeMulti_ = 1.0f;
 
-	//HPバーの最大サイズ
-	float maxBarScale_=640;
+
 private://デバッグ用
 	
 #ifdef _DEBUG
