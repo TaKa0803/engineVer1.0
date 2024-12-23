@@ -23,6 +23,9 @@ Player::Player() {
 	//プレイヤー入力マネージャ生成
 	input_ = std::make_unique<PlayerInputManager>();
 
+	//アニメーション管理クラス生成
+	animeManager_ = std::make_unique<PAnimeM>(this);
+
 	//状態の数取得
 	behaviors_.resize((size_t)Behavior::kNumStates);
 
@@ -107,7 +110,7 @@ void Player::Initialize() {
 	world_.translate_.z = 2;
 	world_.UpdateMatrix();
 
-	SetAnimation(animeName_[AnimationData::Idle], 0, idleAnimeMulti_);
+	animeManager_->SetAnimation(PAnimeM::Idle, 0, idleAnimeMulti_);
 
 	stamina_->Initialize();
 
@@ -179,7 +182,9 @@ void Player::DrawParticle()
 
 void Player::DrawUI()
 {
+	//スタミナゲージUI描画
 	stamina_->DrawGage();
+	//UI描画
 	UI_->DrawUI();
 }
 
@@ -375,29 +380,19 @@ void Player::ModelRoop(bool ismove, bool isDash)
 {
 	if (!ismove) {
 		//待機状態になる
-		SetAnimation(animeName_[Idle], animeBlend_, idleAnimeMulti_);
+		animeManager_->SetAnimation(PAnimeM::Idle, animeBlend_, idleAnimeMulti_);
 	}
 	else {
 		//移動状態
 		if (!isDash) {
 			//歩き
-			SetAnimation(animeName_[Moving], animeBlend_, moveAnimeMulti_);
+			animeManager_->SetAnimation(PAnimeM::Moving, animeBlend_, moveAnimeMulti_);
 		}
 		else {
 			//ダッシュ
-			SetAnimation(animeName_[Dash], animeBlend_, runAnimeMulti_);
+			animeManager_->SetAnimation(PAnimeM::Dash, animeBlend_, runAnimeMulti_);
 		}
 	}
-}
-
-void Player::SetAnimation(const std::string& animeName, float count, float loopSec, bool isLoop)
-{
-	//アニメーションを変更
-	model_->ChangeAnimation(animeName, count);
-	//ループフラグを変更
-	model_->SetAnimationRoop(isLoop);
-	//アニメーション速度倍率変更
-	model_->animationRoopSecond_ = loopSec;
 }
 
 
@@ -410,7 +405,7 @@ void Player::GlobalInitialize()
 {
 	//攻撃、ローリング後はアニメーションのフラグが変わるのでここで変更しておく
 	//アニメーション進行をアプリ側で処理するフラグをOFF
-	SetAnimeTime(false);
+	animeManager_->SetAnimeTime(false);
 	//攻撃コライダー無効化
 	atkCollider_->isActive_ = false;
 }

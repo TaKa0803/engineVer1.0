@@ -15,7 +15,6 @@ PlayerPunch::PlayerPunch(Player* player)
 
 	//ツリーの名前設定
 	tree_.name_ = "パンチ";
-
 	GlobalVariableTree com1T = GlobalVariableTree("コンボ1");
 	com1T.SetValue("移動倍率", &parameters_.com1.multiSpd);
 	com1T.SetValue("開始交直", &parameters_.com1.stStiffnessSec);
@@ -44,14 +43,14 @@ void PlayerPunch::Initialize()
 {
 	//攻撃の状態取得
 	state_ = St;
-
 	//各シーンカウント
 	parameters_.count = 0;
 	//初期化処理
 	parameters_.isInit = false;
-	//連撃回数
+	//連撃回数リセット
 	parameters_.atkCount_ = 0;
-	player_->SetAnimeTime(true, 0);
+	//アニメーション再生進度を0に設定
+	player_->animeManager_->SetAnimeTime(true, 0);
 
 	//向きを切り替える
 	bool ans;
@@ -145,12 +144,15 @@ void PlayerPunch::CheckNextState()
 			player_->GetATKCollider()->isActive_ = true;
 			//音発生
 			AudioManager::PlaySoundData(punchSound_);
-			player_->SetAnimeTime(true, 1);
+			//アニメーション進度を1に固定
+			player_->animeManager_->SetAnimeTime(true, 1);
 
 		}
 		else {
+			//割合を求める
 			t /= parameters_.stStiffness;
-			player_->SetAnimeTime(true, t);
+			//アニメーション進度を1に固定
+			player_->animeManager_->SetAnimeTime(true, t);
 			player_->Move(false, parameters_.multiSpd);
 		}
 		break;
@@ -162,11 +164,14 @@ void PlayerPunch::CheckNextState()
 			state_ = Ed;
 			//攻撃コライダー判定をONに
 			player_->GetATKCollider()->isActive_ = false;
-			player_->SetAnimeTime(true, 1);
+			//アニメ進度を1に固定
+			player_->animeManager_->SetAnimeTime(true, 1);
 		}
 		else {
+			//割合計算
 			t /= parameters_.atk;
-			player_->SetAnimeTime(true, t);
+			//アニメ進度を設定
+			player_->animeManager_->SetAnimeTime(true, t);
 		}
 		break;
 
@@ -175,12 +180,13 @@ void PlayerPunch::CheckNextState()
 		if (t >= parameters_.edStiffness) {
 			isChange = true;
 			state_ = CheckEnd;
-			player_->SetAnimeTime(true, 1);
+			//アニメ進度を1に固定
+			player_->animeManager_->SetAnimeTime(true, 1);
 		}
 		else {
-			t /= parameters_.edStiffness;
+			//t /= parameters_.edStiffness;
 			//構えた状態でをフリーズ
-			player_->SetAnimeTime(true, 1);
+			player_->animeManager_->SetAnimeTime(true, 1);
 		}
 		break;
 	case PlayerPunch::CountAtkState:
@@ -188,6 +194,7 @@ void PlayerPunch::CheckNextState()
 	default:
 		break;
 	}
+
 
 	if (isChange) {
 		parameters_.count = 0;
@@ -204,30 +211,29 @@ void PlayerPunch::ChangeAnimation()
 		if (!parameters_.isInit) {
 			parameters_.isInit = true;
 			//アニメーションをセット
-			player_->SetAnimation(player_->animeName_[Player::PrePunch1], 0, 1, false);
+			player_->animeManager_->SetAnimation(PAnimeM::PrePunch1, 0, 1, false);
 
 			//アニメーションの更新速度をこちらで調整
 			if (state_ == Atk) {
-				player_->SetAnimation(player_->animeName_[Player::Punch1], 0, 1, false);
+				player_->animeManager_->SetAnimation(PAnimeM::Punch1, 0, 1, false);
 			}
 			else if (state_ == Ed) {
-				player_->SetAnimation(player_->animeName_[Player::Punch1], 0, 1, false);
+				player_->animeManager_->SetAnimation(PAnimeM::Punch1, 0, 1, false);
 			}
 		}
-
 	}
 	else if (parameters_.atkCount_ == 1) {
 		//初期化処理が行われていなければ初期化
 		if (!parameters_.isInit) {
 			parameters_.isInit = true;
 			//アニメーションをセット
-			player_->SetAnimation(player_->animeName_[Player::PrePunch2], 0, 1, false);
+			player_->animeManager_->SetAnimation(PAnimeM::PrePunch2, 0, 1, false);
 			//アニメーションの更新速度をこちらで調整
 			if (state_ == Atk) {
-				player_->SetAnimation(player_->animeName_[Player::Punch2], 0, 1, false);
+				player_->animeManager_->SetAnimation(PAnimeM::Punch2, 0, 1, false);
 			}
 			else if (state_ == Ed) {
-				player_->SetAnimation(player_->animeName_[Player::Punch2], 0, 1, false);
+				player_->animeManager_->SetAnimation(PAnimeM::Punch2, 0, 1, false);
 			}
 		}
 	}
@@ -236,14 +242,14 @@ void PlayerPunch::ChangeAnimation()
 		if (!parameters_.isInit) {
 			parameters_.isInit = true;
 			//アニメーションをセット
-			player_->SetAnimation(player_->animeName_[Player::PrePunch3], parameters_.com2.stStiffnessSec, 1, false);
+			player_->animeManager_->SetAnimation(PAnimeM::PrePunch3, parameters_.com2.stStiffnessSec, 1, false);
 
 			//アニメーションの更新速度をこちらで調整
 			if (state_ == Atk) {
-				player_->SetAnimation(player_->animeName_[Player::Punch3], 0, 1, false);
+				player_->animeManager_->SetAnimation(PAnimeM::Punch3, 0, 1, false);
 			}
 			else if (state_ == Ed) {
-				player_->SetAnimation(player_->animeName_[Player::Idle], parameters_.com3.edStiffnessSec, 1, false);
+				player_->animeManager_->SetAnimation(PAnimeM::Idle, parameters_.com3.edStiffnessSec, 1, false);
 			}
 		}
 	}

@@ -123,6 +123,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Application\Game\Boss\UI\BossUI.cpp" />
     <ClCompile Include="Application\Game\Effect\LargeDebris\EffectLargeDebris.cpp" />
     <ClCompile Include="Application\Game\Effect\Normal\EffectNormal.cpp" />
+    <ClCompile Include="Application\Game\Player\AnimationManager\PlayerAnimationManager.cpp" />
     <ClCompile Include="Application\Game\Player\Behavior\Down\PlayerDown.cpp" />
     <ClCompile Include="Application\Game\Player\Behavior\hit\PlayerHit.cpp" />
     <ClCompile Include="Application\Game\Player\Behavior\Idle\PlayerIdle.cpp" />
@@ -414,6 +415,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Application\Game\Boss\UI\BossUI.h" />
     <ClInclude Include="Application\Game\Effect\LargeDebris\EffectLargeDebris.h" />
     <ClInclude Include="Application\Game\Effect\Normal\EffectNormal.h" />
+    <ClInclude Include="Application\Game\Player\AnimationManager\PlayerAnimationManager.h" />
     <ClInclude Include="Application\Game\Player\Behavior\ATKData\BasePlayerATK.h" />
     <ClInclude Include="Application\Game\Player\Behavior\Down\PlayerDown.h" />
     <ClInclude Include="Application\Game\Player\Behavior\Idle\PlayerIdle.h" />

@@ -12,6 +12,7 @@
 #include"Game/Player/Stamina/PlayerStamina.h"
 #include"Game/Player/InputManager/PlayerInputManager.h"
 #include"Game/Player/UI/PlayerUI.h"
+#include"Game/Player/AnimationManager/PlayerAnimationManager.h"
 
 #include<vector>
 
@@ -21,49 +22,6 @@ class Player :public GameObject {
 public://**パブリック変数**//
 
 #pragma region アニメーション関係
-	enum  AnimationData {
-
-		Idle,	//待機
-		Moving,	//移動
-		Dash,	//走る
-
-		Roll,	//回転
-		RollEnd,//回転終わり
-
-		PrePunch1,//パンチ１構え
-		PrePunch2,//パンチ２構え
-		PrePunch3,//パンチ３構え
-		Punch1,//パンチ1
-		Punch2,//パンチ2
-		Punch3,//パンチ3
-
-		Dawn,//ダウン
-		DawnBack,//ダウン復帰
-		CountAnime//アニメーションの数
-	};
-
-	//アニメーション名まとめ
-	std::string animeName_[CountAnime] = {
-		"Idle",
-		"walk",
-		"Dash",
-
-		"Rolling",
-		"RollingEnd",
-
-		"PrePunch",
-		"PrePunch2",
-		"PrePunch3",
-		"Punch",
-		"Punch2",
-		"Punch3",
-
-		"Down",
-		"DownBack",
-
-
-
-	};
 
 #pragma endregion
 
@@ -112,8 +70,11 @@ public://**パブリック変数**//
 	}data_;
 #pragma endregion
 
-	//プレイヤー入力管理
+	//プレイヤー入力管理クラス
 	std::unique_ptr<PlayerInputManager>input_;
+
+	//アニメーション管理クラス
+	std::unique_ptr<PAnimeM>animeManager_;
 
 public://**パブリック関数**//
 
@@ -193,18 +154,6 @@ public://ゲッター
 	bool GetStaminaOfATK();
 
 public://セッター
-
-	/// <summary>
-	/// アニメーチョン変更
-	/// </summary>
-	/// <param name="animeName">アニメーション名</param>
-	/// <param name="sec">変化までの秒数</param>
-	/// <param name="loopSec">ループまでの秒数</param>
-	/// <param name="isLoop">ループのフラグ</param>
-	void SetAnimation(const std::string& animeName, float sec, float loopSec, bool isLoop = true);
-
-	///アニメーション進行をこちらで管理する処理
-	void SetAnimeTime(bool active, float t = 0) { model_->SetAnimationTime(active, t); }
 
 	//状態リクエスト
 	void SetBehaviorReq(Behavior behavior) { behaviorReq_ = behavior; }

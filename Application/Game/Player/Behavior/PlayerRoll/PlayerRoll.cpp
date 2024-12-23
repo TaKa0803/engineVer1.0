@@ -52,7 +52,7 @@ void PlayerRoll::Initialize()
 	data_.currentStop = 0;
 
 	//アニメーション変更
-	player_->SetAnimation(player_->animeName_[(int)Player::AnimationData::Roll], 0.1f, 1.0f, false);
+	player_->animeManager_->SetAnimation(PAnimeM::Roll, 0.1f, 1.0f, false);
 
 	//回転処理分のスタミナを消費
 	player_->DecreaseStamina4Roll();
@@ -83,9 +83,9 @@ void PlayerRoll::Update()
 			//止め度合いチェック
 			float t = data_.currentStop / data_.stopSec;
 			//アニメーション
-			player_->SetAnimeTime(true, t);
+			player_->animeManager_->SetAnimeTime(true, t);
 			//同アニメーションな場合無視されるので何度でも大丈夫＃関数修正予定
-			player_->SetAnimation(player_->animeName_[Player::RollEnd], 0, 1, false);
+			player_->animeManager_->SetAnimation(PAnimeM::RollEnd, 0, 1, false);
 
 			//少しだけ移動可能
 			player_->Move(false, 0.8f);
@@ -95,7 +95,7 @@ void PlayerRoll::Update()
 		//アニメーション進行
 		float t = data_.currentRoll / data_.rollSec;
 		//アニメーション再生をTで管理
-		player_->SetAnimeTime(true,t);
+		player_->animeManager_->SetAnimeTime(true,t);
 	}
 }
 

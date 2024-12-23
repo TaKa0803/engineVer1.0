@@ -62,4 +62,7 @@ private://パラメータ
 
 	//戻りアニメ時間
 	float returnAnimeSec_ = 1.0;
+	
+	//復帰時移動速度倍率
+	float moveSpdMuli_ = 0.5f;
 };

@@ -23,4 +23,12 @@ public://**パブリック関数**//
 	/// </summary>
 	void Update() override;
 
+private://**プライベート変数**//
+
+	//補完速度
+	float complementSec_= 0.2f;
+
+	//再生速度倍率
+	float animeSecMulti_ = 1.0f;
+
 };

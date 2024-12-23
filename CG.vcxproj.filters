@@ -419,6 +419,7 @@
     <ClCompile Include="Application\Game\Player\Behavior\Idle\PlayerIdle.cpp" />
     <ClCompile Include="Application\Game\Player\InputManager\PlayerInputManager.cpp" />
     <ClCompile Include="Application\Game\Player\UI\PlayerUI.cpp" />
+    <ClCompile Include="Application\Game\Player\AnimationManager\PlayerAnimationManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\base\AudioManager\AudioManager.h">
@@ -773,6 +774,7 @@
     <ClInclude Include="Application\Game\Player\Behavior\Idle\PlayerIdle.h" />
     <ClInclude Include="Application\Game\Player\InputManager\PlayerInputManager.h" />
     <ClInclude Include="Application\Game\Player\UI\PlayerUI.h" />
+    <ClInclude Include="Application\Game\Player\AnimationManager\PlayerAnimationManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\PostEffect\CopyImage.hlsli">
