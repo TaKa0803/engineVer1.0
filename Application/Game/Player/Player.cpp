@@ -128,13 +128,15 @@ void Player::Initialize() {
 	behaviorReq_ = Behavior::IDLE;
 }
 
-void Player::GetBoss(const Boss* boss)
+void Player::GetBossWorld(const EulerWorldTransform* boss)
 {
-	boss_ = boss;
+	//ボスのワールド参照
+	bossWorld_ = boss;
 }
 
 void Player::SetCamera(Camera* camera)
 {
+	//カメラワールド参照
 	camera_ = camera;
 }
 
@@ -306,7 +308,7 @@ Vector3 Player::SetInputDirection(bool& isZero)
 const Vector3 Player::GetP2BossVelo()
 {
 	//プレイヤーからボスへの向きベクトルを返却
-	return boss_->world_.GetWorldTranslate() - world_.GetWorldTranslate();
+	return bossWorld_->GetWorldTranslate() - world_.GetWorldTranslate();
 }
 
 bool Player::GetStaminaOfATK()

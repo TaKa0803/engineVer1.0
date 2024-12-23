@@ -9,10 +9,10 @@
 
 #include<numbers>
 
-Boss::Boss(Player* player)
+Boss::Boss(const EulerWorldTransform* playerWorld)
 {
 	//プレイヤーポインタ取得
-	player_ = player;
+	playerWorld_ = playerWorld;
 
 	//入力インスタンス取得
 	input_ = Input::GetInstance();
@@ -218,7 +218,7 @@ bool Boss::CheckCollisionAmmo(const SphereCollider* co)
 Vector3 Boss::GetBoss2PlayerDirection()
 {
 	//ボスからプレイヤーへの向きベクトルを返却
-	return player_->world_.GetWorldTranslate() - world_.GetWorldTranslate();
+	return playerWorld_->GetWorldTranslate() - world_.GetWorldTranslate();
 }
 
 void Boss::SetNextATK(int atkNum)

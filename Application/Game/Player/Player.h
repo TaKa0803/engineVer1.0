@@ -12,9 +12,7 @@
 #include"Stamina/PlayerStamina.h"
 
 #include<vector>
-//#include<string>
 
-class Boss;
 
 class Player :public GameObject {
 
@@ -122,7 +120,7 @@ public:
 	void Initialize();
 
 	//ボスポインタ取得
-	void GetBoss(const Boss* boss);
+	void GetBossWorld(const EulerWorldTransform* bossWorld);
 
 	//カメラ取得
 	void SetCamera(Camera* camera);
@@ -243,7 +241,7 @@ private://ポインタ参照
 
 	const Camera* camera_ = nullptr;
 
-	const Boss* boss_=nullptr;
+	const EulerWorldTransform* bossWorld_=nullptr;
 
 private://変数
 	//パーティクルマネージャー

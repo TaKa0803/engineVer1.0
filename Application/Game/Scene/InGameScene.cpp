@@ -27,12 +27,12 @@ InGameScene::InGameScene() {
 	player_->SetCamera(camera_);
 
 	//ボスのコンストラクタ
-	boss_ = std::make_unique<Boss>(player_.get());
+	boss_ = std::make_unique<Boss>(&player_->world_);
 	//ボスの攻撃基底クラスにボスのポインタセット
 	BossBaseATK::SetBossPointer(boss_.get());
 
 	//プレイヤーにボスのポインタをセット
-	player_->GetBoss(boss_.get());
+	player_->GetBossWorld(&boss_->world_);
 
 	//追従カメラの生成
 	followCamera_ = std::make_unique<FollowCamera>(&player_->world_, &boss_->world_);

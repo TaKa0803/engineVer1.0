@@ -117,7 +117,7 @@ public: //**パブリック関数**//
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="player">プレイヤーのポインタ</param>
-	Boss(Player* player);
+	Boss(const EulerWorldTransform* playerWorld);
 	~Boss() = default;
 
 	/// <summary>
@@ -182,7 +182,7 @@ public: //**ゲッター**//
 	/// プレイヤーのワールド座標取得
 	/// </summary>
 	/// <returns></returns>
-	Vector3 GetPlayerWorldTranslate() { return player_->world_.GetWorldTranslate(); };
+	Vector3 GetPlayerWorldTranslate() { return playerWorld_->GetWorldTranslate(); };
 
 	/// <summary>
 	/// 弾の数を取得
@@ -237,7 +237,7 @@ private://**参照**//
 	Input* input_ = nullptr;
 
 	//プレイヤー
-	Player* player_;
+	const EulerWorldTransform* playerWorld_;
 
 private: //**変数**//
 
