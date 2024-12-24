@@ -26,6 +26,10 @@ struct MonitorItemData {
 
 //ツリーデータ
 struct TreeData {
+
+	//テキスト
+	std::vector<std::string>text;
+
 	//値
 	std::map<std::string, ItemData>value;
 

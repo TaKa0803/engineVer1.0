@@ -20,6 +20,7 @@ void CirccleShadow::Update()
 {
 	//ターゲットの座標を取得
 	world_.translate_= pworld_->translate_;
+	world_.translate_.y = 0.01f;
 	//オブジェクト更新
 	InstancingGameObject::Update();
 }

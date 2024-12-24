@@ -27,14 +27,14 @@ Player::Player() {
 	animeManager_ = std::make_unique<PAnimeM>(this);
 
 	//状態の数取得
-	behaviors_.resize((size_t)Behavior::kNumStates);
+	behaviorArr_.resize((size_t)Behavior::kNumStates);
 
 	//各状態生成
-	behaviors_[(int)Behavior::IDLE] = std::make_unique<PlayerIdle>(this);
-	behaviors_[(int)Behavior::Rolling] = std::make_unique<PlayerRoll>(this);
-	behaviors_[(int)Behavior::ATK] = std::make_unique<PlayerATKManager>(this);
-	behaviors_[(int)Behavior::HITACTION] = std::make_unique<PlayerHit>(this);
-	behaviors_[(int)Behavior::KNOCKBACK] = std::make_unique<PlayerDown>(this);
+	behaviorArr_[(int)Behavior::IDLE] = std::make_unique<PlayerIdle>(this);
+	behaviorArr_[(int)Behavior::Rolling] = std::make_unique<PlayerRoll>(this);
+	behaviorArr_[(int)Behavior::ATK] = std::make_unique<PlayerATKManager>(this);
+	behaviorArr_[(int)Behavior::HITACTION] = std::make_unique<PlayerHit>(this);
+	behaviorArr_[(int)Behavior::KNOCKBACK] = std::make_unique<PlayerDown>(this);
 
 	//パーティクルマネージャの生成
 	hitPariticle = std::make_unique<ParticleManager>();
@@ -62,11 +62,6 @@ Player::Player() {
 
 	//モデル生成
 	GameObject::Initialize("human");
-	//画像フラグOFF
-	model_->IsEnableTexture(false);
-	//アニメーションを有効に
-	model_->SetAnimationActive(true);
-	//model_->SetAnimeSecond(10);
 
 	//円影生成
 	shadow_ = std::make_unique<CirccleShadow>(world_);
@@ -92,10 +87,11 @@ Player::Player() {
 
 	//ツリーセット
 	gvg->SetTreeData(stamina_->GetTree());
-	gvg->SetTreeData(behaviors_[(int)Behavior::Rolling]->GetTree());
-	gvg->SetTreeData(behaviors_[(int)Behavior::HITACTION]->GetTree());
-	gvg->SetTreeData(behaviors_[(int)Behavior::KNOCKBACK]->GetTree());
-	gvg->SetTreeData(behaviors_[(int)Behavior::ATK]->GetTree());
+
+	//状態のツリー
+	for (auto& behavi : behaviorArr_) {
+		gvg->SetTreeData(behavi->GetTree());
+	}
 
 	gvg->SetTreeData(hitPariticle->GetTreeData("攻撃ヒット時エフェクト"));
 	gvg->SetTreeData(model_->SetDebugParam("model"));
@@ -150,11 +146,11 @@ void Player::Update() {
 		GlobalInitialize();
 
 		//実際の初期化処理
-		behaviors_[(int)behavior_]->Initialize();
+		behaviorArr_[(int)behavior_]->Initialize();
 	}
 
 	//状態の更新
-	behaviors_[(int)behavior_]->Update();
+	behaviorArr_[(int)behavior_]->Update();
 
 	//共通更新
 	GlobalUpdate();

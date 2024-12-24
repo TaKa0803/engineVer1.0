@@ -313,6 +313,7 @@ GlobalVariableTree& InstancingModel::CreateAndGetTree(const std::string& tree)
 
 	//デバッグ用にツリーにパラメータをセットする
 	tree_.name_ = tree;
+	tree_.SetText("他のところでも使用している場合同時に変更されるため注意");
 	tree_.SetTreeData(uvWorld_.GetDebugTree("UV"));
 	tree_.SetMonitorValue("モデル", &drawModel_);
 	tree_.SetMonitorValue("ジョイント", &drawJoint_);

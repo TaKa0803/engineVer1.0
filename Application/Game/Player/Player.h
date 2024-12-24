@@ -178,7 +178,7 @@ private://状態管理
 	std::optional<Behavior>behaviorReq_ = std::nullopt;
 	
 	//状態処理
-	std::vector<std::unique_ptr<PlayerBaseBehavior>>behaviors_;
+	std::vector<std::unique_ptr<PlayerBaseBehavior>>behaviorArr_;
 	
 
 private://ポインタ参照

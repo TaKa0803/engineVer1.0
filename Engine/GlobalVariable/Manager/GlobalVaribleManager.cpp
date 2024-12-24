@@ -152,6 +152,13 @@ void TreeImGui(const std::string& name, TreeData& treeData,size_t size) {
 	//ツリー処理開始
 	if (ImGui::TreeNode(name.c_str())) {
 
+		//文字出力
+		if (!treeData.text.empty()) {
+			for (auto& text : treeData.text) {
+				ImGui::Text(text.c_str());
+			}
+		}
+
 		//モニター値の表示
 		if (!treeData.monitorKeys.empty()) {
 

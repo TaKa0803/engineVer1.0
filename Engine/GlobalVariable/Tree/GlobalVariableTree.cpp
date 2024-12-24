@@ -6,6 +6,11 @@ GlobalVariableTree::GlobalVariableTree(const std::string& treeName)
 	name_ = treeName;
 }
 
+void GlobalVariableTree::SetText(const std::string& text)
+{
+	datas_.text.emplace_back(text);
+}
+
 void GlobalVariableTree::SetValue(const std::string& name, std::variant<bool*,int32_t*, float*,Vector2*, Vector3*,Vector4*> value)
 {
 	//値をセット

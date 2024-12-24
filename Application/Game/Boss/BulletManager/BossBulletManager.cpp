@@ -19,6 +19,7 @@ BossBulletManager::BossBulletManager()
 	tree_.SetValue("弾のサイズ", &ammoScale_);
 	tree_.SetValue("コライダーサイズ", &colliderScale_);
 	tree_.SetTreeData(IMM_->CreateAndGetTree(tag_, "モデル"));
+	tree_.SetTreeData(hiteffect_->GetTree());
 }
 
 void BossBulletManager::Initialize()

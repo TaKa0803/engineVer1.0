@@ -11,7 +11,14 @@ public: //**パブリック関数**//
 	GlobalVariableTree(const std::string& treeName);
 	~GlobalVariableTree() = default;
 
-	//値追加
+	//ツリーのすべてのパラの前に表示するテキストの追加
+	void SetText(const std::string& text);
+
+	/// <summary>
+	/// 保存可能な値を追加
+	/// </summary>
+	/// <param name="name">ImGui時の補足</param>
+	/// <param name="value"></param>
 	void SetValue(const std::string& name, std::variant<bool*, int32_t*, float*, Vector2*, Vector3*, Vector4*> value);
 
 	//監視値追加

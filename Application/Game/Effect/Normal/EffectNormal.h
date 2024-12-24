@@ -53,6 +53,12 @@ public:	//**パブリック関数**//
 	/// <param name="pos"></param>
 	void SpawnEffect(const Vector3&pos);
 
+	/// <summary>
+	/// デバッグ用のツリーデータ取得
+	/// </summary>
+	/// <returns></returns>
+	GvariTree& GetTree() { return tree_; }
+
 private: //**参照物**//
 
 	//インスタンシングモデルマネージャ
@@ -96,5 +102,6 @@ private: //**プライベート変数**//
 	//モデルタグ
 	std::string tag_;
 
-	
+private://**デバッグ用
+	GvariTree tree_=GvariTree("");
 };

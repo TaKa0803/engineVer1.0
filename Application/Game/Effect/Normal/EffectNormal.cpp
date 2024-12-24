@@ -1,7 +1,6 @@
 #include "EffectNormal.h"
 #include"DeltaTimer/DeltaTimer.h"
 #include"RandomNum/RandomNum.h"
-#include"GlobalVariable/Group/GlobalVariableGroup.h"
 #include<cassert>
 
 EffectNormal::EffectNormal(const std::string& tag,const std::string& name)
@@ -17,17 +16,17 @@ EffectNormal::EffectNormal(const std::string& tag,const std::string& name)
 	tag_ = tag;
 
 	//デバッグ用にパラメータをツリーに追加
-	std::unique_ptr<GlobalVariableGroup> tree = std::make_unique<GlobalVariableGroup>(name);
-	tree->SetValue("posMax", &emitData_.spawnMaxWide);
-	tree->SetValue("posMin", &emitData_.spawmMinWide);
-	tree->SetValue("size", &emitData_.size);
-	tree->SetValue("spawm", &emitData_.numSpawn);
-	tree->SetValue("maxVeloDirec", &emitData_.veloMax);
-	tree->SetValue("minVeloDirec", &emitData_.veloMin);
-	tree->SetValue("acce", &emitData_.acce);
-	tree->SetValue("spd", &emitData_.spd);
-	tree->SetValue("liveTime", &emitData_.deadCount);
-	tree->SetTreeData(IMM_->CreateAndGetTree(tag_, "model"));
+	tree_.name_ = name;
+	tree_.SetValue("posMax", &emitData_.spawnMaxWide);
+	tree_.SetValue("posMin", &emitData_.spawmMinWide);
+	tree_.SetValue("size", &emitData_.size);
+	tree_.SetValue("spawm", &emitData_.numSpawn);
+	tree_.SetValue("maxVeloDirec", &emitData_.veloMax);
+	tree_.SetValue("minVeloDirec", &emitData_.veloMin);
+	tree_.SetValue("acce", &emitData_.acce);
+	tree_.SetValue("spd", &emitData_.spd);
+	tree_.SetValue("liveTime", &emitData_.deadCount);
+	tree_.SetTreeData(IMM_->CreateAndGetTree(tag_, "model"));
 }
 
 void EffectNormal::Initialize()
