@@ -26,6 +26,7 @@ EffectNormal::EffectNormal(const std::string& tag,const std::string& name)
 	tree_.SetValue("acce", &emitData_.acce);
 	tree_.SetValue("spd", &emitData_.spd);
 	tree_.SetValue("liveTime", &emitData_.deadCount);
+	tree_.SetValue("色", &emitData_.color);
 	tree_.SetTreeData(IMM_->CreateAndGetTree(tag_, "model"));
 }
 
@@ -101,7 +102,8 @@ void EffectNormal::SpawnEffect(const Vector3&pos)
 		data.acce = emitData_.acce;
 		//生存時間設定
 		data.count = RandomNumber::Get(emitData_.deadCount.x, emitData_.deadCount.y);
-
+		//色設定
+		data.color = emitData_.color;
 		//データ追加
 		datas_.push_back(data);
 	}

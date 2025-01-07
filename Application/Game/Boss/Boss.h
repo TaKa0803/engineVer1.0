@@ -268,6 +268,7 @@ private: //**変数**//
 	//弾マネージャ
 	std::unique_ptr<BossBulletManager> bulletM_;
 
+
 public: //**パラメータ**//
 
 	//最大体力

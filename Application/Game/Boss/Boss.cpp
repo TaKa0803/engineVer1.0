@@ -46,6 +46,7 @@ Boss::Boss(const EulerWorldTransform* playerWorld)
 	//iiUI生成
 	ui_ = std::make_unique<BossUI>(this);
 
+
 	//状態の量読み込み
 	behaviors_.resize((size_t)Behavior::CountBehavior);
 
@@ -73,6 +74,7 @@ Boss::Boss(const EulerWorldTransform* playerWorld)
 	gvg->SetTreeData(model_->SetDebugParam("model"));
 	gvg->SetTreeData(stumpEffect_->GetDebugTree("ra"));
 	gvg->SetTreeData(bulletM_->GetTree());
+
 
 }
 
@@ -112,6 +114,8 @@ void Boss::Initialize()
 
 	//UI初期化
 	ui_->Initialize();
+
+
 }
 
 void Boss::Update()
@@ -208,6 +212,7 @@ void Boss::OnCollision()
 		//HPを減らす
 		nowHP--;
 	}
+
 }
 
 bool Boss::CheckCollisionAmmo(const SphereCollider* co)

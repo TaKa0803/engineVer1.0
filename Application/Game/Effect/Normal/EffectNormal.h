@@ -57,7 +57,7 @@ public:	//**パブリック関数**//
 	/// デバッグ用のツリーデータ取得
 	/// </summary>
 	/// <returns></returns>
-	GvariTree& GetTree() { return tree_; }
+	GvariTree& GetTree() {return tree_; }
 
 private: //**参照物**//
 
@@ -96,6 +96,12 @@ private: //**プライベート変数**//
 
 		//最小最大生存時間
 		Vector2 deadCount{0.1f,0.5f};
+
+		//色
+		Vector4 color{ 1,1,1,1 };
+
+		//透明度
+		Vector2 alpha{ 1,0 };
 
 	}emitData_{};
 

@@ -7,7 +7,7 @@
 #include"Game/CirccleShadow/CirccleShadow.h"
 #include"Game/Player/Behavior/PlayerATKManager/PlayerATKManager.h"
 #include"Game/Player/Behavior/IPlayerBehavior.h"
-
+#include"Game/Effect/Normal/EffectNormal.h"
 
 #include"Game/Player/Stamina/PlayerStamina.h"
 #include"Game/Player/InputManager/PlayerInputManager.h"
@@ -205,7 +205,8 @@ private://変数
 	//丸い影
 	std::unique_ptr<CirccleShadow>shadow_;
 
-
+	//ヒット時のエフェクト
+	std::unique_ptr<EffectNormal>effectHit_;
 
 	//あたるかの判定
 	bool isHit_ = true;

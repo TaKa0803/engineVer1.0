@@ -66,9 +66,12 @@ Player::Player() {
 	//円影生成
 	shadow_ = std::make_unique<CirccleShadow>(world_);
 
+	//被弾エフェクト生成
+	effectHit_ = std::make_unique<EffectNormal>("smallDebris", "hitEffect");
+
+
 	//Gvariの値設定
 	std::unique_ptr<GlobalVariableGroup>gvg = std::make_unique<GlobalVariableGroup>("Player");
-
 #ifdef _DEBUG
 	gvg->SetMonitorValue("デバッグ用ヒットフラグ", &debugIsHit_);
 #endif // _DEBUG
@@ -98,6 +101,7 @@ Player::Player() {
 	gvg->SetTreeData(bodyCollider_->GetDebugTree("体コライダー"));
 	gvg->SetTreeData(atkCollider_->GetDebugTree("攻撃コライダー"));
 	gvg->SetTreeData(UI_->GetTree());
+	gvg->SetTreeData(effectHit_->GetTree());
 }
 
 void Player::Initialize() {
@@ -118,6 +122,9 @@ void Player::Initialize() {
 	bodyCollider_->Update();
 	atkCollider_->Update();
 	atkCollider_->isActive_ = false;
+
+	//被弾エフェクト初期化
+	effectHit_->Initialize();
 
 	behaviorReq_ = Behavior::IDLE;
 }
@@ -167,6 +174,8 @@ void Player::Draw() {
 
 	bodyCollider_->Draw();
 	atkCollider_->Draw();
+	//被弾エフェクト描画
+	effectHit_->Draw();
 }
 
 void Player::DrawParticle()
@@ -242,7 +251,10 @@ void Player::OnCollisionATKHit()
 	//攻撃コライダー
 	GetATKCollider()->isActive_ = false;
 	//コライダー位置からエフェクト出現
-	hitPariticle->SpawnE(bodyCollider_->GetWorld().GetWorldTranslate());
+	//hitPariticle->SpawnE(bodyCollider_->GetWorld().GetWorldTranslate());
+
+	//攻撃エフェクト表示
+	effectHit_->SpawnEffect(atkCollider_->GetWorld().GetWorldTranslate());
 }
 
 void Player::OnCollisionBack(const Vector3& backV)
@@ -439,6 +451,8 @@ void Player::GlobalUpdate()
 	bodyCollider_->Update();
 	//丸影更新
 	shadow_->Update();
+	//被弾エフェクト更新
+	effectHit_->Update();
 }
 
 
