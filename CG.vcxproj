@@ -400,7 +400,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application\Game\Boss\Behavior\ATK\IATKManager\IBossATKManager.h" />
+    <ClInclude Include="Application\Game\Boss\Behavior\ATK\IATKManager\IBossATKTypeManager.h" />
     <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\BackStep\BossBackStep.h" />
     <ClInclude Include="Application\Game\Boss\Behavior\ATK\Normal\Punch\BossPunch.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

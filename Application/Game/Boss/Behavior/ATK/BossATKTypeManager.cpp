@@ -31,14 +31,16 @@ void BossATKTypeManager::Initialize()
 	//攻撃終了フラグをOFF
 	boss_->isFinishedATK_ = false;
 
-	//実際の初期化処理
-	behaviors_[Normal]->Initialize();
-
 	//もし値がある場合消す
 	if (plannedATK_) {
 		behaviors_[Normal]->SetATKNum(plannedATK_.value());
 		plannedATK_ = std::nullopt;
 	}
+
+	//実際の初期化処理
+	behaviors_[Normal]->Initialize();
+
+
 }
 
 void BossATKTypeManager::Update()

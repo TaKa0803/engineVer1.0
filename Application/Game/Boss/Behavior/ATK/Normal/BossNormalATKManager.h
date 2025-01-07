@@ -1,12 +1,12 @@
 #pragma once
-#include"Game/Boss/Behavior/ATK/IATKManager/IBossATKManager.h"
+#include"Game/Boss/Behavior/ATK/IATKManager/IBossATKTypeManager.h"
 #include"Game/Boss/Behavior/ATK/IATK/IATK.h"
 #include"GlobalVariable/Tree/GlobalVariableTree.h"
 #include<iostream>
 #include<vector>
 
 //ノーマル状態の攻撃の管理クラス
-class BossNormalATKManager :public IBossATKManager {
+class BossNormalATKManager :public IBossATKTypeManager {
 
 public: //**パブリック関数**//
 

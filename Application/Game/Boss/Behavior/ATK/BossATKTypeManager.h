@@ -1,6 +1,6 @@
 #pragma once
 #include"Game/Boss/Behavior/IBossBehavior.h"
-#include"Game/Boss/Behavior/ATK/IATKManager/IBossATKManager.h"
+#include"Game/Boss/Behavior/ATK/IATKManager/IBossATKTypeManager.h"
 
 #include<iostream>
 
@@ -52,7 +52,7 @@ private: //**ボス攻撃タイプによる変化**//
 	ModeTypes modeType = Normal;
 
 	//ボスの攻撃タイプ群
-	std::vector<std::unique_ptr<IBossATKManager>>behaviors_;
+	std::vector<std::unique_ptr<IBossATKTypeManager>>behaviors_;
 
 private: //**変数**//
 

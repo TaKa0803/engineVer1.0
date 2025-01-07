@@ -6,15 +6,15 @@
 class Boss;
 
 //ボスの攻撃
-class IBossATKManager {
+class IBossATKTypeManager {
 
 public://**パブリック関数**//
 
 	/// <summary>
 	/// コンストラクタ、デストラクタはデフォルト
 	/// </summary>
-	IBossATKManager() = default;
-	virtual ~IBossATKManager() = default;
+	IBossATKTypeManager() = default;
+	virtual ~IBossATKTypeManager() = default;
 	
 	/// <summary>
 	/// 初期化

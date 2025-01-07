@@ -415,11 +415,21 @@
     <ClCompile Include="Engine\GlobalVariable\Manager\GlobalVaribleManager.cpp">
       <Filter>Engine\GlobalVariable\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Game\Player\Behavior\Down\PlayerDown.cpp" />
-    <ClCompile Include="Application\Game\Player\Behavior\Idle\PlayerIdle.cpp" />
-    <ClCompile Include="Application\Game\Player\InputManager\PlayerInputManager.cpp" />
-    <ClCompile Include="Application\Game\Player\UI\PlayerUI.cpp" />
-    <ClCompile Include="Application\Game\Player\AnimationManager\PlayerAnimationManager.cpp" />
+    <ClCompile Include="Application\Game\Player\AnimationManager\PlayerAnimationManager.cpp">
+      <Filter>Application\Game\Player\AnimationManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Player\Behavior\Down\PlayerDown.cpp">
+      <Filter>Application\Game\Player\Behavior\Down</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Player\Behavior\Idle\PlayerIdle.cpp">
+      <Filter>Application\Game\Player\Behavior\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Player\InputManager\PlayerInputManager.cpp">
+      <Filter>Application\Game\Player\InputManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Game\Player\UI\PlayerUI.cpp">
+      <Filter>Application\Game\Player\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\base\AudioManager\AudioManager.h">
@@ -767,14 +777,30 @@
     <ClInclude Include="Engine\GlobalVariable\Manager\GlobalVaribleManager.h">
       <Filter>Engine\GlobalVariable\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Application\SceneFactory\SceneFactory.h" />
-    <ClInclude Include="Application\Game\Boss\Behavior\ATK\IATKManager\IBossATKManager.h" />
-    <ClInclude Include="Application\Game\Player\Behavior\ATKData\BasePlayerATK.h" />
-    <ClInclude Include="Application\Game\Player\Behavior\Down\PlayerDown.h" />
-    <ClInclude Include="Application\Game\Player\Behavior\Idle\PlayerIdle.h" />
-    <ClInclude Include="Application\Game\Player\InputManager\PlayerInputManager.h" />
-    <ClInclude Include="Application\Game\Player\UI\PlayerUI.h" />
-    <ClInclude Include="Application\Game\Player\AnimationManager\PlayerAnimationManager.h" />
+    <ClInclude Include="Application\Game\Player\Behavior\ATKData\BasePlayerATK.h">
+      <Filter>Application\Game\Player\Behavior\ATKManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Boss\Behavior\ATK\IATKManager\IBossATKTypeManager.h">
+      <Filter>Application\Game\Boss\Behavior\ATKTypeManager\ATKType</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Player\AnimationManager\PlayerAnimationManager.h">
+      <Filter>Application\Game\Player\AnimationManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Player\Behavior\Down\PlayerDown.h">
+      <Filter>Application\Game\Player\Behavior\Down</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Player\Behavior\Idle\PlayerIdle.h">
+      <Filter>Application\Game\Player\Behavior\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Player\InputManager\PlayerInputManager.h">
+      <Filter>Application\Game\Player\InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Game\Player\UI\PlayerUI.h">
+      <Filter>Application\Game\Player\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\SceneFactory\SceneFactory.h">
+      <Filter>Application\SceneManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\PostEffect\CopyImage.hlsli">
@@ -1105,6 +1131,15 @@
     </Filter>
     <Filter Include="Engine\GlobalVariable\Tree">
       <UniqueIdentifier>{3a8f8554-6483-4776-9d00-e9a0d152083f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Game\Player\AnimationManager">
+      <UniqueIdentifier>{17c11089-d77b-4980-a424-2f1349843242}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Game\Player\InputManager">
+      <UniqueIdentifier>{c710d10e-bab8-4f05-ac63-a26e99271db9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Game\Player\UI">
+      <UniqueIdentifier>{c9a3f18e-5ce8-41de-91a9-05f3af4b7c6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

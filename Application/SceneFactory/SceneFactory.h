@@ -11,6 +11,8 @@
 
 #include<iostream>
 
+//**現在未使用。エンジンの調整後利用する。
+
 //番号に合ったシーンの生成処理
 class SceneFactory {
 
