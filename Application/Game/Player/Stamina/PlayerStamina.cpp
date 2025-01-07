@@ -185,6 +185,9 @@ bool PlayerStamina::CheckStamina(Type type)
 
 void PlayerStamina::UseStamina(Type type)
 {
+	//割合取得
+	preT_ = data_.currentStamina / data_.maxStamina;
+	
 
 	//タイプごとに分かれて処理
 	switch (type)
@@ -219,8 +222,13 @@ void PlayerStamina::UseStamina(Type type)
 
 	//赤ゲージを表示
 	isRedgage_ = true;
+
 	//カウントリセット
 	currentRedGage_ = 0;
+
+	//割合取得
+	nowT_ = data_.currentStamina / data_.maxStamina;
+	
 
 }
 
