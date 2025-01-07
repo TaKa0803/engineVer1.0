@@ -12,6 +12,7 @@ PlayerUI::PlayerUI(Player*player)
 	//ツリーデータ設定
 	tree_.SetValue("HPバー最大サイズ", &maxBarScale_);
 	tree_.SetTreeData(hpBar_->GetTree("HPバー"));
+
 }
 
 void PlayerUI::Update()
