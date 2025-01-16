@@ -35,15 +35,10 @@ public://**パブリック関数**//
 
 private://**プライベート変数**//
 
-	/// <summary>
-	/// シーン
-	/// </summary>
-	std::vector<std::unique_ptr<IScene>> sceneArr_;
-
 	//シーン
-	std::unique_ptr<IScene>s_;
+	std::unique_ptr<IScene>scene_;
 
-	//現在のシーン
+	//現在のシーン名
 	std::string scenename_ = "";
 
 	///呼び出すステージの管理
