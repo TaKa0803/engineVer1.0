@@ -682,6 +682,12 @@ void GlobalVariableManager::SetLoadGroupData(const std::string& groupName)
 	}
 }
 
+void GlobalVariableManager::ClearSetData()
+{
+	//データをクリア
+	datas_.clear();
+}
+
 void LoadTreeData(SavedTreeData& treeData, const nlohmann::json& jsonNode) {
 	// 各アイテムについて
 	for (auto itItem = jsonNode.begin(); itItem != jsonNode.end(); ++itItem) {

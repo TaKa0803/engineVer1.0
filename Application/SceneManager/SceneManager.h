@@ -40,6 +40,9 @@ private://**プライベート変数**//
 	/// </summary>
 	std::vector<std::unique_ptr<IScene>> sceneArr_;
 
+	//シーン
+	std::unique_ptr<IScene>s_;
+
 	//現在のシーン
 	std::string scenename_ = "";
 

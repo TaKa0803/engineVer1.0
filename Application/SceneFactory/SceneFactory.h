@@ -26,19 +26,19 @@ public://**パブリック関数**//
 	static std::unique_ptr<IScene>CreateScene(SCENE scene) {
 		switch (scene)
 		{
-		case SCENE::Debug:
+		case SCENE::Debug://デバッグシーンを返す処理
 			return std::make_unique<DebugScnene>();
 
-		case SCENE::TITLE:
+		case SCENE::TITLE://タイトルシーンを返す処理
 			return std::make_unique<TitleScene>();
 
-		case SCENE::GAME:
+		case SCENE::GAME://ゲームシーンを返す処理
 			return std::make_unique<InGameScene>();
 
-		case SCENE::GAMEOVER:
+		case SCENE::GAMEOVER://ゲームオーバーシーンを帰す処理
 			return std::make_unique<GameOverScene>();
 
-		case SCENE::GAMECLEAR:
+		case SCENE::GAMECLEAR://ゲームクリアシーンを返す処理
 			return std::make_unique<GameClearScene>();
 
 		case SCENE::SceneCount:

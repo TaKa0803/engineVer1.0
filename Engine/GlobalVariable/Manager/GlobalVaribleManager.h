@@ -47,6 +47,11 @@ public://パブリック関数
 	/// <param name="groupName">グループ名</param>
 	void SetLoadGroupData(const std::string& groupName);
 
+	/// <summary>
+	/// セットしたデータの削除
+	/// </summary>
+	void ClearSetData();
+
 private: //**プライベート関数**//
 
 	/// <summary>
