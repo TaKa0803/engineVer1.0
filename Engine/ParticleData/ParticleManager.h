@@ -116,43 +116,46 @@ private://**プライベート変数**//
 #pragma region リソース関係
 
 	//頂点関係
-	ComPtr<ID3D12Resource> vertexResource_;
+	ID3D12Resource* vertexResource_;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 
 	//インデックス
-	ComPtr<ID3D12Resource> indexResource_;
+	ID3D12Resource* indexResource_;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 
 	//パーティクル本体のデータ
-	ComPtr<ID3D12Resource> particleResource_;
+	ID3D12Resource* particleResource_;
 	Handles SRVHandle_;
 	Handles UAVHandle_;
 
 	//データ管理のリスト
-	ComPtr<ID3D12Resource> freeListResource_;
+	ID3D12Resource* freeListResource_;
 	Handles listUAVHandle_;
 
 	//リストの頂点
-	ComPtr<ID3D12Resource> freeListIndexResource_;
+	ID3D12Resource* freeListIndexResource_;
 	Handles counterSRVHandle_;
 	Handles counterUAVHandle_;
 
 	//perのリソース
-	ComPtr<ID3D12Resource> perResource_;
+	ID3D12Resource* perResource_;
 	PerView* perViewData_ = nullptr;
 
 	//マテリアルのリソース
-	ComPtr<ID3D12Resource> materialResource_;
+	ID3D12Resource* materialResource_;
 	ParticleMaterialData* materialData_=nullptr;
 
 	//エミッター構造体のリソース
-	ComPtr<ID3D12Resource> emiterResource_;
+	ID3D12Resource* emiterResource_;
 	EmiterSphere* emiterData_ = nullptr;
 
 #pragma endregion
 
 	//インパクトのみ出現フラグ
 	bool onlyImpact_ = false;
+
+	//パーティクルの数
+	const int particleNum_ = 1024;
 
 	//デバッグ用ツリー
 	GlobalVariableTree tree_ = GlobalVariableTree("");

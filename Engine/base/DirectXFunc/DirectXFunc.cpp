@@ -441,6 +441,47 @@ void DirectXFunc::Finalize()
 	CloseHandle(fenceEvent);
 }
 
+ID3D12Resource* DirectXFunc::CreateUAVBufferResource(size_t sizeInBytes)
+{
+#pragma region VertexResourceを生成する
+	//頂点リソース用のヒープの設定
+	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
+	uploadHeapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+
+	//頂点リソースの設定
+	D3D12_RESOURCE_DESC ResorceDesc{};
+	//バッファリソース。テクスチャの場合はまた別の設定をする
+	ResorceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	ResorceDesc.Width = sizeInBytes;
+	//バッファの場合はこれらは１にする決まり
+	ResorceDesc.Height = 1;
+	ResorceDesc.DepthOrArraySize = 1;
+	ResorceDesc.MipLevels = 1;
+	ResorceDesc.SampleDesc.Count = 1;
+	//バッファの場合はこれにする決まり
+	ResorceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+	ResorceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+#pragma endregion
+
+	//リソース
+	ID3D12Resource* resource = nullptr;
+
+	HRESULT hr;
+	hr = device->CreateCommittedResource(
+		&uploadHeapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&ResorceDesc,
+		D3D12_RESOURCE_STATE_COMMON,
+		nullptr,
+		IID_PPV_ARGS(&resource));
+	assert(SUCCEEDED(hr));
+
+	return resource;
+}
+
+
+
 ID3D12Resource* DirectXFunc::CreateRenderTextureResource(DXGI_FORMAT format, const Vector4& clearColor)
 {
 	//リソースのデスク作成
@@ -480,5 +521,30 @@ ID3D12Resource* DirectXFunc::CreateRenderTextureResource(DXGI_FORMAT format, con
 	assert(SUCCEEDED(hr));
 
 	return resource;
+}
+
+void DirectXFunc::CreateVertexResource(ID3D12Resource* resource, D3D12_VERTEX_BUFFER_VIEW&view,const std::vector<VertexData>&data)
+{
+	//頂点データ
+	VertexData* vertexData=nullptr;
+
+	resource = CreateBufferResource(device.Get(), sizeof(VertexData) * data.size());
+	view.BufferLocation = resource->GetGPUVirtualAddress();
+	view.SizeInBytes = UINT(sizeof(VertexData) * data.size());
+	view.StrideInBytes = sizeof(VertexData);
+	resource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+	std::memcpy(vertexData, data.data(), sizeof(VertexData) * data.size());
+
+}
+
+void DirectXFunc::CreateIndexResource(ID3D12Resource* resource, D3D12_INDEX_BUFFER_VIEW& view, const std::vector<uint32_t>& data)
+{
+	resource = CreateBufferResource(device.Get(), sizeof(uint32_t) * data.size());
+	view.BufferLocation = resource->GetGPUVirtualAddress();
+	view.SizeInBytes = sizeof(uint32_t) * (uint32_t)data.size();
+	view.Format = DXGI_FORMAT_R32_UINT;
+	uint32_t* mappedIndex;
+	resource->Map(0, nullptr, reinterpret_cast<void**>(&mappedIndex));
+	std::memcpy(mappedIndex, data.data(), sizeof(uint32_t) * data.size());
 }
 

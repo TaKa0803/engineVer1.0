@@ -1,6 +1,6 @@
 #pragma once
 #include"WinApp/WinApp.h"
-
+#include"struct.h"
 #include"Vector4.h"
 #include<d3d12.h>
 #include<dxgi1_6.h>
@@ -48,6 +48,10 @@ public: //**パブリック関数**//
 	/// </summary>
 	void Finalize();
 
+
+	ID3D12Resource* CreateUAVBufferResource(size_t sizeInBytes);
+
+
 	/// <summary>
 	/// レンダーテクスチャの作成
 	/// </summary>
@@ -55,6 +59,22 @@ public: //**パブリック関数**//
 	/// <param name="clearColor">クリアする色</param>
 	/// <returns>リソースのポインタ</returns>
 	ID3D12Resource* CreateRenderTextureResource( DXGI_FORMAT format, const Vector4& clearColor);
+
+	/// <summary>
+	/// バーテックスリソースの作成
+	/// </summary>
+	/// <param name="resource">リソースのポインタ</param>
+	/// <param name="view">vertexBufferView</param>
+	/// <param name="data">頂点データ</param>
+	void CreateVertexResource(ID3D12Resource* resource, D3D12_VERTEX_BUFFER_VIEW& view, const std::vector<VertexData>& data);
+
+	/// <summary>
+	/// インデックスリソースの作成
+	/// </summary>
+	/// <param name="resource">リソースのポインタ</param>
+	/// <param name="view">indexBufferView</param>
+	/// <param name="data">インデックスデータ</param>
+	void CreateIndexResource(ID3D12Resource* resource, D3D12_INDEX_BUFFER_VIEW& view, const std::vector<uint32_t>& data);
 
 public: //**ゲッター**//
 

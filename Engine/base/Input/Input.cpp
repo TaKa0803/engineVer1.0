@@ -302,7 +302,7 @@ bool Input::IsPushButton(kPadButton kButton) {
 	return false;
 }
 
-bool Input::IsTriggerButton(kPadButton kButton) {
+bool Input::IsTriggerButton( kPadButton kButton) {
 
 	//コントローラーが無効の場合
 	if (!IsControllerActive()) {

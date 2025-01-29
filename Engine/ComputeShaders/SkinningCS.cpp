@@ -192,8 +192,9 @@ void SkinningCS::Initialize(const ModelAllData& data)
 #pragma endregion
 #pragma region OutputVertices
 	//UAV生成
-	outputVerticesResource_.resource = CreateUAVBufferResource(DXF_->GetDevice(), sizeof(VertexData) * verticesSize);
+	outputVerticesResource_.resource = DXF_->CreateUAVBufferResource(sizeof(VertexData) * verticesSize);
 
+	
 	vbv_.BufferLocation = outputVerticesResource_.resource->GetGPUVirtualAddress();
 	vbv_.SizeInBytes = UINT(sizeof(VertexData) * verticesSize);
 	vbv_.StrideInBytes = sizeof(VertexData);

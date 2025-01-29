@@ -31,9 +31,6 @@ Skeleton CreateSkeleton(const Node& node);
 //s金クラスター作成
 SkinCluster CreateSkinCluster(ID3D12Device& device, const Skeleton& skeleton, const ModelData& modelData);
 
-//UAVバッファの差悪性
-ID3D12Resource* CreateUAVBufferResource(ID3D12Device* device, size_t sizeInBytes);
-
 //バッファリソースの作成
 ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes);
 

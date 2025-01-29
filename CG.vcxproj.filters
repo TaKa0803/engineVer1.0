@@ -830,6 +830,9 @@
     <None Include="resources\GlobalVariables\StageWall.json">
       <Filter>resources\json</Filter>
     </None>
+    <None Include="ParticleData.hlsli">
+      <Filter>resources\Shaders\Particle</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">

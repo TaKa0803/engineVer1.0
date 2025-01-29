@@ -6,7 +6,7 @@ GlobalVariableTree& InstancingGameObject::GetDebugTree(const std::string& name)
 {
 	//名前設定
 	tree_.name_ = name;
-	//ワールドのチりー追加
+	//ワールドのツリー追加
 	tree_.SetTreeData(world_.GetDebugMonitorTree());
 
 	return tree_;

@@ -55,13 +55,13 @@ public://**セッター**//
 	/// アニメーションループフラグ
 	/// </summary>
 	/// <param name="isLoop">フラグ</param>
-	void SetAnimationRoop(bool isLoop) { isAnimeRoop_ = isLoop; };
+	void SetAnimationRoop(const bool isLoop) { isAnimeRoop_ = isLoop; };
 
 	/// <summary>
 	/// アニメーション有効化フラグ
 	/// </summary>
 	/// <param name="isActive">フラグ</param>
-	void SetAnimationActive(bool isActive) { isAnimationActive_ = isActive; }
+	void SetAnimationActive(const bool isActive) { isAnimationActive_ = isActive; }
 
 	/// <summary>
 	/// Gvariツリーの作成
@@ -73,7 +73,7 @@ public://**セッター**//
 	/// シェーダー処理の切り替え
 	/// </summary>
 	/// <param name="ans">影をつけるか</param>
-	void IsEnableShader(bool ans) { materialData_->enableLighting = ans; }
+	void IsEnableShader(const bool ans) { materialData_->enableLighting = ans; }
 
 	/// <summary>
 	/// 画像を使用するか
@@ -82,21 +82,21 @@ public://**セッター**//
 	void IsEnableTexture(bool ans) { materialData_->enableTexture = ans; }
 
 	//uv座標設定
-	void SetUVTranslate(Vector2 pos) { uvWorld_.translate_.x = pos.x; uvWorld_.translate_.y = pos.y; }
+	void SetUVTranslate(const Vector2& pos) { uvWorld_.translate_.x = pos.x; uvWorld_.translate_.y = pos.y; }
 	//uvサイズ設定
-	void SetUVScale(Vector3 scale) { uvWorld_.scale_ = scale; }
+	void SetUVScale(const Vector3& scale) { uvWorld_.scale_ = scale; }
 
 	/// <summary>
 	/// 色の変更
 	/// </summary>
 	/// <param name="color">色</param>
-	void SetColor(Vector4 color) { materialData_->color = color; }
+	void SetColor(const Vector4& color) { materialData_->color = color; }
 
-	void SetAlpha(float alpha) { materialData_->color.w = alpha; }
+	void SetAlpha(const float alpha) { materialData_->color.w = alpha; }
 
-	void SetBlendMode(BlendMode blend) { blendMode_=blend; }
+	void SetBlendMode(const BlendMode blend) { blendMode_=blend; }
 
-	void SetFillMode(FillMode fillmode) { fillMode_=fillmode; }
+	void SetFillMode(const FillMode fillmode) { fillMode_=fillmode; }
 
 	/// <summary>
 	/// アニメーションタイムを引数側から指定する

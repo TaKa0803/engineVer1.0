@@ -125,7 +125,7 @@ public:	//**パブリック関数**//
 	/// デッドラインの設定
 	/// </summary>
 	/// <param name="deadLine">値</param>
-	void SetDeadLine(float deadLine) { deadLine_ = deadLine; }
+	void SetDeadLine(const float deadLine) { deadLine_ = deadLine; }
 
 private://**プライベート変数**//
 
