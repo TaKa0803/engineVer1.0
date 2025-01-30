@@ -6,10 +6,11 @@
 #include"UAVManager/UAVManager.h"
 #include<cassert>
 
+using namespace Engine;
 
 ParticleInitializeCS::ParticleInitializeCS()
 {
-	DXF_ = DirectXFunc::GetInstance();
+	DXF_ = Engine::DirectXFunc::GetInstance();
 #pragma region RootSignatureを生成する
 
 	//RootSignatureの作成

@@ -41,7 +41,7 @@ public://パブリック関数**//
 private://**プライベート変数**//
 
 	//DXFのポインタ
-	DirectXFunc* DXF_=nullptr;
+	Engine::DirectXFunc* DXF_=nullptr;
 	
 	//モデルとanimationデータ
 	const ModelAllData* modelData_=nullptr;

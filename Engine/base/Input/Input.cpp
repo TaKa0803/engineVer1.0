@@ -5,8 +5,9 @@
 #pragma comment(lib,"dxguid.lib")
 #pragma comment(lib,"Xinput9_1_0.lib")
 
-
 #include<cassert>
+
+using namespace Engine;
 
 Input* Input::GetInstance() {
 	//インスタンス取得

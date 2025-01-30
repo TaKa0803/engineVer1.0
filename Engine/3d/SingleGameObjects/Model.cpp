@@ -17,6 +17,7 @@
 #include<cassert>
 #include<fstream>
 
+using namespace Engine;
 
 #pragma region モデル
 
@@ -154,7 +155,7 @@ void Model::Initialize(
 	int point
 ) {
 
-	DXF_ = DirectXFunc::GetInstance();
+	DXF_ = Engine::DirectXFunc::GetInstance();
 
 	modelM_ = ModelManager::GetInstance();
 

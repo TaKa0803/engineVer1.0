@@ -3,6 +3,8 @@
 #include"Log/Log.h"
 #include<cassert>
 
+using namespace Engine;
+
 SkyBoxPSO::SkyBoxPSO()
 {
 }
@@ -20,7 +22,7 @@ SkyBoxPSO::~SkyBoxPSO()
 void SkyBoxPSO::Initialize()
 {
 	//DXFのインスタンス取得
-	DXF_ = DirectXFunc::GetInstance();
+	DXF_ = Engine::DirectXFunc::GetInstance();
 #pragma region RootSignatureを生成する
 
 	//RootSignatureの作成

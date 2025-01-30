@@ -49,7 +49,7 @@ public:	//**パブリック関数**//
 private: //**プライベート変数**//
 
 	//DirectXFuncのポインタ
-	DirectXFunc* DXF_ = nullptr;
+	Engine::DirectXFunc* DXF_ = nullptr;
 
 	//変化無しでシーンをコピーする処理クラス
 	std::unique_ptr<PEOffScreen>peOffScreen_ = nullptr;

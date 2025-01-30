@@ -6,11 +6,12 @@
 #include"ExtractionScene/ExtractionScene.h"
 #include<cassert>
 
+using namespace Engine;
 
 PEBloom::PEBloom()
 {
 	if (DXF_ == nullptr) {
-		DXF_ = DirectXFunc::GetInstance();
+		DXF_ = Engine::DirectXFunc::GetInstance();
 	}
 
 #pragma region RootSignatureを生成する

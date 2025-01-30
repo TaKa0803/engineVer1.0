@@ -2,17 +2,17 @@
 #include"functions/function.h"
 
 
-DSVManager* DSVManager::GetInstance()
+Engine::DSVManager* Engine::DSVManager::GetInstance()
 {
 	//インスタンス取得
 	static DSVManager ins;
 	return &ins;
 }
 
-void DSVManager::Initialize()
+void Engine::DSVManager::Initialize()
 {
 	//DirectXFuncのインスタンス取得
-	DXF_ = DirectXFunc::GetInstance();
+	DXF_ = Engine::DirectXFunc::GetInstance();
 
 	//DSV用のヒープでディスクリプタの数は１。DSVはShader内で触るものではないので、ShaderVisibleはfalse
 	descriptorHeap_ = CreateDescriptorHeap(DXF_->GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, maxDSVSize_, false);
@@ -32,14 +32,14 @@ void DSVManager::Initialize()
 #pragma endregion
 }
 
-void DSVManager::Finalize()
+void Engine::DSVManager::Finalize()
 {
 	//メモリの解放
 	descriptorHeap_->Release();
 	depthStencilResource->Release();
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE DSVManager::GetDescriptorHandle(uint32_t Num)
+D3D12_CPU_DESCRIPTOR_HANDLE Engine::DSVManager::GetDescriptorHandle(uint32_t Num)
 {
 	//引数が仕様数以下の場合
 	if (Num < descriptorNum_) {

@@ -12,6 +12,7 @@
 #include<assimp/scene.h>
 #include<assimp/postprocess.h>
 
+using namespace Engine;
 
 //Vector3の遷移処理
 Vector3 CalculateValue(const std::vector<KayframeVector3>& keyframes, float time) {

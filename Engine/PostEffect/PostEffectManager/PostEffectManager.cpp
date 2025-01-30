@@ -24,6 +24,7 @@
 #include"ImGuiManager/ImGuiManager.h"
 #include<cassert>
 
+using namespace Engine;
 
 PostEffectManager* PostEffectManager::GetInstance()
 {
@@ -39,7 +40,7 @@ void PostEffectManager::Initialize()
 	extractionScene_->Initialize();
 
 	//DirectXFuncのインスタンス生成
-	DXF_ = DirectXFunc::GetInstance();
+	DXF_ = Engine::DirectXFunc::GetInstance();
 
 	//レンダーテクスチャ生成
 	renderTexture_[0] = DXF_->CreateRenderTextureResource(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTClearValue);
@@ -51,7 +52,7 @@ void PostEffectManager::Initialize()
 	rtDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
 	//RTVマネージャのインスタンス取得
-	RTVManager* RTVM = RTVManager::GetInstance();
+	Engine::RTVManager* RTVM = Engine::RTVManager::GetInstance();
 
 	//二枚のハンドルを取得
 	cHandle_[0] = RTVM->GetDescriptorHandle();
@@ -199,7 +200,7 @@ void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 	////Noneにしておく
 	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 	////バリアを張る対象のリソース、現在のバックバッファに対して行う
-	barrier_.Transition.pResource = DSVManager::GetInstance()->GetdepthStancilResource();
+	barrier_.Transition.pResource = Engine::DSVManager::GetInstance()->GetdepthStancilResource();
 	////遷移前（現在）のResourceState
 	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_DEPTH_WRITE;
 	////遷移後のResourceState
@@ -235,7 +236,7 @@ void PostEffectManager::PostEffectDraw(EffectType type, bool isKeepEffect)
 	////Noneにしておく
 	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 	////バリアを張る対象のリソース、現在のバックバッファに対して行う
-	barrier_.Transition.pResource = DSVManager::GetInstance()->GetdepthStancilResource();
+	barrier_.Transition.pResource = Engine::DSVManager::GetInstance()->GetdepthStancilResource();
 	////遷移前（現在）のResourceState
 	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	////遷移後のResourceState
@@ -332,7 +333,7 @@ void PostEffectManager::GvariEffectDraw()
 	////Noneにしておく
 	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 	////バリアを張る対象のリソース、現在のバックバッファに対して行う
-	barrier_.Transition.pResource = DSVManager::GetInstance()->GetdepthStancilResource();
+	barrier_.Transition.pResource = Engine::DSVManager::GetInstance()->GetdepthStancilResource();
 	////遷移前（現在）のResourceState
 	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_DEPTH_WRITE;
 	////遷移後のResourceState
@@ -363,7 +364,7 @@ void PostEffectManager::GvariEffectDraw()
 	////Noneにしておく
 	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 	////バリアを張る対象のリソース、現在のバックバッファに対して行う
-	barrier_.Transition.pResource = DSVManager::GetInstance()->GetdepthStancilResource();
+	barrier_.Transition.pResource = Engine::DSVManager::GetInstance()->GetdepthStancilResource();
 	////遷移前（現在）のResourceState
 	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	////遷移後のResourceState

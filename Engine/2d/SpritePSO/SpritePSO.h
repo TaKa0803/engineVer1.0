@@ -35,7 +35,7 @@ public://**パブリック関数**//
 private://**プライベート変数**//
 
 	//DXFのポインタ
-	DirectXFunc* DXF_;
+	Engine::DirectXFunc* DXF_;
 
 	//ルートシグネチャ
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_=nullptr;

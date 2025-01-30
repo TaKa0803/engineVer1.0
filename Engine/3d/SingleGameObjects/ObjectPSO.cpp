@@ -34,7 +34,7 @@ void ObjectPSO::Initialize() {
 	}
 	else {
 		isInitialize_ = true;
-		DXF_ = DirectXFunc::GetInstance();
+		DXF_ = Engine::DirectXFunc::GetInstance();
 	}
 
 #pragma region RootSignatureを生成する
@@ -183,7 +183,7 @@ void ObjectPSO::Initialize() {
 #pragma endregion
 #pragma region ShaderをCompileする
 
-	DXCManager* DXC = DXCManager::GetInstance();
+	Engine::DXCManager* DXC = Engine::DXCManager::GetInstance();
 
 	//Shaderをコンパイルする
 	IDxcBlob* vertexShaderBlob = CompileShader(L"resources/shaders/Models/Object3d.VS.hlsl", L"vs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());

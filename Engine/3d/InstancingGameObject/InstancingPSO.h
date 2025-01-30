@@ -37,7 +37,7 @@ public://**パブリック関数**//
 private://**プライベート変数**//
 
 	//DXFのポインタ
-	DirectXFunc* DXF_;
+	Engine::DirectXFunc* DXF_;
 
 	//vs,psのフルパス
 	std::wstring vsPass = L"resources/shaders/Models/InstancingObject.VS.hlsl";

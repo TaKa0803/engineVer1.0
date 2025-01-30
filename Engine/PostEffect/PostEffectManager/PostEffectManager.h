@@ -110,7 +110,7 @@ private://**プライベート関数**//
 private://**プライベート変数**//
 
 	//DXFのポインタ
-	DirectXFunc* DXF_;
+	Engine::DirectXFunc* DXF_;
 
 	//シーンの画像保存処理
 	ExtractionScene* extractionScene_ = nullptr;

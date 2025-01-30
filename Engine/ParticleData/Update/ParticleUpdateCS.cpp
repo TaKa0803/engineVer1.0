@@ -8,12 +8,12 @@
 
 #include<cassert>
 
-
+using namespace Engine;
 
 ParticleUpdateCS::ParticleUpdateCS()
 {
 	//インスタンス取得
-	DXF_ = DirectXFunc::GetInstance();
+	DXF_ = Engine::DirectXFunc::GetInstance();
 #pragma region RootSignatureを生成する
 
 	//RootSignatureの作成

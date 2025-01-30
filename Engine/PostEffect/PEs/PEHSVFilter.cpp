@@ -7,12 +7,14 @@
 #include"Camera/Camera.h"
 #include<cassert>
 
+using namespace Engine;
+
 PEHSVFilter::PEMaterialData* PEHSVFilter::materialData_ = nullptr;
 
 PEHSVFilter::PEHSVFilter()
 {
 	if (DXF_ == nullptr) {
-		DXF_ = DirectXFunc::GetInstance();
+		DXF_ = Engine::DirectXFunc::GetInstance();
 	}
 
 #pragma region RootSignatureを生成する

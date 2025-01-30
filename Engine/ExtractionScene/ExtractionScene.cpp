@@ -3,6 +3,8 @@
 #include"SRVManager/SRVManager.h"
 #include"DSVManager/DSVManager.h"
 
+using namespace Engine;
+
 ExtractionScene* ExtractionScene::GetInstance()
 {
 	//インスタンス取得
@@ -13,7 +15,7 @@ ExtractionScene* ExtractionScene::GetInstance()
 void ExtractionScene::Initialize()
 {
 	//DirectXFuncのインスタンス取得
-	DXF_ = DirectXFunc::GetInstance();
+	DXF_ = Engine::DirectXFunc::GetInstance();
 	//レンダー画像作成
 	renderTexture_ = DXF_->CreateRenderTextureResource(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTClearValue);
 
@@ -23,7 +25,7 @@ void ExtractionScene::Initialize()
 	rtDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
 	//RTVマネージャのインスタンス取得
-	RTVManager* RTVM = RTVManager::GetInstance();
+	Engine::RTVManager* RTVM = Engine::RTVManager::GetInstance();
 	//使われていないCPUハンドルを取得
 	cHandle_ = RTVM->GetDescriptorHandle();
 	
@@ -94,7 +96,7 @@ void ExtractionScene::LoadSceneTexture(ID3D12Resource*res,D3D12_CPU_DESCRIPTOR_H
 	////Noneにしておく
 	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 	////バリアを張る対象のリソース、現在のバックバッファに対して行う
-	barrier_.Transition.pResource = DSVManager::GetInstance()->GetdepthStancilResource();
+	barrier_.Transition.pResource = Engine::DSVManager::GetInstance()->GetdepthStancilResource();
 	////遷移前（現在）のResourceState
 	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_DEPTH_WRITE;
 	////遷移後のResourceState
@@ -117,7 +119,7 @@ void ExtractionScene::LoadSceneTexture(ID3D12Resource*res,D3D12_CPU_DESCRIPTOR_H
 	////Noneにしておく
 	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 	////バリアを張る対象のリソース、現在のバックバッファに対して行う
-	barrier_.Transition.pResource = DSVManager::GetInstance()->GetdepthStancilResource();
+	barrier_.Transition.pResource = Engine::DSVManager::GetInstance()->GetdepthStancilResource();
 	////遷移前（現在）のResourceState
 	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	////遷移後のResourceState

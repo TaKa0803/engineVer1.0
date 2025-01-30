@@ -38,13 +38,17 @@ private:
 	Input(const Input& o) = delete;
 	const Input& operator=(const Input& o) = delete;
 
+
+
 public:	//**パブリック関数**//
+
+
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <param name="winApp"></param>
-	void Initialize(WindowApp*winApp);
+	void Initialize(Engine::WindowApp*winApp);
 
 	/// <summary>
 	/// 更新

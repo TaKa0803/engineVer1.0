@@ -2,55 +2,59 @@
 
 #include<Windows.h>
 
-//ウィンドウ関係の処理クラス
-class WindowApp {
-public://シングルトンパターン
-	static WindowApp* GetInstance();
-private://シングルトンパターン
-	WindowApp() = default;
-	~WindowApp() = default;
-	WindowApp(const WindowApp& o) = delete;
-	const WindowApp& operator=(const WindowApp& o) = delete;
 
-public://静的メンバ変数
-	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+namespace Engine {
+	//ウィンドウ関係の処理クラス
+	class WindowApp {
+	public://シングルトンパターン
+		static WindowApp* GetInstance();
+	private://シングルトンパターン
+		WindowApp() = default;
+		~WindowApp() = default;
+		WindowApp(const WindowApp& o) = delete;
+		const WindowApp& operator=(const WindowApp& o) = delete;
 
-	//画面サイズ
-	static int kClientWidth;
-	static int kClientHeight;
+	public://静的メンバ変数
+		static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
-public://パブリック関数**//
+		//画面サイズ
+		static int kClientWidth;
+		static int kClientHeight;
 
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	void Initialize(LPCWSTR windowName, int clientwidth = 1280, int clientHeight = 720);
+	public://パブリック関数**//
 
-	/// <summary>
-	/// 消す前の処理
-	/// </summary>
-	void Finalize();
+		/// <summary>
+		/// 初期化
+		/// </summary>
+		void Initialize(LPCWSTR windowName, int clientwidth = 1280, int clientHeight = 720);
 
-	/// <summary>
-	/// プロセスメッセージ
-	/// </summary>
-	bool ProcessMessage();
+		/// <summary>
+		/// 消す前の処理
+		/// </summary>
+		void Finalize();
 
-	/// <summary>
-	/// hwnd取得
-	/// </summary>
-	/// <returns></returns>
-	HWND GetHwnd()const { return hwnd_; }
+		/// <summary>
+		/// プロセスメッセージ
+		/// </summary>
+		bool ProcessMessage();
 
-	/// <summary>
-	/// wc取得
-	/// </summary>
-	/// <returns></returns>
-	WNDCLASS GetWc()const { return wc; }
+		/// <summary>
+		/// hwnd取得
+		/// </summary>
+		/// <returns></returns>
+		HWND GetHwnd()const { return hwnd_; }
 
-private://**プライベート変数**//
+		/// <summary>
+		/// wc取得
+		/// </summary>
+		/// <returns></returns>
+		WNDCLASS GetWc()const { return wc; }
 
-	WNDCLASS wc{};
-	//ウィンドウハンドル
-	HWND hwnd_ = nullptr;
-};
+	private://**プライベート変数**//
+
+		WNDCLASS wc{};
+		//ウィンドウハンドル
+		HWND hwnd_ = nullptr;
+	};
+
+}

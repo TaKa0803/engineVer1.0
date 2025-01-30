@@ -92,7 +92,7 @@ private://**プライベート変数**//
 	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 	//DXFのポインタ
-	DirectXFunc* DXF_;
+	Engine::DirectXFunc* DXF_;
 	
 	//モデルデータ
 	ModelData modelData_;

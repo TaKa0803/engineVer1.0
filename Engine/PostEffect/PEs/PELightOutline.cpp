@@ -6,10 +6,12 @@
 
 #include<cassert>
 
+using namespace Engine;
+
 PELightOutline::PELightOutline()
 {
 	if (DXF_ == nullptr) {
-		DXF_ = DirectXFunc::GetInstance();
+		DXF_ = Engine::DirectXFunc::GetInstance();
 	}
 
 #pragma region RootSignatureを生成する

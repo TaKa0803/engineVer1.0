@@ -3,6 +3,7 @@
 #include<imgui.h>
 #include<numbers>
 
+using namespace Engine;
 
 Camera* Camera::GetInstance()
 {

@@ -6,12 +6,12 @@
 #include"ImGuiManager/ImGuiManager.h"
 #include"Camera/Camera.h"
 #include<cassert>
-
+using namespace Engine;
 
 PEDepthBasedOutline::PEDepthBasedOutline()
 {
 	if (DXF_ == nullptr) {
-		DXF_ = DirectXFunc::GetInstance();
+		DXF_ = Engine::DirectXFunc::GetInstance();
 	}
 
 #pragma region RootSignatureを生成する
@@ -189,7 +189,7 @@ PEDepthBasedOutline::PEDepthBasedOutline()
 	depthTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	depthTextureSrvDesc.Texture2D.MipLevels = 1;
 
-	handle = SRVManager::CreateSRV(DSVManager::GetInstance()->GetdepthStancilResource(), depthTextureSrvDesc);
+	handle = SRVManager::CreateSRV(Engine::DSVManager::GetInstance()->GetdepthStancilResource(), depthTextureSrvDesc);
 
 	//マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
 	materialResource_ = CreateBufferResource(DXF_->GetDevice(), sizeof(PEMaterialData));

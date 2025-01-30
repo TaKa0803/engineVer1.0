@@ -2,6 +2,8 @@
 #include"functions/function.h"
 #include<cassert>
 
+using namespace Engine;
+
 SRVManager* SRVManager::GetInstance() {
 	static SRVManager instance;
 	return &instance;
@@ -20,7 +22,7 @@ Handles SRVManager::CreateTextureSRV(ID3D12Resource* textureResource, ID3D12Reso
 	ID3D12Resource* listResource = SRVM->PushTextureResource(textureResource);
 
 	//srvの生成
-	DirectXFunc::GetInstance()->GetDevice()->CreateShaderResourceView(listResource, &srvdesc, textureSrvHandleCPU);
+	Engine::DirectXFunc::GetInstance()->GetDevice()->CreateShaderResourceView(listResource, &srvdesc, textureSrvHandleCPU);
 
 	textureResource = listResource;
 
@@ -49,7 +51,7 @@ Handles SRVManager::CreateSRV(ID3D12Resource* resource, D3D12_SHADER_RESOURCE_VI
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = SRVM->GetGPU_DES_HANDLE();
 
 	//srvの生成
-	DirectXFunc::GetInstance()->GetDevice()->CreateShaderResourceView(resource, &srvDesc, textureSrvHandleCPU);
+	Engine::DirectXFunc::GetInstance()->GetDevice()->CreateShaderResourceView(resource, &srvDesc, textureSrvHandleCPU);
 
 	//GPUHandleを登録してサイズを増加
 	SRVM->AddtextureNum(textureSrvHandleGPU);

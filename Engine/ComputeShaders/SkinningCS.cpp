@@ -7,10 +7,12 @@
 
 #include<cassert>
 
+using namespace Engine;
+
 SkinningCS::SkinningCS()
 {
 	//DXFのインスタンス取得
-	DXF_ = DirectXFunc::GetInstance();
+	DXF_ = Engine::DirectXFunc::GetInstance();
 #pragma region RootSignatureを生成する
 	//RootSignatureの作成
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};

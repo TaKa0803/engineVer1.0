@@ -7,7 +7,7 @@ class IPipelineStateObject {
 protected://**共通変数**//
 
 	//DXFのポインタ
-	DirectXFunc* DXF_ = nullptr;
+	Engine::DirectXFunc* DXF_ = nullptr;
 
 public://**パブリック関数
 	

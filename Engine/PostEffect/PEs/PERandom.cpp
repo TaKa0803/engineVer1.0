@@ -6,10 +6,12 @@
 #include"RandomNum/RandomNum.h"
 #include<cassert>
 
+using namespace Engine;
+
 PERandom::PERandom()
 {
 	if (DXF_ == nullptr) {
-		DXF_ = DirectXFunc::GetInstance();
+		DXF_ = Engine::DirectXFunc::GetInstance();
 	}
 
 #pragma region RootSignatureを生成する

@@ -13,6 +13,7 @@
 #include"ImGuiManager/ImGuiManager.h"
 #include<iostream>
 
+using namespace Engine;
 
 InstancingModel::~InstancingModel() {
 
@@ -333,7 +334,7 @@ void InstancingModel::Initialize(
 	int instancingNum
 ) {
 	//DXFのインスタンス追加
-	DXF_ = DirectXFunc::GetInstance();
+	DXF_ = Engine::DirectXFunc::GetInstance();
 
 	modelData_ = modelData;
 

@@ -110,7 +110,7 @@ TextureManager* TextureManager::GetInstance()
 	return &instance;
 }
 
-void TextureManager::Initialize(DirectXFunc* DXF_)
+void TextureManager::Initialize(Engine::DirectXFunc* DXF_)
 {
 	//DXFポインタ取得
 	DXF = DXF_;
@@ -223,7 +223,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetGPUHandle(std::string name)
 int TextureManager::CreateData(const std::string& filePath, const DirectX::ScratchImage& mipImages) {
 
 	//SRVマネージャん取得
-	SRVManager* SRVM = SRVManager::GetInstance();
+	Engine::SRVManager* SRVM = Engine::SRVManager::GetInstance();
 
 	//データ作成
 	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();

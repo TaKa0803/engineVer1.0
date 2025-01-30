@@ -1,13 +1,13 @@
 #include "RTVManager.h"
 #include"functions/function.h"
 
-RTVManager* RTVManager::GetInstance()
+Engine::RTVManager* Engine::RTVManager::GetInstance()
 {
 	static RTVManager instance;
 	return &instance;
 }
 
-void RTVManager::Initialize()
+void Engine::RTVManager::Initialize()
 {
 
 	DXF_ = DirectXFunc::GetInstance();
@@ -18,12 +18,12 @@ void RTVManager::Initialize()
 
 }
 
-void RTVManager::Finalize()
+void Engine::RTVManager::Finalize()
 {
 	rtvDescriptorHeap_->Release();
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE RTVManager::GetDescriptorHandle()
+D3D12_CPU_DESCRIPTOR_HANDLE Engine::RTVManager::GetDescriptorHandle()
 {
 	
 	D3D12_CPU_DESCRIPTOR_HANDLE ans = GetCPUDescriptorHandle(rtvDescriptorHeap_, descriptorSizeRTV_, RTVNum_);

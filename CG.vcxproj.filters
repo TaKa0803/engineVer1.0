@@ -92,7 +92,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\base\AudioManager\AudioManager.cpp">
-      <Filter>Engine\base\AudioManager</Filter>
+      <Filter>Engine\AudioManager</Filter>
     </ClCompile>
     <ClCompile Include="Application\AppScene\AppScene.cpp">
       <Filter>Application\AppScene</Filter>
@@ -383,7 +383,7 @@
       <Filter>Engine\base\SRVManager</Filter>
     </ClCompile>
     <ClCompile Include="Engine\base\TextureManager\TextureManager.cpp">
-      <Filter>Engine\base\TextureManager</Filter>
+      <Filter>Engine\TextureManager</Filter>
     </ClCompile>
     <ClCompile Include="Application\Game\Scene\TitleScene.cpp">
       <Filter>Application\Game\Scenes\TitleScene</Filter>
@@ -433,7 +433,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\base\AudioManager\AudioManager.h">
-      <Filter>Engine\base\AudioManager</Filter>
+      <Filter>Engine\AudioManager</Filter>
     </ClInclude>
     <ClInclude Include="Application\AppScene\AppScene.h">
       <Filter>Application\AppScene</Filter>
@@ -742,7 +742,7 @@
       <Filter>Engine\base\SRVManager</Filter>
     </ClInclude>
     <ClInclude Include="Engine\base\TextureManager\TextureManager.h">
-      <Filter>Engine\base\TextureManager</Filter>
+      <Filter>Engine\TextureManager</Filter>
     </ClInclude>
     <ClInclude Include="Application\Game\Scene\TitleScene.h">
       <Filter>Application\Game\Scenes\TitleScene</Filter>
@@ -870,9 +870,6 @@
     </Filter>
     <Filter Include="Engine\base\DirectXFunc">
       <UniqueIdentifier>{76f60467-d997-4b5a-90e9-d797630f45f1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\base\AudioManager">
-      <UniqueIdentifier>{104267bd-d99e-4fb4-a7fc-a49b214259fa}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\PostEffect">
       <UniqueIdentifier>{21db5276-1205-4f50-8367-329454e794b5}</UniqueIdentifier>
@@ -1117,9 +1114,6 @@
     <Filter Include="Engine\base\SRVManager">
       <UniqueIdentifier>{a935f2e9-46ab-4997-b1f9-27dba3b2c3ab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\base\TextureManager">
-      <UniqueIdentifier>{ce58f707-4d33-47c6-be6b-f82813788b9e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Application\Game\Scenes\TitleScene">
       <UniqueIdentifier>{d7038d31-9726-456d-8335-5750ad89334e}</UniqueIdentifier>
     </Filter>
@@ -1143,6 +1137,12 @@
     </Filter>
     <Filter Include="Application\Game\Player\UI">
       <UniqueIdentifier>{c9a3f18e-5ce8-41de-91a9-05f3af4b7c6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\AudioManager">
+      <UniqueIdentifier>{104267bd-d99e-4fb4-a7fc-a49b214259fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\TextureManager">
+      <UniqueIdentifier>{ce58f707-4d33-47c6-be6b-f82813788b9e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

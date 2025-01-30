@@ -1,6 +1,8 @@
 #include "UAVManager.h"
 #include"functions/function.h"
 
+using namespace Engine;
+
 UAVManager* UAVManager::GetInstance()
 {
 	//インスタンス取得
@@ -11,7 +13,7 @@ UAVManager* UAVManager::GetInstance()
 void UAVManager::Initialize()
 {
 	//DXFのインスタンス取得
-	DXF_ = DirectXFunc::GetInstance();
+	DXF_ = Engine::DirectXFunc::GetInstance();
 	
 	//ヒープ作成
 	uavDescriptorHeap_ = CreateDescriptorHeap(DXF_->GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, maxUAVSize_,true);

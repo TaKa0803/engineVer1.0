@@ -5,10 +5,12 @@
 #include"DXC/DXCManager.h"
 #include"ImGuiManager/ImGuiManager.h"
 
+using namespace Engine;
+
 PESmoothing::PESmoothing()
 {
 	if (DXF_ == nullptr) {
-		DXF_ = DirectXFunc::GetInstance();
+		DXF_ = Engine::DirectXFunc::GetInstance();
 	}
 
 #pragma region RootSignatureを生成する

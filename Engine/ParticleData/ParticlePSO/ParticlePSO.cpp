@@ -5,6 +5,8 @@
 
 #include<cassert>
 
+using namespace Engine;
+
 ParticlePSO::ParticlePSO()
 {
 }
@@ -40,7 +42,7 @@ ParticlePSO::~ParticlePSO()
 void ParticlePSO::Initialize()
 {
 	//DXFのポインタ設定
-	DXF_ = DirectXFunc::GetInstance();
+	DXF_ = Engine::DirectXFunc::GetInstance();
 
 #pragma region RootSingnatureの生成
 	//RootSignatureの作成

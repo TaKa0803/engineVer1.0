@@ -48,7 +48,7 @@ public://**パブリック関数**//
 private://**プライベート変数**//
 
 	//DXFのポインタ
-	DirectXFunc* DXF_ = nullptr;
+	Engine::DirectXFunc* DXF_ = nullptr;
 	
 	//CSのパス
 	std::wstring csPass = L"resources/shaders/ComputeShader/ParticleEmiter.CS.hlsl";

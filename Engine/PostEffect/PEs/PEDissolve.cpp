@@ -6,10 +6,12 @@
 #include"SpriteManager/SpriteManager.h"
 #include<cassert>
 
+using namespace Engine;
+
 PEDissolve::PEDissolve()
 {
 	if (DXF_ == nullptr) {
-		DXF_ = DirectXFunc::GetInstance();
+		DXF_ = Engine::DirectXFunc::GetInstance();
 	}
 
 

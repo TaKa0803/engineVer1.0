@@ -12,7 +12,7 @@
 #include"UAVManager/UAVManager.h"
 #include"GlobalVariable/Manager/GlobalVaribleManager.h"
 
-
+using namespace Engine;
 
 MainSystem* MainSystem::GetInstance() {
 	//インスタンス取得

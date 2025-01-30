@@ -2,6 +2,8 @@
 #include"Log/Log.h"
 #include<cassert>
 
+using namespace Engine;
+
 IDxcBlob* CompileShader(
 	//CompilerするShaderファイルへのパス
 	const std::wstring& filePath,

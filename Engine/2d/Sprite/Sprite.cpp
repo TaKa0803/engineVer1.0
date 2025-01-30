@@ -9,6 +9,7 @@
 
 #include"SpriteManager/SpriteManager.h"
 
+using namespace Engine;
 
 Sprite::Sprite() {
 }
@@ -24,7 +25,7 @@ Sprite::~Sprite() {
 
 Sprite* Sprite::Create(int texture, const Vector2 size, const Vector2 Rect, const Vector2 scale , const Vector2 translate, const Vector2 anchor, const float rotate) {
 	//DXFのインスタンス取得
-	DirectXFunc* DXF = DirectXFunc::GetInstance();
+	Engine::DirectXFunc* DXF = Engine::DirectXFunc::GetInstance();
 	//ワールド作成
 	EulerWorldTransform newWorld;
 	newWorld.translate_ = { translate.x,translate.y,0 };
@@ -118,7 +119,7 @@ void Sprite::Initialize(int texture,
 
 	D3D12_INDEX_BUFFER_VIEW indexBufferView
 ) {
-	DXF_ = DirectXFunc::GetInstance();
+	DXF_ = Engine::DirectXFunc::GetInstance();
 
 	//作成したデータコピー
 	texture_ = texture;

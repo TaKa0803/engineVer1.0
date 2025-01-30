@@ -13,7 +13,7 @@ public:
 
 private:
 
-	DirectXFunc* DXF_ = nullptr;
+	Engine::DirectXFunc* DXF_ = nullptr;
 
 	std::wstring csPass = L"resources/shaders/ComputeShader/InitializeParticle.CS.hlsl";
 

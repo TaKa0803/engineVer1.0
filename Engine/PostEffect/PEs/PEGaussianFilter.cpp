@@ -6,10 +6,12 @@
 #include"ImGuiManager/ImGuiManager.h"
 #include<cassert>
 
+using namespace Engine;
+
 PEGaussianFilter::PEGaussianFilter()
 {
 	if (DXF_ == nullptr) {
-		DXF_ = DirectXFunc::GetInstance();
+		DXF_ = Engine::DirectXFunc::GetInstance();
 	}
 
 #pragma region RootSignatureを生成する

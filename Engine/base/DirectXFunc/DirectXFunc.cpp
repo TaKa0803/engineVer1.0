@@ -14,6 +14,8 @@
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"winmm.lib")
 
+using namespace Engine;
+
 DirectXFunc* DirectXFunc::GetInstance()
 {
 	//インスタンス取得

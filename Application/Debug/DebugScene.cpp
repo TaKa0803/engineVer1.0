@@ -17,7 +17,7 @@ DebugScnene::DebugScnene()
 	//オブジェクト生成
 	object = std::make_unique<GameObject>();
 
-	//山オブジェクト生成
+	//山オブジェクト生成w
 	terrain = new GameObject();
 
 	//スカイボックス生成

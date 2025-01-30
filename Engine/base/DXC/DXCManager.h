@@ -14,39 +14,42 @@ IDxcBlob* CompileShader(
 	IDxcCompiler3* dxcCompiler,
 	IDxcIncludeHandler* includeHandler);
 
-//DXC関係をまとめたクラス
-class DXCManager {
-public:	//**シングルトンパターン**//
-	static DXCManager* GetInstance();
-private:
-	DXCManager() = default;
-	~DXCManager() = default;
-	DXCManager(const DXCManager& o) = delete;
-	const DXCManager& operator=(const DXCManager& o) = delete;
+namespace Engine {
+	//DXC関係をまとめたクラス
+	class DXCManager {
+	public:	//**シングルトンパターン**//
+		static DXCManager* GetInstance();
+	private:
+		DXCManager() = default;
+		~DXCManager() = default;
+		DXCManager(const DXCManager& o) = delete;
+		const DXCManager& operator=(const DXCManager& o) = delete;
 
-public:	//**パブリッククラス**//
+	public:	//**パブリッククラス**//
 
-	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
+		template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	void Initialize();
+		/// <summary>
+		/// 初期化
+		/// </summary>
+		void Initialize();
 
-public:	//**ゲッター**//
+	public:	//**ゲッター**//
 
-	IDxcUtils* GetDxcUtils() { return dxcUtils.Get(); }
-	IDxcCompiler3* GetDxcCompiler() { return dxcCompiler.Get(); }
-	IDxcIncludeHandler* GetIncludeHandler() { return includeHandler.Get(); }
+		IDxcUtils* GetDxcUtils() { return dxcUtils.Get(); }
+		IDxcCompiler3* GetDxcCompiler() { return dxcCompiler.Get(); }
+		IDxcIncludeHandler* GetIncludeHandler() { return includeHandler.Get(); }
 
-private: //**プライベート変数
+	private: //**プライベート変数
 
-	template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
+		template<class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-	//dxcUtils
-	ComPtr<IDxcUtils> dxcUtils = nullptr;
-	//dxcコンパイラ
-	ComPtr<IDxcCompiler3> dxcCompiler = nullptr;
-	//includeハンドラー
-	ComPtr<IDxcIncludeHandler> includeHandler = nullptr;
-};
+		//dxcUtils
+		ComPtr<IDxcUtils> dxcUtils = nullptr;
+		//dxcコンパイラ
+		ComPtr<IDxcCompiler3> dxcCompiler = nullptr;
+		//includeハンドラー
+		ComPtr<IDxcIncludeHandler> includeHandler = nullptr;
+	};
+
+}

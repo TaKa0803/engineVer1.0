@@ -178,7 +178,7 @@ private://**プライベート関数**//
 private://**プライベート変数**//
 
 	//DXFポインタ
-	DirectXFunc* DXF_ = nullptr;
+	Engine::DirectXFunc* DXF_ = nullptr;
 
 	//フィルモード
 	FillMode fillMode_ = FillMode::kSolid;

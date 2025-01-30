@@ -7,6 +7,8 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg
 #pragma endregion
 #include<cassert>
 
+using namespace Engine;
+
 ImGuiManager* ImGuiManager::GetInstance()
 {
 	//インスタンス取得
@@ -14,7 +16,7 @@ ImGuiManager* ImGuiManager::GetInstance()
 	return &Instance;
 }
 
-void ImGuiManager::Initialize(WindowApp* winApp, DirectXFunc* DXF)
+void ImGuiManager::Initialize(WindowApp* winApp, Engine::DirectXFunc* DXF)
 {
 	//存在しない場合エラー
 	assert(winApp);

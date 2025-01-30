@@ -176,7 +176,7 @@ private: //**プライベート関数**//
 private: //**プライベート変数**//
 
 	//DirectXFuncのポインタ
-	DirectXFunc* DXF_ = nullptr;
+	Engine::DirectXFunc* DXF_ = nullptr;
 
 	//モデルデータ
 	ModelAllData modelData_;

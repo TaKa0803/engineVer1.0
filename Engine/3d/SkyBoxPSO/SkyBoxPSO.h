@@ -39,7 +39,7 @@ public://**パブリック関数**//
 private://**プライベート変数**//
 
 	//DirectXFuncのポインタ
-	DirectXFunc* DXF_;
+	Engine::DirectXFunc* DXF_;
 
 	//ルートシグネチャ
 	ID3D12RootSignature* rootSignature = nullptr;

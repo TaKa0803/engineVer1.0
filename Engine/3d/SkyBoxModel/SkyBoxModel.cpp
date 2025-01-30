@@ -2,10 +2,12 @@
 #include"TextureManager/TextureManager.h"
 #include"functions/function.h"
 
+using namespace Engine;
+
 SkyBoxModel::SkyBoxModel(const std::string& texPath)
 {
 	//DXFインスタンス取得
-	DXF_ = DirectXFunc::GetInstance();
+	DXF_ = Engine::DirectXFunc::GetInstance();
 
 	//パイプライン初期化
 	pso_ = new SkyBoxPSO();

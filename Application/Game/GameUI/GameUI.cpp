@@ -2,6 +2,8 @@
 #include"TextureManager/TextureManager.h" 
 #include"GlobalVariable/Group/GlobalVariableGroup.h"
 
+using namespace Engine;
+
 GameUI::GameUI()
 {
 	//ボタン画像読み込み

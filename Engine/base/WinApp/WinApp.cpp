@@ -9,6 +9,7 @@
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 #pragma endregion
 
+using namespace Engine;
 
 int WindowApp::kClientWidth = 1280;
 int WindowApp::kClientHeight = 720;

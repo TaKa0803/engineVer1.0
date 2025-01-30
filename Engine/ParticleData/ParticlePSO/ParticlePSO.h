@@ -34,7 +34,7 @@ public://**パブリック関数**//
 private://**プライベート変数**//
 
 	//DXFのポインタ
-	DirectXFunc* DXF_=nullptr;
+	Engine::DirectXFunc* DXF_=nullptr;
 
 	//VS、PSのHLSLまでのパス
 	std::wstring vsPass = L"resources/shaders/Particles/Particle.VS.hlsl";

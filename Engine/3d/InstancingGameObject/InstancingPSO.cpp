@@ -24,7 +24,7 @@ InstancingPSO::~InstancingPSO() {
 
 void InstancingPSO::Initialize() {
 
-	DXF_ = DirectXFunc::GetInstance();
+	DXF_ = Engine::DirectXFunc::GetInstance();
 #pragma region RootSignatureを生成する
 
 	//RootSignatureの作成
@@ -160,7 +160,7 @@ void InstancingPSO::Initialize() {
 #pragma endregion
 #pragma region ShaderをCompileする
 
-	DXCManager* DXC = DXCManager::GetInstance();
+	Engine::DXCManager* DXC = Engine::DXCManager::GetInstance();
 
 	//Shaderをコンパイルする
 	IDxcBlob* vertexShaderBlob = CompileShader(vsPass, L"vs_6_0", DXC->GetDxcUtils(), DXC->GetDxcCompiler(), DXC->GetIncludeHandler());

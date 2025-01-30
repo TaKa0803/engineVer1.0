@@ -9,10 +9,12 @@
 #include"DeltaTimer/DeltaTimer.h"
 #include<numbers>
 
+using namespace Engine;
+
 ParticleManager::ParticleManager()
 {
 	//DXFのポインタ取得
-	DXF_ = DirectXFunc::GetInstance();
+	DXF_ = Engine::DirectXFunc::GetInstance();
 
 	//モデルデータ読み込み
 	modelData_ = ModelManager::GetInstance()->GetModelData("z+Plane").model;

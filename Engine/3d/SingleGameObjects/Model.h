@@ -160,7 +160,7 @@ public://**パブリック変数**//
 private://**プライベート関数**//
 
 	//DXFのポインタ
-	DirectXFunc* DXF_;
+	Engine::DirectXFunc* DXF_;
 
 	//モデルマネージャ
 	ModelManager* modelM_;

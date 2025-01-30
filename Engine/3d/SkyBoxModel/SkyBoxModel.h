@@ -51,7 +51,7 @@ private://**プライベート変数**//
 	};
 
 	//DXFのポインタ
-	DirectXFunc* DXF_=nullptr;
+	Engine::DirectXFunc* DXF_=nullptr;
 	
 	//PSOのポインタ
 	SkyBoxPSO* pso_=nullptr;
